@@ -35,18 +35,36 @@ adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", 
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
+
+adjusted_volume_data <- adjusted_volume_data %>%
+  mutate(admin_area_1 = case_when(
+    admin_area_1 %in% c("Pays 001", "Country 001") ~ "Federal Govt of Somalia",
+    TRUE ~ admin_area_1
+  ))
+
+
+
 # ------------------------------ Define Parameters --------------------------------
 # Coverage Estimation Parameters
 coverage_params <- list(
   indicators = c(
-    "anc1", "anc4", "delivery",
-    "bcg",
+    # Core
+    "anc1", "anc4", "delivery", "bcg",
     "penta1", "penta3",
     "measles1", "measles2",
     "rota1", "rota2",
     "opv1", "opv2", "opv3",
     "pnc1_mother",
-    "nmr", "imr"
+    "nmr", "imr",
+    
+    # New child indicators
+    "deworming", "mnp", "vitamina", "ors_zinc",
+    
+    # IPTp
+    "iptp1", "iptp2", "iptp3",
+    
+    # ANC supplements
+    "iron_anc"
   )
 )
 
@@ -59,8 +77,12 @@ survey_vars <- c(
   "avgsurvey_rota1", "avgsurvey_rota2",
   "avgsurvey_opv1", "avgsurvey_opv2", "avgsurvey_opv3",
   "avgsurvey_pnc1_mother",
-  "postnmr", "avgsurvey_imr", "avgsurvey_nmr"
+  "avgsurvey_deworming", "avgsurvey_mnp", "avgsurvey_vitamina", "avgsurvey_ors_zinc",
+  "avgsurvey_iptp1", "avgsurvey_iptp2", "avgsurvey_iptp3",
+  "avgsurvey_iron_anc",
+  "avgsurvey_nmr", "avgsurvey_imr", "postnmr"
 )
+
 
 name_replacements <- c(
   "Guinea" = "Guinée",
@@ -96,7 +118,6 @@ province_name_replacements <- c(
   "IRS Nzérékoré" = "N'Zérékoré"
 
 )
-
 
 # ------------------------------ Define Functions --------------------------------
 # Part 1 - prepare hmis data
