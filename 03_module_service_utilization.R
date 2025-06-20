@@ -683,7 +683,8 @@ summary_disruption_admin1_export <- summary_disruption_admin1 %>%
                 period_id, 
                 quarter_id, 
                 year, 
-                count_sum, 
+                count_sum,
+                count_expect_sum,
                 count_expected_if_above_diff_threshold)
 
 write.csv(summary_disruption_admin1_export, "M3_disruptions_analysis_admin_area_1.csv", row.names = FALSE)
@@ -698,7 +699,8 @@ summary_disruption_admin2_export <- summary_disruption_admin2 %>%
                 indicator_common_id, 
                 period_id, quarter_id, 
                 year, 
-                count_sum, 
+                count_sum,
+                count_expect_sum,
                 count_expected_if_above_diff_threshold)
 
 write.csv(summary_disruption_admin2_export, "M3_disruptions_analysis_admin_area_2.csv", row.names = FALSE)
@@ -716,7 +718,8 @@ if (RUN_DISTRICT_MODEL) {
                   period_id, 
                   quarter_id, 
                   year, 
-                  count_sum, 
+                  count_sum,
+                  count_expect_sum,
                   count_expected_if_above_diff_threshold)
   
   write.csv(summary_disruption_admin3_export, "M3_disruptions_analysis_admin_area_3.csv", row.names = FALSE)
