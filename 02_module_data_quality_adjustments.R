@@ -1,9 +1,9 @@
 
-PROJECT_DATA_HMIS <- "hmis_ghana.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria.csv"
 
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2025 June 10
+# Last edit: 2025 June 23
 
 # This script dynamically adjusts raw data for:
 #   1. Outliers: Replaces flagged outliers with 12-month rolling averages (excluding outliers).
@@ -20,36 +20,36 @@ PROJECT_DATA_HMIS <- "hmis_ghana.csv"
 
 
 # Load Required Libraries -----------------------------------------------------------------------------------
-library(data.table)  # For fast data processing & merging
-library(zoo)         # For rolling averages
-library(stringr)     # For `str_subset()`
-library(dplyr)
+library(data.table)
+library(zoo)
 library(lubridate)
 
 EXCLUDED_FROM_ADJUSTMENT <- c("u5_deaths", "maternal_deaths")
 
-raw_data <- read.csv(PROJECT_DATA_HMIS)
-outlier_data <- read.csv("M1_output_outliers.csv")
-completeness_data <- read.csv("M1_output_completeness.csv")
+# Load CSVs and convert to data.table
+raw_data <- fread(PROJECT_DATA_HMIS)
+outlier_data <- fread("M1_output_outliers.csv")
+completeness_data <- fread("M1_output_completeness.csv")
+
+setDT(raw_data)
+setDT(outlier_data)
+setDT(completeness_data)
+
 
 # Define Functions ------------------------------------------------------------------------------------------
 geo_cols <- colnames(raw_data)[grepl("^admin_area_[0-9]+$", colnames(raw_data))]
 
-# Function to Apply Adjustments Across Scenarios ------------------------------------------------------------
+# Function to Apply Adjustments -----------------------------------------------------------------------------
 apply_adjustments <- function(raw_data, completeness_data, outlier_data,
                               adjust_outliers = FALSE, adjust_completeness = FALSE) {
   message("Running adjustments...")
   
-  setDT(raw_data)
-  setDT(outlier_data)
-  setDT(completeness_data)
-  
-  # Merge
+  # Merge inputs
   data_adj <- merge(completeness_data,
                     outlier_data[, .(facility_id, indicator_common_id, period_id, outlier_flag)],
                     by = c("facility_id", "indicator_common_id", "period_id"),
                     all.x = TRUE)
-  data_adj[, outlier_flag := fifelse(is.na(outlier_flag), 0, outlier_flag)]
+  data_adj[, outlier_flag := fifelse(is.na(outlier_flag), 0L, outlier_flag)]
   
   data_adj <- merge(data_adj,
                     raw_data[, .(facility_id, indicator_common_id, period_id, count)],
@@ -58,128 +58,91 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
   
   data_adj[, count_working := as.numeric(count)]
   
+  # Create date column once at the beginning
+  data_adj[, date := as.Date(paste0(substr(period_id, 1, 4), "-", substr(period_id, 6, 7), "-01"))]
+  setorder(data_adj, facility_id, indicator_common_id, date)
+  data_adj[, `:=`(adj_method = NA_character_, adjust_note = NA_character_)]
+  
   # ---------------- Outlier Adjustment ----------------
   if (adjust_outliers) {
-    message(" -> Adjusting outliers using enhanced logic with fallback to same month last year...")
+    message(" -> Adjusting outliers...")
     
-    data_adj[, date := as.Date(paste0(substr(period_id, 1, 4), "-", substr(period_id, 6, 7), "-01"))]
-    setorder(data_adj, facility_id, indicator_common_id, date)
+    data_adj[, valid_count := fifelse(outlier_flag == 0L & !is.na(count), count, NA_real_)]
+    data_adj[, `:=`(
+      roll6 = frollmean(valid_count, 6, na.rm = TRUE, align = "center"),
+      fwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "left"),
+      bwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "right"),
+      fallback = median(valid_count, na.rm = TRUE)
+    ), by = .(facility_id, indicator_common_id)]
     
-    data_adj[, count_working := as.numeric(count)]
-    data_adj[, adj_method := NA_character_]
-    data_adj[, adjust_note := NA_character_]
+    # Fixed logic: Check each method sequentially for outliers
+    data_adj[outlier_flag == 1L & !is.na(roll6), `:=`(count_working = roll6, adj_method = "roll6")]
+    data_adj[outlier_flag == 1L & is.na(roll6) & !is.na(fwd6), `:=`(count_working = fwd6, adj_method = "forward")]
+    data_adj[outlier_flag == 1L & is.na(roll6) & is.na(fwd6) & !is.na(bwd6), `:=`(count_working = bwd6, adj_method = "backward")]
     
+    data_adj[, `:=`(month = month(date), year = year(date))]
     data_adj <- data_adj[, {
-      result <- copy(.SD)
-      n <- .N
-      for (i in seq_len(n)) {
-        if (outlier_flag[i] != 1) next
-        current_date <- date[i]
-        
-        # Identify valid (non-outlier, >0) values
-        valid_idx <- which(outlier_flag == 0 & count > 0)
-        
-        if (i <= 6) {
-          # First 6 months: forward average
-          fwd_idx <- valid_idx[valid_idx > i & date[valid_idx] <= current_date %m+% months(12)]
-          vals <- count[fwd_idx][1:6]
-          if (length(vals) == 6) {
-            result$count_working[i] <- mean(vals)
-            result$adj_method[i] <- "roll6_forward"
-            next
-          }
-        } else if (i >= n - 5) {
-          # Last 6 months: backward average
-          back_idx <- valid_idx[valid_idx < i & date[valid_idx] >= current_date %m-% months(12)]
-          vals <- rev(count[back_idx])[1:6]
-          if (length(vals) == 6) {
-            result$count_working[i] <- mean(vals)
-            result$adj_method[i] <- "roll6_backward"
-            next
-          }
-        } else {
-          # Middle: centered average
-          before_idx <- valid_idx[valid_idx < i & date[valid_idx] >= current_date %m-% months(12)]
-          after_idx  <- valid_idx[valid_idx > i & date[valid_idx] <= current_date %m+% months(12)]
-          vals <- c(tail(count[before_idx], 3), head(count[after_idx], 3))
-          if (length(vals) == 6) {
-            result$count_working[i] <- mean(vals)
-            result$adj_method[i] <- "roll6_center"
-            next
-          }
+      for (i in which(outlier_flag == 1L & is.na(roll6) & is.na(fwd6) & is.na(bwd6))) {
+        current_month <- month[i]
+        current_year <- year[i]
+        j <- which(month == current_month & year == (current_year - 1) & outlier_flag == 0L & !is.na(count))
+        if (length(j) == 1L) {
+          count_working[i] <- count[j]
+          adj_method[i] <- "same_month_last_year"
+          adjust_note[i] <- format(date[j], "%b-%Y")
         }
-        
-        # Fallback: same month last year
-        last_year_date <- current_date %m-% months(12)
-        fallback_row <- which(date == last_year_date)
-        if (length(fallback_row) == 1 &&
-            isTRUE(outlier_flag[fallback_row] == 0) &&
-            isTRUE(count[fallback_row] > 0)) {
-          result$count_working[i] <- count[fallback_row]
-          result$adj_method[i] <- "same_month_last_year"
-          result$adjust_note[i] <- paste("used", format(last_year_date, "%b-%Y"))
-          next
-        }
-        
-        
-        # Final fallback: unadjusted
-        result$adj_method[i] <- "unadjusted"
-        result$adjust_note[i] <- "no valid replacement"
       }
-      result
+      .SD
     }, by = .(facility_id, indicator_common_id)]
     
-    adj_debug <- data_adj[outlier_flag == 1, .N, by = adj_method][order(adj_method)]
-    message("   -> Outlier adjustment method counts:")
-    print(adj_debug)
+    data_adj[outlier_flag == 1L & is.na(adj_method), `:=`(count_working = fallback, adj_method = "fallback")]
+    
+    message("     Roll6 adjusted: ", sum(data_adj$adj_method == "roll6", na.rm = TRUE))
+    message("     Forward-filled: ", sum(data_adj$adj_method == "forward", na.rm = TRUE))
+    message("     Backward-filled: ", sum(data_adj$adj_method == "backward", na.rm = TRUE))
+    message("     Same-month fallback: ", sum(data_adj$adj_method == "same_month_last_year", na.rm = TRUE))
+    message("     Fallback (median): ", sum(data_adj$adj_method == "fallback", na.rm = TRUE))
+    message("   -> Outlier adjustment complete")
+    
+    data_adj[, c("roll6", "fwd6", "bwd6", "fallback", "valid_count", "month", "year") := NULL]
   }
   
   # ---------------- Completeness Adjustment ----------------
   if (adjust_completeness) {
-    message(" -> Adjusting missing data with 12-month rolling average (min 6 valid) + fallback mean...")
+    message(" -> Adjusting for completeness...")
     
-    # Step 1: Create valid values mask (much faster than repeated filtering in function)
-    data_adj[, valid_count := fifelse(is.na(count_working) | count_working <= 0, NA_real_, count_working)]
+    # Date column already exists, no need to recreate it
+    # setorder already done above
     
-    # Step 2: Use data.table's fast rolling mean instead of zoo's rollapplyr
-    data_adj[, rolling_avg_temp := frollmean(valid_count, 12, na.rm = TRUE, align = "center"), 
-             by = .(facility_id, indicator_common_id)]
+    data_adj[, valid_count := fifelse(!is.na(count_working) & count_working > 0, count_working, NA_real_)]
+    data_adj[, `:=`(
+      roll6 = frollmean(valid_count, 6, na.rm = TRUE, align = "center"),
+      fwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "left"),
+      bwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "right"),
+      fallback = mean(valid_count, na.rm = TRUE)
+    ), by = .(facility_id, indicator_common_id)]
     
-    # Step 3: Count valid values in each 12-month window to enforce minimum 6 requirement
-    data_adj[, valid_count_in_window := frollapply(valid_count, 12, 
-                                                   function(x) sum(!is.na(x)), 
-                                                   align = "center"), 
-             by = .(facility_id, indicator_common_id)]
+    data_adj[, adj_source := NA_character_]
+    # Fixed logic: Check each method sequentially for missing values
+    data_adj[is.na(count_working) & !is.na(roll6), `:=`(count_working = roll6, adj_source = "roll6")]
+    data_adj[is.na(count_working) & is.na(roll6) & !is.na(fwd6), `:=`(count_working = fwd6, adj_source = "forward")]
+    data_adj[is.na(count_working) & is.na(roll6) & is.na(fwd6) & !is.na(bwd6), `:=`(count_working = bwd6, adj_source = "backward")]
+    data_adj[is.na(count_working), `:=`(count_working = fallback, adj_source = "fallback")]
     
-    # Step 4: Only keep rolling average if we have at least 6 valid values
-    data_adj[, rolling_avg_completeness := fifelse(valid_count_in_window >= 6, 
-                                                   rolling_avg_temp, 
-                                                   NA_real_)]
+    message("     Roll6 adjusted: ", sum(data_adj$adj_source == "roll6", na.rm = TRUE))
+    message("     Forward-filled: ", sum(data_adj$adj_source == "forward", na.rm = TRUE))
+    message("     Backward-filled: ", sum(data_adj$adj_source == "backward", na.rm = TRUE))
+    message("     Fallback (mean): ", sum(data_adj$adj_source == "fallback", na.rm = TRUE))
     
-    # Step 5: Calculate fallback mean (unchanged - already efficient)
-    data_adj[, fallback_mean := mean(count_working[!is.na(count_working) & count_working > 0], na.rm = TRUE),
-             by = .(facility_id, indicator_common_id)]
-    
-    # Step 6: Apply adjustments in order of preference
-    data_adj[is.na(count_working) & !is.na(rolling_avg_completeness), count_working := rolling_avg_completeness]
-    data_adj[is.na(count_working) & is.na(rolling_avg_completeness) & !is.na(fallback_mean), count_working := fallback_mean]
-    
-    # Step 7: Clean up temporary columns to save memory
-    data_adj[, c("valid_count", "rolling_avg_temp", "valid_count_in_window") := NULL]
+    data_adj[, c("valid_count", "roll6", "fwd6", "bwd6", "fallback", "adj_source") := NULL]
   }
   
   return(data_adj)
 }
 
-
 # Function to Apply Adjustments Across Scenarios ------------------------------------------------------------
 apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_data) {
-  cat("Applying adjustments across scenarios...\n")
-  
-  # Ensure all inputs are data.tables
-  setDT(raw_data)
-  setDT(completeness_data)
-  setDT(outlier_data)
+  message("Applying adjustments across scenarios...")
   
   join_cols <- c("facility_id", "indicator_common_id", "period_id")
   
@@ -190,46 +153,27 @@ apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_dat
     both = list(adjust_outliers = TRUE, adjust_completeness = TRUE)
   )
   
-  results <- list()
+  results <- vector("list", length(scenarios))
+  names(results) <- names(scenarios)
   
-  for (name in names(scenarios)) {
-    cat("Processing scenario:", name, "\n")
-    adjustment <- scenarios[[name]]
+  for (scenario in names(scenarios)) {
+    message(" -> Scenario: ", scenario)
+    opts <- scenarios[[scenario]]
     
-    data_adjusted <- apply_adjustments(
-      raw_data = raw_data,
-      completeness_data = completeness_data,
-      outlier_data = outlier_data,
-      adjust_outliers = adjustment$adjust_outliers,
-      adjust_completeness = adjustment$adjust_completeness
-    )
+    dat <- apply_adjustments(raw_data, completeness_data, outlier_data,
+                             adjust_outliers = opts$adjust_outliers,
+                             adjust_completeness = opts$adjust_completeness)
     
-    # Keep only needed columns
-    data_adjusted <- data_adjusted[, .(facility_id, indicator_common_id, period_id, count, count_working)]
+    dat[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT, count_working := count]
+    dat <- dat[, .(facility_id, indicator_common_id, period_id, count_final = count_working)]
+    setnames(dat, "count_final", paste0("count_final_", scenario))
     
-    # Apply exclusion logic
-    data_adjusted[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT, count_working := count]
-    
-    # Report excluded indicators
-    excluded_inds <- unique(data_adjusted[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT, indicator_common_id])
-    if (length(excluded_inds) > 0) {
-      cat(" -> Indicators excluded from adjustment in scenario '", name, "':\n  ", paste(excluded_inds, collapse = ", "), "\n", sep = "")
-    }
-    
-    
-    # Rename working count column
-    setnames(data_adjusted, "count_working", paste0("count_final_", name))
-    
-    # Drop raw count column
-    data_adjusted[, count := NULL]
-    
-    results[[name]] <- data_adjusted
+    results[[scenario]] <- dat
+    gc()
   }
   
-  # Merge all scenario outputs
-  df_adjusted <- Reduce(function(x, y) merge(x, y, by = join_cols, all = TRUE), results)
-  
-  return(df_adjusted)
+  combined <- Reduce(function(x, y) merge(x, y, by = join_cols, all = TRUE), results)
+  return(combined)
 }
 
 # ------------------- Main Execution ------------------------------------------------------------------------
@@ -244,89 +188,99 @@ adjusted_data_final <- apply_adjustments_scenarios(
 )
 
 # Create metadata lookups
-geo_lookup <- raw_data %>%
-  dplyr::select(facility_id, dplyr::starts_with("admin_area_")) %>%
-  dplyr::distinct()
-
-period_lookup <- completeness_data %>%
-  dplyr::distinct(period_id, quarter_id, year)
+geo_lookup <- unique(raw_data[, .SD, .SDcols = c("facility_id", grep("^admin_area_", names(raw_data), value = TRUE))])
+period_lookup <- unique(completeness_data[, .(period_id, quarter_id, year)])
 
 # Merge metadata into facility-level adjusted data
 setDT(adjusted_data_final)
-setDT(geo_lookup)
-setDT(period_lookup)
-adjusted_data_export <- merge(merge(adjusted_data_final, geo_lookup, by = "facility_id"), 
-                              period_lookup, by = "period_id")
+setkey(adjusted_data_final, facility_id)
+setkey(geo_lookup, facility_id)
+setkey(period_lookup, period_id)
 
-# Detect admin area columns
+adjusted_data_export <- merge(adjusted_data_final, geo_lookup, by = "facility_id", all.x = TRUE)
+adjusted_data_export <- merge(adjusted_data_export, period_lookup, by = "period_id", all.x = TRUE)
+
+# Detect geo columns
 geo_cols <- grep("^admin_area_[0-9]+$", names(adjusted_data_export), value = TRUE)
 geo_admin_area_sub <- setdiff(geo_cols, "admin_area_1")
-
-# Re-order columns 
-adjusted_data_export <- adjusted_data_export %>%
-  dplyr::select(
-    facility_id,
-    dplyr::all_of(geo_admin_area_sub),
-    period_id, 
-    quarter_id, 
-    year, 
-    indicator_common_id,
-    dplyr::everything()
-  )
 
 message("Detected admin area columns: ", paste(geo_cols, collapse = ", "))
 message("Using for subnational aggregation: ", paste(geo_admin_area_sub, collapse = ", "))
 
-# Subnational admin area output
-adjusted_data_admin_area_final <- adjusted_data_export %>%
-  dplyr::group_by(dplyr::across(dplyr::all_of(geo_admin_area_sub)), indicator_common_id, period_id) %>%
-  dplyr::summarise(
-    count_final_none = sum(count_final_none, na.rm = TRUE),
-    count_final_outliers = sum(count_final_outliers, na.rm = TRUE),
-    count_final_completeness = sum(count_final_completeness, na.rm = TRUE),
-    count_final_both = sum(count_final_both, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  dplyr::left_join(period_lookup, by = "period_id") %>%
-  dplyr::select(
-    dplyr::all_of(geo_admin_area_sub),
-    period_id, 
-    quarter_id, 
-    year, 
-    indicator_common_id,
-    dplyr::everything()
-  )
+# Reorder columns for export
+setcolorder(adjusted_data_export, c(
+  "facility_id", 
+  geo_admin_area_sub, 
+  "period_id", 
+  "quarter_id", 
+  "year", 
+  "indicator_common_id"
+))
 
-# National-level output (admin_area_1 only)
-adjusted_data_national_final <- adjusted_data_export %>%
-  dplyr::group_by(admin_area_1, indicator_common_id, period_id) %>%
-  dplyr::summarise(
-    count_final_none = sum(count_final_none, na.rm = TRUE),
-    count_final_outliers = sum(count_final_outliers, na.rm = TRUE),
-    count_final_completeness = sum(count_final_completeness, na.rm = TRUE),
-    count_final_both = sum(count_final_both, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  dplyr::left_join(period_lookup, by = "period_id") %>%
-  dplyr::select(
-    admin_area_1, 
-    period_id, 
-    quarter_id, 
-    year, 
-    indicator_common_id,
-    dplyr::everything()
-  )
+# --------------------------- Subnational Output ---------------------------
+adjusted_data_admin_area_final <- adjusted_data_export[
+  ,
+  .(
+    count_final_none        = sum(count_final_none, na.rm = TRUE),
+    count_final_outliers    = sum(count_final_outliers, na.rm = TRUE),
+    count_final_completeness= sum(count_final_completeness, na.rm = TRUE),
+    count_final_both        = sum(count_final_both, na.rm = TRUE)
+  ),
+  by = c(geo_admin_area_sub, "indicator_common_id", "period_id")
+]
 
-# Clean facility-level output before saving (drop admin_area_1 to match schema expectations)
-adjusted_data_export_clean <- adjusted_data_export %>%
-  dplyr::select(-admin_area_1)
+adjusted_data_admin_area_final <- merge(
+  adjusted_data_admin_area_final,
+  period_lookup,
+  by = "period_id",
+  all.x = TRUE
+)
 
-# Save all outputs
-write.csv(adjusted_data_export_clean,      "M2_adjusted_data.csv",              row.names = FALSE)
-write.csv(adjusted_data_admin_area_final,  "M2_adjusted_data_admin_area.csv",   row.names = FALSE)
-write.csv(adjusted_data_national_final,    "M2_adjusted_data_national.csv",     row.names = FALSE)
+setcolorder(adjusted_data_admin_area_final, c(
+  geo_admin_area_sub, 
+  "period_id", 
+  "quarter_id", 
+  "year", 
+  "indicator_common_id"
+))
+
+# --------------------------- National Output ---------------------------
+adjusted_data_national_final <- adjusted_data_export[
+  ,
+  .(
+    count_final_none        = sum(count_final_none, na.rm = TRUE),
+    count_final_outliers    = sum(count_final_outliers, na.rm = TRUE),
+    count_final_completeness= sum(count_final_completeness, na.rm = TRUE),
+    count_final_both        = sum(count_final_both, na.rm = TRUE)
+  ),
+  by = .(admin_area_1, indicator_common_id, period_id)
+]
+
+adjusted_data_national_final <- merge(
+  adjusted_data_national_final,
+  period_lookup,
+  by = "period_id",
+  all.x = TRUE
+)
+
+setcolorder(adjusted_data_national_final, c(
+  "admin_area_1", 
+  "period_id", 
+  "quarter_id", 
+  "year", 
+  "indicator_common_id"
+))
+
+# --------------------------- Save Outputs ---------------------------
+adjusted_data_export_clean <- adjusted_data_export[, !"admin_area_1"]
+
+fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv")
+fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv")
+fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv")
 
 print("Adjustments completed and all outputs saved.")
+
+
 
 # ------------------- Generate SQL CREATE TABLE Statements for M2 Outputs ------------------------
 
