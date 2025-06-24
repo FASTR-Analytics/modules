@@ -17,7 +17,7 @@ PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 11
+# Last edit: 2025 June 23
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -34,6 +34,54 @@ adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding =
 adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
+
+# ------------------------------ Load CHMIS Data -------------------------------
+# Check if CHMIS files exist and load them
+chmis_national_file <- "chmis_national_for_module4.csv"
+chmis_subnational_file <- "chmis_admin_area_for_module4.csv"
+
+# Initialize CHMIS data variables
+chmis_data_national <- NULL
+chmis_data_subnational <- NULL
+
+# Load CHMIS national data if file exists
+if (file.exists(chmis_national_file)) {
+  chmis_data_national <- read.csv(chmis_national_file, fileEncoding = "UTF-8")
+  
+  # Check if data is not empty and bind to adjusted_volume_data
+  if (nrow(chmis_data_national) > 0) {
+    adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
+    cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
+  } else {
+    cat("CHMIS national file exists but is empty\n")
+  }
+} else {
+  cat("CHMIS national file not found\n")
+}
+
+# Load CHMIS subnational data if file exists
+if (file.exists(chmis_subnational_file)) {
+  chmis_data_subnational <- read.csv(chmis_subnational_file, fileEncoding = "UTF-8")
+  
+  # Check if data is not empty and bind to adjusted_volume_data_subnational
+  if (nrow(chmis_data_subnational) > 0) {
+    # Check if CHMIS data has admin_area_3 column, if not add it with NA
+    if (!"admin_area_3" %in% names(chmis_data_subnational)) {
+      chmis_data_subnational$admin_area_3 <- NA_character_
+      cat("Added missing admin_area_3 column to CHMIS subnational data\n")
+    }
+    
+    # Reorder columns to match adjusted_volume_data_subnational
+    chmis_data_subnational <- chmis_data_subnational[, names(adjusted_volume_data_subnational)]
+    
+    adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
+    cat("CHMIS subnational data loaded and bound to adjusted_volume_data_subnational\n")
+  } else {
+    cat("CHMIS subnational file exists but is empty\n")
+  }
+} else {
+  cat("CHMIS subnational file not found\n")
+}
 
 
 adjusted_volume_data <- adjusted_volume_data %>%
@@ -121,28 +169,38 @@ province_name_replacements <- c(
 
 # ------------------------------ Define Functions --------------------------------
 # Part 1 - prepare hmis data
-  process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE, province_name_replacements_inverted = NULL) {
-    expected_indicators <- c(
-      # Core RMNCH indicators
-      "anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "nmr", "imr",
-      "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother",
-      
-      # Additional child indicators
-      "deworming", "mnp", "vitamina", "ors_zinc",
-      
-      # IPTp indicators from survey
-      "iptp1", "iptp2", "iptp3",
-      
-      # ANC-related supplement
-      "iron_anc"
-    )
+process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE, province_name_replacements_inverted = NULL) {
+  expected_indicators <- c(
+    # Core RMNCH indicators
+    "anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "nmr", "imr",
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother",
     
+    # Additional child indicators
+    "deworming", "mnp", "vitamina", "ors_zinc",
+    
+    # IPTp indicators from survey
+    "iptp1", "iptp2", "iptp3",
+    
+    # ANC-related supplement
+    "iron_anc"
+  )
+  
   
   message("Loading and mapping adjusted HMIS volume...")
   
+  
+  adjusted_volume_data <- adjusted_volume_data %>%
+    mutate(indicator_common_id = recode(indicator_common_id,
+                                        "ipt1" = "iptp1",
+                                        "ipt2" = "iptp2", 
+                                        "ipt3" = "iptp3",
+                                        "orszinc" = "ors_zinc",
+                                        "haematinics" = "iron_anc"
+    ))
+  
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
-  if (has_admin2 && !is.null(province_name_replacements)) {
+  if (has_admin2 && !is.null(province_name_replacements_inverted)) {
     adjusted_volume_data <- adjusted_volume_data %>%
       mutate(admin_area_2 = recode(admin_area_2, !!!province_name_replacements_inverted))
   }
@@ -196,43 +254,41 @@ province_name_replacements <- c(
   )
 }
 
-# Part 2 - prepare survey data
+# Part 2 - prepare survey data - UPDATED HARMONIZATION
 process_survey_data <- function(survey_data, name_replacements, hmis_countries,
                                 min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
-  indicators <- c(
-    # Core RMNCH indicators
-    "anc1", "anc4", "delivery", "bcg", "penta1", "penta3",
-    "measles1", "measles2", "rota1", "rota2",
-    "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
-    
-    # Additional indicators
-    "deworming", "mnp", "vitamina", "ors_zinc",
-    "iptp1", "iptp2", "iptp3", "iron_anc"
-  )
   
-  
-  is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
-  
-  # Rename polio indicators to OPV before doing anything else
+  # Harmonize indicator names used in survey to match HMIS format
   survey_data <- survey_data %>%
     mutate(indicator_common_id = recode(indicator_common_id,
                                         "polio1" = "opv1",
                                         "polio2" = "opv2",
                                         "polio3" = "opv3",
-                                        "pnc1" = "pnc1_mother"
+                                        "pnc1" = "pnc1_mother",
+
+                                        "ipt1" = "iptp1",
+                                        "ipt2" = "iptp2", 
+                                        "ipt3" = "iptp3",
+                                        "orszinc" = "ors_zinc",
+                                        "haematinics" = "iron_anc"
     ))
   
-  
   survey_data <- survey_data %>%
-    mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
+    mutate(admin_area_1 = recode(admin_area_1, !!!name_replacements)) %>%
     filter(admin_area_1 %in% hmis_countries)
+  
+  is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
+  
+  # UPDATE indicator list to match the harmonized names
+  indicators <- c("anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "measles1", "measles2",
+                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
+                  "deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc")
   
   survey_filtered <- if (is_national) {
     survey_data %>% filter(admin_area_2 == "NATIONAL")
   } else {
     survey_data %>% filter(admin_area_2 != "NATIONAL")
   }
-  
   
   survey_filtered <- survey_filtered %>%
     mutate(source = case_when(
@@ -242,127 +298,90 @@ process_survey_data <- function(survey_data, name_replacements, hmis_countries,
       TRUE ~ tolower(source)
     ))
   
-  
   raw_survey_values <- survey_filtered %>%
     filter(source %in% c("dhs", "mics")) %>%
     group_by(admin_area_1, admin_area_2, year, indicator_common_id) %>%
-    arrange(factor(source, levels = c("dhs", "mics"))) %>%  # DHS preferred
+    arrange(factor(source, levels = c("dhs", "mics"))) %>%
     summarise(survey_value = first(survey_value), .groups = "drop") %>%
     filter(year >= min_year & year <= max_year) %>%
-    pivot_wider(
-      names_from = indicator_common_id,
-      values_from = survey_value,
-      names_glue = "rawsurvey_{indicator_common_id}"
-    )
-  
+    pivot_wider(names_from = indicator_common_id,
+                values_from = survey_value,
+                names_glue = "rawsurvey_{indicator_common_id}")
   
   full_years <- seq(min_year, max_year)
-  
-  # Define grouping keys depending on national vs subnational
   group_keys <- if (is_national) {
     c("admin_area_1", "indicator_common_id", "source")
   } else {
     c("admin_area_1", "admin_area_2", "indicator_common_id", "source")
   }
   
-  # Safely complete years per group and carry forward survey values
   survey_extended <- survey_filtered %>%
     filter(year %in% full_years) %>%
     group_by(across(all_of(group_keys)), .drop = FALSE) %>%
     group_modify(~ {
-      if (nrow(.x) == 0) return(tibble())  # skip empty groups
-      .x %>%
-        tidyr::complete(year = full_years) %>%
-        arrange(year) %>%
+      if (nrow(.x) == 0) return(tibble())
+      .x %>% complete(year = full_years) %>% arrange(year) %>%
         mutate(survey_value_carry = zoo::na.locf(survey_value, na.rm = FALSE))
     }) %>%
     ungroup()
   
-  
   survey_wide <- survey_extended %>%
     select(all_of(c("admin_area_1", if (!is_national) "admin_area_2")),
            year, indicator_common_id, source, survey_value_carry) %>%
-    pivot_wider(
-      names_from  = c(source, indicator_common_id),
-      values_from = survey_value_carry,
-      names_glue  = "{indicator_common_id}_{source}",
-      values_fn   = mean
-    )
-  
+    pivot_wider(names_from = c(source, indicator_common_id),
+                values_from = survey_value_carry,
+                names_glue = "{indicator_common_id}_{source}",
+                values_fn = mean)
   
   for (ind in indicators) {
-    dhs_col  <- paste0(ind, "_dhs")
+    dhs_col <- paste0(ind, "_dhs")
     mics_col <- paste0(ind, "_mics")
-    avg_col  <- paste0("avgsurvey_", ind)
-    
+    avg_col <- paste0("avgsurvey_", ind)
     if (dhs_col %in% names(survey_wide) || mics_col %in% names(survey_wide)) {
-      survey_wide[[avg_col]] <- dplyr::coalesce(
-        survey_wide[[dhs_col]], survey_wide[[mics_col]]
-      )
+      survey_wide[[avg_col]] <- coalesce(survey_wide[[dhs_col]], survey_wide[[mics_col]])
     }
   }
   
   survey_wide <- survey_wide %>%
-    mutate(postnmr = ifelse(
-      "avgsurvey_imr" %in% names(.) & "avgsurvey_nmr" %in% names(.),
-      avgsurvey_imr - avgsurvey_nmr,
-      NA_real_
-    ))
+    mutate(postnmr = ifelse("avgsurvey_imr" %in% names(.) & "avgsurvey_nmr" %in% names(.),
+                            avgsurvey_imr - avgsurvey_nmr, NA_real_))
   
   carry_group <- if (is_national) "admin_area_1" else c("admin_area_1", "admin_area_2")
   
   survey_carried <- survey_wide %>%
     group_by(across(all_of(carry_group))) %>%
-    tidyr::complete(year = full_seq(year, 1)) %>%
+    complete(year = full_seq(year, 1)) %>%
     arrange(across(all_of(carry_group)), year) %>%
     mutate(across(everything(), ~ zoo::na.locf(.x, na.rm = FALSE))) %>%
     ungroup()
   
   for (ind in c(indicators, "postnmr")) {
-    avg_col   <- paste0("avgsurvey_", ind)
+    avg_col <- paste0("avgsurvey_", ind)
     carry_col <- paste0(ind, "carry")
     if (avg_col %in% names(survey_carried)) {
       survey_carried[[carry_col]] <- survey_carried[[avg_col]]
     }
   }
   
-  # Force vaccine avgsurvey_* columns to exist so fallback carry can be created
-  if (!is_national) {
-    fallback_vaccine_indicators <- c("bcg", "penta1", "penta3")
-    for (ind in fallback_vaccine_indicators) {
-      avg_col <- paste0("avgsurvey_", ind)
-      carry_col <- paste0(ind, "carry")
-      
-      if (!(avg_col %in% names(survey_carried))) {
-        survey_carried[[avg_col]] <- NA_real_
-      }
-      if (!(carry_col %in% names(survey_carried))) {
-        survey_carried[[carry_col]] <- NA_real_
-      }
-    }
-  }
-  
   if (!is_national) {
     for (ind in c("bcg", "penta1", "penta3")) {
       carry_col <- paste0(ind, "carry")
-      if (carry_col %in% names(survey_carried)) {
-        survey_carried[[carry_col]] <- ifelse(is.na(survey_carried[[carry_col]]), 0.70, survey_carried[[carry_col]])
+      if (!(carry_col %in% names(survey_carried))) {
+        survey_carried[[carry_col]] <- 0.70
+      } else {
+        survey_carried[[carry_col]] <- ifelse(is.na(survey_carried[[carry_col]]), 0.70,
+                                              survey_carried[[carry_col]])
       }
     }
   }
-  
-  
   
   if (is_national) {
     survey_carried <- survey_carried %>% mutate(admin_area_2 = "NATIONAL")
     raw_survey_values <- raw_survey_values %>% mutate(admin_area_2 = "NATIONAL")
   }
   
-
-  
   return(list(
-    carried = survey_carried %>%
-      arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
+    carried = survey_carried %>% arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
     raw = raw_survey_values
   ))
 }
@@ -486,19 +505,99 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     )
   }
   
-  # Additional indicators with survey-aligned denominators
-  if ("nmrcarry" %in% names(data)) {
+  # FIXED: Create denominators for child health indicators when livebirth data is not available
+  if (has_admin_area_2 && !"dlivebirths_livebirth" %in% names(data)) {
+    message("No livebirth data available. Estimating denominators from available child health indicators...")
+    
+    # Initialize estimated livebirth columns to avoid "object not found" errors
+    data <- data %>% mutate(
+      estimated_livebirths_deworming = NA_real_,
+      estimated_livebirths_vitamina = NA_real_,
+      estimated_livebirths_mnp = NA_real_
+    )
+    
+    # Estimate live births from deworming data (most reliable for children 12-59 months)
+    if (all(indicator_vars$deworming %in% available_vars)) {
+      data <- data %>% mutate(
+        estimated_livebirths_deworming = safe_calc(countdeworming / dewormingcarry / (1 - nmrcarry) / 4)
+      )
+      message("Estimated live births from deworming data")
+    }
+    
+    # Estimate from vitamina data (covers kids 6-59 months)
+    if (all(indicator_vars$vitamina %in% available_vars)) {
+      data <- data %>% mutate(
+        estimated_livebirths_vitamina = safe_calc(countvitamina / vitaminacarry / (1 - nmrcarry) / 4.5)
+      )
+      message("Estimated live births from vitamina data")
+    }
+    
+    # Estimate from mnp data (covers kids 6-23 months)
+    if (all(indicator_vars$mnp %in% available_vars)) {
+      data <- data %>% mutate(
+        estimated_livebirths_mnp = safe_calc(countmnp / mnpcarry / (1 - nmrcarry) / 1.5)
+      )
+      message("Estimated live births from mnp data")
+    }
+    
+    # Use the most reliable estimate (prefer deworming, then vitamina, then mnp)
+    # FIXED: Use case_when instead of coalesce to handle NA values properly
+    data <- data %>% mutate(
+      estimated_livebirths = case_when(
+        !is.na(estimated_livebirths_deworming) ~ estimated_livebirths_deworming,
+        !is.na(estimated_livebirths_vitamina) ~ estimated_livebirths_vitamina,
+        !is.na(estimated_livebirths_mnp) ~ estimated_livebirths_mnp,
+        TRUE ~ NA_real_
+      )
+    )
+    
+    # Debug: Check if we successfully estimated live births
+    if (all(is.na(data$estimated_livebirths))) {
+      message("WARNING: Could not estimate live births from any available indicators")
+      message("Available count columns: ", paste(names(data)[grepl("^count", names(data))], collapse = ", "))
+      message("Available carry columns: ", paste(names(data)[grepl("carry$", names(data))], collapse = ", "))
+    } else {
+      message("Successfully estimated live births for ", sum(!is.na(data$estimated_livebirths)), " rows")
+    }
+    
+    # Create denominators based on estimated live births
+    if ("estimated_livebirths" %in% names(data) && any(!is.na(data$estimated_livebirths))) {
+      data <- data %>% mutate(
+        # Child health denominators based on your specification
+        ddeworming_livebirth   = safe_calc(estimated_livebirths * (1 - nmrcarry) * 4),     # kids 12-59 months
+        dmnp_livebirth         = safe_calc(estimated_livebirths * (1 - nmrcarry) * 1.5),   # kids 6-23 months  
+        dvitamina_livebirth    = safe_calc(estimated_livebirths * (1 - nmrcarry) * 4.5),   # kids 6-59 months
+        dors_zinc_livebirth    = safe_calc(estimated_livebirths * (1 - nmrcarry) * 5)      # kids 0-59 months
+      )
+      message("Created child health denominators based on estimated live births")
+    }
+  }
+  
+  # Original logic for when we have livebirth data
+  if ("nmrcarry" %in% names(data) && "dlivebirths_livebirth" %in% names(data)) {
     data <- data %>%
       mutate(
-        ddeworming   = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4),
-        dmnp         = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 1.5),
-        dvitamina    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4.5),
-        dors_zinc    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 5),
-        diptp        = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
-        diron_anc    = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_
+        ddeworming_livebirth   = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4),
+        dmnp_livebirth         = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 1.5),
+        dvitamina_livebirth    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4.5),
+        dors_zinc_livebirth    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 5),
+        diptp1_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
+        diptp2_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
+        diptp3_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
+        diron_anc_pregnancy    = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_
       )
   }
   
+  # For pregnancy-related indicators, create denominators from the indicators themselves
+  if (has_admin_area_2) {
+    data <- data %>% mutate(
+      # Pregnancy denominators calculated directly from IPT data
+      diptp1_pregnancy = safe_mutate("iptp1", countiptp1 / iptp1carry),
+      diptp2_pregnancy = safe_mutate("iptp2", countiptp2 / iptp2carry),
+      diptp3_pregnancy = safe_mutate("iptp3", countiptp3 / iptp3carry),
+      diron_anc_pregnancy = safe_mutate("iron_anc", countiron_anc / iron_anccarry)
+    )
+  }
   
   if (!has_admin_area_2 && all(indicator_vars$bcg %in% available_vars)) {
     data <- data %>% mutate(
@@ -530,6 +629,18 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
         dwpp_dpt       = if_else(nummonth < 12, dwpp_dpt * (nummonth / 12), dwpp_dpt),
         dwpp_measles1  = if_else(nummonth < 12, dwpp_measles1 * (nummonth / 12), dwpp_measles1),
         dwpp_measles2  = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
+      )
+  }
+  
+  # Adjust all denominators for partial year data
+  if ("nummonth" %in% names(data)) {
+    data <- data %>%
+      mutate(
+        nummonth = if_else(is.na(nummonth) | nummonth == 0, 12, nummonth),
+        # Adjust child health denominators for partial year
+        across(matches("^d.*_livebirth$"), ~ .x * (nummonth / 12)),
+        # Adjust pregnancy denominators for partial year  
+        across(matches("^d.*_pregnancy$"), ~ .x * (nummonth / 12))
       )
   }
   
@@ -853,6 +964,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   return(combined)
 }
+
 # ------------------------------ Main Execution -----------------------------------
 # 1 - prepare the hmis data
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
@@ -1015,10 +1127,13 @@ best_denom_summary <- best_denom_per_indicator %>%
 
 
 #--- Sub National Execution -----
+# Create inverted province replacements
+province_name_replacements_inverted <- setNames(names(province_name_replacements), province_name_replacements)
 
 # Check if subnational survey data exists for this country
 has_subnational_survey <- survey_data_unified %>%
   mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
+  mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
   filter(admin_area_1 %in% hmis_processed$hmis_countries, admin_area_2 != "NATIONAL") %>%
   nrow() > 0
 
@@ -1029,25 +1144,24 @@ if (has_subnational_survey) {
     distinct(admin_area_1) %>%
     pull(admin_area_1)
   
-  
   adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
     mutate(admin_area_1 = admin_area_1_value)
   
   hmis_processed_subnational <- process_hmis_adjusted_volume(
     adjusted_volume_data = adjusted_volume_data_subnational,
     count_col = SELECTED_COUNT_VARIABLE,
-    province_name_replacements = province_name_replacements
+    province_name_replacements_inverted = province_name_replacements_inverted
   )
   
   survey_processed_province <- process_survey_data(
     survey_data = survey_data_unified %>%
       mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
+      mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
       filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
              admin_area_2 != "NATIONAL"),
     name_replacements = name_replacements,
     hmis_countries = hmis_processed_subnational$hmis_countries
   )
-  
   
   denominators_province <- calculate_denominators(
     hmis_data = hmis_processed_subnational$annual_hmis,
