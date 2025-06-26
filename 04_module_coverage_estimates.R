@@ -511,7 +511,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     )
   }
   
-  # FIXED: Create denominators for child health indicators when livebirth data is not available
+  # Create denominators for child health indicators when livebirth data is not available
   if (has_admin_area_2 && !"dlivebirths_livebirth" %in% names(data)) {
     message("No livebirth data available. Estimating denominators from available child health indicators...")
     
@@ -547,7 +547,6 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     }
     
     # Use the most reliable estimate (prefer deworming, then vitamina, then mnp)
-    # FIXED: Use case_when instead of coalesce to handle NA values properly
     data <- data %>% mutate(
       estimated_livebirths = case_when(
         !is.na(estimated_livebirths_deworming) ~ estimated_livebirths_deworming,
@@ -557,7 +556,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
       )
     )
     
-    # Debug: Check if we successfully estimated live births
+    # Check if we successfully estimated live births
     if (all(is.na(data$estimated_livebirths))) {
       message("WARNING: Could not estimate live births from any available indicators")
       message("Available count columns: ", paste(names(data)[grepl("^count", names(data))], collapse = ", "))
@@ -1011,12 +1010,24 @@ combined_national <- prepare_combined_coverage_from_projected(
 
 # 7 - detect the best single denominator per indicator
 best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
-  filter(source_type == "independent") %>%
+  # Try independent first, then unwpp_based, then reference_based
+  mutate(priority = case_when(
+    source_type == "independent" ~ 1,
+    source_type == "unwpp_based" ~ 2,
+    source_type == "reference_based" ~ 3,
+    TRUE ~ 4
+  )) %>%
   group_by(admin_area_1, indicator_common_id, denominator) %>%
-  summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+  summarise(
+    total_error = sum(squared_error, na.rm = TRUE),
+    priority = first(priority),
+    .groups = "drop"
+  ) %>%
   group_by(admin_area_1, indicator_common_id) %>%
-  slice_min(order_by = total_error, n = 1) %>%
-  ungroup()
+  arrange(priority, total_error) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  select(-priority)
 
 # Clean print to console
 message("Selected denominator per indicator:")
