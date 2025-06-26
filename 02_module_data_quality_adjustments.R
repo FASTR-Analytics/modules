@@ -274,9 +274,9 @@ setcolorder(adjusted_data_national_final, c(
 # --------------------------- Save Outputs ---------------------------
 adjusted_data_export_clean <- adjusted_data_export[, !"admin_area_1"]
 
-fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv")
-fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv")
-fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv")
+fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv",            na = "NA")
+fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv", na = "NA")
+fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv",   na = "NA")
 
 print("Adjustments completed and all outputs saved.")
 
