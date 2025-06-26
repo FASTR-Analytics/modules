@@ -6,9 +6,9 @@ MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
 PREGNANCY_LOSS_RATE <- 0.03 
 TWIN_RATE <- 0.015       
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.03
-P2_PNMR <- 0.02
-INFANT_MORTALITY_RATE <- 0.05   
+P1_NMR <- 0.041          #Default = 0.03
+P2_PNMR <- 0.022
+INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
 
@@ -17,7 +17,7 @@ PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 23
+# Last edit: 2025 June 26
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -65,14 +65,21 @@ if (file.exists(chmis_subnational_file)) {
   
   # Check if data is not empty and bind to adjusted_volume_data_subnational
   if (nrow(chmis_data_subnational) > 0) {
-    # Check if CHMIS data has admin_area_3 column, if not add it with NA
-    if (!"admin_area_3" %in% names(chmis_data_subnational)) {
-      chmis_data_subnational$admin_area_3 <- NA_character_
-      cat("Added missing admin_area_3 column to CHMIS subnational data\n")
+    # Get the required columns from adjusted_volume_data_subnational
+    required_cols <- names(adjusted_volume_data_subnational)
+    existing_cols <- names(chmis_data_subnational)
+    missing_cols <- setdiff(required_cols, existing_cols)
+    
+    # Add any missing columns with appropriate default values
+    if (length(missing_cols) > 0) {
+      for (col in missing_cols) {
+        chmis_data_subnational[[col]] <- NA_character_
+        cat("Added missing column:", col, "to CHMIS subnational data\n")
+      }
     }
     
-    # Reorder columns to match adjusted_volume_data_subnational
-    chmis_data_subnational <- chmis_data_subnational[, names(adjusted_volume_data_subnational)]
+    # Select only the required columns in the correct order
+    chmis_data_subnational <- chmis_data_subnational[, required_cols]
     
     adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
     cat("CHMIS subnational data loaded and bound to adjusted_volume_data_subnational\n")
@@ -82,7 +89,6 @@ if (file.exists(chmis_subnational_file)) {
 } else {
   cat("CHMIS subnational file not found\n")
 }
-
 
 adjusted_volume_data <- adjusted_volume_data %>%
   mutate(admin_area_1 = case_when(
