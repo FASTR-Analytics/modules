@@ -5,11 +5,11 @@ GEOLEVEL <- "admin_area_3"           # Admin level used to join facilities to co
 DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
-PROJECT_DATA_HMIS <- "hmis_ghana.csv"
+PROJECT_DATA_HMIS <- "hmis_test_nutrition.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 10
+# Last edit: 2025 June 26
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -602,7 +602,7 @@ outlier_data_main <- outlier_analysis(data, geo_cols, outlier_params)
 print("Running completeness analysis...")
 completeness_results <- process_completeness(outlier_data_main)
 
-
+# Handle consistency analysis
 geo_cols_filtered <- setdiff(geo_cols, "facility_id")
 
 # Extract unique facilities and their geo/admin_area columns
@@ -619,55 +619,72 @@ if (length(consistency_params$consistency_pairs) > 0) {
     geo_level = GEOLEVEL,
     consistency_params = consistency_params
   )
+  
+  # Only proceed if we got valid results
+  if (!is.null(geo_consistency_results) && nrow(geo_consistency_results) > 0) {
+    print("Expanding geo-level consistency results to facilities...")
+    facility_consistency_results <- expand_geo_consistency_to_facilities(
+      facility_metadata = facility_metadata,  
+      geo_consistency_results = geo_consistency_results,  
+      geo_level = GEOLEVEL  
+    )
+    
+    # Create consistency_expanded by pivoting the facility results
+    if (!is.null(facility_consistency_results) && nrow(facility_consistency_results) > 0) {
+      print("Creating expanded consistency dataset...")
+      consistency_expanded <- facility_consistency_results %>%
+        pivot_wider(
+          id_cols = c(facility_id, year, month, any_of(geo_cols)),
+          names_from = ratio_type,   
+          values_from = sconsistency, 
+          values_fill = list(sconsistency = 0)
+        ) %>%
+        mutate(across(where(is.numeric), ~ replace_na(.x, 0))) %>%
+        distinct(facility_id, year, month, .keep_all = TRUE)
+    } else {
+      consistency_expanded <- NULL
+    }
+  } else {
+    print("No valid geo consistency results generated.")
+    facility_consistency_results <- NULL
+    consistency_expanded <- NULL
+  }
 } else {
   print("No valid consistency pairs found. Skipping consistency analysis...")
-  geo_consistency_results <- NULL
+  facility_consistency_results <- NULL
+  consistency_expanded <- NULL
 }
 
+# Check if we should run DQA at all
+run_dqa <- length(dqa_indicators_to_use) > 0
 
-if (!is.null(geo_consistency_results) && !"facility_id" %in% colnames(geo_consistency_results)) {
-  print("Expanding geo-level consistency results to facilities...")
-  facility_consistency_results <- expand_geo_consistency_to_facilities(
-    facility_metadata = facility_metadata,  
-    geo_consistency_results = geo_consistency_results,  
-    geo_level = GEOLEVEL  
-  )
+# RUN Data Quality Assessment (DQA) - only if required indicators are available
+if (run_dqa) {
+  if (!is.null(consistency_expanded)) {
+    print("Running DQA analysis with consistency checks...")
+    dqa_results <- dqa_with_consistency(
+      completeness_data = completeness_results,
+      consistency_data = consistency_expanded,
+      outlier_data = outlier_data_main,
+      geo_cols = geo_cols,
+      dqa_rules = dqa_rules,
+      available_indicators = dqa_indicators_to_use
+    )
+  } else {
+    print("Running DQA analysis without consistency checks...")
+    dqa_results <- dqa_lite_analysis(
+      completeness_data = completeness_results,
+      outlier_data = outlier_data_main,
+      geo_cols = geo_cols,
+      dqa_rules = dqa_rules,
+      available_indicators = dqa_indicators_to_use
+    )
+  }
 } else {
-  print("Geo consistency results already at facility level. Skipping expansion...")
-  facility_consistency_results <- geo_consistency_results
-}
-
-
-consistency_expanded <- facility_consistency_results %>%
-  pivot_wider(
-    id_cols = c(facility_id, year, month, any_of(geo_cols)),
-    names_from = ratio_type,   
-    values_from = sconsistency, 
-    values_fill = list(sconsistency = 0)
-  ) %>%
-  mutate(across(where(is.numeric), ~ replace_na(.x, 0))) %>%  # Ensure no remaining NAs
-  distinct(facility_id, year, month, .keep_all = TRUE)  # Ensure unique rows
-
-
-
-# RUN Data Quality Assessment (DQA)
-if (!is.null(facility_consistency_results)) {
-  print("Joining completeness, outlier, and expanded consistency data...")
-  dqa_results <- dqa_with_consistency(
-    completeness_data = completeness_results,
-    consistency_data = consistency_expanded,
-    outlier_data = outlier_data_main,
-    geo_cols = geo_cols,
-    dqa_rules = dqa_rules
-  )
-} else {
-  print("Performing DQA analysis without consistency checks...")
-  dqa_results <- dqa_without_consistency(
-    completeness_data = completeness_results,
-    outlier_data = outlier_data_main,
-    geo_cols = geo_cols,
-    dqa_rules = dqa_rules
-  )
+  print("Skipping DQA analysis - none of the required indicators found in dataset.")
+  print(paste("Required indicators:", paste(DQA_INDICATORS, collapse = ", ")))
+  print(paste("Available indicators:", paste(unique(data$indicator_common_id), collapse = ", ")))
+  dqa_results <- NULL
 }
 
 # -------------------------------- SAVE DATA OUTPUTS ------------------------------------------------------------
@@ -684,26 +701,38 @@ outlier_data_export <- outlier_data_main %>%
     outlier_flag
   )
 
-write.csv(outlier_data_export, "M1_output_outliers.csv", row.names = FALSE)   # Facility-level outlier data
+write.csv(outlier_data_export, "M1_output_outliers.csv", row.names = FALSE)
 
-if (length(consistency_params$consistency_pairs) > 0) {
-  print("Preparing and saving all data outputs from consistency analysis...")
-  
-  # Dynamically find lowest geo level column
-  geo_cols <- colnames(geo_consistency_results)[grepl("^admin_area_", colnames(geo_consistency_results))]
-  lowest_geo_col <- geo_cols[order(as.integer(gsub("admin_area_", "", geo_cols)), decreasing = TRUE)][1]
+# Save consistency results with dummy data if needed
+if (!is.null(facility_consistency_results) && nrow(facility_consistency_results) > 0) {
+  print("Preparing and saving consistency analysis results...")
   
   # Prepare geo-level output
-  geo_consistency_export <- geo_consistency_results %>%
-    select(
-      admin_area_3,
-      admin_area_2,
-      period_id,
-      quarter_id,
-      year,
-      ratio_type,
-      sconsistency
+  if (!is.null(geo_consistency_results) && nrow(geo_consistency_results) > 0) {
+    geo_consistency_export <- geo_consistency_results %>%
+      select(
+        admin_area_3,
+        admin_area_2,
+        period_id,
+        quarter_id,
+        year,
+        ratio_type,
+        sconsistency
+      )
+    write.csv(geo_consistency_export, "M1_output_consistency_geo.csv", row.names = FALSE)
+  } else {
+    # Create dummy geo consistency data
+    dummy_geo_consistency <- data.frame(
+      admin_area_3 = character(0),
+      admin_area_2 = character(0),
+      period_id = integer(0),
+      quarter_id = integer(0),
+      year = integer(0),
+      ratio_type = character(0),
+      sconsistency = integer(0)
     )
+    write.csv(dummy_geo_consistency, "M1_output_consistency_geo.csv", row.names = FALSE)
+  }
   
   # Prepare facility-level output
   facility_consistency_export <- facility_consistency_results %>%
@@ -717,13 +746,47 @@ if (length(consistency_params$consistency_pairs) > 0) {
       ratio_type,
       sconsistency
     )
-  
-  
-  # Write both outputs
-  write.csv(geo_consistency_export, "M1_output_consistency_geo.csv", row.names = FALSE)
   write.csv(facility_consistency_export, "M1_output_consistency_facility.csv", row.names = FALSE)
+  
+} else {
+  print("No consistency results to save - creating dummy files with headers...")
+  
+  # Create dummy geo consistency data
+  dummy_geo_consistency <- data.frame(
+    admin_area_3 = character(0),
+    admin_area_2 = character(0),
+    period_id = integer(0),
+    quarter_id = integer(0),
+    year = integer(0),
+    ratio_type = character(0),
+    sconsistency = integer(0)
+  )
+  write.csv(dummy_geo_consistency, "M1_output_consistency_geo.csv", row.names = FALSE)
+  
+  # Create dummy facility consistency data with dynamic geo columns
+  dummy_facility_consistency_cols <- list(
+    facility_id = character(0),
+    admin_area_3 = character(0),
+    admin_area_2 = character(0),
+    period_id = integer(0),
+    quarter_id = integer(0),
+    year = integer(0),
+    ratio_type = character(0),
+    sconsistency = integer(0)
+  )
+  
+  # Add any additional geo columns that exist
+  if (length(geo_columns_export) > 0) {
+    for (geo_col in geo_columns_export) {
+      if (!geo_col %in% names(dummy_facility_consistency_cols)) {
+        dummy_facility_consistency_cols[[geo_col]] <- character(0)
+      }
+    }
+  }
+  
+  dummy_facility_consistency <- data.frame(dummy_facility_consistency_cols)
+  write.csv(dummy_facility_consistency, "M1_output_consistency_facility.csv", row.names = FALSE)
 }
-
 
 print("Preparing and saving results from completeness analysis...")
 completeness_export <- completeness_results %>%
@@ -739,23 +802,45 @@ completeness_export <- completeness_results %>%
 
 write.csv(completeness_export, "M1_output_completeness.csv", row.names = FALSE)
 
-print("Preparing and saving results from DQA analysis...")
-dqa_export <- dqa_results %>%
-  select(
-    facility_id,
-    all_of(geo_columns_export),
-    period_id,
-    quarter_id,
-    year,
-    dqa_mean,
-    dqa_score
+# Save DQA results with dummy data if needed
+if (run_dqa && !is.null(dqa_results) && nrow(dqa_results) > 0) {
+  print("Preparing and saving results from DQA analysis...")
+  dqa_export <- dqa_results %>%
+    select(
+      facility_id,
+      all_of(geo_columns_export),
+      period_id,
+      quarter_id,
+      year,
+      dqa_mean,
+      dqa_score
+    )
+  write.csv(dqa_export, "M1_output_dqa.csv", row.names = FALSE)
+} else {
+  print("No DQA results to save - creating dummy file with headers...")
+  
+  # Create dummy DQA data with dynamic geo columns
+  dummy_dqa_cols <- list(
+    facility_id = character(0),
+    period_id = integer(0),
+    quarter_id = integer(0),
+    year = integer(0),
+    dqa_mean = numeric(0),
+    dqa_score = numeric(0)
   )
+  
+  # Add geo columns dynamically
+  if (length(geo_columns_export) > 0) {
+    for (geo_col in geo_columns_export) {
+      dummy_dqa_cols[[geo_col]] <- character(0)
+    }
+  }
+  
+  dummy_dqa <- data.frame(dummy_dqa_cols)
+  write.csv(dummy_dqa, "M1_output_dqa.csv", row.names = FALSE)
+}
 
-write.csv(dqa_export, "M1_output_dqa.csv", row.names = FALSE)
-
-print("DQA Analysis completed. All outputs saved.")
-
-
+print("DQA Analysis completed. All outputs saved (with dummy files where no data available).")
 # -------------------------------- Generate SQL Schemas for M1 Outputs --------------------------------
 
 # Function to generate CREATE TABLE SQL
