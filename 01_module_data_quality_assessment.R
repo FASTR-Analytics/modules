@@ -5,11 +5,11 @@ GEOLEVEL <- "admin_area_3"           # Admin level used to join facilities to co
 DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
-PROJECT_DATA_HMIS <- "hmis_test_nutrition.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 26
+# Last edit: 2025 June 27
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -667,17 +667,17 @@ if (run_dqa) {
       consistency_data = consistency_expanded,
       outlier_data = outlier_data_main,
       geo_cols = geo_cols,
-      dqa_rules = dqa_rules,
-      available_indicators = dqa_indicators_to_use
+      dqa_rules = dqa_rules
+      # REMOVED: available_indicators = dqa_indicators_to_use
     )
   } else {
     print("Running DQA analysis without consistency checks...")
-    dqa_results <- dqa_lite_analysis(
+    dqa_results <- dqa_without_consistency(  # FIXED: was dqa_lite_analysis
       completeness_data = completeness_results,
       outlier_data = outlier_data_main,
       geo_cols = geo_cols,
-      dqa_rules = dqa_rules,
-      available_indicators = dqa_indicators_to_use
+      dqa_rules = dqa_rules
+      # REMOVED: available_indicators = dqa_indicators_to_use
     )
   }
 } else {
