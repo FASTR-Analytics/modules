@@ -6,9 +6,11 @@ MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
 PREGNANCY_LOSS_RATE <- 0.03 
 TWIN_RATE <- 0.015       
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.041          #Default = 0.03
-P2_PNMR <- 0.022
-INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
+P1_NMR <- 0.039        #Default = 0.03
+P2_PNMR <- 0.028
+INFANT_MORTALITY_RATE <- 0.067  #Default = 0.05
+
+
 
 
 
@@ -600,10 +602,10 @@ evaluate_coverage_by_denominator <- function(data) {
     ~suffix,       ~indicators,
     
     # Used for indicators related to pregnancy services and ANC
-    "pregnancy",   c("anc1", "anc4"),
+    "pregnancy",   c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
     
     # Used for indicators that apply to newborns or children under 5
-    "livebirth",   c("delivery", "bcg", "pnc1_mother"),
+    "livebirth",   c("delivery", "bcg", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
     
     # Used for infant immunization indicators (0–1 year)
     "dpt",         c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
@@ -828,6 +830,7 @@ expand_nutrition_with_survey <- function(nutrition_coverage_long, raw_survey_dat
   
   return(expanded_data)
 }
+
 create_coverage_projections <- function(nutrition_expanded) {
   
   message("Creating coverage projections...")
@@ -950,8 +953,6 @@ project_coverage_from_all <- function(ranked_coverage) {
     ungroup()
   
   return(all_projected)
-  
-
 }
 
 #Part 6 - prepare outputs
@@ -976,6 +977,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     select(all_of(join_keys), coverage_original_estimate) %>%
     distinct()
   
+  
   min_years <- raw_survey_long %>%
     filter(!is.na(year)) %>%
     group_by(across(setdiff(join_keys, "year"))) %>%
@@ -986,18 +988,12 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
-    pregnancy      = c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
-    livebirth      = c("bcg", "delivery", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
-    dpt            = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
-                       "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
-    measles1       = c("measles1"),
-    measles2       = c("measles2"),
-
-
-    "12to59months" = c("deworming"),
-    "6to23months"  = c("mnp"), 
-    "6to59months"  = c("vitamina"),
-    "0to59months"  = c("ors_zinc")
+    pregnancy  = c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
+    livebirth  = c("bcg", "delivery", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
+    dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
+                   "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
+    measles1   = c("measles1"),
+    measles2   = c("measles2")
   )
   
   # Filter projected_data to only keep valid denominator-indicator pairs
@@ -1010,27 +1006,20 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     ) %>%
     distinct() %>%
     mutate(
-
-      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2|12to59months|6to23months|6to59months|0to59months)")
+      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2)")
     ) %>%
     filter(map2_lgl(indicator_common_id, suffix, ~ .x %in% valid_suffix_map[[.y]])) %>%
     select(-suffix)
-
+  
+  
+  
+  
   expansion_grid <- min_years %>%
     inner_join(valid_denominator_map, by = setdiff(join_keys, "year")) %>%
     rowwise() %>%
-    mutate(
-      year = list(
-        if (!is.na(min_year) && is.finite(min_year) && !is.na(max_year) && is.finite(max_year)) {
-          seq.int(as.numeric(min_year), as.numeric(max_year))
-        } else {
-          numeric(0)
-        }
-      )
-    ) %>%
-    ungroup() %>%
+    mutate(year = list(seq.int(min_year, max_year))) %>%
     unnest(year) %>%
-    filter(!is.na(year)) %>%  # Simple filter after unnest
+    ungroup() %>%
     select(-min_year)
   
   survey_expanded <- left_join(
@@ -1045,7 +1034,9 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     by = c(join_keys, "denominator")
   )
   
+  
   is_national <- all(is.na(combined$admin_area_2)) || all(combined$admin_area_2 == "NATIONAL")
+  
   
   combined <- combined %>%
     mutate(
@@ -1103,7 +1094,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   return(combined)
 }
-
 # ------------------------------ Main Execution ---------------------------------------------------------------
 # 1 - prepare the hmis data
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
@@ -1181,144 +1171,165 @@ if (RUN_NUTRITION_ANALYSIS) {
   
 } else {
 
-denominators_national <- calculate_denominators(
-  hmis_data = hmis_processed$annual_hmis,
-  survey_data = survey_processed_national$carried,
-  population_data = national_population_processed
-)
-
-# 4 - calculate coverage and compare the denominators
-national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national)
-
-# 5 - project survey coverage forward using HMIS deltas
-national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
-
-
-# 6 - prepare results and save
-combined_national <- prepare_combined_coverage_from_projected(
-  projected_data = national_coverage_projected,
-  raw_survey_wide = survey_processed_national$raw
-)
-
-# 7 - Detect the best single denominator per indicator
-best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
-  # Try independent first, then unwpp_based, then reference_based
-  mutate(priority = case_when(
-    source_type == "independent" ~ 1,
-    source_type == "unwpp_based" ~ 2,
-    source_type == "reference_based" ~ 3,
-    TRUE ~ 4
-  )) %>%
-  group_by(admin_area_1, indicator_common_id, denominator) %>%
-  summarise(
-    total_error = sum(squared_error, na.rm = TRUE),
-    priority = first(priority),
-    .groups = "drop"
-  ) %>%
-  group_by(admin_area_1, indicator_common_id) %>%
-  arrange(priority, total_error) %>%
-  slice_head(n = 1) %>%
-  ungroup() %>%
-  select(-priority)
-
-# Clean print to console
-message("Selected denominator per indicator:")
-best_denom_per_indicator %>%
-  arrange(indicator_common_id) %>%
-  distinct(indicator_common_id, denominator) %>%
-  mutate(msg = sprintf("  - %s → %s", indicator_common_id, denominator)) %>%
-  pull(msg) %>%
-  walk(message)
-
-
-main_export <- combined_national %>%
-  inner_join(
-    best_denom_per_indicator,
-    by = c("admin_area_1", "indicator_common_id", "denominator")
-  ) %>%
-  select(admin_area_1, indicator_common_id, year, denominator,
-         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
-
-
-early_survey <- combined_national %>%
-  filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
-  select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
-  distinct() %>%
-  mutate(
-    denominator = NA_character_,
-    coverage_avgsurveyprojection = NA_real_,
-    coverage_cov = NA_real_
-  ) %>%
-  select(indicator_common_id, year,
-         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
-
-
-combined_national_export <- bind_rows(
-  main_export %>%
-    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
-    select(indicator_common_id,
-           year,
-           coverage_original_estimate, 
-           coverage_avgsurveyprojection, 
-           coverage_cov),
-  early_survey %>%
-    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
-)
-
-
-# Patch up project coverage
-combined_national_export_fixed <- combined_national_export %>%
-  arrange(indicator_common_id, year) %>%
-  group_by(indicator_common_id, year) %>%
-  summarise(
-    coverage_original_estimate = first(coverage_original_estimate),
-    coverage_cov = first(coverage_cov),
-    .groups = "drop"
-  ) %>%
-  group_by(indicator_common_id) %>%
-  group_modify(~ {
-    df <- .x
-    df <- df %>% arrange(year)
-    
-    # Initialize projection column
-    df$avgsurveyprojection <- NA_real_
-    
-    # Check if there are any non-missing original estimates
-    if (all(is.na(df$coverage_original_estimate))) {
-      # No survey data - just return with NA projections
-      return(df %>% select(year, coverage_original_estimate, 
-                           avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
-    }
-    
-    # Find anchor year
-    anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
-    
-    # Safety check for infinite values
-    if (is.infinite(anchor_year) || is.na(anchor_year)) {
-      return(df %>% select(year, coverage_original_estimate, 
-                           avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
-    }
-    
-    # [rest of the logic stays the same but remove indicator_common_id from all select() statements]
-    
-    return(df %>% select(year, coverage_original_estimate, 
-                         avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
-  }) %>%
-  ungroup() %>%
-  select(
-    indicator_common_id,  # This gets added back by group_modify
-    year,
-    coverage_original_estimate,
-    coverage_avgsurveyprojection = avgsurveyprojection,
-    coverage_cov
+  # 3 - calculate the denominators
+  denominators_national <- calculate_denominators(
+    hmis_data = hmis_processed$annual_hmis,
+    survey_data = survey_processed_national$carried,
+    population_data = national_population_processed
   )
-
-
-
-best_denom_summary <- best_denom_per_indicator %>%
-  distinct(indicator_common_id, denominator) %>%
-  arrange(indicator_common_id)
-
+  
+  # 4 - calculate coverage and compare the denominators
+  national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national)
+  
+  # 5 - project survey coverage forward using HMIS deltas
+  national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
+  
+  
+  # 6 - prepare results and save
+  combined_national <- prepare_combined_coverage_from_projected(
+    projected_data = national_coverage_projected,
+    raw_survey_wide = survey_processed_national$raw
+  )
+  
+  # 7 - detect the best single denominator per indicator
+  best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
+    filter(source_type == "independent") %>%
+    group_by(admin_area_1, indicator_common_id, denominator) %>%
+    summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+    group_by(admin_area_1, indicator_common_id) %>%
+    slice_min(order_by = total_error, n = 1) %>%
+    ungroup()
+  
+  # Clean print to console
+  message("Selected denominator per indicator:")
+  best_denom_per_indicator %>%
+    arrange(indicator_common_id) %>%
+    distinct(indicator_common_id, denominator) %>%
+    mutate(msg = sprintf("  - %s → %s", indicator_common_id, denominator)) %>%
+    pull(msg) %>%
+    walk(message)
+  
+  
+  main_export <- combined_national %>%
+    inner_join(
+      best_denom_per_indicator,
+      by = c("admin_area_1", "indicator_common_id", "denominator")
+    ) %>%
+    select(admin_area_1, indicator_common_id, year, denominator,
+           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+  
+  
+  early_survey <- combined_national %>%
+    filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
+    select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
+    distinct() %>%
+    mutate(
+      denominator = NA_character_,
+      coverage_avgsurveyprojection = NA_real_,
+      coverage_cov = NA_real_
+    ) %>%
+    select(indicator_common_id, year,
+           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+  
+  
+  combined_national_export <- bind_rows(
+    main_export %>%
+      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
+      select(indicator_common_id,
+             year,
+             coverage_original_estimate, 
+             coverage_avgsurveyprojection, 
+             coverage_cov),
+    early_survey %>%
+      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
+  )
+  
+  
+  combined_national_export_fixed <- combined_national_export %>%
+    
+    arrange(indicator_common_id, year) %>%
+    group_by(indicator_common_id, year) %>%
+    summarise(
+      coverage_original_estimate = first(coverage_original_estimate),
+      coverage_cov = first(coverage_cov),
+      .groups = "drop"
+    ) %>%
+    group_by(indicator_common_id) %>%
+    group_modify(~ {
+      df <- .x
+      df <- df %>% arrange(year)
+      
+      # Anchor year: latest year with a non-missing original estimate
+      anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
+      anchor_idx <- which(df$year == anchor_year)[1]
+      
+      # Fill forward coverage_cov from anchor year to next available non-NA
+      if (is.na(df$coverage_cov[anchor_idx])) {
+        next_cov_idx <- which(!is.na(df$coverage_cov) & df$year > anchor_year)
+        if (length(next_cov_idx) > 0) {
+          fill_value <- df$coverage_cov[next_cov_idx[1]]
+          df$coverage_cov[anchor_idx:next_cov_idx[1]] <- fill_value
+        }
+      }
+      
+      
+      # Recalculate delta
+      df <- df %>%
+        mutate(
+          cov_lag = lag(coverage_cov),
+          delta = coverage_cov - cov_lag
+        )
+      
+      # Initialize projection
+      df$avgsurveyprojection <- df$coverage_original_estimate
+      
+      if (is.na(df$avgsurveyprojection[anchor_idx]) && !is.na(df$coverage_cov[anchor_idx])) {
+        df$avgsurveyprojection[anchor_idx] <- df$coverage_cov[anchor_idx]
+      }
+      
+      # Project forward
+      if (!is.na(df$avgsurveyprojection[anchor_idx])) {
+        for (i in (anchor_idx + 1):nrow(df)) {
+          prev <- i - 1
+          if (!is.na(df$avgsurveyprojection[prev]) && !is.na(df$delta[i])) {
+            df$avgsurveyprojection[i] <- df$avgsurveyprojection[prev] + df$delta[i]
+          }
+        }
+      }
+      
+      return(df)
+    }) %>%
+    ungroup() %>%
+    select(
+      indicator_common_id,
+      year,
+      coverage_original_estimate,
+      coverage_avgsurveyprojection = avgsurveyprojection,
+      coverage_cov
+    )
+  
+  
+  # Clean projections - keep only years >= last survey
+  combined_national_export_fixed <- combined_national_export_fixed %>%
+    group_by(indicator_common_id) %>%
+    mutate(
+      max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
+                               max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+                               -Inf),
+      
+      coverage_avgsurveyprojection = ifelse(
+        year < max_survey_year,
+        NA_real_,
+        coverage_avgsurveyprojection
+      )
+    ) %>%
+    select(-max_survey_year) %>%
+    ungroup() 
+  
+  
+  best_denom_summary <- best_denom_per_indicator %>%
+    distinct(indicator_common_id, denominator) %>%
+    arrange(indicator_common_id)
 }
 
 #--- Sub National Execution ----------------------------------------------------------------------------------
@@ -1384,6 +1395,29 @@ if (has_subnational_survey) {
     
   } else {
     message("Subnational survey data found. Running province-level pipeline...")
+    
+    admin_area_1_value <- adjusted_volume_data %>%
+      distinct(admin_area_1) %>%
+      pull(admin_area_1)
+    
+    adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
+      mutate(admin_area_1 = admin_area_1_value)
+    
+    hmis_processed_subnational <- process_hmis_adjusted_volume(
+      adjusted_volume_data = adjusted_volume_data_subnational,
+      count_col = SELECTED_COUNT_VARIABLE,
+      province_name_replacements_inverted = province_name_replacements_inverted
+    )
+    
+    survey_processed_province <- process_survey_data(
+      survey_data = survey_data_unified %>%
+        mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
+        mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
+        filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
+               admin_area_2 != "NATIONAL"),
+      name_replacements = name_replacements,
+      hmis_countries = hmis_processed_subnational$hmis_countries
+    )
     
     denominators_province <- calculate_denominators(
       hmis_data = hmis_processed_subnational$annual_hmis,
