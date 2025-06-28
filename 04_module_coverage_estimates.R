@@ -40,62 +40,70 @@ survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
 # ------------------------------ Load CHMIS Data -------------------------------
-# Check if CHMIS files exist and load them
-chmis_national_file <- "chmis_national_for_module4.csv"
-chmis_subnational_file <- "chmis_admin_area_for_module4.csv"
-
-# Initialize CHMIS data variables
-chmis_data_national <- NULL
-chmis_data_subnational <- NULL
-
-# Load CHMIS national data if file exists
-if (file.exists(chmis_national_file)) {
-  chmis_data_national <- read.csv(chmis_national_file, fileEncoding = "UTF-8")
-  
-  # Check if data is not empty and bind to adjusted_volume_data
-  if (nrow(chmis_data_national) > 0) {
-    adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
-    cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
-  } else {
-    cat("CHMIS national file exists but is empty\n")
-  }
-} else {
-  cat("CHMIS national file not found\n")
-}
-
-# Load CHMIS subnational data if file exists
-if (file.exists(chmis_subnational_file)) {
-  chmis_data_subnational <- read.csv(chmis_subnational_file, fileEncoding = "UTF-8")
-  
-  # Check if data is not empty and bind to adjusted_volume_data_subnational
-  if (nrow(chmis_data_subnational) > 0) {
-    # Get the required columns from adjusted_volume_data_subnational
-    required_cols <- names(adjusted_volume_data_subnational)
-    existing_cols <- names(chmis_data_subnational)
-    missing_cols <- setdiff(required_cols, existing_cols)
-    
-    # Add any missing columns with appropriate default values
-    if (length(missing_cols) > 0) {
-      for (col in missing_cols) {
-        chmis_data_subnational[[col]] <- NA_character_
-        cat("Added missing column:", col, "to CHMIS subnational data\n")
-      }
-    }
-    
-    # Select only the required columns in the correct order
-    chmis_data_subnational <- chmis_data_subnational[, required_cols]
-    
-    adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
-    cat("CHMIS subnational data loaded and bound to adjusted_volume_data_subnational\n")
-  } else {
-    cat("CHMIS subnational file exists but is empty\n")
-  }
-} else {
-  cat("CHMIS subnational file not found\n")
-}
-
 # Auto-detect nutrition analysis based on available indicators
-RUN_NUTRITION_ANALYSIS <- any(c("deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc", "ipt1", "ipt2", "ipt3", "orszinc", "haematinics") %in% adjusted_volume_data$indicator_common_id)
+RUN_NUTRITION_ANALYSIS <- any(c("deworming", "mnp", "vitamina", 
+                                "ors_zinc", "iptp1", "iptp2", 
+                                "iptp3", "iron_anc", "ipt1", 
+                                "ipt2", "ipt3", "orszinc", "haematinics") %in% adjusted_volume_data$indicator_common_id)
+
+# Only load CHMIS data if running nutrition analysis
+if (RUN_NUTRITION_ANALYSIS) {
+  # Check if CHMIS files exist and load them
+  chmis_national_file <- "chmis_national_for_module4.csv"
+  chmis_subnational_file <- "chmis_admin_area_for_module4.csv"
+  
+  # Initialize CHMIS data variables
+  chmis_data_national <- NULL
+  chmis_data_subnational <- NULL
+  
+  # Load CHMIS national data if file exists
+  if (file.exists(chmis_national_file)) {
+    chmis_data_national <- read.csv(chmis_national_file, fileEncoding = "UTF-8")
+    
+    # Check if data is not empty and bind to adjusted_volume_data
+    if (nrow(chmis_data_national) > 0) {
+      adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
+      cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
+    } else {
+      cat("CHMIS national file exists but is empty\n")
+    }
+  } else {
+    cat("CHMIS national file not found\n")
+  }
+  
+  # Load CHMIS subnational data if file exists
+  if (file.exists(chmis_subnational_file)) {
+    chmis_data_subnational <- read.csv(chmis_subnational_file, fileEncoding = "UTF-8")
+    
+    # Check if data is not empty and bind to adjusted_volume_data_subnational
+    if (nrow(chmis_data_subnational) > 0) {
+      # Get the required columns from adjusted_volume_data_subnational
+      required_cols <- names(adjusted_volume_data_subnational)
+      existing_cols <- names(chmis_data_subnational)
+      missing_cols <- setdiff(required_cols, existing_cols)
+      
+      # Add any missing columns with appropriate default values
+      if (length(missing_cols) > 0) {
+        for (col in missing_cols) {
+          chmis_data_subnational[[col]] <- NA_character_
+          cat("Added missing column:", col, "to CHMIS subnational data\n")
+        }
+      }
+      
+      # Select only the required columns in the correct order
+      chmis_data_subnational <- chmis_data_subnational[, required_cols]
+      
+      adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
+      cat("CHMIS subnational data loaded and bound to adjusted_volume_data_subnational\n")
+    } else {
+      cat("CHMIS subnational file exists but is empty\n")
+    }
+  } else {
+    cat("CHMIS subnational file not found\n")
+  }
+} else {
+  cat("Skipping CHMIS data loading - running traditional analysis mode\n")
+}
 
 # ------------------------------ Rename for Test Instance -------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
@@ -1436,7 +1444,13 @@ if (!RUN_NUTRITION_ANALYSIS) {
     message("Skipping M4_selected_denominator_per_indicator.csv - not generated in traditional mode")
   }
 } else {
-  message("Skipping denominator summary - not relevant in nutrition analysis mode")
+  dummy_data <- data.frame(
+    
+    indicator_common_id=character(),
+    denominator= character()
+  )
+  write.csv(dummy_data, "M4_selected_denominator_per_indicator.csv")
+  
 }
 
 
