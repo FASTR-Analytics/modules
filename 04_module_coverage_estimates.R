@@ -6,9 +6,9 @@ MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
 PREGNANCY_LOSS_RATE <- 0.03 
 TWIN_RATE <- 0.015       
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.039        #Default = 0.03
-P2_PNMR <- 0.028
-INFANT_MORTALITY_RATE <- 0.067  #Default = 0.05
+P1_NMR <- 0.041      #Default = 0.03
+P2_PNMR <- 0.022
+INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
 
