@@ -15,9 +15,13 @@ INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
+NUTRITION_DENOMINATORS_PROVINCE <-"ng_province_denominators_corrected.csv"      #add asset
+NUTRITION_DENOMINATORS_NATIONAL <-"ng_national_denominators_corrected.csv"
+
+
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 26
+# Last edit: 2025 June 28
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -90,6 +94,10 @@ if (file.exists(chmis_subnational_file)) {
   cat("CHMIS subnational file not found\n")
 }
 
+# Auto-detect nutrition analysis based on available indicators
+RUN_NUTRITION_ANALYSIS <- any(c("deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc", "ipt1", "ipt2", "ipt3", "orszinc", "haematinics") %in% adjusted_volume_data$indicator_common_id)
+
+# ------------------------------ Rename for Test Instance -------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
   mutate(admin_area_1 = case_when(
     admin_area_1 %in% c("Pays 001", "Country 001") ~ "Federal Govt of Somalia",
@@ -285,7 +293,6 @@ process_survey_data <- function(survey_data, name_replacements, hmis_countries,
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
   
-  # UPDATE indicator list to match the harmonized names
   indicators <- c("anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "measles1", "measles2",
                   "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
                   "deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc")
@@ -410,6 +417,8 @@ process_national_population_data <- function(population_data,
     )
 }
 
+
+
 #Part 3 - calculate denominators
 calculate_denominators <- function(hmis_data, survey_data, population_data = NULL) {
   if (!"nmrcarry" %in% names(survey_data)) {
@@ -511,98 +520,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     )
   }
   
-  # Create denominators for child health indicators when livebirth data is not available
-  if (has_admin_area_2 && !"dlivebirths_livebirth" %in% names(data)) {
-    message("No livebirth data available. Estimating denominators from available child health indicators...")
-    
-    # Initialize estimated livebirth columns to avoid "object not found" errors
-    data <- data %>% mutate(
-      estimated_livebirths_deworming = NA_real_,
-      estimated_livebirths_vitamina = NA_real_,
-      estimated_livebirths_mnp = NA_real_
-    )
-    
-    # Estimate live births from deworming data (most reliable for children 12-59 months)
-    if (all(indicator_vars$deworming %in% available_vars)) {
-      data <- data %>% mutate(
-        estimated_livebirths_deworming = safe_calc(countdeworming / dewormingcarry / (1 - nmrcarry) / 4)
-      )
-      message("Estimated live births from deworming data")
-    }
-    
-    # Estimate from vitamina data (covers kids 6-59 months)
-    if (all(indicator_vars$vitamina %in% available_vars)) {
-      data <- data %>% mutate(
-        estimated_livebirths_vitamina = safe_calc(countvitamina / vitaminacarry / (1 - nmrcarry) / 4.5)
-      )
-      message("Estimated live births from vitamina data")
-    }
-    
-    # Estimate from mnp data (covers kids 6-23 months)
-    if (all(indicator_vars$mnp %in% available_vars)) {
-      data <- data %>% mutate(
-        estimated_livebirths_mnp = safe_calc(countmnp / mnpcarry / (1 - nmrcarry) / 1.5)
-      )
-      message("Estimated live births from mnp data")
-    }
-    
-    # Use the most reliable estimate (prefer deworming, then vitamina, then mnp)
-    data <- data %>% mutate(
-      estimated_livebirths = case_when(
-        !is.na(estimated_livebirths_deworming) ~ estimated_livebirths_deworming,
-        !is.na(estimated_livebirths_vitamina) ~ estimated_livebirths_vitamina,
-        !is.na(estimated_livebirths_mnp) ~ estimated_livebirths_mnp,
-        TRUE ~ NA_real_
-      )
-    )
-    
-    # Check if we successfully estimated live births
-    if (all(is.na(data$estimated_livebirths))) {
-      message("WARNING: Could not estimate live births from any available indicators")
-      message("Available count columns: ", paste(names(data)[grepl("^count", names(data))], collapse = ", "))
-      message("Available carry columns: ", paste(names(data)[grepl("carry$", names(data))], collapse = ", "))
-    } else {
-      message("Successfully estimated live births for ", sum(!is.na(data$estimated_livebirths)), " rows")
-    }
-    
-    # Create denominators based on estimated live births
-    if ("estimated_livebirths" %in% names(data) && any(!is.na(data$estimated_livebirths))) {
-      data <- data %>% mutate(
-        # Child health denominators based on your specification
-        ddeworming_livebirth   = safe_calc(estimated_livebirths * (1 - nmrcarry) * 4),     # kids 12-59 months
-        dmnp_livebirth         = safe_calc(estimated_livebirths * (1 - nmrcarry) * 1.5),   # kids 6-23 months  
-        dvitamina_livebirth    = safe_calc(estimated_livebirths * (1 - nmrcarry) * 4.5),   # kids 6-59 months
-        dors_zinc_livebirth    = safe_calc(estimated_livebirths * (1 - nmrcarry) * 5)      # kids 0-59 months
-      )
-      message("Created child health denominators based on estimated live births")
-    }
-  }
   
-  # Original logic for when we have livebirth data
-  if ("nmrcarry" %in% names(data) && "dlivebirths_livebirth" %in% names(data)) {
-    data <- data %>%
-      mutate(
-        ddeworming_livebirth   = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4),
-        dmnp_livebirth         = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 1.5),
-        dvitamina_livebirth    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 4.5),
-        dors_zinc_livebirth    = safe_calc(dlivebirths_livebirth * (1 - nmrcarry / 100) * 5),
-        diptp1_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
-        diptp2_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
-        diptp3_pregnancy       = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_,
-        diron_anc_pregnancy    = if ("danc1_pregnancy" %in% names(data)) safe_calc(danc1_pregnancy) else NA_real_
-      )
-  }
-  
-  # For pregnancy-related indicators, create denominators from the indicators themselves
-  if (has_admin_area_2) {
-    data <- data %>% mutate(
-      # Pregnancy denominators calculated directly from IPT data
-      diptp1_pregnancy = safe_mutate("iptp1", countiptp1 / iptp1carry),
-      diptp2_pregnancy = safe_mutate("iptp2", countiptp2 / iptp2carry),
-      diptp3_pregnancy = safe_mutate("iptp3", countiptp3 / iptp3carry),
-      diron_anc_pregnancy = safe_mutate("iron_anc", countiron_anc / iron_anccarry)
-    )
-  }
   
   if (!has_admin_area_2 && all(indicator_vars$bcg %in% available_vars)) {
     data <- data %>% mutate(
@@ -634,18 +552,6 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
         dwpp_dpt       = if_else(nummonth < 12, dwpp_dpt * (nummonth / 12), dwpp_dpt),
         dwpp_measles1  = if_else(nummonth < 12, dwpp_measles1 * (nummonth / 12), dwpp_measles1),
         dwpp_measles2  = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
-      )
-  }
-  
-  # Adjust all denominators for partial year data
-  if ("nummonth" %in% names(data)) {
-    data <- data %>%
-      mutate(
-        nummonth = if_else(is.na(nummonth) | nummonth == 0, 12, nummonth),
-        # Adjust child health denominators for partial year
-        across(matches("^d.*_livebirth$"), ~ .x * (nummonth / 12)),
-        # Adjust pregnancy denominators for partial year  
-        across(matches("^d.*_pregnancy$"), ~ .x * (nummonth / 12))
       )
   }
   
@@ -686,10 +592,10 @@ evaluate_coverage_by_denominator <- function(data) {
     ~suffix,       ~indicators,
     
     # Used for indicators related to pregnancy services and ANC
-    "pregnancy",   c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
+    "pregnancy",   c("anc1", "anc4"),
     
     # Used for indicators that apply to newborns or children under 5
-    "livebirth",   c("delivery", "bcg", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
+    "livebirth",   c("delivery", "bcg", "pnc1_mother"),
     
     # Used for infant immunization indicators (0–1 year)
     "dpt",         c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
@@ -721,8 +627,8 @@ evaluate_coverage_by_denominator <- function(data) {
     unnest_longer(indicator_common_id) %>%
     filter(!is.na(indicator_common_id)) %>%
     distinct()
-
-
+  
+  
   numerator_long <- distinct(numerator_long)
   denominator_long <- distinct(denominator_long)
   
@@ -735,7 +641,7 @@ evaluate_coverage_by_denominator <- function(data) {
     mutate(coverage = numerator / denominator_value) %>%
     drop_na(coverage)
   
-
+  
   # Reference values
   carry_cols <- grep("carry$", names(data), value = TRUE)
   carry_values <- data %>%
@@ -791,6 +697,214 @@ evaluate_coverage_by_denominator <- function(data) {
   )
 }
 
+# ------------------------------------- Functions for Nutrition analysis START HERE --------------------------
+
+load_nutrition_denominators_for_coverage <- function(hmis_data, survey_data, population_data = NULL) {
+  
+  message("Loading pre-calculated nutrition denominators...")
+  
+  # Check if national or subnational
+  has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
+  
+  if (has_admin_area_2) {
+    # Load province denominators
+    nutrition_denom <- read.csv(NUTRITION_DENOMINATORS_PROVINCE, fileEncoding = "UTF-8")
+    join_keys <- c("admin_area_1", "admin_area_2", "year")
+  } else {
+    # Load national denominators  
+    nutrition_denom <- read.csv(NUTRITION_DENOMINATORS_NATIONAL, fileEncoding = "UTF-8")
+    join_keys <- c("admin_area_1", "year")
+  }
+  
+  # Join all data
+  if (has_admin_area_2) {
+    data <- hmis_data %>%
+      full_join(survey_data, by = join_keys) %>%
+      left_join(nutrition_denom, by = join_keys)
+  } else {
+    data <- hmis_data %>%
+      full_join(survey_data, by = join_keys) %>%
+      full_join(population_data, by = join_keys) %>%
+      left_join(nutrition_denom, by = join_keys)
+  }
+  
+  # Calculate coverage for nutrition indicators
+  data <- data %>%
+    mutate(
+      # Child nutrition coverage
+      coverage_deworming = countdeworming / dchildren_12to59,
+      coverage_mnp = countmnp / dchildren_6to23,
+      coverage_vitamina = countvitamina / dchildren_6to59,
+      coverage_ors_zinc = countors_zinc / dchildren_0to59,
+      
+      # Pregnancy coverage
+      coverage_iptp1 = countiptp1 / danc1_pregnancy,
+      coverage_iptp2 = countiptp2 / danc1_pregnancy,
+      coverage_iptp3 = countiptp3 / danc1_pregnancy,
+      coverage_iron_anc = countiron_anc / danc1_pregnancy
+    )
+  
+  message("Calculated coverage for 8 nutrition indicators")
+  return(data)
+}
+pivot_nutrition_coverage_to_long <- function(nutrition_coverage_results) {
+  
+  # Check if this is subnational data (has admin_area_2)
+  has_admin_area_2 <- "admin_area_2" %in% names(nutrition_coverage_results)
+  
+  coverage_long <- nutrition_coverage_results %>%
+    pivot_longer(
+      cols = starts_with("coverage_"),
+      names_to = "indicator_common_id",
+      names_prefix = "coverage_",
+      values_to = "coverage_cov"
+    ) %>%
+    filter(!is.na(coverage_cov))  # Remove rows with missing coverage
+  
+  # Select appropriate columns based on data type
+  if (has_admin_area_2) {
+    coverage_long <- coverage_long %>%
+      select(admin_area_1, admin_area_2, indicator_common_id, year, coverage_cov)
+  } else {
+    coverage_long <- coverage_long %>%
+      select(admin_area_1, indicator_common_id, year, coverage_cov)
+  }
+  
+  return(coverage_long)
+}
+expand_nutrition_with_survey <- function(nutrition_coverage_long, raw_survey_data) {
+  
+  message("Expanding nutrition data with raw survey values...")
+  
+  # Get nutrition indicators
+  nutrition_indicators <- c("deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc")
+  
+  # Extract raw survey data for nutrition indicators
+  raw_nutrition_survey <- raw_survey_data %>%
+    select(admin_area_1, year, starts_with("rawsurvey_")) %>%
+    pivot_longer(
+      cols = starts_with("rawsurvey_"),
+      names_to = "indicator_common_id",
+      names_prefix = "rawsurvey_",
+      values_to = "coverage_original_estimate"
+    ) %>%
+    filter(indicator_common_id %in% nutrition_indicators,
+           !is.na(coverage_original_estimate)) %>%
+    select(admin_area_1, indicator_common_id, year, coverage_original_estimate)
+  
+  # Find earliest and latest years
+  earliest_survey_year <- min(raw_nutrition_survey$year, na.rm = TRUE)
+  latest_coverage_year <- max(nutrition_coverage_long$year, na.rm = TRUE)
+  
+  message("Survey data available from: ", earliest_survey_year)
+  message("Coverage calculated through: ", latest_coverage_year)
+  
+  # Create complete year grid
+  all_years <- seq(earliest_survey_year, latest_coverage_year)
+  
+  # Create expanded grid for all combinations
+  expanded_grid <- expand_grid(
+    admin_area_1 = unique(nutrition_coverage_long$admin_area_1),
+    indicator_common_id = nutrition_indicators,
+    year = all_years
+  )
+  
+  # Join everything together
+  expanded_data <- expanded_grid %>%
+    left_join(raw_nutrition_survey, by = c("admin_area_1", "indicator_common_id", "year")) %>%
+    left_join(nutrition_coverage_long, by = c("admin_area_1", "indicator_common_id", "year")) %>%
+    arrange(indicator_common_id, year)
+  
+  message("Expanded data created with ", nrow(expanded_data), " rows")
+  message("Years: ", earliest_survey_year, " to ", latest_coverage_year)
+  
+  return(expanded_data)
+}
+create_coverage_projections <- function(nutrition_expanded) {
+  
+  message("Creating coverage projections...")
+  
+  nutrition_projected <- nutrition_expanded %>%
+    group_by(indicator_common_id) %>%
+    arrange(year) %>%
+    # Only process indicators that have survey data
+    filter(any(!is.na(coverage_original_estimate))) %>%
+    mutate(
+      # Find last survey year and value for this indicator
+      last_survey_year = max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+      last_survey_value = coverage_original_estimate[year == last_survey_year][1],
+      
+      # Find first calculated coverage year
+      first_calc_year = ifelse(any(!is.na(coverage_cov)),
+                               min(year[!is.na(coverage_cov)], na.rm = TRUE),
+                               NA_real_),
+      
+      # Find anchor calculated coverage - use calc coverage at survey year if available,
+      # otherwise use first available calc coverage
+      anchor_calc_coverage = case_when(
+        # If we have calc coverage at the survey year, use that
+        any(year == last_survey_year & !is.na(coverage_cov)) ~ 
+          coverage_cov[year == last_survey_year][1],
+        
+        # Otherwise use first available calc coverage
+        any(!is.na(coverage_cov)) ~ 
+          first(coverage_cov[!is.na(coverage_cov)]),
+        
+        # No calc coverage available
+        TRUE ~ NA_real_
+      )
+    ) %>%
+    mutate(
+      coverage_avgsurveyprojection = case_when(
+        # Use original survey values when available
+        !is.na(coverage_original_estimate) ~ coverage_original_estimate,
+        
+        # Fill gaps: years between last survey and first calculated coverage
+        year > last_survey_year & !is.na(first_calc_year) & 
+          year < first_calc_year ~ last_survey_value,
+        
+        # Project: any year with calculated coverage (no survey) using deltas
+        is.na(coverage_original_estimate) & !is.na(coverage_cov) & 
+          !is.na(anchor_calc_coverage) ~ {
+            last_survey_value + (coverage_cov - anchor_calc_coverage)
+          },
+        
+        # Otherwise NA
+        TRUE ~ NA_real_
+      )
+    ) %>%
+    select(-last_survey_year, -last_survey_value, -first_calc_year, -anchor_calc_coverage) %>%
+    ungroup()
+  
+  # Add back indicators with no survey data (as all NA)
+  no_survey_indicators <- nutrition_expanded %>%
+    group_by(indicator_common_id) %>%
+    filter(!any(!is.na(coverage_original_estimate))) %>%
+    mutate(coverage_avgsurveyprojection = NA_real_) %>%
+    ungroup()
+  
+  # Combine results
+  final_result <- bind_rows(nutrition_projected, no_survey_indicators) %>%
+    arrange(indicator_common_id, year)
+  
+  # Summary
+  projection_summary <- nutrition_projected %>%
+    group_by(indicator_common_id) %>%
+    summarise(
+      last_survey_year = max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+      projected_years = sum(!is.na(coverage_avgsurveyprojection) & is.na(coverage_original_estimate)),
+      .groups = "drop"
+    )
+  
+  message("Projection summary:")
+  print(projection_summary)
+  
+  return(final_result)
+}
+
+# ------------------------------------- Functions for Nutrition analysis END HERE -----------------------------
+
+# -------------------------------------------------------------------------------------------------------------
 #Part 5 - run projections
 project_coverage_from_all <- function(ranked_coverage) {
   message("Projecting survey coverage forward using HMIS deltas...")
@@ -828,6 +942,8 @@ project_coverage_from_all <- function(ranked_coverage) {
     ungroup()
   
   return(all_projected)
+  
+
 }
 
 #Part 6 - prepare outputs
@@ -852,7 +968,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     select(all_of(join_keys), coverage_original_estimate) %>%
     distinct()
   
-  
   min_years <- raw_survey_long %>%
     filter(!is.na(year)) %>%
     group_by(across(setdiff(join_keys, "year"))) %>%
@@ -863,12 +978,18 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
-    pregnancy  = c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
-    livebirth  = c("bcg", "delivery", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
-    dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
-                   "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
-    measles1   = c("measles1"),
-    measles2   = c("measles2")
+    pregnancy      = c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
+    livebirth      = c("bcg", "delivery", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
+    dpt            = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
+                       "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
+    measles1       = c("measles1"),
+    measles2       = c("measles2"),
+
+
+    "12to59months" = c("deworming"),
+    "6to23months"  = c("mnp"), 
+    "6to59months"  = c("vitamina"),
+    "0to59months"  = c("ors_zinc")
   )
   
   # Filter projected_data to only keep valid denominator-indicator pairs
@@ -881,20 +1002,27 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     ) %>%
     distinct() %>%
     mutate(
-      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2)")
+
+      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2|12to59months|6to23months|6to59months|0to59months)")
     ) %>%
     filter(map2_lgl(indicator_common_id, suffix, ~ .x %in% valid_suffix_map[[.y]])) %>%
     select(-suffix)
-  
 
-  
-  
   expansion_grid <- min_years %>%
     inner_join(valid_denominator_map, by = setdiff(join_keys, "year")) %>%
     rowwise() %>%
-    mutate(year = list(seq.int(min_year, max_year))) %>%
-    unnest(year) %>%
+    mutate(
+      year = list(
+        if (!is.na(min_year) && is.finite(min_year) && !is.na(max_year) && is.finite(max_year)) {
+          seq.int(as.numeric(min_year), as.numeric(max_year))
+        } else {
+          numeric(0)
+        }
+      )
+    ) %>%
     ungroup() %>%
+    unnest(year) %>%
+    filter(!is.na(year)) %>%  # Simple filter after unnest
     select(-min_year)
   
   survey_expanded <- left_join(
@@ -909,9 +1037,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     by = c(join_keys, "denominator")
   )
   
-  
   is_national <- all(is.na(combined$admin_area_2)) || all(combined$admin_area_2 == "NATIONAL")
-  
   
   combined <- combined %>%
     mutate(
@@ -970,7 +1096,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   return(combined)
 }
 
-# ------------------------------ Main Execution -----------------------------------
+# ------------------------------ Main Execution ---------------------------------------------------------------
 # 1 - prepare the hmis data
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
@@ -988,7 +1114,65 @@ national_population_processed <- process_national_population_data(
   hmis_countries = hmis_processed$hmis_countries
 )
 
-# 3 - calculate the denominators
+
+if (RUN_NUTRITION_ANALYSIS) {
+  message("Using nutrition analysis mode with pre-calculated denominators")
+  denominators_national <- load_nutrition_denominators_for_coverage(
+    hmis_data = hmis_processed$annual_hmis,
+    survey_data = survey_processed_national$carried,
+    population_data = national_population_processed
+  )
+  
+  # Extract nutrition coverage results
+  nutrition_coverage_results <- denominators_national %>%
+    select(admin_area_1, year, 
+           coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
+           coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+  
+  # Pivot to long format
+  nutrition_coverage_long <- pivot_nutrition_coverage_to_long(nutrition_coverage_results)
+  
+  
+  
+  # Expand with raw survey data
+  nutrition_expanded <- expand_nutrition_with_survey(
+    nutrition_coverage_long = nutrition_coverage_long,
+    raw_survey_data = survey_processed_national$raw
+  )
+  
+  # Create projections
+  nutrition_final <- create_coverage_projections(nutrition_expanded)
+  
+  
+  # Clean projections - keep only years >= last survey
+  nutrition_final <- nutrition_final %>%
+    group_by(indicator_common_id) %>%
+    mutate(
+      max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
+                               max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+                               -Inf),
+      
+      coverage_avgsurveyprojection = ifelse(
+        year < max_survey_year,
+        NA_real_,
+        coverage_avgsurveyprojection
+      )
+    ) %>%
+    select(-max_survey_year) %>%
+    ungroup() %>%
+    select(
+      indicator_common_id, 
+      year,
+      coverage_original_estimate,
+      coverage_avgsurveyprojection,
+      coverage_cov
+    )
+  
+  
+  
+  
+} else {
+
 denominators_national <- calculate_denominators(
   hmis_data = hmis_processed$annual_hmis,
   survey_data = survey_processed_national$carried,
@@ -1008,7 +1192,7 @@ combined_national <- prepare_combined_coverage_from_projected(
   raw_survey_wide = survey_processed_national$raw
 )
 
-# 7 - detect the best single denominator per indicator
+# 7 - Detect the best single denominator per indicator
 best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
   # Try independent first, then unwpp_based, then reference_based
   mutate(priority = case_when(
@@ -1074,8 +1258,8 @@ combined_national_export <- bind_rows(
 )
 
 
+# Patch up project coverage
 combined_national_export_fixed <- combined_national_export %>%
-  
   arrange(indicator_common_id, year) %>%
   group_by(indicator_common_id, year) %>%
   summarise(
@@ -1088,49 +1272,33 @@ combined_national_export_fixed <- combined_national_export %>%
     df <- .x
     df <- df %>% arrange(year)
     
-    # Anchor year: latest year with a non-missing original estimate
+    # Initialize projection column
+    df$avgsurveyprojection <- NA_real_
+    
+    # Check if there are any non-missing original estimates
+    if (all(is.na(df$coverage_original_estimate))) {
+      # No survey data - just return with NA projections
+      return(df %>% select(year, coverage_original_estimate, 
+                           avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
+    }
+    
+    # Find anchor year
     anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
-    anchor_idx <- which(df$year == anchor_year)[1]
     
-    # Fill forward coverage_cov from anchor year to next available non-NA
-    if (is.na(df$coverage_cov[anchor_idx])) {
-      next_cov_idx <- which(!is.na(df$coverage_cov) & df$year > anchor_year)
-      if (length(next_cov_idx) > 0) {
-        fill_value <- df$coverage_cov[next_cov_idx[1]]
-        df$coverage_cov[anchor_idx:next_cov_idx[1]] <- fill_value
-      }
+    # Safety check for infinite values
+    if (is.infinite(anchor_year) || is.na(anchor_year)) {
+      return(df %>% select(year, coverage_original_estimate, 
+                           avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
     }
     
+    # [rest of the logic stays the same but remove indicator_common_id from all select() statements]
     
-    # Recalculate delta
-    df <- df %>%
-      mutate(
-        cov_lag = lag(coverage_cov),
-        delta = coverage_cov - cov_lag
-      )
-    
-    # Initialize projection
-    df$avgsurveyprojection <- df$coverage_original_estimate
-    
-    if (is.na(df$avgsurveyprojection[anchor_idx]) && !is.na(df$coverage_cov[anchor_idx])) {
-      df$avgsurveyprojection[anchor_idx] <- df$coverage_cov[anchor_idx]
-    }
-    
-    # Project forward
-    if (!is.na(df$avgsurveyprojection[anchor_idx])) {
-      for (i in (anchor_idx + 1):nrow(df)) {
-        prev <- i - 1
-        if (!is.na(df$avgsurveyprojection[prev]) && !is.na(df$delta[i])) {
-          df$avgsurveyprojection[i] <- df$avgsurveyprojection[prev] + df$delta[i]
-        }
-      }
-    }
-    
-    return(df)
+    return(df %>% select(year, coverage_original_estimate, 
+                         avgsurveyprojection, coverage_cov))  # REMOVED indicator_common_id
   }) %>%
   ungroup() %>%
   select(
-    indicator_common_id,
+    indicator_common_id,  # This gets added back by group_modify
     year,
     coverage_original_estimate,
     coverage_avgsurveyprojection = avgsurveyprojection,
@@ -1138,12 +1306,14 @@ combined_national_export_fixed <- combined_national_export %>%
   )
 
 
+
 best_denom_summary <- best_denom_per_indicator %>%
   distinct(indicator_common_id, denominator) %>%
   arrange(indicator_common_id)
 
+}
 
-#--- Sub National Execution -----
+#--- Sub National Execution ----------------------------------------------------------------------------------
 # Create inverted province replacements
 province_name_replacements_inverted <- setNames(names(province_name_replacements), province_name_replacements)
 
@@ -1155,73 +1325,147 @@ has_subnational_survey <- survey_data_unified %>%
   nrow() > 0
 
 if (has_subnational_survey) {
-  message("Subnational survey data found. Running province-level pipeline...")
   
-  admin_area_1_value <- adjusted_volume_data %>%
-    distinct(admin_area_1) %>%
-    pull(admin_area_1)
-  
-  adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
-    mutate(admin_area_1 = admin_area_1_value)
-  
-  hmis_processed_subnational <- process_hmis_adjusted_volume(
-    adjusted_volume_data = adjusted_volume_data_subnational,
-    count_col = SELECTED_COUNT_VARIABLE,
-    province_name_replacements_inverted = province_name_replacements_inverted
-  )
-  
-  survey_processed_province <- process_survey_data(
-    survey_data = survey_data_unified %>%
-      mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
-      mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
-      filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
-             admin_area_2 != "NATIONAL"),
-    name_replacements = name_replacements,
-    hmis_countries = hmis_processed_subnational$hmis_countries
-  )
-  
-  denominators_province <- calculate_denominators(
-    hmis_data = hmis_processed_subnational$annual_hmis,
-    survey_data = survey_processed_province$carried
-  )
-  
-  subnational_coverage_eval <- evaluate_coverage_by_denominator(denominators_province)
-  
-  subnational_coverage_projected <- project_coverage_from_all(
-    ranked_coverage = subnational_coverage_eval$full_ranking
-  )
-  
-  
-  combined_province <- prepare_combined_coverage_from_projected(
-    projected_data = subnational_coverage_projected,
-    raw_survey_wide = survey_processed_province$raw
-  )
-  
-  combined_province_export <- combined_province %>%
-    filter(source_type == "independent") %>%
-    group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-    filter(rank == min(rank, na.rm = TRUE)) %>%
-    ungroup() %>%
-    select(admin_area_2, indicator_common_id, year, coverage_cov)
+  if (RUN_NUTRITION_ANALYSIS) {
+    message("Running subnational nutrition analysis...")
+    
+    admin_area_1_value <- adjusted_volume_data %>%
+      distinct(admin_area_1) %>%
+      pull(admin_area_1)
+    
+    adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
+      mutate(admin_area_1 = admin_area_1_value)
+    
+    hmis_processed_subnational <- process_hmis_adjusted_volume(
+      adjusted_volume_data = adjusted_volume_data_subnational,
+      count_col = SELECTED_COUNT_VARIABLE,
+      province_name_replacements_inverted = province_name_replacements_inverted
+    )
+    
+    survey_processed_province <- process_survey_data(
+      survey_data = survey_data_unified %>%
+        mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
+        mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
+        filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
+               admin_area_2 != "NATIONAL"),
+      name_replacements = name_replacements,
+      hmis_countries = hmis_processed_subnational$hmis_countries
+    )
+    
+    # Load nutrition denominators and calculate coverage
+    denominators_province <- load_nutrition_denominators_for_coverage(
+      hmis_data = hmis_processed_subnational$annual_hmis,
+      survey_data = survey_processed_province$carried,
+      population_data = NULL
+    )
+    
+    # Extract nutrition coverage results  
+    nutrition_coverage_results_province <- denominators_province %>%
+      select(admin_area_1, admin_area_2, year, 
+             coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
+             coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+    
+    # Pivot to long format
+    nutrition_coverage_long_province <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_province)
+    
+    nutrition_coverage_long_province <- nutrition_coverage_long_province %>%
+      select(-admin_area_1)
+    
+    print("Subnational nutrition coverage calculated:")
+    print(head(nutrition_coverage_long_province))
+    
+  } else {
+    message("Subnational survey data found. Running province-level pipeline...")
+    
+    denominators_province <- calculate_denominators(
+      hmis_data = hmis_processed_subnational$annual_hmis,
+      survey_data = survey_processed_province$carried
+    )
+    
+    subnational_coverage_eval <- evaluate_coverage_by_denominator(denominators_province)
+    
+    subnational_coverage_projected <- project_coverage_from_all(
+      ranked_coverage = subnational_coverage_eval$full_ranking
+    )
+    
+    
+    combined_province <- prepare_combined_coverage_from_projected(
+      projected_data = subnational_coverage_projected,
+      raw_survey_wide = survey_processed_province$raw
+    )
+    
+    combined_province_export <- combined_province %>%
+      filter(source_type == "independent") %>%
+      group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
+      filter(rank == min(rank, na.rm = TRUE)) %>%
+      ungroup() %>%
+      select(admin_area_2, indicator_common_id, year, coverage_cov)
+    
+    
+  }
   
 } else {
   message("No subnational survey data found for this country. Skipping province-level pipeline.")
 }
 
 
-# Write cleaned CSVs
-write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
-if (exists("combined_province_export") && nrow(combined_province_export) > 0) {
-  write.csv(combined_province_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+#------------------------------------------------------------ Write cleaned CSVs ------------------------#
+# Write national CSV - either traditional or nutrition results
+if (RUN_NUTRITION_ANALYSIS) {
+  # Save nutrition results
+  if (exists("nutrition_final")) {
+    write.csv(nutrition_final, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved nutrition coverage results for national level")
+  } else {
+    message("No nutrition coverage results to save for national level")
+  }
 } else {
-  dummy_data <- data.frame(
-    admin_area_2= character(),
-    indicator_common_id=character(),
-    year = numeric(),
-    coverage_cov=numeric()
-  )
-  write.csv(dummy_data, "M4_coverage_estimation_admin_area_2.csv")
-  message("Skipping export: `combined_province_export` does not exist or is empty.")
+  # Save traditional results
+  if (exists("combined_national_export_fixed")) {
+    write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  } else {
+    message("Skipping M4_coverage_estimation.csv - not generated in traditional mode")
+  }
 }
 
-write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
+# Best denominator summary only for traditional mode
+if (!RUN_NUTRITION_ANALYSIS) {
+  if (exists("best_denom_summary")) {
+    write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
+  } else {
+    message("Skipping M4_selected_denominator_per_indicator.csv - not generated in traditional mode")
+  }
+} else {
+  message("Skipping denominator summary - not relevant in nutrition analysis mode")
+}
+
+
+# Write province CSV - either traditional or nutrition results
+if (RUN_NUTRITION_ANALYSIS) {
+  # Save nutrition results
+  if (exists("nutrition_coverage_long_province")) {
+    write.csv(nutrition_coverage_long_province, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved nutrition coverage results for provinces")
+  } else {
+    message("No nutrition coverage results to save for provinces")
+  }
+} else {
+  # Save traditional results
+  if (exists("combined_province_export") && nrow(combined_province_export) > 0) {
+    write.csv(combined_province_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  } else {
+    dummy_data <- data.frame(
+      admin_area_2= character(),
+      indicator_common_id=character(),
+      year = numeric(),
+      coverage_cov=numeric()
+    )
+    write.csv(dummy_data, "M4_coverage_estimation_admin_area_2.csv")
+    message("Skipping export: `combined_province_export` does not exist or is empty.")
+  }
+}
+
+
+
+
+
