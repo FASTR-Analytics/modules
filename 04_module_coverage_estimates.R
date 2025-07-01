@@ -20,6 +20,9 @@ PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 NUTRITION_DENOMINATORS_PROVINCE <-"ng_province_denominators_corrected.csv"      #add asset
 NUTRITION_DENOMINATORS_NATIONAL <-"ng_national_denominators_corrected.csv"
 
+CHMIS_NATIONAL <- "chmis_national_for_module4.csv"
+CHMIS_SUBNATIONAL <- "chmis_admin_area_for_module4.csv"
+
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -48,19 +51,16 @@ RUN_NUTRITION_ANALYSIS <- any(c("deworming", "mnp", "vitamina",
                                 "iptp3", "iron_anc", "ipt1", 
                                 "ipt2", "ipt3", "orszinc", "haematinics") %in% adjusted_volume_data$indicator_common_id)
 
+
 # Only load CHMIS data if running nutrition analysis
 if (RUN_NUTRITION_ANALYSIS) {
-  # Check if CHMIS files exist and load them
-  chmis_national_file <- "chmis_national_for_module4.csv"
-  chmis_subnational_file <- "chmis_admin_area_for_module4.csv"
-  
   # Initialize CHMIS data variables
   chmis_data_national <- NULL
   chmis_data_subnational <- NULL
   
   # Load CHMIS national data if file exists
-  if (file.exists(chmis_national_file)) {
-    chmis_data_national <- read.csv(chmis_national_file, fileEncoding = "UTF-8")
+  if (file.exists(CHMIS_NATIONAL)) {
+    chmis_data_national <- read.csv(CHMIS_NATIONAL, fileEncoding = "UTF-8")
     
     # Check if data is not empty and bind to adjusted_volume_data
     if (nrow(chmis_data_national) > 0) {
@@ -70,12 +70,12 @@ if (RUN_NUTRITION_ANALYSIS) {
       cat("CHMIS national file exists but is empty\n")
     }
   } else {
-    cat("CHMIS national file not found\n")
+    cat("CHMIS national file not found:", CHMIS_NATIONAL, "\n")
   }
   
   # Load CHMIS subnational data if file exists
-  if (file.exists(chmis_subnational_file)) {
-    chmis_data_subnational <- read.csv(chmis_subnational_file, fileEncoding = "UTF-8")
+  if (file.exists(CHMIS_SUBNATIONAL)) {
+    chmis_data_subnational <- read.csv(CHMIS_SUBNATIONAL, fileEncoding = "UTF-8")
     
     # Check if data is not empty and bind to adjusted_volume_data_subnational
     if (nrow(chmis_data_subnational) > 0) {
@@ -101,12 +101,11 @@ if (RUN_NUTRITION_ANALYSIS) {
       cat("CHMIS subnational file exists but is empty\n")
     }
   } else {
-    cat("CHMIS subnational file not found\n")
+    cat("CHMIS subnational file not found:", CHMIS_SUBNATIONAL, "\n")
   }
 } else {
   cat("Skipping CHMIS data loading - running traditional analysis mode\n")
 }
-
 # ------------------------------ Rename for Test Instance -------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
   mutate(admin_area_1 = case_when(
