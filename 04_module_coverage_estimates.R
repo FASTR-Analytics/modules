@@ -26,7 +26,7 @@ CHMIS_SUBNATIONAL <- "chmis_admin_area_for_module4.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 28
+# Last edit: 2025 July 2
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -64,8 +64,39 @@ if (RUN_NUTRITION_ANALYSIS) {
     
     # Check if data is not empty and bind to adjusted_volume_data
     if (nrow(chmis_data_national) > 0) {
-      adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
-      cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
+      # Debug: Check columns before binding
+      cat("National binding - Original columns:", ncol(adjusted_volume_data), 
+          "CHMIS columns:", ncol(chmis_data_national), "\n")
+      
+      # Check unique admin_area_2 counts for national data
+      if ("admin_area_2" %in% names(adjusted_volume_data) && "admin_area_2" %in% names(chmis_data_national)) {
+        original_unique_admin2_nat <- length(unique(adjusted_volume_data$admin_area_2))
+        chmis_unique_admin2_nat <- length(unique(chmis_data_national$admin_area_2))
+        cat("National - Original unique admin_area_2:", original_unique_admin2_nat, 
+            "CHMIS unique admin_area_2:", chmis_unique_admin2_nat, "\n")
+      }
+      
+      # Store original row count for validation
+      original_rows_national <- nrow(adjusted_volume_data)
+      
+      # Attempt to bind with error handling
+      tryCatch({
+        adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
+        cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
+        cat("Rows added:", nrow(adjusted_volume_data) - original_rows_national, "\n")
+        
+        # Check final unique admin_area_2 count for national data
+        if ("admin_area_2" %in% names(adjusted_volume_data) && exists("original_unique_admin2_nat")) {
+          final_unique_admin2_nat <- length(unique(adjusted_volume_data$admin_area_2))
+          cat("National - Final unique admin_area_2 count:", final_unique_admin2_nat, "\n")
+        }
+        
+      }, error = function(e) {
+        cat("ERROR binding national data:", e$message, "\n")
+        cat("Column mismatch details:\n")
+        cat("Original cols:", paste(names(adjusted_volume_data), collapse = ", "), "\n")
+        cat("CHMIS cols:", paste(names(chmis_data_national), collapse = ", "), "\n")
+      })
     } else {
       cat("CHMIS national file exists but is empty\n")
     }
@@ -79,24 +110,171 @@ if (RUN_NUTRITION_ANALYSIS) {
     
     # Check if data is not empty and bind to adjusted_volume_data_subnational
     if (nrow(chmis_data_subnational) > 0) {
-      # Get the required columns from adjusted_volume_data_subnational
+      
+      # Store original state for validation
+      original_rows_subnational <- nrow(adjusted_volume_data_subnational)
+      original_cols_subnational <- names(adjusted_volume_data_subnational)
+      
+      cat("\n=== SUBNATIONAL DATA BINDING ===\n")
+      cat("Original subnational data: rows =", original_rows_subnational, 
+          ", cols =", length(original_cols_subnational), "\n")
+      cat("CHMIS subnational data: rows =", nrow(chmis_data_subnational), 
+          ", cols =", ncol(chmis_data_subnational), "\n")
+      
+      # Get column information
       required_cols <- names(adjusted_volume_data_subnational)
       existing_cols <- names(chmis_data_subnational)
       missing_cols <- setdiff(required_cols, existing_cols)
+      extra_cols <- setdiff(existing_cols, required_cols)
       
-      # Add any missing columns with appropriate default values
+      cat("Missing columns in CHMIS data:", paste(missing_cols, collapse = ", "), "\n")
+      cat("Extra columns in CHMIS data:", paste(extra_cols, collapse = ", "), "\n")
+      
+      # Add missing columns with proper data types
       if (length(missing_cols) > 0) {
         for (col in missing_cols) {
-          chmis_data_subnational[[col]] <- NA_character_
-          cat("Added missing column:", col, "to CHMIS subnational data\n")
+          # Get the original column's data type
+          original_col_class <- class(adjusted_volume_data_subnational[[col]])[1]
+          
+          # Add column with appropriate NA type
+          if (original_col_class == "character") {
+            chmis_data_subnational[[col]] <- NA_character_
+          } else if (original_col_class %in% c("numeric", "double")) {
+            chmis_data_subnational[[col]] <- NA_real_
+          } else if (original_col_class == "integer") {
+            chmis_data_subnational[[col]] <- NA_integer_
+          } else if (original_col_class == "logical") {
+            chmis_data_subnational[[col]] <- NA
+          } else if (original_col_class == "factor") {
+            chmis_data_subnational[[col]] <- factor(NA, levels = levels(adjusted_volume_data_subnational[[col]]))
+          } else {
+            chmis_data_subnational[[col]] <- NA
+          }
+          
+          cat("Added missing column '", col, "' as ", original_col_class, "\n")
         }
       }
       
-      # Select only the required columns in the correct order
-      chmis_data_subnational <- chmis_data_subnational[, required_cols]
+      # Ensure columns are in the correct order and have matching types
+      chmis_data_subnational <- chmis_data_subnational[, required_cols, drop = FALSE]
       
-      adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
-      cat("CHMIS subnational data loaded and bound to adjusted_volume_data_subnational\n")
+      # Check and fix data type mismatches before binding
+      type_mismatches <- character(0)
+      for (col in required_cols) {
+        orig_type <- class(adjusted_volume_data_subnational[[col]])[1]
+        chmis_type <- class(chmis_data_subnational[[col]])[1]
+        
+        if (orig_type != chmis_type) {
+          # Fix common type mismatches
+          if ((orig_type == "numeric" && chmis_type == "integer") ||
+              (orig_type == "double" && chmis_type == "integer")) {
+            chmis_data_subnational[[col]] <- as.numeric(chmis_data_subnational[[col]])
+            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to", orig_type, "\n")
+          } else if ((orig_type == "integer" && chmis_type == "numeric") ||
+                     (orig_type == "integer" && chmis_type == "double")) {
+            chmis_data_subnational[[col]] <- as.integer(chmis_data_subnational[[col]])
+            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to", orig_type, "\n")
+          } else if (orig_type == "character" && chmis_type != "character") {
+            chmis_data_subnational[[col]] <- as.character(chmis_data_subnational[[col]])
+            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to character\n")
+          } else {
+            type_mismatches <- c(type_mismatches, 
+                                 paste0(col, " (", orig_type, " vs ", chmis_type, ")"))
+          }
+        }
+      }
+      
+      if (length(type_mismatches) > 0) {
+        cat("WARNING: Remaining data type mismatches:\n")
+        cat(paste(type_mismatches, collapse = "\n"), "\n")
+      }
+      
+      # Check admin_area_2 unique counts before binding
+      cat("\n=== ADMIN_AREA_2 ANALYSIS ===\n")
+      if ("admin_area_2" %in% names(adjusted_volume_data_subnational)) {
+        original_unique_admin2 <- length(unique(adjusted_volume_data_subnational$admin_area_2))
+        cat("Original data unique admin_area_2 count:", original_unique_admin2, "\n")
+        cat("Sample admin_area_2 values from original:", 
+            paste(head(unique(adjusted_volume_data_subnational$admin_area_2), 3), collapse = ", "), "\n")
+      }
+      
+      if ("admin_area_2" %in% names(chmis_data_subnational)) {
+        chmis_unique_admin2 <- length(unique(chmis_data_subnational$admin_area_2))
+        cat("CHMIS data unique admin_area_2 count:", chmis_unique_admin2, "\n")
+        cat("Sample admin_area_2 values from CHMIS:", 
+            paste(head(unique(chmis_data_subnational$admin_area_2), 3), collapse = ", "), "\n")
+      }
+      
+      # Check specifically for admin_area_2 before binding
+      cat("\nadmin_area_2 check before binding:\n")
+      cat("  - In original data:", "admin_area_2" %in% names(adjusted_volume_data_subnational), "\n")
+      cat("  - In CHMIS data:", "admin_area_2" %in% names(chmis_data_subnational), "\n")
+      if ("admin_area_2" %in% names(adjusted_volume_data_subnational)) {
+        cat("  - Original admin_area_2 type:", class(adjusted_volume_data_subnational$admin_area_2)[1], "\n")
+      }
+      if ("admin_area_2" %in% names(chmis_data_subnational)) {
+        cat("  - CHMIS admin_area_2 type:", class(chmis_data_subnational$admin_area_2)[1], "\n")
+      }
+      
+      # Perform the binding with error handling
+      tryCatch({
+        adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
+        
+        # Immediate validation after binding
+        new_rows <- nrow(adjusted_volume_data_subnational)
+        new_cols <- names(adjusted_volume_data_subnational)
+        
+        cat("CHMIS subnational data successfully bound!\n")
+        cat("Final data: rows =", new_rows, ", cols =", length(new_cols), "\n")
+        cat("Rows added:", new_rows - original_rows_subnational, "\n")
+        
+        # Critical check: Is admin_area_2 still there?
+        if ("admin_area_2" %in% new_cols) {
+          cat("✓ admin_area_2 column preserved successfully\n")
+          
+          # Count unique admin_area_2 values after binding
+          final_unique_admin2 <- length(unique(adjusted_volume_data_subnational$admin_area_2))
+          cat("Final unique admin_area_2 count:", final_unique_admin2, "\n")
+          
+          # Calculate expected vs actual
+          if (exists("original_unique_admin2") && exists("chmis_unique_admin2")) {
+            # Count overlapping values
+            original_values <- unique(adjusted_volume_data_subnational$admin_area_2[1:original_rows_subnational])
+            chmis_values <- unique(adjusted_volume_data_subnational$admin_area_2[(original_rows_subnational+1):nrow(adjusted_volume_data_subnational)])
+            overlapping_values <- length(intersect(original_values, chmis_values))
+            expected_total <- original_unique_admin2 + chmis_unique_admin2 - overlapping_values
+            
+            cat("Expected unique admin_area_2 count (accounting for overlap):", expected_total, "\n")
+            cat("Overlapping admin_area_2 values between datasets:", overlapping_values, "\n")
+            
+            if (final_unique_admin2 == expected_total) {
+              cat("✓ admin_area_2 counts match expected values\n")
+            } else {
+              cat("⚠ admin_area_2 count discrepancy - investigate further\n")
+            }
+          }
+          
+        } else {
+          cat("✗ ERROR: admin_area_2 column was lost during binding!\n")
+          cat("Original columns:", paste(original_cols_subnational, collapse = ", "), "\n")
+          cat("Final columns:", paste(new_cols, collapse = ", "), "\n")
+        }
+        
+        # Check for any lost columns
+        lost_cols <- setdiff(original_cols_subnational, new_cols)
+        if (length(lost_cols) > 0) {
+          cat("ERROR: Lost columns during binding:", paste(lost_cols, collapse = ", "), "\n")
+        }
+        
+      }, error = function(e) {
+        cat("ERROR binding subnational data:", e$message, "\n")
+        cat("Detailed error information:\n")
+        cat("Original data structure:\n")
+        str(adjusted_volume_data_subnational)
+        cat("CHMIS data structure:\n")
+        str(chmis_data_subnational)
+      })
+      
     } else {
       cat("CHMIS subnational file exists but is empty\n")
     }
@@ -106,6 +284,7 @@ if (RUN_NUTRITION_ANALYSIS) {
 } else {
   cat("Skipping CHMIS data loading - running traditional analysis mode\n")
 }
+
 # ------------------------------ Rename for Test Instance -------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
   mutate(admin_area_1 = case_when(
@@ -177,6 +356,9 @@ province_name_replacements <- c(
   "oy Oyo State" = "Oyo", "pl Plateau State" = "Plateau", "ri Rivers State" = "Rivers",
   "so Sokoto State" = "Sokoto", "ta Taraba State" = "Taraba", "yo Yobe State" = "Yobe",
   "za Zamfara State" = "Zamfara",
+  
+  
+
   
   #guinea
   "DSV Conakry" = "Conakry",
@@ -767,8 +949,8 @@ pivot_nutrition_coverage_to_long <- function(nutrition_coverage_results) {
       names_to = "indicator_common_id",
       names_prefix = "coverage_",
       values_to = "coverage_cov"
-    ) %>%
-    filter(!is.na(coverage_cov))  # Remove rows with missing coverage
+    )
+  # REMOVED: filter(!is.na(coverage_cov)) - Keep all data including NA
   
   # Select appropriate columns based on data type
   if (has_admin_area_2) {
@@ -781,6 +963,7 @@ pivot_nutrition_coverage_to_long <- function(nutrition_coverage_results) {
   
   return(coverage_long)
 }
+
 expand_nutrition_with_survey <- function(nutrition_coverage_long, raw_survey_data) {
   
   message("Expanding nutrition data with raw survey values...")
@@ -829,7 +1012,6 @@ expand_nutrition_with_survey <- function(nutrition_coverage_long, raw_survey_dat
   
   return(expanded_data)
 }
-
 create_coverage_projections <- function(nutrition_expanded) {
   
   message("Creating coverage projections...")
@@ -1511,8 +1693,3 @@ if (RUN_NUTRITION_ANALYSIS) {
     message("Skipping export: `combined_province_export` does not exist or is empty.")
   }
 }
-
-
-
-
-
