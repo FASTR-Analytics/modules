@@ -19,7 +19,7 @@ POPULATION_ASSET <- "/Users/claireboulange/Desktop/Nigeria_RMNCAH_Additional_Dat
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: RMNCAH SCORECARD CALCULATION
-# Last edit: 2025 July 16
+# Last edit: 2025 January 23
 
 # This module calculates the 25 RMNCAH scorecard indicators (as per the Excel template)
 
@@ -48,9 +48,10 @@ aggregate_to_state_quarter <- function(data) {
   
   data %>%
     filter(year == SCORECARD_YEAR, quarter_id == target_quarter_id) %>%
-    group_by(admin_area_2, indicator_common_id) %>%
+    group_by(admin_area_3, indicator_common_id) %>%  # FIXED: Use admin_area_3 for states
     summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
-    pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0)
+    pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0) %>%
+    rename(admin_area_2 = admin_area_3)  # FIXED: Rename to match asset files
 }
 
 merge_assets <- function(state_data) {
@@ -65,7 +66,7 @@ merge_assets <- function(state_data) {
   quarter_periods <- sprintf("%04d%02d", SCORECARD_YEAR, quarter_months)
   message(sprintf("Looking for asset data in periods: %s", paste(quarter_periods, collapse = ", ")))
   
-  # Get states from adjusted data
+  # Get states from adjusted data (now using admin_area_2 after rename)
   adjusted_states <- unique(state_data$admin_area_2)
   message(sprintf("States in adjusted data (%d): %s", 
                   length(adjusted_states), paste(head(adjusted_states, 5), collapse = ", ")))
@@ -194,56 +195,144 @@ merge_assets <- function(state_data) {
 }
 
 calculate_scorecard <- function(data) {
+  
+  # Helper function to check if column exists
+  has_col <- function(col_name) col_name %in% names(data)
+  
+  # Helper function to safely get column or return 0
+  safe_col <- function(col_name) {
+    if(has_col(col_name)) data[[col_name]] else 0
+  }
+  
+  # Check which indicators we can calculate
+  missing_cols <- c()
+  if(!has_col("pnc_1d")) missing_cols <- c(missing_cols, "pnc_1d")
+  if(!has_col("pnc_2_3d")) missing_cols <- c(missing_cols, "pnc_2_3d")
+  
+  if(length(missing_cols) > 0) {
+    message("WARNING: Missing columns for scorecard calculation: ", paste(missing_cols, collapse = ", "))
+    message("Affected indicators will be set to NA")
+  }
+  
   data %>%
     mutate(
       # B: ANC Coverage (1 Visit)
-      anc_coverage_1_visit = (anc1 / (total_population * PREGNANT_WOMEN_PCT)) * 100,
+      anc_coverage_1_visit = if(has_col("anc1")) (anc1 / (total_population * PREGNANT_WOMEN_PCT)) * 100 else NA,
+      
       # C: ANC4/ANC1 Ratio  
-      anc4_anc1_ratio = ifelse(anc1 == 0, NA, (anc4 / anc1) * 100),
+      anc4_anc1_ratio = if(has_col("anc1") & has_col("anc4")) {
+        ifelse(anc1 == 0, NA, (anc4 / anc1) * 100)
+      } else NA,
+      
       # D: Skilled Birth Attendance
-      skilled_birth_attendance = ifelse(deliveries == 0, NA, (sba / deliveries) * 100),
+      skilled_birth_attendance = if(has_col("delivery") & has_col("sba")) {
+        ifelse(delivery == 0, NA, (sba / delivery) * 100)
+      } else NA,
+      
       # E: Uterotonics Coverage
-      uterotonics_coverage = ifelse(deliveries == 0, NA, (uterotonics / deliveries) * 100),
+      uterotonics_coverage = if(has_col("delivery") & has_col("uterotonics")) {
+        ifelse(delivery == 0, NA, (uterotonics / delivery) * 100)
+      } else NA,
+      
       # F: Fistula per 1000 Deliveries
-      fistula_per_1000_deliveries = ifelse(deliveries == 0, NA, (obstetric_fistula / (deliveries / 10000))),
+      fistula_per_1000_deliveries = if(has_col("delivery") & has_col("obstetric_fistula")) {
+        ifelse(delivery == 0, NA, (obstetric_fistula / (delivery / 10000)))
+      } else NA,
+      
       # G: Newborn Resuscitation
-      newborn_resuscitation = ifelse(birth_asphyxia == 0, NA, (neonatal_resuscitation / birth_asphyxia) * 100),
-      # H: Postnatal Visits (3 days)
-      postnatal_visits_3d = ifelse(live_births == 0, NA, ((pnc_1d + pnc_2_3d) / live_births) * 100),
-      # I: LBW KMC Coverage
-      lbw_kmc_coverage = (kmc / (live_births * 0.15)) * 100,
+      newborn_resuscitation = if(has_col("birth_asphyxia") & has_col("neonatal_resuscitation")) {
+        ifelse(birth_asphyxia == 0, NA, (neonatal_resuscitation / birth_asphyxia) * 100)
+      } else NA,
+      
+      # H: Postnatal Visits (3 days) - Handle missing pnc columns
+      postnatal_visits_3d = if(has_col("live_births") & (has_col("pnc_1d") | has_col("pnc_2_3d"))) {
+        pnc_total <- safe_col("pnc_1d") + safe_col("pnc_2_3d")
+        ifelse(live_births == 0, NA, (pnc_total / live_births) * 100)
+      } else NA,
+      
+      # I: LBW KMC Coverage - PLACEHOLDER/ESTIMATION
+      # TODO: Original Excel formula is (LBW babies on KMC) / (Total LBW babies <2.5kg) * 100
+      # Currently using estimation: (All KMC) / (15% of live births) * 100
+      # Need: 1) LBW_female + LBW_male counts, 2) LBW-specific KMC admissions
+      
+      
+      lbw_kmc_coverage = if(has_col("kmc") & has_col("live_births")) {
+        (kmc / (live_births * 0.15)) * 100  # ESTIMATION - not exact Excel formula
+      } else NA,
+      
       # J: Birth Registration
-      birth_registration = (child_registration / (total_population * BIRTHS_PCT)) * 100,
+      birth_registration = if(has_col("child_registration")) {
+        (child_registration / (total_population * BIRTHS_PCT)) * 100
+      } else NA,
+      
       # K: Modern Contraceptive Use
-      modern_contraceptive_use = (modern_fp / (total_population * WOMEN_15_49_PCT)) * 100,
+      modern_contraceptive_use = if(has_col("modern_fp")) {
+        (modern_fp / (total_population * WOMEN_15_49_PCT)) * 100
+      } else NA,
+      
       # L: Pneumonia Treatment
-      pneumonia_antibiotic_treatment = ifelse(pneumonia == 0, NA, (pneumonia_treatment / pneumonia) * 100),
+      pneumonia_antibiotic_treatment = if(has_col("pneumonia") & has_col("pneumonia_treatment")) {
+        ifelse(pneumonia == 0, NA, (pneumonia_treatment / pneumonia) * 100)
+      } else NA,
+      
       # M: Diarrhea Treatment
-      diarrhea_ors_zinc_treatment = ifelse(diarrhoea == 0, NA, (ors_zinc / diarrhoea) * 100),
+      diarrhea_ors_zinc_treatment = if(has_col("diarrhoea") & has_col("ors_zinc")) {
+        ifelse(diarrhoea == 0, NA, (ors_zinc / diarrhoea) * 100)
+      } else NA,
+      
       # N: IPTP3 Coverage
-      iptp3_coverage = ifelse(anc1 == 0, NA, (iptp3 / anc1) * 100),
+      iptp3_coverage = if(has_col("anc1") & has_col("iptp3")) {
+        ifelse(anc1 == 0, NA, (iptp3 / anc1) * 100)
+      } else NA,
+      
       # O: Malaria ACT Treatment
-      malaria_act_treatment_rate = ifelse(malaria == 0, NA, (act_treatment / malaria) * 100),
+      malaria_act_treatment_rate = if(has_col("malaria") & has_col("act_treatment")) {
+        ifelse(malaria == 0, NA, (act_treatment / malaria) * 100)
+      } else NA,
+      
       # P: Under-5 LLIN Coverage
-      under5_llin_coverage = (llin / (total_population * CHILDREN_U5_PCT)) * 100,
+      under5_llin_coverage = if(has_col("llin")) {
+        (llin / (total_population * CHILDREN_U5_PCT)) * 100
+      } else NA,
+      
       # Q: BCG Coverage
-      bcg_coverage = (bcg / (total_population * BIRTHS_PCT)) * 100,
+      bcg_coverage = if(has_col("bcg")) {
+        (bcg / (total_population * BIRTHS_PCT)) * 100
+      } else NA,
+      
       # R: Penta3 Coverage
-      penta3_coverage = (penta3 / (total_population * BIRTHS_PCT)) * 100,
+      penta3_coverage = if(has_col("penta3")) {
+        (penta3 / (total_population * BIRTHS_PCT)) * 100
+      } else NA,
+      
       # S: Fully Immunized Coverage
-      fully_immunized_coverage = (fully_immunized / (total_population * BIRTHS_PCT)) * 100,
+      fully_immunized_coverage = if(has_col("fully_immunized")) {
+        (fully_immunized / (total_population * BIRTHS_PCT)) * 100
+      } else NA,
+      
       # T: Vaccine Stockout (from assets)
-      vaccine_stockout_percentage = vaccine_stockout_pct,
+      vaccine_stockout_percentage = if(has_col("vaccine_stockout_pct")) vaccine_stockout_pct else NA,
+      
       # U: Exclusive Breastfeeding
-      exclusive_breastfeeding_rate = (ebf / (total_population * INFANTS_0_6M_PCT)) * 100,
+      exclusive_breastfeeding_rate = if(has_col("ebf")) {
+        (ebf / (total_population * INFANTS_0_6M_PCT)) * 100
+      } else NA,
+      
       # V: Growth Monitoring
-      growth_monitoring_coverage = (nutrition_screening / (total_population * CHILDREN_U5_PCT)) * 100,
+      growth_monitoring_coverage = if(has_col("nutrition_screening")) {
+        (nutrition_screening / (total_population * CHILDREN_U5_PCT)) * 100
+      } else NA,
+      
       # W: GBV Care Coverage
-      gbv_care_coverage = ifelse(gbv_cases == 0, NA, (gbv_care / gbv_cases) * 100),
+      gbv_care_coverage = if(has_col("gbv_cases") & has_col("gbv_care")) {
+        ifelse(gbv_cases == 0, NA, (gbv_care / gbv_cases) * 100)
+      } else NA,
+      
       # X: NHMIS Reporting Rate (from assets)
-      nhmis_reporting_rate_final = nhmis_reporting_rate,
+      nhmis_reporting_rate_final = if(has_col("nhmis_reporting_rate")) nhmis_reporting_rate else NA,
+      
       # Y: NHMIS Timeliness (from assets)
-      nhmis_data_timeliness_final = nhmis_timeliness
+      nhmis_data_timeliness_final = if(has_col("nhmis_timeliness")) nhmis_timeliness else NA
     ) %>%
     select(admin_area_2, anc_coverage_1_visit:nhmis_data_timeliness_final) %>%
     mutate(across(where(is.numeric), ~round(.x, 2)))
