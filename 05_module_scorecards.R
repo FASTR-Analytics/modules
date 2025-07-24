@@ -204,7 +204,13 @@ calculate_scorecard <- function(data) {
     if(has_col(col_name)) data[[col_name]] else 0
   }
   
-  # Check which indicators we can calculate
+  #
+  #
+  #   PLACEHOLDER >>>> FIX THIS WHEN PNC IS LOADED
+  #
+  #
+  
+  #Check which indicators we can calculate
   missing_cols <- c()
   if(!has_col("pnc_1d")) missing_cols <- c(missing_cols, "pnc_1d")
   if(!has_col("pnc_2_3d")) missing_cols <- c(missing_cols, "pnc_2_3d")
