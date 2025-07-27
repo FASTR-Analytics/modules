@@ -19,7 +19,7 @@ POPULATION_ASSET <- "/Users/claireboulange/Desktop/unicef//total_population.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: RMNCAH SCORECARD CALCULATION
-# Last edit: 2025 July 26
+# Last edit: 2025 July 27
 
 # This module calculates the 25 RMNCAH scorecard indicators (as per the Excel template)
 
@@ -475,11 +475,23 @@ create_q1_summary_table <- function(adjusted_data, population) {
     left_join(pop_avg_q4_2024, by = "admin_area_2") %>%
     select(admin_area_2, avg_population_q4_2024, everything())
   
-  message(sprintf("Summary table created with %d states and %d indicators", 
+  # Create national totals
+  national_totals <- summary_table %>%
+    summarise(
+      admin_area_2 = "NATIONAL",
+      avg_population_q4_2024 = sum(avg_population_q4_2024, na.rm = TRUE),
+      across(where(is.numeric) & !matches("avg_population_q4_2024"), \(x) sum(x, na.rm = TRUE))
+    )
+  
+  # Combine state and national data
+  final_summary_table <- bind_rows(summary_table, national_totals) %>%
+    arrange(admin_area_2)
+  
+  message(sprintf("Summary table created with %d states + national and %d indicators", 
                   nrow(summary_table), 
                   ncol(summary_table) - 2))
   
-  return(summary_table)
+  return(final_summary_table)
 }
 
 # Function to generate CREATE TABLE SQL
