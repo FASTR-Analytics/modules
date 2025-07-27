@@ -19,7 +19,7 @@ POPULATION_ASSET <- "/Users/claireboulange/Desktop/unicef//total_population.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: RMNCAH SCORECARD CALCULATION
-# Last edit: 2025 July 27
+# Last edit: 2025 July 26
 
 # This module calculates the 25 RMNCAH scorecard indicators (as per the Excel template)
 
@@ -234,21 +234,6 @@ calculate_scorecard <- function(data) {
   # Helper function to check if column exists
   has_col <- function(col_name) col_name %in% names(data)
   
-  # Helper function to safely get column or return 0
-  safe_col <- function(col_name) {
-    if(has_col(col_name)) data[[col_name]] else 0
-  }
-  
-  # Check which indicators we can calculate
-  missing_cols <- c()
-  if(!has_col("pnc_1d")) missing_cols <- c(missing_cols, "pnc_1d")
-  if(!has_col("pnc_2_3d")) missing_cols <- c(missing_cols, "pnc_2_3d")
-  
-  if(length(missing_cols) > 0) {
-    message("WARNING: Missing columns for scorecard calculation: ", paste(missing_cols, collapse = ", "))
-    message("Affected indicators will be set to NA")
-  }
-  
   data %>%
     mutate(
       # B: ANC Coverage (1 Visit)
@@ -279,10 +264,9 @@ calculate_scorecard <- function(data) {
         ifelse(birth_asphyxia == 0, NA, (neonatal_resuscitation / birth_asphyxia) * 100)
       } else NA,
       
-      # H: Postnatal Visits (3 days)
-      postnatal_visits_3d = if(has_col("live_births") & (has_col("pnc_1d") | has_col("pnc_2_3d"))) {
-        pnc_total <- safe_col("pnc_1d") + safe_col("pnc_2_3d")
-        ifelse(live_births == 0, NA, (pnc_total / live_births) * 100)
+      # H: Postnatal Visits (Within 3 days)
+      postnatal_visits_3d = if(has_col("live_births") & has_col("pnc")) {
+        ifelse(live_births == 0, NA, (pnc / live_births) * 100)
       } else NA,
       
       # I: LBW KMC Coverage - ESTIMATION
