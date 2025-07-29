@@ -11,10 +11,10 @@ CHILDREN_U5_PCT <- 0.12 * 0.25
 INFANTS_0_6M_PCT <- 0.015
 
 # Asset file paths
-VACCINE_STOCKOUT_ASSET <- "/Users/claireboulange/Desktop/unicef/vaccine_stockout_pct.csv"
-NHMIS_REPORTING_ASSET <- "/Users/claireboulange/Desktop/unicef/nhmis_2019_reporting_rate.csv"
-NHMIS_TIMELINESS_ASSET <- "/Users/claireboulange/Desktop/unicef/nhmis_data_timeliness.csv"
-POPULATION_ASSET <- "/Users/claireboulange/Desktop/unicef//total_population.csv"
+VACCINE_STOCKOUT_ASSET <- "vaccine_stockout_pct.csv"
+NHMIS_REPORTING_ASSET <- "nhmis_2019_reporting_rate.csv"
+NHMIS_TIMELINESS_ASSET <- "nhmis_data_timeliness.csv"
+POPULATION_ASSET <- "total_population.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -462,7 +462,7 @@ create_q1_summary_table <- function(adjusted_data, population) {
   # Create national totals
   national_totals <- summary_table %>%
     summarise(
-      admin_area_2 = "NATIONAL",
+      admin_area_2 = "__NATIONAL",
       avg_population_q4_2024 = sum(avg_population_q4_2024, na.rm = TRUE),
       across(where(is.numeric) & !matches("avg_population_q4_2024"), \(x) sum(x, na.rm = TRUE))
     )
@@ -533,7 +533,7 @@ message("National scorecard calculated")
 # Convert to long format and combine
 state_scorecard <- convert_scorecard_to_long(state_scorecard_wide)
 national_scorecard <- convert_scorecard_to_long(national_scorecard_wide) %>%
-  mutate(admin_area_2 = "NATIONAL")
+  mutate(admin_area_2 = "__NATIONAL")
 
 combined_scorecard <- bind_rows(state_scorecard, national_scorecard) %>%
   arrange(admin_area_2, indicator_common_id)
