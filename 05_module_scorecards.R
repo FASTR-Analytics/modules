@@ -8,7 +8,7 @@ PREGNANT_WOMEN_PCT <- 0.05 * 0.25
 BIRTHS_PCT <- 0.04 * 0.25  
 WOMEN_15_49_PCT <- 0.22 * 0.25
 CHILDREN_U5_PCT <- 0.12 * 0.25
-INFANTS_0_6M_PCT <- 0.015
+INFANTS_0_6M_PCT <- 0.02
 
 # Asset file paths
 VACCINE_STOCKOUT_ASSET <- "vaccine_stockout_pct.csv"
@@ -269,7 +269,7 @@ calculate_scorecard <- function(data) {
         ifelse(live_births == 0, NA, (pnc / live_births) * 100)
       } else NA,
       
-      # I: LBW KMC Coverage - ESTIMATION
+      # I: LBW KMC Coverage - ESTIMATION (lbw female and male not available)
       lbw_kmc_coverage = if(has_col("kmc") & has_col("live_births")) {
         (kmc / (live_births * 0.15)) * 100
       } else NA,
@@ -304,9 +304,10 @@ calculate_scorecard <- function(data) {
         ifelse(malaria == 0, NA, (act_treatment / malaria) * 100)
       } else NA,
       
-      # P: Under-5 LLIN Coverage
-      under5_llin_coverage = if(has_col("llin")) {
-        (llin / (total_population * CHILDREN_U5_PCT)) * 100
+      # P: Under-5 LLIN Coverage (reproducing Excel formula - uses fully_immunized as denominator)
+      # NOTE: Logically should be (llin / (total_population * CHILDREN_U5_PCT)) * 100 for actual coverage rate
+      under5_llin_coverage = if(has_col("llin") && has_col("fully_immunized")) {
+        (llin / fully_immunized) * 100
       } else NA,
       
       # Q: BCG Coverage
@@ -334,7 +335,7 @@ calculate_scorecard <- function(data) {
       
       # V: Growth Monitoring
       growth_monitoring_coverage = if(has_col("nutrition_screening")) {
-        (nutrition_screening / (total_population * CHILDREN_U5_PCT)) * 100
+        (nutrition_screening / (total_population * 0.20 * 0.25)) * 100
       } else NA,
       
       # W: GBV Care Coverage
