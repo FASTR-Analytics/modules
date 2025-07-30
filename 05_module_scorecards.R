@@ -245,18 +245,18 @@ calculate_scorecard <- function(data) {
       } else NA,
       
       # D: Skilled Birth Attendance
-      skilled_birth_attendance = if(has_col("delivery") & has_col("sba")) {
-        ifelse(delivery == 0, NA, (sba / delivery) * 100)
+      skilled_birth_attendance = if(has_col("deliveries") & has_col("sba")) {
+        ifelse(deliveries == 0, NA, (sba / deliveries) * 100)
       } else NA,
       
       # E: Uterotonics Coverage
-      uterotonics_coverage = if(has_col("delivery") & has_col("uterotonics")) {
-        ifelse(delivery == 0, NA, (uterotonics / delivery) * 100)
+      uterotonics_coverage = if(has_col("deliveries") & has_col("uterotonics")) {
+        ifelse(deliveries == 0, NA, (uterotonics / deliveries) * 100)
       } else NA,
       
       # F: Fistula per 1000 Deliveries
-      fistula_per_1000_deliveries = if(has_col("delivery") & has_col("obstetric_fistula")) {
-        ifelse(delivery == 0, NA, (obstetric_fistula / (delivery / 10000)))
+      fistula_per_1000_deliveries = if(has_col("deliveries") & has_col("obstetric_fistula")) {
+        ifelse(deliveries == 0, NA, (obstetric_fistula / (deliveries / 10000)))
       } else NA,
       
       # G: Newborn Resuscitation
