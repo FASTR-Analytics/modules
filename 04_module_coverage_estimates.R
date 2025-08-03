@@ -11,22 +11,21 @@ P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
-
-
-
 PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
-NUTRITION_DENOMINATORS_PROVINCE <-"ng_province_denominators_corrected.csv"      #add asset
+NUTRITION_DENOMINATORS_PROVINCE <-"ng_province_denominators_corrected.csv"      
 NUTRITION_DENOMINATORS_NATIONAL <-"ng_national_denominators_corrected.csv"
 
 CHMIS_NATIONAL <- "chmis_national_for_module4.csv"
 CHMIS_SUBNATIONAL <- "chmis_admin_area_for_module4.csv"
 
+RUN_MULTILEVEL_ANALYSIS <- TRUE  # Set to FALSE if no Geopolitical Areas in hmis data
+
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 July 2
+# Last edit: 2025 Aug 3
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -37,12 +36,70 @@ library(stringr)
 library(purrr)
 
 
-# ------------------------------ Define File Paths -------------------------------
+# ------------------------------ Define File Paths -----------------------------
 # Input Datasets
 adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
 adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
+
+
+# ------------------------------ Define File Paths -----------------------------
+# Input Datasets
+adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
+adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
+survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
+population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
+
+# ------------------------------ Prepare Data for Multilevel Analysis -------------------------
+
+if (RUN_MULTILEVEL_ANALYSIS) {
+  message("Preparing data for multilevel analysis...")
+  
+  # ===== ADMIN_AREA_2 LEVEL DATA (Original structure) =====
+  adjusted_volume_admin2 <- adjusted_volume_data_subnational
+  
+  survey_data_admin2 <- survey_data_unified %>%
+    filter(admin_area_2 != "NATIONAL" & admin_area_2 != "ZONE")
+  
+  
+  # ===== ADMIN_AREA_3 LEVEL DATA (Reshaped for pipeline compatibility) =====
+  # Check if admin_area_3 data exists
+  has_admin3_data <- "admin_area_3" %in% names(adjusted_volume_data_subnational) &&
+    "admin_area_3" %in% names(survey_data_unified)
+  
+  if (has_admin3_data) {
+    # HMIS data: Drop admin_area_2, rename admin_area_3 to admin_area_2
+    adjusted_volume_admin3 <- adjusted_volume_data_subnational %>%
+      filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+      select(-admin_area_2) %>%  # Drop original admin_area_2
+      rename(admin_area_2 = admin_area_3)  # Rename admin_area_3 to admin_area_2 for pipeline
+    
+    # Survey data: Drop admin_area_2, rename admin_area_3 to admin_area_2  
+    survey_data_admin3 <- survey_data_unified %>%
+      filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "NATIONAL" & admin_area_3 != "ZONE") %>%
+      select(-admin_area_2) %>%  # Drop original admin_area_2
+      rename(admin_area_2 = admin_area_3)  # Rename admin_area_3 to admin_area_2 for pipeline
+    
+    
+  } else {
+    
+    adjusted_volume_admin3 <- NULL
+    survey_data_admin3 <- NULL
+  }
+  
+} else {
+  message("Single-level analysis mode - using original data structure")
+  # Use original data as-is for backward compatibility
+  adjusted_volume_admin2 <- adjusted_volume_data_subnational
+  survey_data_admin2 <- survey_data_unified %>%
+    filter(admin_area_2 != "NATIONAL" & admin_area_2 != "ZONE")
+  
+  # No admin_area_3 processing in single-level mode
+  adjusted_volume_admin3 <- NULL
+  survey_data_admin3 <- NULL
+}
+
 
 # ------------------------------ Load CHMIS Data -------------------------------
 # Auto-detect nutrition analysis based on available indicators
@@ -255,7 +312,7 @@ if (RUN_NUTRITION_ANALYSIS) {
           }
           
         } else {
-          cat("✗ ERROR: admin_area_2 column was lost during binding!\n")
+          cat("ERROR: admin_area_2 column was lost during binding!\n")
           cat("Original columns:", paste(original_cols_subnational, collapse = ", "), "\n")
           cat("Final columns:", paste(new_cols, collapse = ", "), "\n")
         }
@@ -334,47 +391,11 @@ survey_vars <- c(
 )
 
 
-name_replacements <- c(
-  "Guinea" = "Guinée",
-  "Sierra Leone" = "SierraLeone",
-  "Nigeria" = "ng Federal Government",
-  "Somalia" = "Federal Govt of Somalia",
-  "Ethiopia" = "Federal Ministry Of Health"
-)
-
-province_name_replacements <- c(
-  "ab Abia State" = "Abia", "ad Adamawa State" = "Adamawa", "ak Akwa-Ibom State" = "Akwa Ibom",
-  "an Anambra state" = "Anambra", "ba Bauchi State" = "Bauchi", "be Benue State" = "Benue",
-  "bo Borno State" = "Borno", "by Bayelsa State" = "Bayelsa", "cr Cross River State" = "Cross River",
-  "de Delta State" = "Delta", "eb Ebonyi State" = "Ebonyi", "ed Edo State" = "Edo",
-  "ek Ekiti State" = "Ekiti", "en Enugu State" = "Enugu", "fc Federal Capital Territory" = "FCT Abuja",
-  "go Gombe State" = "Gombe", "im Imo State" = "Imo", "ji Jigawa State" = "Jigawa",
-  "kd Kaduna State" = "Kaduna", "ke Kebbi State" = "Kebbi", "kn Kano State" = "Kano",
-  "ko Kogi State" = "Kogi", "kt Katsina State" = "Katsina", "kw Kwara State" = "Kwara",
-  "la Lagos State" = "Lagos", "na Nasarawa State" = "Nasarawa", "ni Niger State" = "Niger",
-  "og Ogun State" = "Ogun", "on Ondo State" = "Ondo", "os Osun State" = "Osun",
-  "oy Oyo State" = "Oyo", "pl Plateau State" = "Plateau", "ri Rivers State" = "Rivers",
-  "so Sokoto State" = "Sokoto", "ta Taraba State" = "Taraba", "yo Yobe State" = "Yobe",
-  "za Zamfara State" = "Zamfara",
-  
-  
-
-  
-  #guinea
-  "DSV Conakry" = "Conakry",
-  "IRS Faranah" = "Faranah",
-  "IRS Kankan" = "Kankan",
-  "IRS Kindia" = "Kindia",
-  "IRS Mamou" = "Mamou",
-  "IRS Boké" = "Boké",
-  "IRS Labé" = "Labé",
-  "IRS Nzérékoré" = "N'Zérékoré"
-
-)
 
 # ------------------------------ Define Functions --------------------------------
 # Part 1 - prepare hmis data
-process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE, province_name_replacements_inverted = NULL) {
+process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE) {
+  
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "nmr", "imr",
@@ -405,10 +426,6 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
-  if (has_admin2 && !is.null(province_name_replacements_inverted)) {
-    adjusted_volume_data <- adjusted_volume_data %>%
-      mutate(admin_area_2 = recode(admin_area_2, !!!province_name_replacements_inverted))
-  }
   
   # Ensure year and month exist
   if (!all(c("year", "month") %in% names(adjusted_volume_data))) {
@@ -460,8 +477,8 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 }
 
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
-process_survey_data <- function(survey_data, name_replacements, hmis_countries,
-                                min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
+process_survey_data <- function(survey_data, hmis_countries, min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
+  
   
   # Harmonize indicator names used in survey to match HMIS format
   survey_data <- survey_data %>%
@@ -470,7 +487,7 @@ process_survey_data <- function(survey_data, name_replacements, hmis_countries,
                                         "polio2" = "opv2",
                                         "polio3" = "opv3",
                                         "pnc1" = "pnc1_mother",
-
+                                        
                                         "ipt1" = "iptp1",
                                         "ipt2" = "iptp2", 
                                         "ipt3" = "iptp3",
@@ -478,9 +495,9 @@ process_survey_data <- function(survey_data, name_replacements, hmis_countries,
                                         "haematinics" = "iron_anc"
     ))
   
-  survey_data <- survey_data %>%
-    mutate(admin_area_1 = recode(admin_area_1, !!!name_replacements)) %>%
-    filter(admin_area_1 %in% hmis_countries)
+  
+  
+  
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
   
@@ -591,12 +608,10 @@ process_survey_data <- function(survey_data, name_replacements, hmis_countries,
 }
 
 #Part 2b - prepare unwpp data
-process_national_population_data <- function(population_data,
-                                             name_replacements,
-                                             hmis_countries) {
+process_national_population_data <- function(population_data, hmis_countries) {
+  
   population_data %>%
     filter(admin_area_2 == "NATIONAL") %>%
-    mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
     filter(admin_area_1 %in% hmis_countries) %>%
     mutate(source = tolower(source)) %>%
     select(admin_area_1, year, indicator_common_id, survey_value, source) %>%
@@ -607,8 +622,6 @@ process_national_population_data <- function(population_data,
       values_fn   = mean
     )
 }
-
-
 
 #Part 3 - calculate denominators
 calculate_denominators <- function(hmis_data, survey_data, population_data = NULL) {
@@ -1283,13 +1296,11 @@ hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 # 2 - prepare the survey data
 survey_processed_national <- process_survey_data(
   survey_data = survey_data_unified %>% filter(admin_area_2 == "NATIONAL"),
-  name_replacements = name_replacements,
   hmis_countries = hmis_processed$hmis_countries
 )
 
 national_population_processed <- process_national_population_data(
   population_data = population_estimates_only,
-  name_replacements = name_replacements,
   hmis_countries = hmis_processed$hmis_countries
 )
 
@@ -1351,7 +1362,7 @@ if (RUN_NUTRITION_ANALYSIS) {
   
   
 } else {
-
+  
   # 3 - calculate the denominators
   denominators_national <- calculate_denominators(
     hmis_data = hmis_processed$annual_hmis,
@@ -1514,117 +1525,206 @@ if (RUN_NUTRITION_ANALYSIS) {
 }
 
 #--- Sub National Execution ----------------------------------------------------------------------------------
-# Create inverted province replacements
-province_name_replacements_inverted <- setNames(names(province_name_replacements), province_name_replacements)
 
 # Check if subnational survey data exists for this country
-has_subnational_survey <- survey_data_unified %>%
-  mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
-  mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
-  filter(admin_area_1 %in% hmis_processed$hmis_countries, admin_area_2 != "NATIONAL") %>%
-  nrow() > 0
+has_subnational_survey <- nrow(survey_data_admin2) > 0
 
 if (has_subnational_survey) {
   
-  if (RUN_NUTRITION_ANALYSIS) {
-    message("Running subnational nutrition analysis...")
+  if (RUN_MULTILEVEL_ANALYSIS) {
+    message("Running multilevel analysis: Two separate pipeline runs")
     
+    # ===== FIRST RUN: ADMIN_AREA_2 LEVEL ANALYSIS =====
+    message("1. Running pipeline for admin_area_2 level...")
+    
+    # Get admin_area_1 value for consistent labeling
     admin_area_1_value <- adjusted_volume_data %>%
       distinct(admin_area_1) %>%
       pull(admin_area_1)
     
-    adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
+    adjusted_volume_admin2 <- adjusted_volume_admin2 %>%
       mutate(admin_area_1 = admin_area_1_value)
     
-    hmis_processed_subnational <- process_hmis_adjusted_volume(
-      adjusted_volume_data = adjusted_volume_data_subnational,
-      count_col = SELECTED_COUNT_VARIABLE,
-      province_name_replacements_inverted = province_name_replacements_inverted
+    # Process using original functions (no modifications needed!)
+    hmis_processed_admin2 <- process_hmis_adjusted_volume(
+      adjusted_volume_data = adjusted_volume_admin2,
+      count_col = SELECTED_COUNT_VARIABLE
     )
     
-    survey_processed_province <- process_survey_data(
-      survey_data = survey_data_unified %>%
-        mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
-        mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
-        filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
-               admin_area_2 != "NATIONAL"),
-      name_replacements = name_replacements,
-      hmis_countries = hmis_processed_subnational$hmis_countries
+    survey_processed_admin2 <- process_survey_data(
+      survey_data = survey_data_admin2,
+      hmis_countries = hmis_processed_admin2$hmis_countries
     )
     
-    # Load nutrition denominators and calculate coverage
-    denominators_province <- load_nutrition_denominators_for_coverage(
-      hmis_data = hmis_processed_subnational$annual_hmis,
-      survey_data = survey_processed_province$carried,
-      population_data = NULL
-    )
+    if (RUN_NUTRITION_ANALYSIS) {
+      denominators_admin2 <- load_nutrition_denominators_for_coverage(
+        hmis_data = hmis_processed_admin2$annual_hmis,
+        survey_data = survey_processed_admin2$carried,
+        population_data = NULL
+      )
+      
+      nutrition_coverage_results_admin2 <- denominators_admin2 %>%
+        select(admin_area_1, admin_area_2, year, 
+               coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
+               coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+      
+      nutrition_coverage_long_admin2 <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_admin2) %>%
+        select(-admin_area_1)
+      
+    } else {
+      denominators_admin2 <- calculate_denominators(
+        hmis_data = hmis_processed_admin2$annual_hmis,
+        survey_data = survey_processed_admin2$carried
+      )
+      
+      subnational_coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
+      subnational_coverage_projected_admin2 <- project_coverage_from_all(
+        ranked_coverage = subnational_coverage_eval_admin2$full_ranking
+      )
+      
+      combined_admin2 <- prepare_combined_coverage_from_projected(
+        projected_data = subnational_coverage_projected_admin2,
+        raw_survey_wide = survey_processed_admin2$raw
+      )
+      
+      combined_admin2_export <- combined_admin2 %>%
+        filter(source_type == "independent") %>%
+        group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
+        filter(rank == min(rank, na.rm = TRUE)) %>%
+        ungroup() %>%
+        select(admin_area_2, indicator_common_id, year, coverage_cov)
+    }
     
-    # Extract nutrition coverage results  
-    nutrition_coverage_results_province <- denominators_province %>%
-      select(admin_area_1, admin_area_2, year, 
-             coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
-             coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+    message("Admin_area_2 pipeline completed")
     
-    # Pivot to long format
-    nutrition_coverage_long_province <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_province)
+    # ===== SECOND RUN: ADMIN_AREA_3 LEVEL ANALYSIS =====
+    if (!is.null(adjusted_volume_admin3) && !is.null(survey_data_admin3)) {
+      message("2. Running pipeline for admin_area_3 level...")
+      
+      adjusted_volume_admin3 <- adjusted_volume_admin3 %>%
+        mutate(admin_area_1 = admin_area_1_value)
+      
+      # Process using original functions (admin_area_3 data looks like admin_area_2 to the pipeline!)
+      hmis_processed_admin3 <- process_hmis_adjusted_volume(
+        adjusted_volume_data = adjusted_volume_admin3,
+        count_col = SELECTED_COUNT_VARIABLE
+      )
+      
+      survey_processed_admin3 <- process_survey_data(
+        survey_data = survey_data_admin3,
+        hmis_countries = hmis_processed_admin3$hmis_countries
+      )
+      
+      if (RUN_NUTRITION_ANALYSIS) {
+        denominators_admin3 <- load_nutrition_denominators_for_coverage(
+          hmis_data = hmis_processed_admin3$annual_hmis,
+          survey_data = survey_processed_admin3$carried,
+          population_data = NULL
+        )
+        
+        # RENAME BACK: admin_area_2 → admin_area_3 in results
+        nutrition_coverage_results_admin3 <- denominators_admin3 %>%
+          rename(admin_area_3 = admin_area_2) %>%  # Rename back to admin_area_3
+          select(admin_area_1, admin_area_3, year, 
+                 coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
+                 coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+        
+        nutrition_coverage_long_admin3 <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_admin3) %>%
+          select(-admin_area_1)
+        
+      } else {
+        denominators_admin3 <- calculate_denominators(
+          hmis_data = hmis_processed_admin3$annual_hmis,
+          survey_data = survey_processed_admin3$carried
+        )
+        
+        subnational_coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
+        subnational_coverage_projected_admin3 <- project_coverage_from_all(
+          ranked_coverage = subnational_coverage_eval_admin3$full_ranking
+        )
+        
+        combined_admin3 <- prepare_combined_coverage_from_projected(
+          projected_data = subnational_coverage_projected_admin3,
+          raw_survey_wide = survey_processed_admin3$raw
+        )
+        
+        # RENAME BACK: admin_area_2 → admin_area_3 in results
+        combined_admin3_export <- combined_admin3 %>%
+          filter(source_type == "independent") %>%
+          group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
+          filter(rank == min(rank, na.rm = TRUE)) %>%
+          ungroup() %>%
+          select(admin_area_2, indicator_common_id, year, coverage_cov) %>%
+          rename(admin_area_3 = admin_area_2)  # Rename back to admin_area_3
+      }
+      
+      message("Admin_area_3 pipeline completed")
+      
+    } else {
+      message("No admin_area_3 data found. Only admin_area_2 analysis completed.")
+    }
     
-    nutrition_coverage_long_province <- nutrition_coverage_long_province %>%
-      select(-admin_area_1)
-    
-    print("Subnational nutrition coverage calculated:")
-    print(head(nutrition_coverage_long_province))
+    message("Multilevel analysis completed")
     
   } else {
-    message("Subnational survey data found. Running province-level pipeline...")
+    message("Running single-level analysis...")
     
+    # Standard single-level processing using original approach
     admin_area_1_value <- adjusted_volume_data %>%
       distinct(admin_area_1) %>%
       pull(admin_area_1)
     
-    adjusted_volume_data_subnational <- adjusted_volume_data_subnational %>%
+    adjusted_volume_admin2 <- adjusted_volume_admin2 %>%
       mutate(admin_area_1 = admin_area_1_value)
     
     hmis_processed_subnational <- process_hmis_adjusted_volume(
-      adjusted_volume_data = adjusted_volume_data_subnational,
-      count_col = SELECTED_COUNT_VARIABLE,
-      province_name_replacements_inverted = province_name_replacements_inverted
+      adjusted_volume_data = adjusted_volume_admin2,
+      count_col = SELECTED_COUNT_VARIABLE
     )
     
     survey_processed_province <- process_survey_data(
-      survey_data = survey_data_unified %>%
-        mutate(admin_area_1 = dplyr::recode(admin_area_1, !!!name_replacements)) %>%
-        mutate(admin_area_2 = dplyr::recode(admin_area_2, !!!province_name_replacements_inverted)) %>%
-        filter(admin_area_1 %in% hmis_processed_subnational$hmis_countries,
-               admin_area_2 != "NATIONAL"),
-      name_replacements = name_replacements,
+      survey_data = survey_data_admin2,
       hmis_countries = hmis_processed_subnational$hmis_countries
     )
     
-    denominators_province <- calculate_denominators(
-      hmis_data = hmis_processed_subnational$annual_hmis,
-      survey_data = survey_processed_province$carried
-    )
-    
-    subnational_coverage_eval <- evaluate_coverage_by_denominator(denominators_province)
-    
-    subnational_coverage_projected <- project_coverage_from_all(
-      ranked_coverage = subnational_coverage_eval$full_ranking
-    )
-    
-    
-    combined_province <- prepare_combined_coverage_from_projected(
-      projected_data = subnational_coverage_projected,
-      raw_survey_wide = survey_processed_province$raw
-    )
-    
-    combined_province_export <- combined_province %>%
-      filter(source_type == "independent") %>%
-      group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-      filter(rank == min(rank, na.rm = TRUE)) %>%
-      ungroup() %>%
-      select(admin_area_2, indicator_common_id, year, coverage_cov)
-    
-    
+    if (RUN_NUTRITION_ANALYSIS) {
+      denominators_province <- load_nutrition_denominators_for_coverage(
+        hmis_data = hmis_processed_subnational$annual_hmis,
+        survey_data = survey_processed_province$carried,
+        population_data = NULL
+      )
+      
+      nutrition_coverage_results_province <- denominators_province %>%
+        select(admin_area_1, admin_area_2, year, 
+               coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
+               coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
+      
+      nutrition_coverage_long_province <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_province) %>%
+        select(-admin_area_1)
+      
+    } else {
+      denominators_province <- calculate_denominators(
+        hmis_data = hmis_processed_subnational$annual_hmis,
+        survey_data = survey_processed_province$carried
+      )
+      
+      subnational_coverage_eval <- evaluate_coverage_by_denominator(denominators_province)
+      subnational_coverage_projected <- project_coverage_from_all(
+        ranked_coverage = subnational_coverage_eval$full_ranking
+      )
+      
+      combined_province <- prepare_combined_coverage_from_projected(
+        projected_data = subnational_coverage_projected,
+        raw_survey_wide = survey_processed_province$raw
+      )
+      
+      combined_province_export <- combined_province %>%
+        filter(source_type == "independent") %>%
+        group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
+        filter(rank == min(rank, na.rm = TRUE)) %>%
+        ungroup() %>%
+        select(admin_area_2, indicator_common_id, year, coverage_cov)
+    }
   }
   
 } else {
@@ -1646,6 +1746,7 @@ if (RUN_NUTRITION_ANALYSIS) {
   # Save traditional results
   if (exists("combined_national_export_fixed")) {
     write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved traditional coverage results for national level")
   } else {
     message("Skipping M4_coverage_estimation.csv - not generated in traditional mode")
   }
@@ -1668,28 +1769,85 @@ if (!RUN_NUTRITION_ANALYSIS) {
   
 }
 
+#------------------------------------------------------------ Write cleaned CSVs ------------------------#
 
 # Write province CSV - either traditional or nutrition results
 if (RUN_NUTRITION_ANALYSIS) {
-  # Save nutrition results
-  if (exists("nutrition_coverage_long_province")) {
+  
+  # Save nutrition results - admin_area_2 level
+  if (exists("nutrition_coverage_long_admin2")) {
+    write.csv(nutrition_coverage_long_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved nutrition coverage results for admin_area_2 level")
+  } else if (exists("nutrition_coverage_long_province")) {
+    # Single-level fallback
     write.csv(nutrition_coverage_long_province, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved nutrition coverage results for provinces")
+    message("Saved single-level nutrition coverage results")
   } else {
-    message("No nutrition coverage results to save for provinces")
+    message("No nutrition coverage results to save for admin_area_2 level")
   }
-} else {
-  # Save traditional results
-  if (exists("combined_province_export") && nrow(combined_province_export) > 0) {
-    write.csv(combined_province_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  
+  # Save nutrition results - admin_area_3 level (if exists)
+  if (exists("nutrition_coverage_long_admin3")) {
+    write.csv(nutrition_coverage_long_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved nutrition coverage results for admin_area_3 level")
   } else {
-    dummy_data <- data.frame(
-      admin_area_2= character(),
-      indicator_common_id=character(),
+    # Create dummy nutrition file for admin_area_3
+    dummy_data_admin3_nutrition <- data.frame(
+      admin_area_3 = character(),
+      indicator_common_id = character(),
       year = numeric(),
-      coverage_cov=numeric()
+      coverage_cov = numeric()
     )
-    write.csv(dummy_data, "M4_coverage_estimation_admin_area_2.csv")
-    message("Skipping export: `combined_province_export` does not exist or is empty.")
+    write.csv(dummy_data_admin3_nutrition, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("No nutrition coverage results for admin_area_3 level - saved empty file")
   }
+  
+} else {
+  
+  # Save traditional results - admin_area_2 level
+  if (exists("combined_admin2_export") && nrow(combined_admin2_export) > 0) {
+    write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved traditional coverage results for admin_area_2 level")
+  } else if (exists("combined_province_export")) {
+    # Single-level fallback
+    if (nrow(combined_province_export) > 0) {
+      write.csv(combined_province_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+      message("Saved single-level traditional coverage results")
+    } else {
+      dummy_data_admin2 <- data.frame(
+        admin_area_2 = character(),
+        indicator_common_id = character(),
+        year = numeric(),
+        coverage_cov = numeric()
+      )
+      write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
+      message("Single-level results empty - saved empty file")
+    }
+  } else {
+    dummy_data_admin2 <- data.frame(
+      admin_area_2 = character(),
+      indicator_common_id = character(),
+      year = numeric(),
+      coverage_cov = numeric()
+    )
+    write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
+    message("No admin_area_2 traditional results - saved empty file")
+  }
+  
+  # Save traditional results - admin_area_3 level (if exists)
+  if (exists("combined_admin3_export") && nrow(combined_admin3_export) > 0) {
+    write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("Saved traditional coverage results for admin_area_3 level")
+  } else {
+    # Create dummy traditional file for admin_area_3
+    dummy_data_admin3_traditional <- data.frame(
+      admin_area_3 = character(),
+      indicator_common_id = character(),
+      year = numeric(),
+      coverage_cov = numeric()
+    )
+    write.csv(dummy_data_admin3_traditional, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+    message("No traditional coverage results for admin_area_3 level - saved empty file")
+  }
+  
 }
