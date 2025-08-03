@@ -1,15 +1,15 @@
 OUTLIER_PROPORTION_THRESHOLD <- 0.8  # Proportion threshold for outlier detection
 MINIMUM_COUNT_THRESHOLD <- 100       # Minimum count threshold for consideration
 MADS <- 10                           # Number of MADs
-GEOLEVEL <- "admin_area_3"           # Admin level used to join facilities to corresponding geo-consistency
+GEOLEVEL <- "admin_area_4"           # Admin level used to join facilities to corresponding geo-consistency
 DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
-PROJECT_DATA_HMIS <- "hmis_nigeria.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 27
+# Last edit: 2025 Aug 2
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -35,9 +35,11 @@ all_consistency_pairs <- list(
   pair_malaria  = c("rdt_positive_plus_micro", "confirmed_malaria_treated_with_act")
 )
 
+
+# Edit July 30 - for anc and penta.. allow the later contact to be up to 5% higher before flagging as inconsistent
 all_consistency_ranges <- list(
-  pair_penta    = c(lower = 1, upper = Inf),
-  pair_anc      = c(lower = 1, upper = Inf),
+  pair_penta    = c(lower = 0.95, upper = Inf),
+  pair_anc      = c(lower = 0.95, upper = Inf),
   pair_delivery = c(lower = 0.7, upper = 1.3),
   pair_malaria  = c(lower = 0.9, upper = 1.1)
 )
@@ -78,8 +80,8 @@ load_and_preprocess_data <- function(file_path) {
   
   data <- read.csv(file_path) %>%
     mutate(
-      date = as.Date(paste(year, month, "1", sep = "-")),
-      panelvar = paste(indicator_common_id, facility_id, sep = "_")
+      date = as.Date(paste(year, month, "1", sep = "-"))
+      #,panelvar = paste(indicator_common_id, facility_id, sep = "_")
     )
   
   geo_cols <- colnames(data)[grepl("^admin_area_", colnames(data))]
@@ -104,6 +106,8 @@ load_and_preprocess_data <- function(file_path) {
   
   return(list(data = data, geo_cols = geo_cols))
 }
+
+
 # Function to validate admin areas for result objects
 detect_admin_cols <- function(data) {
   geo_cols_export <- grep("^admin_area_[2-9]$", colnames(data), value = TRUE)
@@ -190,7 +194,7 @@ outlier_analysis <- function(data, geo_cols, outlier_params) {
   # Step 5: Select relevant columns for output
   print("Selecting relevant columns for output...")
   outlier_data <- data %>%
-    select(facility_id, all_of(geo_cols), indicator_common_id, year, month, count, 
+    dplyr::select(facility_id, all_of(geo_cols), indicator_common_id, year, month, count, 
            median_volume, mad_volume, mad_residual, outlier_mad, pc, outlier_flag)
   
   # Step 6: Bring back period_id and quarter_id from original data
@@ -304,6 +308,7 @@ geo_consistency_analysis <- function(data, geo_cols, geo_level, consistency_para
   
   return(combined_data)
 }
+
 expand_geo_consistency_to_facilities <- function(facility_metadata, geo_consistency_results, geo_level) {
   print(paste("Expanding geo-level consistency results using:", geo_level, "..."))
   # Detect all available geographic levels in `facility_metadata`
@@ -598,11 +603,11 @@ print(paste("DQA indicators selected:", ifelse(length(dqa_indicators_to_use) > 0
 print("Running outlier analysis...")
 outlier_data_main <- outlier_analysis(data, geo_cols, outlier_params)
 
-# Run Completeness Analysis
+# Prepare Completeness Analysis
 print("Running completeness analysis...")
 completeness_results <- process_completeness(outlier_data_main)
 
-# Handle consistency analysis
+# Run consistency analysis
 geo_cols_filtered <- setdiff(geo_cols, "facility_id")
 
 # Extract unique facilities and their geo/admin_area columns
@@ -709,10 +714,12 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
   
   # Prepare geo-level output
   if (!is.null(geo_consistency_results) && nrow(geo_consistency_results) > 0) {
+    # Detect available admin columns dynamically
+    geo_cols_for_export <- detect_admin_cols(geo_consistency_results)
+    
     geo_consistency_export <- geo_consistency_results %>%
       select(
-        admin_area_3,
-        admin_area_2,
+        all_of(geo_cols_for_export),  # Dynamic geo columns
         period_id,
         quarter_id,
         year,
@@ -721,7 +728,7 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
       )
     write.csv(geo_consistency_export, "M1_output_consistency_geo.csv", row.names = FALSE)
   } else {
-    # Create dummy geo consistency data
+    # Create dummy geo consistency data with fallback admin columns
     dummy_geo_consistency <- data.frame(
       admin_area_3 = character(0),
       admin_area_2 = character(0),
@@ -735,11 +742,14 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
   }
   
   # Prepare facility-level output
+  # Detect available admin columns dynamically
+  facility_geo_cols_for_export <- detect_admin_cols(facility_consistency_results)
+  print(facility_geo_cols_for_export)
+  
   facility_consistency_export <- facility_consistency_results %>%
     select(
       facility_id,
-      admin_area_3,
-      admin_area_2,
+      all_of(facility_geo_cols_for_export),  # Dynamic geo columns
       period_id,
       quarter_id,
       year,
@@ -751,7 +761,7 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
 } else {
   print("No consistency results to save - creating dummy files with headers...")
   
-  # Create dummy geo consistency data
+  # Create dummy geo consistency data with fallback admin columns
   dummy_geo_consistency <- data.frame(
     admin_area_3 = character(0),
     admin_area_2 = character(0),
@@ -763,8 +773,8 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
   )
   write.csv(dummy_geo_consistency, "M1_output_consistency_geo.csv", row.names = FALSE)
   
-  # Create dummy facility consistency data with dynamic geo columns
-  dummy_facility_consistency_cols <- list(
+  # Create dummy facility consistency data with fallback admin columns
+  dummy_facility_consistency <- data.frame(
     facility_id = character(0),
     admin_area_3 = character(0),
     admin_area_2 = character(0),
@@ -774,17 +784,6 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
     ratio_type = character(0),
     sconsistency = integer(0)
   )
-  
-  # Add any additional geo columns that exist
-  if (length(geo_columns_export) > 0) {
-    for (geo_col in geo_columns_export) {
-      if (!geo_col %in% names(dummy_facility_consistency_cols)) {
-        dummy_facility_consistency_cols[[geo_col]] <- character(0)
-      }
-    }
-  }
-  
-  dummy_facility_consistency <- data.frame(dummy_facility_consistency_cols)
   write.csv(dummy_facility_consistency, "M1_output_consistency_facility.csv", row.names = FALSE)
 }
 
@@ -889,24 +888,24 @@ dqa_cols <- c(
   "dqa_score NUMERIC NOT NULL"
 )
 
-consistency_fac_cols <- c(
-  "facility_id TEXT NOT NULL",
-  geo_fixed_geo_cols,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "ratio_type TEXT NOT NULL",
-  "sconsistency INTEGER NOT NULL"
-)
-
-consistency_geo_cols <- c(
-  geo_fixed_geo_cols,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "ratio_type TEXT NOT NULL",
-  "sconsistency INTEGER"
-)
+# consistency_fac_cols <- c(
+#   "facility_id TEXT NOT NULL",
+#   geo_fixed_geo_cols,
+#   "period_id INTEGER NOT NULL",
+#   "quarter_id INTEGER NOT NULL",
+#   "year INTEGER NOT NULL",
+#   "ratio_type TEXT NOT NULL",
+#   "sconsistency INTEGER NOT NULL"
+# )
+# 
+# consistency_geo_cols <- c(
+#   geo_fixed_geo_cols,
+#   "period_id INTEGER NOT NULL",
+#   "quarter_id INTEGER NOT NULL",
+#   "year INTEGER NOT NULL",
+#   "ratio_type TEXT NOT NULL",
+#   "sconsistency INTEGER"
+# )
 
 
 sql_output <- c(
@@ -918,3 +917,4 @@ sql_output <- c(
 )
 
 writeLines(sql_output, "M1_sql_schema_output.txt")
+
