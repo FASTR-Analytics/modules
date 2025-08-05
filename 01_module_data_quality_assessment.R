@@ -9,7 +9,7 @@ PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Aug 2
+# Last edit: 2025 Aug 5
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -840,81 +840,3 @@ if (run_dqa && !is.null(dqa_results) && nrow(dqa_results) > 0) {
 }
 
 print("DQA Analysis completed. All outputs saved (with dummy files where no data available).")
-# -------------------------------- Generate SQL Schemas for M1 Outputs --------------------------------
-
-# Function to generate CREATE TABLE SQL
-generate_sql_schema <- function(table_name, columns) {
-  sql_lines <- paste0("  ", columns)
-  sql <- c(
-    paste0("CREATE TABLE ", table_name, " ("),
-    paste(sql_lines, collapse = ",\n"),
-    ");\n"
-  )
-  return(paste(sql, collapse = "\n"))
-}
-
-
-geo_cols_sql <- paste0(geo_columns_export, " TEXT NOT NULL")  # turn into SQL types
-geo_fixed_geo_cols <- c("admin_area_3 TEXT NOT NULL", "admin_area_2 TEXT NOT NULL")
-
-
-outlier_cols <- c(
-  "facility_id TEXT NOT NULL",
-  geo_cols_sql,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "indicator_common_id TEXT NOT NULL",
-  "outlier_flag INTEGER NOT NULL"
-)
-
-completeness_cols <- c(
-  "facility_id TEXT NOT NULL",
-  geo_cols_sql,
-  "indicator_common_id TEXT NOT NULL",
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "completeness_flag INTEGER NOT NULL"
-)
-
-dqa_cols <- c(
-  "facility_id TEXT NOT NULL",
-  geo_cols_sql,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "dqa_mean NUMERIC NOT NULL",
-  "dqa_score NUMERIC NOT NULL"
-)
-
-# consistency_fac_cols <- c(
-#   "facility_id TEXT NOT NULL",
-#   geo_fixed_geo_cols,
-#   "period_id INTEGER NOT NULL",
-#   "quarter_id INTEGER NOT NULL",
-#   "year INTEGER NOT NULL",
-#   "ratio_type TEXT NOT NULL",
-#   "sconsistency INTEGER NOT NULL"
-# )
-# 
-# consistency_geo_cols <- c(
-#   geo_fixed_geo_cols,
-#   "period_id INTEGER NOT NULL",
-#   "quarter_id INTEGER NOT NULL",
-#   "year INTEGER NOT NULL",
-#   "ratio_type TEXT NOT NULL",
-#   "sconsistency INTEGER"
-# )
-
-
-sql_output <- c(
-  generate_sql_schema("ro_m1_output_outliers_csv", outlier_cols),
-  generate_sql_schema("ro_m1_completeness_csv", completeness_cols),
-  generate_sql_schema("ro_m1_dqa_csv", dqa_cols),
-  generate_sql_schema("ro_m1_consistency_facility_csv", consistency_fac_cols),
-  generate_sql_schema("ro_m1_consistency_geo_csv", consistency_geo_cols)
-)
-
-writeLines(sql_output, "M1_sql_schema_output.txt")
-
