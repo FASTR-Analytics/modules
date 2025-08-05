@@ -1,9 +1,9 @@
 
-PROJECT_DATA_HMIS <- "hmis_nigeria_june.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
 
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2025 June 23
+# Last edit: 2025 Aug 5
 
 # This script dynamically adjusts raw data for:
 #   1. Outliers: Replaces flagged outliers with 12-month rolling averages (excluding outliers).
@@ -279,72 +279,3 @@ fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv", na = "
 fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv",   na = "NA")
 
 print("Adjustments completed and all outputs saved.")
-
-
-
-# ------------------- Generate SQL CREATE TABLE Statements for M2 Outputs ------------------------
-
-# Function to generate CREATE TABLE SQL
-generate_sql_schema <- function(table_name, columns) {
-  sql_lines <- paste0("  ", columns)
-  sql <- c(
-    paste0("CREATE TABLE ", table_name, " ("),
-    paste(sql_lines, collapse = ",\n"),
-    ");\n"
-  )
-  return(paste(sql, collapse = "\n"))
-}
-
-# Get SQL-ready admin area columns
-geo_columns_export_sql <- paste0(geo_admin_area_sub, " TEXT NOT NULL")
-geo_columns_national_sql <- "admin_area_1 TEXT NOT NULL"
-
-# Facility-level SQL columns
-adjusted_facility_sql_cols <- c(
-  "facility_id TEXT NOT NULL",
-  geo_columns_export_sql,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "indicator_common_id TEXT NOT NULL",
-  "count_final_none NUMERIC",
-  "count_final_outliers NUMERIC",
-  "count_final_completeness NUMERIC",
-  "count_final_both NUMERIC"
-)
-
-# Subnational-level SQL columns
-adjusted_admin_sql_cols <- c(
-  geo_columns_export_sql,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "indicator_common_id TEXT NOT NULL",
-  "count_final_none NUMERIC",
-  "count_final_outliers NUMERIC",
-  "count_final_completeness NUMERIC",
-  "count_final_both NUMERIC"
-)
-
-# National-level SQL columns
-adjusted_national_sql_cols <- c(
-  geo_columns_national_sql,
-  "period_id INTEGER NOT NULL",
-  "quarter_id INTEGER NOT NULL",
-  "year INTEGER NOT NULL",
-  "indicator_common_id TEXT NOT NULL",
-  "count_final_none NUMERIC",
-  "count_final_outliers NUMERIC",
-  "count_final_completeness NUMERIC",
-  "count_final_both NUMERIC"
-)
-
-# Build SQL schema
-sql_output <- c(
-  generate_sql_schema("m2_adjusted_data", adjusted_facility_sql_cols),
-  generate_sql_schema("m2_adjusted_data_admin_area", adjusted_admin_sql_cols),
-  generate_sql_schema("m2_adjusted_data_national", adjusted_national_sql_cols)
-)
-
-# Write SQL schema to file
-writeLines(sql_output, "M2_sql_schema_output.txt")
