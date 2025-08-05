@@ -17,15 +17,15 @@ RISE_THRESHOLD <- 1 / DIP_THRESHOLD  # Threshold for rises: a month is flagged i
 DIFFPERCENT <- 10                    # Difference threshold (in percent): if the actual volume differs from the predicted
                                      # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- FALSE          # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
-                                     # Set to FALSE for faster runtime.
+RUN_DISTRICT_MODEL <- TRUE          # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+                                    # Set to FALSE for faster runtime.
 
 
 
-PROJECT_DATA_HMIS <- "ethiopia_hmis_data.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 June 4
+# Last edit: 2025 Aug 5
 # Module: SERVICE UTILIZATION
 
 
@@ -66,10 +66,13 @@ library(tidyr)
 print("Loading data for control chart analysis...")
 raw_data <- read.csv(PROJECT_DATA_HMIS)
 outlier_data <- read.csv("M1_output_outliers.csv")
-data_utilization <- read.csv("M2_adjusted_data_admin_area.csv")        # adjusted data aggregated at the lowest geo level, used for visualization
-data <- read.csv("M2_adjusted_data.csv")                               # data with outliers tagged 
-data_adjusted <- data
+data <- read.csv("M2_adjusted_data.csv")
 
+
+admin_area_1_lookup <- raw_data %>%
+  dplyr::distinct(facility_id, admin_area_1)
+rm(raw_data)
+gc()
 
 print("Preparing data for province-level control chart analysis...")
 
@@ -87,7 +90,8 @@ data <- data %>%
     count_model = .data[[SELECTEDCOUNT]]
   ) %>%
   filter(outlier_flag != 1)
-
+rm(outlier_data)
+gc()
 
 print("Assigning panel IDs...")
 data <- data %>%
@@ -248,9 +252,10 @@ for(panel in panel_list) {
   results_list[[as.character(panel)]] <- panel_results
 }
 
-final_results <- bind_rows(results_list)
+M3_chartout <- bind_rows(results_list)
 
-M3_chartout <- final_results
+rm(results_list)
+gc()
 print("Control chart analysis complete")
 
 #-------------------------------------------------------------------------------------------------------------
@@ -260,10 +265,11 @@ print("Control chart analysis complete")
 print("Loading and preparing data for disruption analysis...")
 # Select only necessary columns from M3_chartout to avoid duplication
 
-M3_chartout_selected <- final_results %>%
+M3_chartout_selected <- M3_chartout %>%
   dplyr::select(date, indicator_common_id, admin_area_2, tagged)
 
 
+rm(M3_chartout)
 # Merge without duplicating columns
 data_disruption <- data %>%
   left_join(M3_chartout_selected, by = c("date", "indicator_common_id", "admin_area_2")) %>%
@@ -351,6 +357,8 @@ for (indicator in indicators) {
 
 # Combine all indicator-level results
 indicator_results_long <- dplyr::bind_rows(indicator_results_list)
+rm(indicator_results_list)
+gc()
 
 # Merge indicator-level results into main dataset
 data_disruption <- data_disruption %>%
@@ -366,18 +374,18 @@ data_disruption <- data_disruption %>%
 
 print("Indicator-level regression complete.")
 
-
+rm(indicator_data)
+rm(indicator_results_long)
+gc()
 
 # Step 4b: Run Regression for Each Indicator × Province ------------------------
 print("Running regressions at the province level...")
 
 province_results_list <- list()  # Initialize list for storing results
 
-province_results_list <- list()
-
 for (indicator in indicators) {
   for (province in provinces) {
-    print(paste("Processing:", indicator, "in province:", province))
+    print(paste("Processing:", indicator, "in region:", province))
     
     province_data <- data_disruption %>%
       filter(indicator_common_id == indicator, admin_area_2 == province) %>%
@@ -447,8 +455,11 @@ for (indicator in indicators) {
 }
 
 
+
 # Combine all province-level results into one dataframe
 province_results_long <- dplyr::bind_rows(province_results_list)
+rm(province_results_list)
+gc()
 
 # Merge province-level results into main dataset
 data_disruption <- data_disruption %>%
@@ -463,8 +474,8 @@ data_disruption <- data_disruption %>%
   )
 
 print("Province-level regression complete.")
-
-
+rm(province_results_long)
+gc()
 
 # Step 4b: Run Regression for Each Indicator × District ------------------------
 if (RUN_DISTRICT_MODEL) {
@@ -475,7 +486,7 @@ if (RUN_DISTRICT_MODEL) {
   
   for (indicator in indicators) {
     for (district in districts) {
-      print(paste("Processing:", indicator, "in district:", district))
+      print(paste("Processing:", indicator, "in region:", district))
       
       district_data <- data_disruption %>%
         filter(indicator_common_id == indicator, admin_area_3 == district) %>%
@@ -487,9 +498,9 @@ if (RUN_DISTRICT_MODEL) {
       }
       
       model_district <- tryCatch(
-        feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")),
+        feols(as.formula(paste(SELECTEDCOUNT, "~ date + tagged")),
               data = district_data,
-              cluster = ~admin_area_3),
+              cluster = ~admin_area_4),
         error = function(e) {
           print(paste("Regression failed for:", indicator, "in", district, "Error:", e$message))
           return(NULL)
@@ -535,7 +546,8 @@ if (RUN_DISTRICT_MODEL) {
   district_results_long <- dplyr::bind_rows(district_results_list)
   
   print("District-level regression analysis complete!")
-  
+  rm(district_results_list)
+  gc()
   data_disruption <- data_disruption %>%
     dplyr::left_join(
       district_results_long %>%
@@ -546,24 +558,18 @@ if (RUN_DISTRICT_MODEL) {
       by = c("facility_id", "date", "indicator_common_id", "admin_area_3")
     )
   
+  rm(district_results_long)
+  gc()
+  
   print("District-level regression results merged into main dataset.")
 }
-
-
-
-
 
 #-------------------------------------------------------------------------------------------------------------
 # STEP 3: PREPARE RESULTS FOR VISUALIZATION
 #-------------------------------------------------------------------------------------------------------------
-# Convert period_id first
-admin_area_1_lookup <- raw_data %>%
-  dplyr::distinct(facility_id, admin_area_1)
-
 data_disruption <- data_disruption %>%
   dplyr::left_join(admin_area_1_lookup, by = "facility_id") %>%
   dplyr::mutate(period_id = as.integer(format(as.Date(date), "%Y%m")))
-
 
 
 summary_disruption_admin1 <- data_disruption %>%
@@ -591,6 +597,7 @@ summary_disruption_admin1 <- data_disruption %>%
     .groups = "drop"
   )
 
+gc()
 
 summary_disruption_admin2 <- data_disruption %>%
   group_by(admin_area_2, period_id, indicator_common_id) %>%
@@ -648,9 +655,25 @@ if (RUN_DISTRICT_MODEL) {
     )
 }
 
+rm(data_disruption)
+
 # Step 5: Save Outputs ----------------------------------------------------------
 print("Saving results...")
+# Load and save adjusted data at the very end to avoid memory issues
+print("Reloading adjusted data and writing service utilization output...")
+data_adjusted <- read.csv("M2_adjusted_data.csv", colClasses = c(
+  facility_id = "character",
+  indicator_common_id = "character",
+  period_id = "integer",
+  admin_area_2 = "character",
+  admin_area_3 = "character",
+  count_final_none = "numeric",
+  count_final_completeness = "numeric"
+))
 write.csv(data_adjusted, "M3_service_utilization.csv", row.names = FALSE)
+gc()
+
+rm(data_adjusted)
 
 M3_chartout_export <- M3_chartout_selected %>%
   mutate(
@@ -707,21 +730,49 @@ write.csv(summary_disruption_admin2_export, "M3_disruptions_analysis_admin_area_
 
 # Summary Disruptions - Admin Area 3 (Optional)
 if (RUN_DISTRICT_MODEL) {
-  summary_disruption_admin3_export <- summary_disruption_admin3 %>%
-    mutate(
-      year = as.integer(period_id %/% 100),
-      quarter = ((period_id %% 100 - 1) %/% 3) + 1,
-      quarter_id = sprintf("%d%02d", year, quarter)
-    ) %>%
-    dplyr::select(admin_area_3, 
-                  indicator_common_id, 
-                  period_id, 
-                  quarter_id, 
-                  year, 
-                  count_sum,
-                  count_expect_sum,
-                  count_expected_if_above_diff_threshold)
-  
+  if (exists("summary_disruption_admin3") && nrow(summary_disruption_admin3) > 0) {
+    summary_disruption_admin3_export <- summary_disruption_admin3 %>%
+      mutate(
+        year = as.integer(period_id %/% 100),
+        quarter = ((period_id %% 100 - 1) %/% 3) + 1,
+        quarter_id = sprintf("%d%02d", year, quarter)
+      ) %>%
+      dplyr::select(
+        admin_area_3,
+        indicator_common_id,
+        period_id,
+        quarter_id,
+        year,
+        count_sum,
+        count_expect_sum,
+        count_expected_if_above_diff_threshold
+      )
+  } else {
+    summary_disruption_admin3_export <- data.frame(
+      admin_area_3 = character(0),
+      indicator_common_id = character(0),
+      period_id = integer(0),
+      quarter_id = character(0),
+      year = integer(0),
+      count_sum = numeric(0),
+      count_expect_sum = numeric(0),
+      count_expected_if_above_diff_threshold = numeric(0)
+    )
+  }
   write.csv(summary_disruption_admin3_export, "M3_disruptions_analysis_admin_area_3.csv", row.names = FALSE)
+  
+} else {
+  # Always write dummy file if model is not run
+  dummy_disruption_admin3 <- data.frame(
+    admin_area_3 = character(0),
+    indicator_common_id = character(0),
+    period_id = integer(0),
+    quarter_id = character(0),
+    year = integer(0),
+    count_sum = numeric(0),
+    count_expect_sum = numeric(0),
+    count_expected_if_above_diff_threshold = numeric(0)
+  )
+  write.csv(dummy_disruption_admin3, "M3_disruptions_analysis_admin_area_3.csv", row.names = FALSE)
 }
 
