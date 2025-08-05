@@ -11,9 +11,6 @@ DIP_THRESHOLD <- 0.90                # Threshold for dips: a month is flagged if
                                      # 90% of the smoothed expected volume (i.e., a ≥10% drop).
                                      # Set to 0.80 for a more conservative detection -> to flag big drops.
 
-RISE_THRESHOLD <- 1 / DIP_THRESHOLD  # Threshold for rises: a month is flagged if actual count exceeds
-                                     # ~111% of expected volume (i.e., a ≥10% rise). Mirrors the dip logic.
-
 DIFFPERCENT <- 10                    # Difference threshold (in percent): if the actual volume differs from the predicted
                                      # volume by more than ±10%, use the predicted value in plotting disruptions.
 
@@ -63,6 +60,13 @@ library(tidyr)
 #-------------------------------------------------------------------------------------------------------------
 # STEP 1: CONTROL CHART ANALYSIS
 #-------------------------------------------------------------------------------------------------------------
+
+
+
+RISE_THRESHOLD <- 1 / DIP_THRESHOLD  # Threshold for rises: a month is flagged if actual count exceeds
+                                     # ~111% of expected volume (i.e., a ≥10% rise). Mirrors the dip logic.
+
+
 print("Loading data for control chart analysis...")
 raw_data <- read.csv(PROJECT_DATA_HMIS)
 outlier_data <- read.csv("M1_output_outliers.csv")
