@@ -19,7 +19,7 @@ POPULATION_ASSET <- "total_population.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: RMNCAH SCORECARD CALCULATION
-# Last edit: 2025 July 27
+# Last edit: 2025 Aug 8
 
 # This module calculates the 25 RMNCAH scorecard indicators (as per the Excel template)
 
@@ -545,49 +545,3 @@ q1_summary <- create_q1_summary_table(adjusted_data, population)
 # Save output files
 write_csv(combined_scorecard, "M5_scorecard_combined.csv")
 write_csv(q1_summary, "M5_Q1_2025_summary_with_2024_population.csv")
-
-# -------------------------------- Generate SQL Schemas --------------------------------
-# M5 scorecard schema
-scorecard_cols <- c(
-  "admin_area_2 TEXT NOT NULL",
-  "quarter_id INTEGER NOT NULL", 
-  "year INTEGER NOT NULL",
-  "indicator_common_id TEXT NOT NULL",
-  "value NUMERIC"
-)
-
-scorecard_sql <- generate_sql_schema("ro_m5_scorecard_combined_csv", scorecard_cols)
-
-# Q1 summary schema
-q1_summary_base_cols <- c(
-  "admin_area_2 TEXT NOT NULL",
-  "avg_population_q4_2024 NUMERIC NOT NULL"
-)
-
-if(exists("q1_summary") && nrow(q1_summary) > 0) {
-  indicator_cols <- names(q1_summary)[!names(q1_summary) %in% c("admin_area_2", "avg_population_q4_2024")]
-  indicator_sql_cols <- paste0(indicator_cols, " NUMERIC")
-  q1_summary_all_cols <- c(q1_summary_base_cols, indicator_sql_cols)
-} else {
-  q1_summary_all_cols <- c(q1_summary_base_cols, "-- Add indicator columns as NUMERIC based on your data")
-}
-
-q1_summary_sql <- generate_sql_schema("ro_m5_scorecard_data_summary_csv", q1_summary_all_cols)
-
-# Write combined SQL schemas
-combined_sql_output <- c(
-  "-- M5 Scorecard Combined Table",
-  scorecard_sql,
-  "",
-  "-- M5 Scorecard Data Summary Table", 
-  q1_summary_sql
-)
-
-writeLines(combined_sql_output, "M5_sql_schema_output.txt")
-
-message(sprintf("Scorecard completed: %d states + national level saved", 
-                length(unique(state_scorecard$admin_area_2))))
-message("Files created:")
-message("- M5_scorecard_combined.csv (states + national)")
-message("- M5_scorecard_data_summary.csv (Q1 summary)")
-message("- M5_sql_schema_output.txt (SQL schemas)")
