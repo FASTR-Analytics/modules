@@ -4,15 +4,8 @@ PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2025 Aug 5
+# Last edit: 2025 Aug 8
 
-# This script dynamically adjusts raw data for:
-#   1. Outliers: Replaces flagged outliers with 12-month rolling averages (excluding outliers).
-#   2. Completeness: Replaces missing count with 12-month rolling averages (excluding outliers).
-
-# Ce script ajuste dynamiquement les données brutes pour :
-#   1. Les valeurs aberrantes : Remplace les valeurs identifiées comme aberrantes par une moyenne mobile sur 12 mois (hors valeurs aberrantes).
-#   2. L'exhaustivité : Remplace les valeurs manquantes par une moyenne mobile sur 12 mois (hors valeurs aberrantes).
 
 # -------------------------- KEY OUTPUT ----------------------------------------------------------------------
 # FILE: M2_adjusted_data.csv              # Dataset including facility-level adjusted volumes for all adjustment scenarios.
@@ -73,7 +66,7 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
       roll6 = frollmean(valid_count, 6, na.rm = TRUE, align = "center"),
       fwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "left"),
       bwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "right"),
-      fallback = median(valid_count, na.rm = TRUE)
+      fallback = mean(valid_count, na.rm = TRUE)
     ), by = .(facility_id, indicator_common_id)]
     
     # Fixed logic: Check each method sequentially for outliers
@@ -102,7 +95,7 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
     message("     Forward-filled: ", sum(data_adj$adj_method == "forward", na.rm = TRUE))
     message("     Backward-filled: ", sum(data_adj$adj_method == "backward", na.rm = TRUE))
     message("     Same-month fallback: ", sum(data_adj$adj_method == "same_month_last_year", na.rm = TRUE))
-    message("     Fallback (median): ", sum(data_adj$adj_method == "fallback", na.rm = TRUE))
+    message("     Fallback (mean): ", sum(data_adj$adj_method == "fallback", na.rm = TRUE))
     message("   -> Outlier adjustment complete")
     
     data_adj[, c("roll6", "fwd6", "bwd6", "fallback", "valid_count", "month", "year") := NULL]
