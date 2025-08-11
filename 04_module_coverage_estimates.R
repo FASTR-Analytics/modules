@@ -20,12 +20,12 @@ NUTRITION_DENOMINATORS_NATIONAL <-"ng_national_denominators_corrected.csv"
 CHMIS_NATIONAL <- "chmis_national_for_module4.csv"
 CHMIS_SUBNATIONAL <- "chmis_admin_area_for_module4.csv"
 
-RUN_MULTILEVEL_ANALYSIS <- TRUE  # Set to FALSE if no Geopolitical Areas in hmis data
+RUN_MULTILEVEL_ANALYSIS <- FALSE  # Set to FALSE if no Geopolitical Areas in hmis data
 
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Aug 3
+# Last edit: 2025 Aug 11
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -93,7 +93,16 @@ if (RUN_MULTILEVEL_ANALYSIS) {
   # Use original data as-is for backward compatibility
   adjusted_volume_admin2 <- adjusted_volume_data_subnational
   survey_data_admin2 <- survey_data_unified %>%
-    filter(admin_area_2 != "NATIONAL" & admin_area_2 != "ZONE")
+    mutate(
+      admin_area_2 = ifelse(
+        admin_area_2 == "ZONE" & !is.na(admin_area_3) & admin_area_3 != "",
+        str_squish(admin_area_3),  # take the province name from admin_area_3
+        str_squish(admin_area_2)   # otherwise keep admin_area_2 as is
+      )
+    ) %>%
+    filter(admin_area_2 != "NATIONAL") %>%  # only drop national totals
+    select(-admin_area_3)                   # no need for admin_area_3 anymore
+  
   
   # No admin_area_3 processing in single-level mode
   adjusted_volume_admin3 <- NULL
