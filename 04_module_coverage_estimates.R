@@ -10,22 +10,15 @@ P1_NMR <- 0.041      #Default = 0.03
 P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
-
 PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
-NUTRITION_DENOMINATORS_PROVINCE <-"ng_province_denominators_corrected.csv"      
-NUTRITION_DENOMINATORS_NATIONAL <-"ng_national_denominators_corrected.csv"
 
-CHMIS_NATIONAL <- "chmis_national_for_module4.csv"
-CHMIS_SUBNATIONAL <- "chmis_admin_area_for_module4.csv"
-
-RUN_MULTILEVEL_ANALYSIS <- FALSE  # Set to FALSE if no Geopolitical Areas in hmis data
-
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Aug 11
+# Last edit: 2025 Aug 12
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -35,7 +28,6 @@ library(zoo)
 library(stringr)     
 library(purrr)
 
-
 # ------------------------------ Define File Paths -----------------------------
 # Input Datasets
 adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
@@ -43,313 +35,67 @@ adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", 
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
+# ------------------------------ Prepare Data for Analysis -------------------------
+message("Analysis mode: ", ANALYSIS_LEVEL)
 
-# ------------------------------ Define File Paths -----------------------------
-# Input Datasets
-adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
-adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
-survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
-population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
+# Always run national analysis
+survey_data_national <- survey_data_unified %>% filter(admin_area_2 == "NATIONAL")
 
-# ------------------------------ Prepare Data for Multilevel Analysis -------------------------
+# Initialize subnational variables
+hmis_data_subnational <- NULL
+survey_data_subnational <- NULL
+combined_admin2_export <- NULL
+combined_admin3_export <- NULL
 
-if (RUN_MULTILEVEL_ANALYSIS) {
-  message("Preparing data for multilevel analysis...")
+# Validate and prepare subnational data based on ANALYSIS_LEVEL
+if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
   
-  # ===== ADMIN_AREA_2 LEVEL DATA (Original structure) =====
-  adjusted_volume_admin2 <- adjusted_volume_data_subnational
+  # First check: Do we have any subnational survey data?
+  survey_data_subnational <- survey_data_unified %>% filter(admin_area_2 != "NATIONAL")
   
-  survey_data_admin2 <- survey_data_unified %>%
-    filter(admin_area_2 != "NATIONAL" & admin_area_2 != "ZONE")
-  
-  
-  # ===== ADMIN_AREA_3 LEVEL DATA (Reshaped for pipeline compatibility) =====
-  # Check if admin_area_3 data exists
-  has_admin3_data <- "admin_area_3" %in% names(adjusted_volume_data_subnational) &&
-    "admin_area_3" %in% names(survey_data_unified)
-  
-  if (has_admin3_data) {
-    # HMIS data: Drop admin_area_2, rename admin_area_3 to admin_area_2
-    adjusted_volume_admin3 <- adjusted_volume_data_subnational %>%
-      filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
-      select(-admin_area_2) %>%  # Drop original admin_area_2
-      rename(admin_area_2 = admin_area_3)  # Rename admin_area_3 to admin_area_2 for pipeline
-    
-    # Survey data: Drop admin_area_2, rename admin_area_3 to admin_area_2  
-    survey_data_admin3 <- survey_data_unified %>%
-      filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "NATIONAL" & admin_area_3 != "ZONE") %>%
-      select(-admin_area_2) %>%  # Drop original admin_area_2
-      rename(admin_area_2 = admin_area_3)  # Rename admin_area_3 to admin_area_2 for pipeline
-    
-    
+  if (nrow(survey_data_subnational) == 0) {
+    warning("SAFEGUARD: No subnational survey data found. Falling back to: NATIONAL_ONLY")
+    original_level <- ANALYSIS_LEVEL
+    ANALYSIS_LEVEL <- "NATIONAL_ONLY"
+    hmis_data_subnational <- NULL
+    survey_data_subnational <- NULL
   } else {
     
-    adjusted_volume_admin3 <- NULL
-    survey_data_admin3 <- NULL
+    # Check if admin_area_3 data can be used for NATIONAL_PLUS_AA2_AA3
+    if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3") {
+      has_admin3_hmis <- "admin_area_3" %in% names(adjusted_volume_data_subnational)
+      
+      if (has_admin3_hmis) {
+        hmis_admin3_values <- adjusted_volume_data_subnational %>%
+          filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+          distinct(admin_area_3) %>% pull(admin_area_3)
+        
+        survey_admin2_values <- survey_data_subnational %>%
+          distinct(admin_area_2) %>% pull(admin_area_2)
+        
+        matching_areas <- intersect(hmis_admin3_values, survey_admin2_values)
+        has_usable_admin3 <- length(matching_areas) > 0
+        
+        if (length(matching_areas) > 0) {
+          message("✓ admin_area_3 validation passed: ", length(matching_areas), "/", length(hmis_admin3_values), " areas match")
+        }
+      } else {
+        has_usable_admin3 <- FALSE
+      }
+      
+      if (!has_usable_admin3) {
+        warning("SAFEGUARD: admin_area_3 data not usable. Falling back to: NATIONAL_PLUS_AA2")
+        original_level <- ANALYSIS_LEVEL
+        ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"
+      }
+    }
+    
+    # Prepare HMIS data based on final analysis level
+    hmis_data_subnational <- adjusted_volume_data_subnational
   }
-  
-} else {
-  message("Single-level analysis mode - using original data structure")
-  # Use original data as-is for backward compatibility
-  adjusted_volume_admin2 <- adjusted_volume_data_subnational
-  survey_data_admin2 <- survey_data_unified %>%
-    mutate(
-      admin_area_2 = ifelse(
-        admin_area_2 == "ZONE" & !is.na(admin_area_3) & admin_area_3 != "",
-        str_squish(admin_area_3),  # take the province name from admin_area_3
-        str_squish(admin_area_2)   # otherwise keep admin_area_2 as is
-      )
-    ) %>%
-    filter(admin_area_2 != "NATIONAL") %>%  # only drop national totals
-    select(-admin_area_3)                   # no need for admin_area_3 anymore
-  
-  
-  # No admin_area_3 processing in single-level mode
-  adjusted_volume_admin3 <- NULL
-  survey_data_admin3 <- NULL
 }
 
-
-# ------------------------------ Load CHMIS Data -------------------------------
-# Auto-detect nutrition analysis based on available indicators
-RUN_NUTRITION_ANALYSIS <- any(c("deworming", "mnp", "vitamina", 
-                                "ors_zinc", "iptp1", "iptp2", 
-                                "iptp3", "iron_anc", "ipt1", 
-                                "ipt2", "ipt3", "orszinc", "haematinics") %in% adjusted_volume_data$indicator_common_id)
-
-
-# Only load CHMIS data if running nutrition analysis
-if (RUN_NUTRITION_ANALYSIS) {
-  # Initialize CHMIS data variables
-  chmis_data_national <- NULL
-  chmis_data_subnational <- NULL
-  
-  # Load CHMIS national data if file exists
-  if (file.exists(CHMIS_NATIONAL)) {
-    chmis_data_national <- read.csv(CHMIS_NATIONAL, fileEncoding = "UTF-8")
-    
-    # Check if data is not empty and bind to adjusted_volume_data
-    if (nrow(chmis_data_national) > 0) {
-      # Debug: Check columns before binding
-      cat("National binding - Original columns:", ncol(adjusted_volume_data), 
-          "CHMIS columns:", ncol(chmis_data_national), "\n")
-      
-      # Check unique admin_area_2 counts for national data
-      if ("admin_area_2" %in% names(adjusted_volume_data) && "admin_area_2" %in% names(chmis_data_national)) {
-        original_unique_admin2_nat <- length(unique(adjusted_volume_data$admin_area_2))
-        chmis_unique_admin2_nat <- length(unique(chmis_data_national$admin_area_2))
-        cat("National - Original unique admin_area_2:", original_unique_admin2_nat, 
-            "CHMIS unique admin_area_2:", chmis_unique_admin2_nat, "\n")
-      }
-      
-      # Store original row count for validation
-      original_rows_national <- nrow(adjusted_volume_data)
-      
-      # Attempt to bind with error handling
-      tryCatch({
-        adjusted_volume_data <- rbind(adjusted_volume_data, chmis_data_national)
-        cat("CHMIS national data loaded and bound to adjusted_volume_data\n")
-        cat("Rows added:", nrow(adjusted_volume_data) - original_rows_national, "\n")
-        
-        # Check final unique admin_area_2 count for national data
-        if ("admin_area_2" %in% names(adjusted_volume_data) && exists("original_unique_admin2_nat")) {
-          final_unique_admin2_nat <- length(unique(adjusted_volume_data$admin_area_2))
-          cat("National - Final unique admin_area_2 count:", final_unique_admin2_nat, "\n")
-        }
-        
-      }, error = function(e) {
-        cat("ERROR binding national data:", e$message, "\n")
-        cat("Column mismatch details:\n")
-        cat("Original cols:", paste(names(adjusted_volume_data), collapse = ", "), "\n")
-        cat("CHMIS cols:", paste(names(chmis_data_national), collapse = ", "), "\n")
-      })
-    } else {
-      cat("CHMIS national file exists but is empty\n")
-    }
-  } else {
-    cat("CHMIS national file not found:", CHMIS_NATIONAL, "\n")
-  }
-  
-  # Load CHMIS subnational data if file exists
-  if (file.exists(CHMIS_SUBNATIONAL)) {
-    chmis_data_subnational <- read.csv(CHMIS_SUBNATIONAL, fileEncoding = "UTF-8")
-    
-    # Check if data is not empty and bind to adjusted_volume_data_subnational
-    if (nrow(chmis_data_subnational) > 0) {
-      
-      # Store original state for validation
-      original_rows_subnational <- nrow(adjusted_volume_data_subnational)
-      original_cols_subnational <- names(adjusted_volume_data_subnational)
-      
-      cat("\n=== SUBNATIONAL DATA BINDING ===\n")
-      cat("Original subnational data: rows =", original_rows_subnational, 
-          ", cols =", length(original_cols_subnational), "\n")
-      cat("CHMIS subnational data: rows =", nrow(chmis_data_subnational), 
-          ", cols =", ncol(chmis_data_subnational), "\n")
-      
-      # Get column information
-      required_cols <- names(adjusted_volume_data_subnational)
-      existing_cols <- names(chmis_data_subnational)
-      missing_cols <- setdiff(required_cols, existing_cols)
-      extra_cols <- setdiff(existing_cols, required_cols)
-      
-      cat("Missing columns in CHMIS data:", paste(missing_cols, collapse = ", "), "\n")
-      cat("Extra columns in CHMIS data:", paste(extra_cols, collapse = ", "), "\n")
-      
-      # Add missing columns with proper data types
-      if (length(missing_cols) > 0) {
-        for (col in missing_cols) {
-          # Get the original column's data type
-          original_col_class <- class(adjusted_volume_data_subnational[[col]])[1]
-          
-          # Add column with appropriate NA type
-          if (original_col_class == "character") {
-            chmis_data_subnational[[col]] <- NA_character_
-          } else if (original_col_class %in% c("numeric", "double")) {
-            chmis_data_subnational[[col]] <- NA_real_
-          } else if (original_col_class == "integer") {
-            chmis_data_subnational[[col]] <- NA_integer_
-          } else if (original_col_class == "logical") {
-            chmis_data_subnational[[col]] <- NA
-          } else if (original_col_class == "factor") {
-            chmis_data_subnational[[col]] <- factor(NA, levels = levels(adjusted_volume_data_subnational[[col]]))
-          } else {
-            chmis_data_subnational[[col]] <- NA
-          }
-          
-          cat("Added missing column '", col, "' as ", original_col_class, "\n")
-        }
-      }
-      
-      # Ensure columns are in the correct order and have matching types
-      chmis_data_subnational <- chmis_data_subnational[, required_cols, drop = FALSE]
-      
-      # Check and fix data type mismatches before binding
-      type_mismatches <- character(0)
-      for (col in required_cols) {
-        orig_type <- class(adjusted_volume_data_subnational[[col]])[1]
-        chmis_type <- class(chmis_data_subnational[[col]])[1]
-        
-        if (orig_type != chmis_type) {
-          # Fix common type mismatches
-          if ((orig_type == "numeric" && chmis_type == "integer") ||
-              (orig_type == "double" && chmis_type == "integer")) {
-            chmis_data_subnational[[col]] <- as.numeric(chmis_data_subnational[[col]])
-            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to", orig_type, "\n")
-          } else if ((orig_type == "integer" && chmis_type == "numeric") ||
-                     (orig_type == "integer" && chmis_type == "double")) {
-            chmis_data_subnational[[col]] <- as.integer(chmis_data_subnational[[col]])
-            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to", orig_type, "\n")
-          } else if (orig_type == "character" && chmis_type != "character") {
-            chmis_data_subnational[[col]] <- as.character(chmis_data_subnational[[col]])
-            cat("Fixed type mismatch: converted", col, "from", chmis_type, "to character\n")
-          } else {
-            type_mismatches <- c(type_mismatches, 
-                                 paste0(col, " (", orig_type, " vs ", chmis_type, ")"))
-          }
-        }
-      }
-      
-      if (length(type_mismatches) > 0) {
-        cat("WARNING: Remaining data type mismatches:\n")
-        cat(paste(type_mismatches, collapse = "\n"), "\n")
-      }
-      
-      # Check admin_area_2 unique counts before binding
-      cat("\n=== ADMIN_AREA_2 ANALYSIS ===\n")
-      if ("admin_area_2" %in% names(adjusted_volume_data_subnational)) {
-        original_unique_admin2 <- length(unique(adjusted_volume_data_subnational$admin_area_2))
-        cat("Original data unique admin_area_2 count:", original_unique_admin2, "\n")
-        cat("Sample admin_area_2 values from original:", 
-            paste(head(unique(adjusted_volume_data_subnational$admin_area_2), 3), collapse = ", "), "\n")
-      }
-      
-      if ("admin_area_2" %in% names(chmis_data_subnational)) {
-        chmis_unique_admin2 <- length(unique(chmis_data_subnational$admin_area_2))
-        cat("CHMIS data unique admin_area_2 count:", chmis_unique_admin2, "\n")
-        cat("Sample admin_area_2 values from CHMIS:", 
-            paste(head(unique(chmis_data_subnational$admin_area_2), 3), collapse = ", "), "\n")
-      }
-      
-      # Check specifically for admin_area_2 before binding
-      cat("\nadmin_area_2 check before binding:\n")
-      cat("  - In original data:", "admin_area_2" %in% names(adjusted_volume_data_subnational), "\n")
-      cat("  - In CHMIS data:", "admin_area_2" %in% names(chmis_data_subnational), "\n")
-      if ("admin_area_2" %in% names(adjusted_volume_data_subnational)) {
-        cat("  - Original admin_area_2 type:", class(adjusted_volume_data_subnational$admin_area_2)[1], "\n")
-      }
-      if ("admin_area_2" %in% names(chmis_data_subnational)) {
-        cat("  - CHMIS admin_area_2 type:", class(chmis_data_subnational$admin_area_2)[1], "\n")
-      }
-      
-      # Perform the binding with error handling
-      tryCatch({
-        adjusted_volume_data_subnational <- rbind(adjusted_volume_data_subnational, chmis_data_subnational)
-        
-        # Immediate validation after binding
-        new_rows <- nrow(adjusted_volume_data_subnational)
-        new_cols <- names(adjusted_volume_data_subnational)
-        
-        cat("CHMIS subnational data successfully bound!\n")
-        cat("Final data: rows =", new_rows, ", cols =", length(new_cols), "\n")
-        cat("Rows added:", new_rows - original_rows_subnational, "\n")
-        
-        # Critical check: Is admin_area_2 still there?
-        if ("admin_area_2" %in% new_cols) {
-          cat("✓ admin_area_2 column preserved successfully\n")
-          
-          # Count unique admin_area_2 values after binding
-          final_unique_admin2 <- length(unique(adjusted_volume_data_subnational$admin_area_2))
-          cat("Final unique admin_area_2 count:", final_unique_admin2, "\n")
-          
-          # Calculate expected vs actual
-          if (exists("original_unique_admin2") && exists("chmis_unique_admin2")) {
-            # Count overlapping values
-            original_values <- unique(adjusted_volume_data_subnational$admin_area_2[1:original_rows_subnational])
-            chmis_values <- unique(adjusted_volume_data_subnational$admin_area_2[(original_rows_subnational+1):nrow(adjusted_volume_data_subnational)])
-            overlapping_values <- length(intersect(original_values, chmis_values))
-            expected_total <- original_unique_admin2 + chmis_unique_admin2 - overlapping_values
-            
-            cat("Expected unique admin_area_2 count (accounting for overlap):", expected_total, "\n")
-            cat("Overlapping admin_area_2 values between datasets:", overlapping_values, "\n")
-            
-            if (final_unique_admin2 == expected_total) {
-              cat("✓ admin_area_2 counts match expected values\n")
-            } else {
-              cat("⚠ admin_area_2 count discrepancy - investigate further\n")
-            }
-          }
-          
-        } else {
-          cat("ERROR: admin_area_2 column was lost during binding!\n")
-          cat("Original columns:", paste(original_cols_subnational, collapse = ", "), "\n")
-          cat("Final columns:", paste(new_cols, collapse = ", "), "\n")
-        }
-        
-        # Check for any lost columns
-        lost_cols <- setdiff(original_cols_subnational, new_cols)
-        if (length(lost_cols) > 0) {
-          cat("ERROR: Lost columns during binding:", paste(lost_cols, collapse = ", "), "\n")
-        }
-        
-      }, error = function(e) {
-        cat("ERROR binding subnational data:", e$message, "\n")
-        cat("Detailed error information:\n")
-        cat("Original data structure:\n")
-        str(adjusted_volume_data_subnational)
-        cat("CHMIS data structure:\n")
-        str(chmis_data_subnational)
-      })
-      
-    } else {
-      cat("CHMIS subnational file exists but is empty\n")
-    }
-  } else {
-    cat("CHMIS subnational file not found:", CHMIS_SUBNATIONAL, "\n")
-  }
-} else {
-  cat("Skipping CHMIS data loading - running traditional analysis mode\n")
-}
+message("Final analysis level: ", ANALYSIS_LEVEL)
 
 # ------------------------------ Rename for Test Instance -------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
@@ -357,8 +103,6 @@ adjusted_volume_data <- adjusted_volume_data %>%
     admin_area_1 %in% c("Pays 001", "Country 001") ~ "Federal Govt of Somalia",
     TRUE ~ admin_area_1
   ))
-
-
 
 # ------------------------------ Define Parameters --------------------------------
 # Coverage Estimation Parameters
@@ -371,16 +115,7 @@ coverage_params <- list(
     "rota1", "rota2",
     "opv1", "opv2", "opv3",
     "pnc1_mother",
-    "nmr", "imr",
-    
-    # New child indicators
-    "deworming", "mnp", "vitamina", "ors_zinc",
-    
-    # IPTp
-    "iptp1", "iptp2", "iptp3",
-    
-    # ANC supplements
-    "iron_anc"
+    "nmr", "imr"
   )
 )
 
@@ -393,13 +128,8 @@ survey_vars <- c(
   "avgsurvey_rota1", "avgsurvey_rota2",
   "avgsurvey_opv1", "avgsurvey_opv2", "avgsurvey_opv3",
   "avgsurvey_pnc1_mother",
-  "avgsurvey_deworming", "avgsurvey_mnp", "avgsurvey_vitamina", "avgsurvey_ors_zinc",
-  "avgsurvey_iptp1", "avgsurvey_iptp2", "avgsurvey_iptp3",
-  "avgsurvey_iron_anc",
   "avgsurvey_nmr", "avgsurvey_imr", "postnmr"
 )
-
-
 
 # ------------------------------ Define Functions --------------------------------
 # Part 1 - prepare hmis data
@@ -408,33 +138,12 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "nmr", "imr",
-    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother",
-    
-    # Additional child indicators
-    "deworming", "mnp", "vitamina", "ors_zinc",
-    
-    # IPTp indicators from survey
-    "iptp1", "iptp2", "iptp3",
-    
-    # ANC-related supplement
-    "iron_anc"
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother"
   )
-  
   
   message("Loading and mapping adjusted HMIS volume...")
   
-  
-  adjusted_volume_data <- adjusted_volume_data %>%
-    mutate(indicator_common_id = recode(indicator_common_id,
-                                        "ipt1" = "iptp1",
-                                        "ipt2" = "iptp2", 
-                                        "ipt3" = "iptp3",
-                                        "orszinc" = "ors_zinc",
-                                        "haematinics" = "iron_anc"
-    ))
-  
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
-  
   
   # Ensure year and month exist
   if (!all(c("year", "month") %in% names(adjusted_volume_data))) {
@@ -488,31 +197,19 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
 process_survey_data <- function(survey_data, hmis_countries, min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
   
-  
   # Harmonize indicator names used in survey to match HMIS format
   survey_data <- survey_data %>%
     mutate(indicator_common_id = recode(indicator_common_id,
                                         "polio1" = "opv1",
                                         "polio2" = "opv2",
                                         "polio3" = "opv3",
-                                        "pnc1" = "pnc1_mother",
-                                        
-                                        "ipt1" = "iptp1",
-                                        "ipt2" = "iptp2", 
-                                        "ipt3" = "iptp3",
-                                        "orszinc" = "ors_zinc",
-                                        "haematinics" = "iron_anc"
+                                        "pnc1" = "pnc1_mother"
     ))
-  
-  
-  
-  
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
   
   indicators <- c("anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "measles1", "measles2",
-                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
-                  "deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc")
+                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr")
   
   survey_filtered <- if (is_national) {
     survey_data %>% filter(admin_area_2 == "NATIONAL")
@@ -642,6 +339,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
   
   if (has_admin_area_2) {
+    # Standard join admin_area_2 to admin_area_2 (survey data is restructured)
     data <- hmis_data %>%
       full_join(survey_data, by = c("admin_area_1", "admin_area_2", "year"))
   } else {
@@ -665,19 +363,8 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     bcg       = c("countbcg", "bcgcarry"),
     livebirth = c("countlivebirth", "livebirthcarry"),
     pnc1_mother = c("countpnc1_mother", "pnc1_mothercarry"),
-    nmr       = c("countnmr", "nmrcarry"),
-    
-    # Newly added indicators
-    deworming     = c("countdeworming", "dewormingcarry"),
-    mnp           = c("countmnp", "mnpcarry"),
-    vitamina      = c("countvitamina", "vitaminacarry"),
-    ors_zinc      = c("countors_zinc", "ors_zinccarry"),
-    iptp1         = c("countiptp1", "iptp1carry"),
-    iptp2         = c("countiptp2", "iptp2carry"),
-    iptp3         = c("countiptp3", "iptp3carry"),
-    iron_anc      = c("countiron_anc", "iron_anccarry")
+    nmr       = c("countnmr", "nmrcarry")
   )
-  
   
   available_vars <- names(data)
   
@@ -733,8 +420,6 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     )
   }
   
-  
-  
   if (!has_admin_area_2 && all(indicator_vars$bcg %in% available_vars)) {
     data <- data %>% mutate(
       dbcg_pregnancy = safe_mutate("bcg", (countbcg / bcgcarry) / (1 - PREGNANCY_LOSS_RATE) / (1 + TWIN_RATE) / (1 - STILLBIRTH_RATE)),
@@ -783,7 +468,6 @@ evaluate_coverage_by_denominator <- function(data) {
     c("admin_area_1", "year")
   }
   
-  
   # Numerators
   numerator_long <- data %>%
     select(all_of(geo_keys), starts_with("count")) %>%
@@ -805,10 +489,10 @@ evaluate_coverage_by_denominator <- function(data) {
     ~suffix,       ~indicators,
     
     # Used for indicators related to pregnancy services and ANC
-    "pregnancy",   c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
+    "pregnancy",   c("anc1", "anc4"),
     
     # Used for indicators that apply to newborns or children under 5
-    "livebirth",   c("delivery", "bcg", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
+    "livebirth",   c("delivery", "bcg", "pnc1_mother"),
     
     # Used for infant immunization indicators (0–1 year)
     "dpt",         c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
@@ -820,7 +504,6 @@ evaluate_coverage_by_denominator <- function(data) {
     # Used for coverage of second measles dose
     "measles2",    c("measles2")
   )
-  
   
   #Denominators
   denominator_long <- data %>%
@@ -841,7 +524,6 @@ evaluate_coverage_by_denominator <- function(data) {
     filter(!is.na(indicator_common_id)) %>%
     distinct()
   
-  
   numerator_long <- distinct(numerator_long)
   denominator_long <- distinct(denominator_long)
   
@@ -853,7 +535,6 @@ evaluate_coverage_by_denominator <- function(data) {
   ) %>%
     mutate(coverage = numerator / denominator_value) %>%
     drop_na(coverage)
-  
   
   # Reference values
   carry_cols <- grep("carry$", names(data), value = TRUE)
@@ -868,7 +549,6 @@ evaluate_coverage_by_denominator <- function(data) {
     drop_na(reference_value) %>%
     group_by(across(all_of(c(geo_keys, "indicator_common_id")))) %>%
     summarise(reference_value = mean(reference_value, na.rm = TRUE), .groups = "drop")
-  
   
   print(unique(carry_values$indicator_common_id))
   
@@ -910,215 +590,6 @@ evaluate_coverage_by_denominator <- function(data) {
   )
 }
 
-# ------------------------------------- Functions for Nutrition analysis START HERE --------------------------
-
-load_nutrition_denominators_for_coverage <- function(hmis_data, survey_data, population_data = NULL) {
-  
-  message("Loading pre-calculated nutrition denominators...")
-  
-  # Check if national or subnational
-  has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
-  
-  if (has_admin_area_2) {
-    # Load province denominators
-    nutrition_denom <- read.csv(NUTRITION_DENOMINATORS_PROVINCE, fileEncoding = "UTF-8")
-    join_keys <- c("admin_area_1", "admin_area_2", "year")
-  } else {
-    # Load national denominators  
-    nutrition_denom <- read.csv(NUTRITION_DENOMINATORS_NATIONAL, fileEncoding = "UTF-8")
-    join_keys <- c("admin_area_1", "year")
-  }
-  
-  # Join all data
-  if (has_admin_area_2) {
-    data <- hmis_data %>%
-      full_join(survey_data, by = join_keys) %>%
-      left_join(nutrition_denom, by = join_keys)
-  } else {
-    data <- hmis_data %>%
-      full_join(survey_data, by = join_keys) %>%
-      full_join(population_data, by = join_keys) %>%
-      left_join(nutrition_denom, by = join_keys)
-  }
-  
-  # Calculate coverage for nutrition indicators
-  data <- data %>%
-    mutate(
-      # Child nutrition coverage
-      coverage_deworming = countdeworming / dchildren_12to59,
-      coverage_mnp = countmnp / dchildren_6to23,
-      coverage_vitamina = countvitamina / dchildren_6to59,
-      coverage_ors_zinc = countors_zinc / dchildren_0to59,
-      
-      # Pregnancy coverage
-      coverage_iptp1 = countiptp1 / danc1_pregnancy,
-      coverage_iptp2 = countiptp2 / danc1_pregnancy,
-      coverage_iptp3 = countiptp3 / danc1_pregnancy,
-      coverage_iron_anc = countiron_anc / danc1_pregnancy
-    )
-  
-  message("Calculated coverage for 8 nutrition indicators")
-  return(data)
-}
-pivot_nutrition_coverage_to_long <- function(nutrition_coverage_results) {
-  
-  # Check if this is subnational data (has admin_area_2)
-  has_admin_area_2 <- "admin_area_2" %in% names(nutrition_coverage_results)
-  
-  coverage_long <- nutrition_coverage_results %>%
-    pivot_longer(
-      cols = starts_with("coverage_"),
-      names_to = "indicator_common_id",
-      names_prefix = "coverage_",
-      values_to = "coverage_cov"
-    )
-  # REMOVED: filter(!is.na(coverage_cov)) - Keep all data including NA
-  
-  # Select appropriate columns based on data type
-  if (has_admin_area_2) {
-    coverage_long <- coverage_long %>%
-      select(admin_area_1, admin_area_2, indicator_common_id, year, coverage_cov)
-  } else {
-    coverage_long <- coverage_long %>%
-      select(admin_area_1, indicator_common_id, year, coverage_cov)
-  }
-  
-  return(coverage_long)
-}
-
-expand_nutrition_with_survey <- function(nutrition_coverage_long, raw_survey_data) {
-  
-  message("Expanding nutrition data with raw survey values...")
-  
-  # Get nutrition indicators
-  nutrition_indicators <- c("deworming", "mnp", "vitamina", "ors_zinc", "iptp1", "iptp2", "iptp3", "iron_anc")
-  
-  # Extract raw survey data for nutrition indicators
-  raw_nutrition_survey <- raw_survey_data %>%
-    select(admin_area_1, year, starts_with("rawsurvey_")) %>%
-    pivot_longer(
-      cols = starts_with("rawsurvey_"),
-      names_to = "indicator_common_id",
-      names_prefix = "rawsurvey_",
-      values_to = "coverage_original_estimate"
-    ) %>%
-    filter(indicator_common_id %in% nutrition_indicators,
-           !is.na(coverage_original_estimate)) %>%
-    select(admin_area_1, indicator_common_id, year, coverage_original_estimate)
-  
-  # Find earliest and latest years
-  earliest_survey_year <- min(raw_nutrition_survey$year, na.rm = TRUE)
-  latest_coverage_year <- max(nutrition_coverage_long$year, na.rm = TRUE)
-  
-  message("Survey data available from: ", earliest_survey_year)
-  message("Coverage calculated through: ", latest_coverage_year)
-  
-  # Create complete year grid
-  all_years <- seq(earliest_survey_year, latest_coverage_year)
-  
-  # Create expanded grid for all combinations
-  expanded_grid <- expand_grid(
-    admin_area_1 = unique(nutrition_coverage_long$admin_area_1),
-    indicator_common_id = nutrition_indicators,
-    year = all_years
-  )
-  
-  # Join everything together
-  expanded_data <- expanded_grid %>%
-    left_join(raw_nutrition_survey, by = c("admin_area_1", "indicator_common_id", "year")) %>%
-    left_join(nutrition_coverage_long, by = c("admin_area_1", "indicator_common_id", "year")) %>%
-    arrange(indicator_common_id, year)
-  
-  message("Expanded data created with ", nrow(expanded_data), " rows")
-  message("Years: ", earliest_survey_year, " to ", latest_coverage_year)
-  
-  return(expanded_data)
-}
-create_coverage_projections <- function(nutrition_expanded) {
-  
-  message("Creating coverage projections...")
-  
-  nutrition_projected <- nutrition_expanded %>%
-    group_by(indicator_common_id) %>%
-    arrange(year) %>%
-    # Only process indicators that have survey data
-    filter(any(!is.na(coverage_original_estimate))) %>%
-    mutate(
-      # Find last survey year and value for this indicator
-      last_survey_year = max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
-      last_survey_value = coverage_original_estimate[year == last_survey_year][1],
-      
-      # Find first calculated coverage year
-      first_calc_year = ifelse(any(!is.na(coverage_cov)),
-                               min(year[!is.na(coverage_cov)], na.rm = TRUE),
-                               NA_real_),
-      
-      # Find anchor calculated coverage - use calc coverage at survey year if available,
-      # otherwise use first available calc coverage
-      anchor_calc_coverage = case_when(
-        # If we have calc coverage at the survey year, use that
-        any(year == last_survey_year & !is.na(coverage_cov)) ~ 
-          coverage_cov[year == last_survey_year][1],
-        
-        # Otherwise use first available calc coverage
-        any(!is.na(coverage_cov)) ~ 
-          first(coverage_cov[!is.na(coverage_cov)]),
-        
-        # No calc coverage available
-        TRUE ~ NA_real_
-      )
-    ) %>%
-    mutate(
-      coverage_avgsurveyprojection = case_when(
-        # Use original survey values when available
-        !is.na(coverage_original_estimate) ~ coverage_original_estimate,
-        
-        # Fill gaps: years between last survey and first calculated coverage
-        year > last_survey_year & !is.na(first_calc_year) & 
-          year < first_calc_year ~ last_survey_value,
-        
-        # Project: any year with calculated coverage (no survey) using deltas
-        is.na(coverage_original_estimate) & !is.na(coverage_cov) & 
-          !is.na(anchor_calc_coverage) ~ {
-            last_survey_value + (coverage_cov - anchor_calc_coverage)
-          },
-        
-        # Otherwise NA
-        TRUE ~ NA_real_
-      )
-    ) %>%
-    select(-last_survey_year, -last_survey_value, -first_calc_year, -anchor_calc_coverage) %>%
-    ungroup()
-  
-  # Add back indicators with no survey data (as all NA)
-  no_survey_indicators <- nutrition_expanded %>%
-    group_by(indicator_common_id) %>%
-    filter(!any(!is.na(coverage_original_estimate))) %>%
-    mutate(coverage_avgsurveyprojection = NA_real_) %>%
-    ungroup()
-  
-  # Combine results
-  final_result <- bind_rows(nutrition_projected, no_survey_indicators) %>%
-    arrange(indicator_common_id, year)
-  
-  # Summary
-  projection_summary <- nutrition_projected %>%
-    group_by(indicator_common_id) %>%
-    summarise(
-      last_survey_year = max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
-      projected_years = sum(!is.na(coverage_avgsurveyprojection) & is.na(coverage_original_estimate)),
-      .groups = "drop"
-    )
-  
-  message("Projection summary:")
-  print(projection_summary)
-  
-  return(final_result)
-}
-
-# ------------------------------------- Functions for Nutrition analysis END HERE -----------------------------
-
-# -------------------------------------------------------------------------------------------------------------
 #Part 5 - run projections
 project_coverage_from_all <- function(ranked_coverage) {
   message("Projecting survey coverage forward using HMIS deltas...")
@@ -1168,7 +639,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     c("admin_area_1", "year", "indicator_common_id")
   }
   
-  
   raw_survey_long <- raw_survey_wide %>%
     pivot_longer(
       cols = starts_with("rawsurvey_"),
@@ -1180,7 +650,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     select(all_of(join_keys), coverage_original_estimate) %>%
     distinct()
   
-  
   min_years <- raw_survey_long %>%
     filter(!is.na(year)) %>%
     group_by(across(setdiff(join_keys, "year"))) %>%
@@ -1191,8 +660,8 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
-    pregnancy  = c("anc1", "anc4", "iptp1", "iptp2", "iptp3", "iron_anc"),
-    livebirth  = c("bcg", "delivery", "pnc1_mother", "deworming", "mnp", "vitamina", "ors_zinc"),
+    pregnancy  = c("anc1", "anc4"),
+    livebirth  = c("bcg", "delivery", "pnc1_mother"),
     dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     measles1   = c("measles1"),
@@ -1214,9 +683,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     filter(map2_lgl(indicator_common_id, suffix, ~ .x %in% valid_suffix_map[[.y]])) %>%
     select(-suffix)
   
-  
-  
-  
   expansion_grid <- min_years %>%
     inner_join(valid_denominator_map, by = setdiff(join_keys, "year")) %>%
     rowwise() %>%
@@ -1237,9 +703,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     by = c(join_keys, "denominator")
   )
   
-  
   is_national <- all(is.na(combined$admin_area_2)) || all(combined$admin_area_2 == "NATIONAL")
-  
   
   combined <- combined %>%
     mutate(
@@ -1269,7 +733,6 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     }
   }
   
-  
   combined <- combined %>%
     transmute(
       admin_area_1,
@@ -1294,17 +757,16 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
       everything()
     )
   
-  
   return(combined)
 }
+
 # ------------------------------ Main Execution ---------------------------------------------------------------
 # 1 - prepare the hmis data
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
-
 # 2 - prepare the survey data
 survey_processed_national <- process_survey_data(
-  survey_data = survey_data_unified %>% filter(admin_area_2 == "NATIONAL"),
+  survey_data = survey_data_national,
   hmis_countries = hmis_processed$hmis_countries
 )
 
@@ -1313,550 +775,281 @@ national_population_processed <- process_national_population_data(
   hmis_countries = hmis_processed$hmis_countries
 )
 
+# 3 - calculate the denominators
+denominators_national <- calculate_denominators(
+  hmis_data = hmis_processed$annual_hmis,
+  survey_data = survey_processed_national$carried,
+  population_data = national_population_processed
+)
 
-if (RUN_NUTRITION_ANALYSIS) {
-  message("Using nutrition analysis mode with pre-calculated denominators")
-  denominators_national <- load_nutrition_denominators_for_coverage(
-    hmis_data = hmis_processed$annual_hmis,
-    survey_data = survey_processed_national$carried,
-    population_data = national_population_processed
-  )
-  
-  # Extract nutrition coverage results
-  nutrition_coverage_results <- denominators_national %>%
-    select(admin_area_1, year, 
-           coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
-           coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
-  
-  # Pivot to long format
-  nutrition_coverage_long <- pivot_nutrition_coverage_to_long(nutrition_coverage_results)
-  
-  
-  
-  # Expand with raw survey data
-  nutrition_expanded <- expand_nutrition_with_survey(
-    nutrition_coverage_long = nutrition_coverage_long,
-    raw_survey_data = survey_processed_national$raw
-  )
-  
-  # Create projections
-  nutrition_final <- create_coverage_projections(nutrition_expanded)
-  
-  
-  # Clean projections - keep only years >= last survey
-  nutrition_final <- nutrition_final %>%
-    group_by(indicator_common_id) %>%
-    mutate(
-      max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
-                               max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
-                               -Inf),
-      
-      coverage_avgsurveyprojection = ifelse(
-        year < max_survey_year,
-        NA_real_,
-        coverage_avgsurveyprojection
-      )
-    ) %>%
-    select(-max_survey_year) %>%
-    ungroup() %>%
-    select(
-      indicator_common_id, 
-      year,
-      coverage_original_estimate,
-      coverage_avgsurveyprojection,
-      coverage_cov
-    )
-  
-  
-  
-  
-} else {
-  
-  # 3 - calculate the denominators
-  denominators_national <- calculate_denominators(
-    hmis_data = hmis_processed$annual_hmis,
-    survey_data = survey_processed_national$carried,
-    population_data = national_population_processed
-  )
-  
-  # 4 - calculate coverage and compare the denominators
-  national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national)
-  
-  # 5 - project survey coverage forward using HMIS deltas
-  national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
-  
-  
-  # 6 - prepare results and save
-  combined_national <- prepare_combined_coverage_from_projected(
-    projected_data = national_coverage_projected,
-    raw_survey_wide = survey_processed_national$raw
-  )
-  
-  # 7 - detect the best single denominator per indicator
-  best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
-    filter(source_type == "independent") %>%
-    group_by(admin_area_1, indicator_common_id, denominator) %>%
-    summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
-    group_by(admin_area_1, indicator_common_id) %>%
-    slice_min(order_by = total_error, n = 1) %>%
-    ungroup()
-  
-  # Clean print to console
-  message("Selected denominator per indicator:")
-  best_denom_per_indicator %>%
-    arrange(indicator_common_id) %>%
-    distinct(indicator_common_id, denominator) %>%
-    mutate(msg = sprintf("  - %s → %s", indicator_common_id, denominator)) %>%
-    pull(msg) %>%
-    walk(message)
-  
-  
-  main_export <- combined_national %>%
-    inner_join(
-      best_denom_per_indicator,
-      by = c("admin_area_1", "indicator_common_id", "denominator")
-    ) %>%
-    select(admin_area_1, indicator_common_id, year, denominator,
-           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
-  
-  
-  early_survey <- combined_national %>%
-    filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
-    select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
-    distinct() %>%
-    mutate(
-      denominator = NA_character_,
-      coverage_avgsurveyprojection = NA_real_,
-      coverage_cov = NA_real_
-    ) %>%
-    select(indicator_common_id, year,
-           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
-  
-  
-  combined_national_export <- bind_rows(
-    main_export %>%
-      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
-      select(indicator_common_id,
-             year,
-             coverage_original_estimate, 
-             coverage_avgsurveyprojection, 
-             coverage_cov),
-    early_survey %>%
-      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
-  )
-  
-  
-  combined_national_export_fixed <- combined_national_export %>%
+# 4 - calculate coverage and compare the denominators
+national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national)
+
+# 5 - project survey coverage forward using HMIS deltas
+national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
+
+# 6 - prepare results and save
+combined_national <- prepare_combined_coverage_from_projected(
+  projected_data = national_coverage_projected,
+  raw_survey_wide = survey_processed_national$raw
+)
+
+# 7 - detect the best single denominator per indicator
+best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
+  filter(source_type == "independent") %>%
+  group_by(admin_area_1, indicator_common_id, denominator) %>%
+  summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+  group_by(admin_area_1, indicator_common_id) %>%
+  slice_min(order_by = total_error, n = 1) %>%
+  ungroup()
+
+# Clean print to console
+message("Selected denominator per indicator:")
+best_denom_per_indicator %>%
+  arrange(indicator_common_id) %>%
+  distinct(indicator_common_id, denominator) %>%
+  mutate(msg = sprintf("  - %s → %s", indicator_common_id, denominator)) %>%
+  pull(msg) %>%
+  walk(message)
+
+main_export <- combined_national %>%
+  inner_join(
+    best_denom_per_indicator,
+    by = c("admin_area_1", "indicator_common_id", "denominator")
+  ) %>%
+  select(admin_area_1, indicator_common_id, year, denominator,
+         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+
+early_survey <- combined_national %>%
+  filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
+  select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
+  distinct() %>%
+  mutate(
+    denominator = NA_character_,
+    coverage_avgsurveyprojection = NA_real_,
+    coverage_cov = NA_real_
+  ) %>%
+  select(indicator_common_id, year,
+         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+
+combined_national_export <- bind_rows(
+  main_export %>%
+    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
+    select(indicator_common_id,
+           year,
+           coverage_original_estimate, 
+           coverage_avgsurveyprojection, 
+           coverage_cov),
+  early_survey %>%
+    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
+)
+
+combined_national_export_fixed <- combined_national_export %>%
+  arrange(indicator_common_id, year) %>%
+  group_by(indicator_common_id, year) %>%
+  summarise(
+    coverage_original_estimate = first(coverage_original_estimate),
+    coverage_cov = first(coverage_cov),
+    .groups = "drop"
+  ) %>%
+  group_by(indicator_common_id) %>%
+  group_modify(~ {
+    df <- .x
+    df <- df %>% arrange(year)
     
-    arrange(indicator_common_id, year) %>%
-    group_by(indicator_common_id, year) %>%
-    summarise(
-      coverage_original_estimate = first(coverage_original_estimate),
-      coverage_cov = first(coverage_cov),
-      .groups = "drop"
-    ) %>%
-    group_by(indicator_common_id) %>%
-    group_modify(~ {
-      df <- .x
-      df <- df %>% arrange(year)
-      
-      # Anchor year: latest year with a non-missing original estimate
-      anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
-      anchor_idx <- which(df$year == anchor_year)[1]
-      
-      # Fill forward coverage_cov from anchor year to next available non-NA
-      if (is.na(df$coverage_cov[anchor_idx])) {
-        next_cov_idx <- which(!is.na(df$coverage_cov) & df$year > anchor_year)
-        if (length(next_cov_idx) > 0) {
-          fill_value <- df$coverage_cov[next_cov_idx[1]]
-          df$coverage_cov[anchor_idx:next_cov_idx[1]] <- fill_value
-        }
+    # Anchor year: latest year with a non-missing original estimate
+    anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
+    anchor_idx <- which(df$year == anchor_year)[1]
+    
+    # Fill forward coverage_cov from anchor year to next available non-NA
+    if (is.na(df$coverage_cov[anchor_idx])) {
+      next_cov_idx <- which(!is.na(df$coverage_cov) & df$year > anchor_year)
+      if (length(next_cov_idx) > 0) {
+        fill_value <- df$coverage_cov[next_cov_idx[1]]
+        df$coverage_cov[anchor_idx:next_cov_idx[1]] <- fill_value
       }
-      
-      
-      # Recalculate delta
-      df <- df %>%
-        mutate(
-          cov_lag = lag(coverage_cov),
-          delta = coverage_cov - cov_lag
-        )
-      
-      # Initialize projection
-      df$avgsurveyprojection <- df$coverage_original_estimate
-      
-      if (is.na(df$avgsurveyprojection[anchor_idx]) && !is.na(df$coverage_cov[anchor_idx])) {
-        df$avgsurveyprojection[anchor_idx] <- df$coverage_cov[anchor_idx]
-      }
-      
-      # Project forward
-      if (!is.na(df$avgsurveyprojection[anchor_idx])) {
-        for (i in (anchor_idx + 1):nrow(df)) {
-          prev <- i - 1
-          if (!is.na(df$avgsurveyprojection[prev]) && !is.na(df$delta[i])) {
-            df$avgsurveyprojection[i] <- df$avgsurveyprojection[prev] + df$delta[i]
-          }
-        }
-      }
-      
-      return(df)
-    }) %>%
-    ungroup() %>%
-    select(
-      indicator_common_id,
-      year,
-      coverage_original_estimate,
-      coverage_avgsurveyprojection = avgsurveyprojection,
-      coverage_cov
-    )
-  
-  
-  # Clean projections - keep only years >= last survey
-  combined_national_export_fixed <- combined_national_export_fixed %>%
-    group_by(indicator_common_id) %>%
-    mutate(
-      max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
-                               max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
-                               -Inf),
-      
-      coverage_avgsurveyprojection = ifelse(
-        year < max_survey_year,
-        NA_real_,
-        coverage_avgsurveyprojection
-      )
-    ) %>%
-    select(-max_survey_year) %>%
-    ungroup() 
-  
-  
-  best_denom_summary <- best_denom_per_indicator %>%
-    distinct(indicator_common_id, denominator) %>%
-    arrange(indicator_common_id)
-}
-
-#--- Sub National Execution ----------------------------------------------------------------------------------
-
-# Check if subnational survey data exists for this country
-has_subnational_survey <- nrow(survey_data_admin2) > 0
-
-if (has_subnational_survey) {
-  
-  if (RUN_MULTILEVEL_ANALYSIS) {
-    message("Running multilevel analysis: Two separate pipeline runs")
-    
-    # ===== FIRST RUN: ADMIN_AREA_2 LEVEL ANALYSIS =====
-    message("1. Running pipeline for admin_area_2 level...")
-    
-    # Get admin_area_1 value for consistent labeling
-    admin_area_1_value <- adjusted_volume_data %>%
-      distinct(admin_area_1) %>%
-      pull(admin_area_1)
-    
-    adjusted_volume_admin2 <- adjusted_volume_admin2 %>%
-      mutate(admin_area_1 = admin_area_1_value)
-    
-    # Process using original functions (no modifications needed!)
-    hmis_processed_admin2 <- process_hmis_adjusted_volume(
-      adjusted_volume_data = adjusted_volume_admin2,
-      count_col = SELECTED_COUNT_VARIABLE
-    )
-    
-    survey_processed_admin2 <- process_survey_data(
-      survey_data = survey_data_admin2,
-      hmis_countries = hmis_processed_admin2$hmis_countries
-    )
-    
-    if (RUN_NUTRITION_ANALYSIS) {
-      denominators_admin2 <- load_nutrition_denominators_for_coverage(
-        hmis_data = hmis_processed_admin2$annual_hmis,
-        survey_data = survey_processed_admin2$carried,
-        population_data = NULL
-      )
-      
-      nutrition_coverage_results_admin2 <- denominators_admin2 %>%
-        select(admin_area_1, admin_area_2, year, 
-               coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
-               coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
-      
-      nutrition_coverage_long_admin2 <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_admin2) %>%
-        select(-admin_area_1)
-      
-    } else {
-      denominators_admin2 <- calculate_denominators(
-        hmis_data = hmis_processed_admin2$annual_hmis,
-        survey_data = survey_processed_admin2$carried
-      )
-      
-      subnational_coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
-      subnational_coverage_projected_admin2 <- project_coverage_from_all(
-        ranked_coverage = subnational_coverage_eval_admin2$full_ranking
-      )
-      
-      combined_admin2 <- prepare_combined_coverage_from_projected(
-        projected_data = subnational_coverage_projected_admin2,
-        raw_survey_wide = survey_processed_admin2$raw
-      )
-      
-      combined_admin2_export <- combined_admin2 %>%
-        filter(source_type == "independent") %>%
-        group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-        filter(rank == min(rank, na.rm = TRUE)) %>%
-        ungroup() %>%
-        select(admin_area_2, indicator_common_id, year, coverage_cov)
     }
     
-    message("Admin_area_2 pipeline completed")
+    # Recalculate delta
+    df <- df %>%
+      mutate(
+        cov_lag = lag(coverage_cov),
+        delta = coverage_cov - cov_lag
+      )
     
-    # ===== SECOND RUN: ADMIN_AREA_3 LEVEL ANALYSIS =====
-    if (!is.null(adjusted_volume_admin3) && !is.null(survey_data_admin3)) {
-      message("2. Running pipeline for admin_area_3 level...")
+    # Initialize projection
+    df$avgsurveyprojection <- df$coverage_original_estimate
+    
+    if (is.na(df$avgsurveyprojection[anchor_idx]) && !is.na(df$coverage_cov[anchor_idx])) {
+      df$avgsurveyprojection[anchor_idx] <- df$coverage_cov[anchor_idx]
+    }
+    
+    # Project forward
+    if (!is.na(df$avgsurveyprojection[anchor_idx])) {
+      for (i in (anchor_idx + 1):nrow(df)) {
+        prev <- i - 1
+        if (!is.na(df$avgsurveyprojection[prev]) && !is.na(df$delta[i])) {
+          df$avgsurveyprojection[i] <- df$avgsurveyprojection[prev] + df$delta[i]
+        }
+      }
+    }
+    
+    return(df)
+  }) %>%
+  ungroup() %>%
+  select(
+    indicator_common_id,
+    year,
+    coverage_original_estimate,
+    coverage_avgsurveyprojection = avgsurveyprojection,
+    coverage_cov
+  )
+
+# Clean projections - keep only years >= last survey
+combined_national_export_fixed <- combined_national_export_fixed %>%
+  group_by(indicator_common_id) %>%
+  mutate(
+    max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
+                             max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+                             -Inf),
+    
+    coverage_avgsurveyprojection = ifelse(
+      year < max_survey_year,
+      NA_real_,
+      coverage_avgsurveyprojection
+    )
+  ) %>%
+  select(-max_survey_year) %>%
+  ungroup() 
+
+best_denom_summary <- best_denom_per_indicator %>%
+  distinct(indicator_common_id, denominator) %>%
+  arrange(indicator_common_id)
+
+# ------------------------------ Subnational Analysis -------------------------
+# Run separate analyses for admin_area_2 and admin_area_3 to get distinct output files
+if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
+  
+  message("\n=== RUNNING SUBNATIONAL ANALYSIS ===")
+  
+  # Get admin_area_1 value for consistency
+  admin_area_1_value <- adjusted_volume_data %>% distinct(admin_area_1) %>% pull(admin_area_1)
+  hmis_data_subnational <- hmis_data_subnational %>% mutate(admin_area_1 = admin_area_1_value)
+  
+  # Initialize export variables
+  combined_admin2_export <- NULL
+  combined_admin3_export <- NULL
+  
+  # === ADMIN_AREA_2 ANALYSIS ===
+  if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
+    message("Running admin_area_2 level analysis...")
+    
+    # Prepare HMIS admin_area_2 data (drop admin_area_3)
+    hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
+    
+    # Run pipeline
+    hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
+    survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
+    denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
+    coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
+    coverage_projected_admin2 <- project_coverage_from_all(coverage_eval_admin2$full_ranking)
+    combined_admin2 <- prepare_combined_coverage_from_projected(coverage_projected_admin2, survey_processed_admin2$raw)
+    
+    # Export admin_area_2 results
+    combined_admin2_export <- combined_admin2 %>%
+      filter(source_type == "independent") %>%
+      group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
+      filter(rank == min(rank, na.rm = TRUE)) %>%
+      ungroup() %>%
+      select(admin_area_2, indicator_common_id, year, coverage_cov)
+    
+    message("✓ Admin_area_2 analysis completed - ", nrow(combined_admin2_export), " result rows")
+  }
+  
+  # === ADMIN_AREA_3 ANALYSIS ===
+  if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3") {
+    message("Running admin_area_3 level analysis...")
+    
+    # Check if admin_area_3 data is actually usable
+    if ("admin_area_3" %in% names(hmis_data_subnational)) {
+      # Prepare HMIS admin_area_3 data (rename admin_area_3 to admin_area_2 for pipeline)
+      hmis_admin3 <- hmis_data_subnational %>% 
+        filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+        select(-admin_area_2) %>% 
+        rename(admin_area_2 = admin_area_3)
       
-      adjusted_volume_admin3 <- adjusted_volume_admin3 %>%
-        mutate(admin_area_1 = admin_area_1_value)
-      
-      # Process using original functions (admin_area_3 data looks like admin_area_2 to the pipeline!)
-      hmis_processed_admin3 <- process_hmis_adjusted_volume(
-        adjusted_volume_data = adjusted_volume_admin3,
-        count_col = SELECTED_COUNT_VARIABLE
-      )
-      
-      survey_processed_admin3 <- process_survey_data(
-        survey_data = survey_data_admin3,
-        hmis_countries = hmis_processed_admin3$hmis_countries
-      )
-      
-      if (RUN_NUTRITION_ANALYSIS) {
-        denominators_admin3 <- load_nutrition_denominators_for_coverage(
-          hmis_data = hmis_processed_admin3$annual_hmis,
-          survey_data = survey_processed_admin3$carried,
-          population_data = NULL
-        )
+      if (nrow(hmis_admin3) > 0) {
+        # Run pipeline
+        hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
+        survey_processed_admin3 <- process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
+        denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
+        coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
+        coverage_projected_admin3 <- project_coverage_from_all(coverage_eval_admin3$full_ranking)
+        combined_admin3 <- prepare_combined_coverage_from_projected(coverage_projected_admin3, survey_processed_admin3$raw)
         
-        # RENAME BACK: admin_area_2 → admin_area_3 in results
-        nutrition_coverage_results_admin3 <- denominators_admin3 %>%
-          rename(admin_area_3 = admin_area_2) %>%  # Rename back to admin_area_3
-          select(admin_area_1, admin_area_3, year, 
-                 coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
-                 coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
-        
-        nutrition_coverage_long_admin3 <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_admin3) %>%
-          select(-admin_area_1)
-        
-      } else {
-        denominators_admin3 <- calculate_denominators(
-          hmis_data = hmis_processed_admin3$annual_hmis,
-          survey_data = survey_processed_admin3$carried
-        )
-        
-        subnational_coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
-        subnational_coverage_projected_admin3 <- project_coverage_from_all(
-          ranked_coverage = subnational_coverage_eval_admin3$full_ranking
-        )
-        
-        combined_admin3 <- prepare_combined_coverage_from_projected(
-          projected_data = subnational_coverage_projected_admin3,
-          raw_survey_wide = survey_processed_admin3$raw
-        )
-        
-        # RENAME BACK: admin_area_2 → admin_area_3 in results
+        # Export admin_area_3 results (rename admin_area_2 back to admin_area_3 in output)
         combined_admin3_export <- combined_admin3 %>%
           filter(source_type == "independent") %>%
           group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
           filter(rank == min(rank, na.rm = TRUE)) %>%
           ungroup() %>%
           select(admin_area_2, indicator_common_id, year, coverage_cov) %>%
-          rename(admin_area_3 = admin_area_2)  # Rename back to admin_area_3
+          rename(admin_area_3 = admin_area_2)  # Rename back for output
+        
+        message("✓ Admin_area_3 analysis completed - ", nrow(combined_admin3_export), " result rows")
+      } else {
+        message("No usable admin_area_3 data found")
       }
-      
-      message("Admin_area_3 pipeline completed")
-      
     } else {
-      message("No admin_area_3 data found. Only admin_area_2 analysis completed.")
-    }
-    
-    message("Multilevel analysis completed")
-    
-  } else {
-    message("Running single-level analysis...")
-    
-    # Standard single-level processing using original approach
-    admin_area_1_value <- adjusted_volume_data %>%
-      distinct(admin_area_1) %>%
-      pull(admin_area_1)
-    
-    adjusted_volume_admin2 <- adjusted_volume_admin2 %>%
-      mutate(admin_area_1 = admin_area_1_value)
-    
-    hmis_processed_subnational <- process_hmis_adjusted_volume(
-      adjusted_volume_data = adjusted_volume_admin2,
-      count_col = SELECTED_COUNT_VARIABLE
-    )
-    
-    survey_processed_province <- process_survey_data(
-      survey_data = survey_data_admin2,
-      hmis_countries = hmis_processed_subnational$hmis_countries
-    )
-    
-    if (RUN_NUTRITION_ANALYSIS) {
-      denominators_province <- load_nutrition_denominators_for_coverage(
-        hmis_data = hmis_processed_subnational$annual_hmis,
-        survey_data = survey_processed_province$carried,
-        population_data = NULL
-      )
-      
-      nutrition_coverage_results_province <- denominators_province %>%
-        select(admin_area_1, admin_area_2, year, 
-               coverage_deworming, coverage_mnp, coverage_vitamina, coverage_ors_zinc,
-               coverage_iptp1, coverage_iptp2, coverage_iptp3, coverage_iron_anc)
-      
-      nutrition_coverage_long_province <- pivot_nutrition_coverage_to_long(nutrition_coverage_results_province) %>%
-        select(-admin_area_1)
-      
-    } else {
-      denominators_province <- calculate_denominators(
-        hmis_data = hmis_processed_subnational$annual_hmis,
-        survey_data = survey_processed_province$carried
-      )
-      
-      subnational_coverage_eval <- evaluate_coverage_by_denominator(denominators_province)
-      subnational_coverage_projected <- project_coverage_from_all(
-        ranked_coverage = subnational_coverage_eval$full_ranking
-      )
-      
-      combined_province <- prepare_combined_coverage_from_projected(
-        projected_data = subnational_coverage_projected,
-        raw_survey_wide = survey_processed_province$raw
-      )
-      
-      combined_province_export <- combined_province %>%
-        filter(source_type == "independent") %>%
-        group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-        filter(rank == min(rank, na.rm = TRUE)) %>%
-        ungroup() %>%
-        select(admin_area_2, indicator_common_id, year, coverage_cov)
+      message("No admin_area_3 column found in HMIS data")
     }
   }
   
 } else {
-  message("No subnational survey data found for this country. Skipping province-level pipeline.")
+  message("\n=== SKIPPING SUBNATIONAL ANALYSIS ===")
+  combined_admin2_export <- NULL
+  combined_admin3_export <- NULL
 }
 
+# ------------------------------ Write Output Files -------------------------
+# Write national CSV
+write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+message("✓ Saved national results: M4_coverage_estimation.csv")
 
-#------------------------------------------------------------ Write cleaned CSVs ------------------------#
-# Write national CSV - either traditional or nutrition results
-if (RUN_NUTRITION_ANALYSIS) {
-  # Save nutrition results
-  if (exists("nutrition_final")) {
-    write.csv(nutrition_final, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved nutrition coverage results for national level")
-  } else {
-    message("No nutrition coverage results to save for national level")
-  }
+# Best denominator summary
+write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
+message("✓ Saved denominator summary: M4_selected_denominator_per_indicator.csv")
+
+# Write admin_area_2 CSV 
+if (!is.null(combined_admin2_export) && nrow(combined_admin2_export) > 0) {
+  write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved admin_area_2 results: ", nrow(combined_admin2_export), " rows")
 } else {
-  # Save traditional results
-  if (exists("combined_national_export_fixed")) {
-    write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved traditional coverage results for national level")
-  } else {
-    message("Skipping M4_coverage_estimation.csv - not generated in traditional mode")
-  }
+  # Create empty file
+  dummy_data_admin2 <- data.frame(admin_area_2 = character(), indicator_common_id = character(), 
+                                  year = numeric(), coverage_cov = numeric())
+  write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
+  message("✓ No admin_area_2 results - saved empty file")
 }
 
-# Best denominator summary only for traditional mode
-if (!RUN_NUTRITION_ANALYSIS) {
-  if (exists("best_denom_summary")) {
-    write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
-  } else {
-    message("Skipping M4_selected_denominator_per_indicator.csv - not generated in traditional mode")
-  }
+# Write admin_area_3 CSV
+if (!is.null(combined_admin3_export) && nrow(combined_admin3_export) > 0) {
+  write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved admin_area_3 results: ", nrow(combined_admin3_export), " rows")
 } else {
-  dummy_data <- data.frame(
-    
-    indicator_common_id=character(),
-    denominator= character()
-  )
-  write.csv(dummy_data, "M4_selected_denominator_per_indicator.csv")
-  
+  # Create empty file
+  dummy_data_admin3 <- data.frame(admin_area_3 = character(), indicator_common_id = character(), 
+                                  year = numeric(), coverage_cov = numeric())
+  write.csv(dummy_data_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE)
+  message("✓ No admin_area_3 results - saved empty file")
 }
 
-#------------------------------------------------------------ Write cleaned CSVs ------------------------#
-
-# Write province CSV - either traditional or nutrition results
-if (RUN_NUTRITION_ANALYSIS) {
-  
-  # Save nutrition results - admin_area_2 level
-  if (exists("nutrition_coverage_long_admin2")) {
-    write.csv(nutrition_coverage_long_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved nutrition coverage results for admin_area_2 level")
-  } else if (exists("nutrition_coverage_long_province")) {
-    # Single-level fallback
-    write.csv(nutrition_coverage_long_province, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved single-level nutrition coverage results")
-  } else {
-    message("No nutrition coverage results to save for admin_area_2 level")
-  }
-  
-  # Save nutrition results - admin_area_3 level (if exists)
-  if (exists("nutrition_coverage_long_admin3")) {
-    write.csv(nutrition_coverage_long_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved nutrition coverage results for admin_area_3 level")
-  } else {
-    # Create dummy nutrition file for admin_area_3
-    dummy_data_admin3_nutrition <- data.frame(
-      admin_area_3 = character(),
-      indicator_common_id = character(),
-      year = numeric(),
-      coverage_cov = numeric()
-    )
-    write.csv(dummy_data_admin3_nutrition, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("No nutrition coverage results for admin_area_3 level - saved empty file")
-  }
-  
-} else {
-  
-  # Save traditional results - admin_area_2 level
-  if (exists("combined_admin2_export") && nrow(combined_admin2_export) > 0) {
-    write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved traditional coverage results for admin_area_2 level")
-  } else if (exists("combined_province_export")) {
-    # Single-level fallback
-    if (nrow(combined_province_export) > 0) {
-      write.csv(combined_province_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-      message("Saved single-level traditional coverage results")
-    } else {
-      dummy_data_admin2 <- data.frame(
-        admin_area_2 = character(),
-        indicator_common_id = character(),
-        year = numeric(),
-        coverage_cov = numeric()
-      )
-      write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
-      message("Single-level results empty - saved empty file")
-    }
-  } else {
-    dummy_data_admin2 <- data.frame(
-      admin_area_2 = character(),
-      indicator_common_id = character(),
-      year = numeric(),
-      coverage_cov = numeric()
-    )
-    write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
-    message("No admin_area_2 traditional results - saved empty file")
-  }
-  
-  # Save traditional results - admin_area_3 level (if exists)
-  if (exists("combined_admin3_export") && nrow(combined_admin3_export) > 0) {
-    write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("Saved traditional coverage results for admin_area_3 level")
-  } else {
-    # Create dummy traditional file for admin_area_3
-    dummy_data_admin3_traditional <- data.frame(
-      admin_area_3 = character(),
-      indicator_common_id = character(),
-      year = numeric(),
-      coverage_cov = numeric()
-    )
-    write.csv(dummy_data_admin3_traditional, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-    message("No traditional coverage results for admin_area_3 level - saved empty file")
-  }
-  
+message("\n✓ Analysis complete for level: ", ANALYSIS_LEVEL)
+if (exists("original_level") && original_level != ANALYSIS_LEVEL) {
+  message("  (Originally requested: ", original_level, ", adjusted due to data availability)")
 }
+message("Output files:")
+message("  - M4_coverage_estimation.csv (national)")
+message("  - M4_coverage_estimation_admin_area_2.csv (zone/province level)")
+message("  - M4_coverage_estimation_admin_area_3.csv (district level)")  
+message("  - M4_selected_denominator_per_indicator.csv (denominator summary)")
