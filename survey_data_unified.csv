@@ -11145,37 +11145,37 @@ ng Federal Government,NATIONAL,2016,IM_DTP3,penta3,percent,0.53,MICS,"WHO/UNICEF
 ng Federal Government,NATIONAL,2017,IM_BCG,bcg,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2017,IM_DTP1,penta1,percent,0.65,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2017,IM_DTP3,penta3,percent,0.55,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2023,rh_ancp_w_skp,anc1,percent,0.625,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,rh_ancn_w_n01,anc1_old,percent,NA,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,rh_ancn_w_n4p,anc4,percent,0.524,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_bcg,bcg,percent,0.67,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2018,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2023,rh_delp_c_dhf,delivery,percent,0.43,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,fp_srcm_w_tot,fp,percent,0.15,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ml_iptp_w_spf,iptp1,percent,0.635,DHS National,NG2023NDHS,household
-ng Federal Government,NATIONAL,2023,ml_iptp_w_2sp,iptp2,percent,0.495,DHS National,NG2023NDHS,household
-ng Federal Government,NATIONAL,2023,ml_iptp_w_3sp,iptp3,percent,0.261,DHS National,NG2023NDHS,household
-ng Federal Government,NATIONAL,2023,rh_ancc_w_irn,iron_anc,percent,0.667,DHS National,NG2023NDHS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_msl,measles1,percent,0.514,DHS National,NG2023DHS,household
-ng Federal Government,NATIONAL,2023,cm_ecmr_c_nnr,nmr,rate,41,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_diat_c_orz,ors_zinc,percent,0.236,DHS National,NG2023NDHS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_dp1,penta1,percent,0.629,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_dp3,penta3,percent,0.534,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op1,polio1,percent,0.648,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op2,polio2,percent,0.579,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op3,polio3,percent,0.456,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,cm_pnmr_c_nsb,still,number,230,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2023,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2018,IM_DTP1,penta1,percent,0.69,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2023,fe_frty_w_npg,womenrepage,survey_count,39050,DHS National,NG2023MIS,household
-ng Federal Government,NATIONAL,2018,IM_DTP3,penta3,percent,0.61,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2018,rh_ancp_w_skp,anc1,percent,0.67,DHS National,NG2018DHS,household
 ng Federal Government,NATIONAL,2018,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG2018DHS,household
 ng Federal Government,NATIONAL,2018,rh_ancn_w_n4p,anc4,percent,0.562,DHS National,NG2018DHS,household
 ng Federal Government,NATIONAL,2018,ch_vac1_c_bcg,bcg,percent,0.647,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2018,fe_frtr_w_cbr,crudebr,rate,38.3,DHS National,NG2018DHS,household
 ng Federal Government,NATIONAL,2018,rh_delp_c_dhf,delivery,percent,0.41,DHS National,NG2018DHS,household
 ng Federal Government,NATIONAL,2018,cn_miac_c_dwm,deworming,percent,0.253,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,fp_srcm_w_tot,fp,percent,1,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,cm_ecmt_c_imr,imr,rate,67,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ml_iptp_w_spf,iptp1,percent,0.636,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ml_iptp_w_2sp,iptp2,percent,0.404,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ml_iptp_w_3sp,iptp3,percent,0.166,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,rh_ancc_w_irn,iron_anc,percent,0.702,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_msl,measles1,percent,0.49,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,cm_ecmr_c_nnr,nmr,rate,39,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_diat_c_orz,ors_zinc,percent,0.228,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_dp1,penta1,percent,0.625,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_dp3,penta3,percent,0.469,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op1,polio1,percent,0.736,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op2,polio2,percent,0.667,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,IM_DTP1,penta1,percent,0.69,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op3,polio3,percent,0.472,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,IM_DTP3,penta3,percent,0.61,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
+ng Federal Government,NATIONAL,2018,cm_pnmr_c_nsb,still,number,605,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,fe_frtr_w_tfr,tfr,rate,5.3,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,cn_miac_c_vas,vitamina,percent,0.453,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2018,fe_frty_w_npg,womenrepage,survey_count,41821,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2021,rh_ancp_w_skp,anc1,percent,0.63,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,rh_ancn_w_n01,anc1_old,percent,0.039,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,rh_ancn_w_n4p,anc4,percent,0.515,DHS National,NG2021MIS,household
 ng Federal Government,NATIONAL,2019,IM_BCG,bcg,percent,0.75,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2019,IM_DTP1,penta1,percent,0.72,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2019,IM_DTP3,penta3,percent,0.66,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
@@ -11184,48 +11184,48 @@ ng Federal Government,NATIONAL,2020,"Crude birth rate (births per 1,000 populati
 ng Federal Government,NATIONAL,2020,Infant mortality rate (IMR),imr,rate,74.69896,UNWPP,UNWPP,modeled
 ng Federal Government,NATIONAL,2020,IM_DTP1,penta1,percent,0.7,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2020,IM_DTP3,penta3,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2018,fp_srcm_w_tot,fp,percent,1,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,cm_ecmt_c_imr,imr,rate,67,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ml_iptp_w_spf,iptp1,percent,0.636,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ml_iptp_w_2sp,iptp2,percent,0.404,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2021,fe_frtr_w_cbr,crudebr,rate,32.4,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,ml_iptp_w_spf,iptp1,percent,0.589,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,ml_iptp_w_2sp,iptp2,percent,0.459,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,ml_iptp_w_3sp,iptp3,percent,0.31,DHS National,NG2021MIS,household
 ng Federal Government,NATIONAL,2023,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2023,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.954,UNWPP,UNWPP,modeled
-ng Federal Government,NATIONAL,2018,ml_iptp_w_3sp,iptp3,percent,0.166,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,rh_ancc_w_irn,iron_anc,percent,0.702,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2021,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2021,fe_frty_w_npg,womenrepage,survey_count,14476,DHS National,NG2021MIS,household
 ng Federal Government,NATIONAL,2023,Infant mortality rate (IMR),imr,rate,69.46855,UNWPP,UNWPP,modeled
-ng Federal Government,NATIONAL,2018,ch_vac1_c_msl,measles1,percent,0.49,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,cm_ecmr_c_nnr,nmr,rate,39,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ch_diat_c_orz,ors_zinc,percent,0.228,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ch_vac1_c_dp1,penta1,percent,0.625,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ch_vac1_c_dp3,penta3,percent,0.469,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2023,rh_ancp_w_skp,anc1,percent,0.625,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,rh_ancn_w_n01,anc1_old,percent,NA,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,rh_ancn_w_n4p,anc4,percent,0.524,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_bcg,bcg,percent,0.67,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,rh_delp_c_dhf,delivery,percent,0.43,DHS National,NG2023MIS,household
 ng Federal Government,NATIONAL,2022,IM_BCG,bcg,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2022,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.192,UNWPP,UNWPP,modeled
 ng Federal Government,NATIONAL,2022,Infant mortality rate (IMR),imr,rate,71.23166,UNWPP,UNWPP,modeled
 ng Federal Government,NATIONAL,2022,IM_DTP1,penta1,percent,0.63,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2022,IM_DTP3,penta3,percent,0.59,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op1,polio1,percent,0.736,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op2,polio2,percent,0.667,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op3,polio3,percent,0.472,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2023,fp_srcm_w_tot,fp,percent,0.15,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,ml_iptp_w_spf,iptp1,percent,0.635,DHS National,NG2023NDHS,household
+ng Federal Government,NATIONAL,2023,ml_iptp_w_2sp,iptp2,percent,0.495,DHS National,NG2023NDHS,household
 ng Federal Government,NATIONAL,2023,IM_DTP1,penta1,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2018,cm_pnmr_c_nsb,still,number,605,DHS National,NG2018DHS,household
+ng Federal Government,NATIONAL,2023,ml_iptp_w_3sp,iptp3,percent,0.261,DHS National,NG2023NDHS,household
 ng Federal Government,NATIONAL,2023,IM_DTP3,penta3,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2018,fe_frtr_w_tfr,tfr,rate,5.3,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,cn_miac_c_vas,vitamina,percent,0.453,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2018,fe_frty_w_npg,womenrepage,survey_count,41821,DHS National,NG2018DHS,household
-ng Federal Government,NATIONAL,2021,rh_ancp_w_skp,anc1,percent,0.63,DHS National,NG2021MIS,household
-ng Federal Government,NATIONAL,2021,rh_ancn_w_n01,anc1_old,percent,0.039,DHS National,NG2021MIS,household
-ng Federal Government,NATIONAL,2021,rh_ancn_w_n4p,anc4,percent,0.515,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2023,rh_ancc_w_irn,iron_anc,percent,0.667,DHS National,NG2023NDHS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_msl,measles1,percent,0.514,DHS National,NG2023DHS,household
+ng Federal Government,NATIONAL,2023,cm_ecmr_c_nnr,nmr,rate,41,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,ch_diat_c_orz,ors_zinc,percent,0.236,DHS National,NG2023NDHS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_dp1,penta1,percent,0.629,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_dp3,penta3,percent,0.534,DHS National,NG2023MIS,household
 ng Federal Government,NATIONAL,2021,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2021,fe_frtr_w_cbr,crudebr,rate,32.4,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op1,polio1,percent,0.648,DHS National,NG2023MIS,household
 ng Federal Government,NATIONAL,2021,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.546,UNWPP,UNWPP,modeled
 ng Federal Government,NATIONAL,2021,Infant mortality rate (IMR),imr,rate,73.0155,UNWPP,UNWPP,modeled
-ng Federal Government,NATIONAL,2021,ml_iptp_w_spf,iptp1,percent,0.589,DHS National,NG2021MIS,household
-ng Federal Government,NATIONAL,2021,ml_iptp_w_2sp,iptp2,percent,0.459,DHS National,NG2021MIS,household
-ng Federal Government,NATIONAL,2021,ml_iptp_w_3sp,iptp3,percent,0.31,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op2,polio2,percent,0.579,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op3,polio3,percent,0.456,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,cm_pnmr_c_nsb,still,number,230,DHS National,NG2023MIS,household
 ng Federal Government,NATIONAL,2021,IM_DTP1,penta1,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2021,IM_DTP3,penta3,percent,0.61,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
-ng Federal Government,NATIONAL,2021,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2021MIS,household
-ng Federal Government,NATIONAL,2021,fe_frty_w_npg,womenrepage,survey_count,14476,DHS National,NG2021MIS,household
+ng Federal Government,NATIONAL,2023,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2023MIS,household
+ng Federal Government,NATIONAL,2023,fe_frty_w_npg,womenrepage,survey_count,39050,DHS National,NG2023MIS,household
 ng Federal Government,NATIONAL,2024,IM_BCG,bcg,percent,0.69,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household
 ng Federal Government,NATIONAL,2024,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.493,UNWPP,UNWPP,modeled
 ng Federal Government,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,68.46108,UNWPP,UNWPP,modeled
