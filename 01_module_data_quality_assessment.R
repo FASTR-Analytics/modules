@@ -5,7 +5,7 @@ GEOLEVEL <- "admin_area_4"           # Admin level used to join facilities to co
 DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
-PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
+PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -693,6 +693,20 @@ if (run_dqa) {
 }
 
 # -------------------------------- SAVE DATA OUTPUTS ------------------------------------------------------------
+print("Preparing and saving outlier list...")
+
+outlier_list_export <- outlier_data_main %>%
+  filter(outlier_flag == 1) %>%  # Only include flagged outliers
+  select(
+    facility_id,
+    all_of(geo_columns_export),
+    indicator_common_id,
+    period_id,
+    count
+  )
+
+write.csv(outlier_list_export, "M1_output_outlier_list.csv", row.names = FALSE)
+
 print("Preparing and saving results from outlier analysis...")
 
 outlier_data_export <- outlier_data_main %>%
