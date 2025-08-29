@@ -741,7 +741,7 @@ key_messages_dataset <- summary_disruption_admin1 %>%
     surplus_percent = ifelse(count_expect_sum > 0,
                              (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
   ) %>%
-  select(admin_area_1, indicator_common_id, period_id, year, month,
+  select(admin_area_1, indicator_common_id, period_id,
          count_sum, count_expect_sum, 
          shortfall_absolute, shortfall_percent,
          surplus_absolute, surplus_percent) %>%
