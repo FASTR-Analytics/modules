@@ -1,5 +1,5 @@
 
-PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
+PROJECT_DATA_HMIS <- "hmis_liberia.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -29,6 +29,20 @@ setDT(raw_data)
 setDT(outlier_data)
 setDT(completeness_data)
 
+# Check which indicators never get outlier adjustment
+volume_check <- raw_data[, .(
+  above_100 = sum(count > 100, na.rm = TRUE),
+  total = .N
+), by = indicator_common_id]
+
+no_outlier_adj <- volume_check[above_100 == 0, indicator_common_id]
+
+message("Indicators not adjusted due to low volume (0 observations above outlier threshold):")
+if (length(no_outlier_adj) > 0) {
+  for (ind in no_outlier_adj) message("  ", ind)
+} else {
+  message("  None")
+}
 
 # Define Functions ------------------------------------------------------------------------------------------
 geo_cols <- colnames(raw_data)[grepl("^admin_area_[0-9]+$", colnames(raw_data))]
