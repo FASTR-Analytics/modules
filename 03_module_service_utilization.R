@@ -1,5 +1,5 @@
-SELECTEDCOUNT <- "count_final_completeness"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_outliers" 
+SELECTEDCOUNT <- "count_final_outliers"  #use count_final_none or count_final_completeness
+VISUALIZATIONCOUNT <- "count_final_both" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -25,7 +25,7 @@ CONTROL_CHART_LEVEL <- "admin_area_3"  # Options: "admin_area_2" or "admin_area_
                                        # & admin_area_3 = State level
 
 
-PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
+PROJECT_DATA_HMIS <- "hmis_liberia.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Last edit: 2025 Aug 5
@@ -725,6 +725,31 @@ summary_disruption_admin1 <- data_disruption %>%
   )
 
 gc()
+
+
+# Export data for external key message calculation
+print("Saving disruptions data for external analysis...")
+
+key_messages_dataset <- summary_disruption_admin1 %>%
+  mutate(
+    year = as.integer(period_id %/% 100),
+    month = period_id %% 100,
+    shortfall_absolute = pmax(0, count_expect_sum - count_sum, na.rm = TRUE),
+    shortfall_percent = ifelse(count_expect_sum > 0, 
+                               (count_expect_sum - count_sum) / count_expect_sum * 100, 0),
+    surplus_absolute = pmax(0, count_sum - count_expect_sum, na.rm = TRUE),
+    surplus_percent = ifelse(count_expect_sum > 0,
+                             (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
+  ) %>%
+  select(admin_area_1, indicator_common_id, period_id, year, month,
+         count_sum, count_expect_sum, 
+         shortfall_absolute, shortfall_percent,
+         surplus_absolute, surplus_percent) %>%
+  arrange(indicator_common_id, period_id)
+
+write.csv(key_messages_dataset, "M3_all_indicators_shortfalls.csv", row.names = FALSE)
+cat("Key messages dataset saved to: M3_all_indicators_shortfalls.csv\n")
+
 
 
 if ("expect_admin_area_2" %in% names(data_disruption)) {

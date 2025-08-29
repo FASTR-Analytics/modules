@@ -14,7 +14,7 @@ PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -142,6 +142,11 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   )
   
   message("Loading and mapping adjusted HMIS volume...")
+  
+  # Conditional rename: only if pnc1_mother doesn't exist but pnc1 does
+  if (!"pnc1_mother" %in% adjusted_volume_data$indicator_common_id && "pnc1" %in% adjusted_volume_data$indicator_common_id) {
+    adjusted_volume_data$indicator_common_id[adjusted_volume_data$indicator_common_id == "pnc1"] <- "pnc1_mother"
+  }
   
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
