@@ -44,6 +44,10 @@ if (length(no_outlier_adj) > 0) {
   message("  None")
 }
 
+# Add detailed table creation
+volume_check[, low_volume_exclude := above_100 == 0]
+detailed_exclusions <- volume_check[, .(indicator_common_id, low_volume_exclude)]
+
 # Define Functions ------------------------------------------------------------------------------------------
 geo_cols <- colnames(raw_data)[grepl("^admin_area_[0-9]+$", colnames(raw_data))]
 
@@ -281,5 +285,5 @@ adjusted_data_export_clean <- adjusted_data_export[, !"admin_area_1"]
 fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv",            na = "NA")
 fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv", na = "NA")
 fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv",   na = "NA")
-
+fwrite(detailed_exclusions,            "M2_low_volume_exclusions.csv",   na = "NA")
 print("Adjustments completed and all outputs saved.")
