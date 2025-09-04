@@ -4,7 +4,7 @@ PROJECT_DATA_HMIS <- "hmis_liberia.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2025 Aug 8
+# Last edit: 2025 Sept 3
 
 
 # -------------------------- KEY OUTPUT ----------------------------------------------------------------------
@@ -118,11 +118,7 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
   # ---------------- Completeness Adjustment ----------------
   if (adjust_completeness) {
     message(" -> Adjusting for completeness...")
-    
-    # Date column already exists, no need to recreate it
-    # setorder already done above
-    
-    data_adj[, valid_count := fifelse(!is.na(count_working) & count_working > 0, count_working, NA_real_)]
+    data_adj[, valid_count := fifelse(!is.na(count_working) & outlier_flag == 0L, count_working, NA_real_)]
     data_adj[, `:=`(
       roll6 = frollmean(valid_count, 6, na.rm = TRUE, align = "center"),
       fwd6 = frollmean(valid_count, 6, na.rm = TRUE, align = "left"),
