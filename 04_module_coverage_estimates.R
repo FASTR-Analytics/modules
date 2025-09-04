@@ -36,6 +36,9 @@ survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
 # ------------------------------ Prepare Data for Analysis -------------------------
+# A flag to track if pnc1 was renamed to pnc1_mother
+pnc1_renamed_to_mother <- FALSE
+
 message("Analysis mode: ", ANALYSIS_LEVEL)
 
 # Always run national analysis
@@ -143,11 +146,17 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   
   message("Loading and mapping adjusted HMIS volume...")
   
-  # Conditional rename: only if pnc1_mother doesn't exist but pnc1 does
-  if (!"pnc1_mother" %in% adjusted_volume_data$indicator_common_id && "pnc1" %in% adjusted_volume_data$indicator_common_id) {
+  # Check if both pnc1_mother and pnc1 exist in the data
+  has_pnc1_mother <- "pnc1_mother" %in% adjusted_volume_data$indicator_common_id
+  has_pnc1 <- "pnc1" %in% adjusted_volume_data$indicator_common_id
+  
+  if (!has_pnc1_mother && has_pnc1) {
+    # If pnc1_mother doesn't exist but pnc1 does, rename pnc1 to pnc1_mother
     adjusted_volume_data$indicator_common_id[adjusted_volume_data$indicator_common_id == "pnc1"] <- "pnc1_mother"
+    pnc1_renamed_to_mother <<- TRUE # Set flag to TRUE
   }
   
+
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
   # Ensure year and month exist
@@ -1017,6 +1026,25 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 }
 
 # ------------------------------ Write Output Files -------------------------
+# Conditionally rename pnc1_mother back to pnc1 if the original data was pnc1
+if (pnc1_renamed_to_mother) {
+  if (exists("combined_national_export_fixed")) {
+    combined_national_export_fixed$indicator_common_id[combined_national_export_fixed$indicator_common_id == "pnc1_mother"] <- "pnc1"
+    message("✓ Renamed 'pnc1_mother' to 'pnc1' in national output")
+  }
+  
+  if (exists("combined_admin2_export")) {
+    combined_admin2_export$indicator_common_id[combined_admin2_export$indicator_common_id == "pnc1_mother"] <- "pnc1"
+    message("✓ Renamed 'pnc1_mother' to 'pnc1' in admin_area_2 output")
+  }
+  
+  if (exists("combined_admin3_export")) {
+    combined_admin3_export$indicator_common_id[combined_admin3_export$indicator_common_id == "pnc1_mother"] <- "pnc1"
+    message("✓ Renamed 'pnc1_mother' to 'pnc1' in admin_area_3 output")
+  }
+}
+
+
 # Write national CSV
 write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
 message("✓ Saved national results: M4_coverage_estimation.csv")
