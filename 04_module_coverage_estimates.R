@@ -1042,6 +1042,11 @@ if (pnc1_renamed_to_mother) {
     combined_admin3_export$indicator_common_id[combined_admin3_export$indicator_common_id == "pnc1_mother"] <- "pnc1"
     message("✓ Renamed 'pnc1_mother' to 'pnc1' in admin_area_3 output")
   }
+  
+  if (exists("best_denom_summary")) {
+    best_denom_summary$indicator_common_id[best_denom_summary$indicator_common_id == "pnc1_mother"] <- "pnc1"
+    message("✓ Renamed 'pnc1_mother' to 'pnc1' in best_denom_summary output")
+  }
 }
 
 
