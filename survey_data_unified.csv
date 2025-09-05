@@ -13856,26 +13856,49 @@ Sierra Leone,Pujehun District,2019,ML_IPTP_W_3SP,iptp3,percent,0.401,DHS Sub-nat
 Sierra Leone,Western,2019,ML_IPTP_W_3SP,iptp3,percent,0.242,DHS Sub-national,SL2019DHS,household
 Sierra Leone,Western Area Rural District,2019,ML_IPTP_W_3SP,iptp3,percent,0.216,DHS Sub-national,SL2019DHS,household
 Sierra Leone,Western Area Urban District,2019,ML_IPTP_W_3SP,iptp3,percent,0.262,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Eastern,2019,,pnc1,percent,0.786,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Kailahun District,2019,,pnc1,percent,0.801,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Kenema District,2019,,pnc1,percent,0.845,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Kono District,2019,,pnc1,percent,0.68,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Northern (before 2017),2019,,pnc1,percent,,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Northern,2019,,pnc1,percent,0.819,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Koinadugu (before 2017),2019,,pnc1,percent,,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Koinadugu District,2019,,pnc1,percent,0.702,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Falaba District,2019,,pnc1,percent,0.856,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Bombali District,2019,,pnc1,percent,0.899,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Tonkolili District,2019,,pnc1,percent,0.778,DHS Sub-national,SL2019DHS,household
-Sierra Leone,North Western,2019,,pnc1,percent,0.745,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Kambia District,2019,,pnc1,percent,0.808,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Karene District,2019,,pnc1,percent,0.808,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Port Loko District,2019,,pnc1,percent,0.676,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Southern,2019,,pnc1,percent,0.881,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Bo District,2019,,pnc1,percent,0.949,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Bonthe District,2019,,pnc1,percent,0.949,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Moyamba District,2019,,pnc1,percent,0.709,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Pujehun District,2019,,pnc1,percent,0.925,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Western,2019,,pnc1,percent,0.905,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Western Area Rural District,2019,,pnc1,percent,0.896,DHS Sub-national,SL2019DHS,household
-Sierra Leone,Western Area Urban District,2019,,pnc1,percent,0.912,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Eastern,2019,RH_PCMT_W_DY2,pnc1,percent,0.831,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Kailahun District,2019,RH_PCMT_W_DY2,pnc1,percent,0.92,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Kenema District,2019,RH_PCMT_W_DY2,pnc1,percent,0.898,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Kono District,2019,RH_PCMT_W_DY2,pnc1,percent,0.653,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Northern (before 2017),2019,RH_PCMT_W_DY2,pnc1,percent,0.828,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Northern,2019,RH_PCMT_W_DY2,pnc1,percent,0.828,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Koinadugu (before 2017),2019,RH_PCMT_W_DY2,pnc1,percent,0.865,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Koinadugu District,2019,RH_PCMT_W_DY2,pnc1,percent,0.854,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Falaba District,2019,RH_PCMT_W_DY2,pnc1,percent,0.883,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Bombali District,2019,RH_PCMT_W_DY2,pnc1,percent,0.825,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Tonkolili District,2019,RH_PCMT_W_DY2,pnc1,percent,0.807,DHS Sub-national,SL2019DHS,household
+Sierra Leone,North Western,2019,RH_PCMT_W_DY2,pnc1,percent,0.827,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Kambia District,2019,RH_PCMT_W_DY2,pnc1,percent,0.967,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Karene District,2019,RH_PCMT_W_DY2,pnc1,percent,0.722,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Port Loko District,2019,RH_PCMT_W_DY2,pnc1,percent,0.779,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Southern,2019,RH_PCMT_W_DY2,pnc1,percent,0.893,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Bo District,2019,RH_PCMT_W_DY2,pnc1,percent,0.935,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Bonthe District,2019,RH_PCMT_W_DY2,pnc1,percent,0.936,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Moyamba District,2019,RH_PCMT_W_DY2,pnc1,percent,0.777,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Pujehun District,2019,RH_PCMT_W_DY2,pnc1,percent,0.932,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Western,2019,RH_PCMT_W_DY2,pnc1,percent,0.927,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Western Area Rural District,2019,RH_PCMT_W_DY2,pnc1,percent,0.915,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Western Area Urban District,2019,RH_PCMT_W_DY2,pnc1,percent,0.936,DHS Sub-national,SL2019DHS,household
+Sierra Leone,Eastern,2008,RH_PCMT_W_DY2,pnc1,percent,0.422,DHS Sub-national,SL2008DHS,household
+Sierra Leone,Northern (before 2017),2008,RH_PCMT_W_DY2,pnc1,percent,0.227,DHS Sub-national,SL2008DHS,household
+Sierra Leone,Southern,2008,RH_PCMT_W_DY2,pnc1,percent,0.443,DHS Sub-national,SL2008DHS,household
+Sierra Leone,Western,2008,RH_PCMT_W_DY2,pnc1,percent,0.548,DHS Sub-national,SL2008DHS,household
+Sierra Leone,Eastern,2013,RH_PCMT_W_DY2,pnc1,percent,0.803,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Kailahun District,2013,RH_PCMT_W_DY2,pnc1,percent,0.907,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Kenema District,2013,RH_PCMT_W_DY2,pnc1,percent,0.795,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Kono District,2013,RH_PCMT_W_DY2,pnc1,percent,0.699,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Northern (before 2017),2013,RH_PCMT_W_DY2,pnc1,percent,0.694,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Northern,2013,RH_PCMT_W_DY2,pnc1,percent,0.67,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Koinadugu (before 2017),2013,RH_PCMT_W_DY2,pnc1,percent,0.588,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Koinadugu District,2013,RH_PCMT_W_DY2,pnc1,percent,0.486,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Falaba District,2013,RH_PCMT_W_DY2,pnc1,percent,0.698,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Bombali District,2013,RH_PCMT_W_DY2,pnc1,percent,0.836,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Tonkolili District,2013,RH_PCMT_W_DY2,pnc1,percent,0.659,DHS Sub-national,SL2013DHS,household
+Sierra Leone,North Western,2013,RH_PCMT_W_DY2,pnc1,percent,0.751,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Kambia District,2013,RH_PCMT_W_DY2,pnc1,percent,0.736,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Karene District,2013,RH_PCMT_W_DY2,pnc1,percent,0.891,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Port Loko District,2013,RH_PCMT_W_DY2,pnc1,percent,0.696,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Southern,2013,RH_PCMT_W_DY2,pnc1,percent,0.738,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Bo District,2013,RH_PCMT_W_DY2,pnc1,percent,0.742,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Bonthe District,2013,RH_PCMT_W_DY2,pnc1,percent,0.75,DHS Sub-national,SL2013DHS,household
+Sierra Leone,Pujehun District,2013,RH_PCMT_W_DY2,pnc1,percent,0.707,DHS Sub-national,SL2013DHS,household
