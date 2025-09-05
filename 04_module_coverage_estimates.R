@@ -1059,7 +1059,9 @@ write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.n
 message("✓ Saved denominator summary: M4_selected_denominator_per_indicator.csv")
 
 # Write admin_area_2 CSV 
-if (!is.null(combined_admin2_export) && nrow(combined_admin2_export) > 0) {
+if (exists("combined_admin2_export") && 
+    is.data.frame(combined_admin2_export) && 
+    nrow(combined_admin2_export) > 0) {
   write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_2 results: ", nrow(combined_admin2_export), " rows")
 } else {
@@ -1071,7 +1073,9 @@ if (!is.null(combined_admin2_export) && nrow(combined_admin2_export) > 0) {
 }
 
 # Write admin_area_3 CSV
-if (!is.null(combined_admin3_export) && nrow(combined_admin3_export) > 0) {
+if (exists("combined_admin3_export") && 
+    is.data.frame(combined_admin3_export) && 
+    nrow(combined_admin3_export) > 0) {
   write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_3 results: ", nrow(combined_admin3_export), " rows")
 } else {
