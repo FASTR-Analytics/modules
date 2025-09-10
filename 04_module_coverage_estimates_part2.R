@@ -90,29 +90,24 @@ calculate_coverage <- function(denominators_data, numerators_data) {
   return(coverage_data)
 }
 
-# Adds: denominator_label, coverage_original_estimate_source
+# Add denominator_label
 add_denominator_labels <- function(df, denom_col = "denominator") {
   stopifnot(is.data.frame(df), denom_col %in% names(df))
-  library(dplyr); library(stringr)
   
   df %>%
     mutate(
       .den = .data[[denom_col]],
-      # extract "source" and "target" from d<source>_<target>
       den_source_key = str_replace(.den, "^d([^_]+)_.*$", "\\1"),
       den_target_key = str_replace(.den, "^d[^_]+_(.*)$", "\\1"),
-      # normalize common variants
       den_target_key = recode(den_target_key,
-                              "livebirths" = "livebirth",
-                              .default = den_target_key),
-      
-      # human phrases
+                                     "livebirths" = "livebirth",
+                                     .default = den_target_key),
       source_phrase = case_when(
-        den_source_key == "anc1"     ~ "derived from HMIS data on ANC 1st visits",
-        den_source_key == "delivery" ~ "derived from HMIS data on institutional deliveries",
-        den_source_key == "bcg"      ~ "derived from HMIS data on BCG doses",
-        den_source_key == "penta1"   ~ "derived from HMIS data on Penta-1 doses",
-        den_source_key == "wpp"      ~ "based on UN WPP estimates",
+        den_source_key == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
+        den_source_key == "delivery"   ~ "derived from HMIS data on institutional deliveries",
+        den_source_key == "bcg"        ~ "derived from HMIS data on BCG doses",
+        den_source_key == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
+        den_source_key == "wpp"        ~ "based on UN WPP estimates",
         den_source_key == "livebirths" ~ "derived from HMIS data on live births",
         TRUE ~ "from other sources"
       ),
@@ -126,22 +121,10 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
         den_target_key == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
         TRUE ~ paste("Estimated population for target", den_target_key)
       ),
-      
-      denominator_label = paste0(target_phrase, " ", source_phrase, "."),
-      
-      coverage_original_estimate_source = case_when(
-        den_source_key == "anc1"     ~ "ANC1-derived denominator (HMIS)",
-        den_source_key == "delivery" ~ "Delivery-derived denominator (HMIS)",
-        den_source_key == "bcg"      ~ "BCG-derived denominator (HMIS)",
-        den_source_key == "penta1"   ~ "Penta1-derived denominator (HMIS)",
-        den_source_key == "wpp"      ~ "UN WPP-derived denominator",
-        den_source_key == "livebirths" ~ "Live-births-derived denominator (HMIS)",
-        TRUE ~ "Other denominator"
-      )
+      denominator_label = paste0(target_phrase, " ", source_phrase, ".")
     ) %>%
     select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
 }
-
 
 # Part 2 - compare coverage vs carried Survey (returns ONE tibble)
 compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {

@@ -492,7 +492,7 @@ process_national_population_data <- function(population_data, hmis_countries,
   #original wide
   wide <- base %>%
     select(admin_area_1, year, indicator_common_id, survey_value, source) %>%
-    tidyr::pivot_wider(
+    pivot_wider(
       names_from  = c(indicator_common_id, source),
       values_from = survey_value,
       names_glue  = "{indicator_common_id}_{source}",
@@ -657,56 +657,72 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
 
 #Part 4 - prepare summary results
 create_denominator_summary <- function(denominators_data, analysis_type = "NATIONAL") {
-  
-  # Get actual denominator columns (calculated denominators start with d + source type)
   denominator_cols <- names(denominators_data)[grepl("^d(livebirth|anc1|delivery|penta1|bcg|wpp)_", names(denominators_data))]
-  
   if (length(denominator_cols) == 0) {
-    warning("No denominator columns found")
-    return(NULL)
+    warning("No denominator columns found"); return(NULL)
   }
   
-  # Determine which admin columns to include
   has_admin2 <- "admin_area_2" %in% names(denominators_data)
   has_admin3 <- "admin_area_3" %in% names(denominators_data)
   
-  # Select appropriate columns
-  if (has_admin3) {
-    select_cols <- c("admin_area_1", "admin_area_3", "year", denominator_cols)
+  select_cols <- if (has_admin3) {
+    c("admin_area_1", "admin_area_3", "year", denominator_cols)
   } else if (has_admin2) {
-    select_cols <- c("admin_area_1", "admin_area_2", "year", denominator_cols)
+    c("admin_area_1", "admin_area_2", "year", denominator_cols)
   } else {
-    select_cols <- c("admin_area_1", "year", denominator_cols)
+    c("admin_area_1", "year", denominator_cols)
   }
   
-  # Create simple table with denominator descriptions
   summary_stats <- denominators_data %>%
     select(all_of(select_cols)) %>%
     pivot_longer(
       cols = all_of(denominator_cols),
-      names_to = "denominator_type", 
+      names_to = "denominator_type",
       values_to = "value"
     ) %>%
     filter(!is.na(value)) %>%
-    mutate(
-      target_population = case_when(
-        str_ends(denominator_type, "_livebirth") ~ "Live births",
-        str_ends(denominator_type, "_pregnancy") ~ "Pregnancies", 
-        str_ends(denominator_type, "_delivery") ~ "Deliveries",
-        str_ends(denominator_type, "_birth") ~ "Total births (live + stillbirths)",
-        str_ends(denominator_type, "_dpt") ~ "Infants eligible for DPT vaccine",
-        str_ends(denominator_type, "_measles1") ~ "Children eligible for measles vaccine dose 1",
-        str_ends(denominator_type, "_measles2") ~ "Children eligible for measles vaccine dose 2",
-        str_ends(denominator_type, "_mcv") ~ "Children eligible for measles vaccine",
-        TRUE ~ "Other population"
-      )
-    ) %>%
     arrange(year, denominator_type)
   
   cat("\n=== ", analysis_type, " DENOMINATORS ===\n")
   print(summary_stats)
+  summary_stats
+}
+
+
+# Add denominator_label
+add_denominator_labels <- function(df, denom_col = "denominator") {
+  stopifnot(is.data.frame(df), denom_col %in% names(df))
   
-  return(summary_stats)
+  df %>%
+    mutate(
+      .den = .data[[denom_col]],
+      den_source_key = str_replace(.den, "^d([^_]+)_.*$", "\\1"),
+      den_target_key = str_replace(.den, "^d[^_]+_(.*)$", "\\1"),
+      den_target_key = recode(den_target_key,
+                              "livebirths" = "livebirth",
+                              .default = den_target_key),
+      source_phrase = case_when(
+        den_source_key == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
+        den_source_key == "delivery"   ~ "derived from HMIS data on institutional deliveries",
+        den_source_key == "bcg"        ~ "derived from HMIS data on BCG doses",
+        den_source_key == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
+        den_source_key == "wpp"        ~ "based on UN WPP estimates",
+        den_source_key == "livebirths" ~ "derived from HMIS data on live births",
+        TRUE ~ "from other sources"
+      ),
+      target_phrase = case_when(
+        den_target_key == "pregnancy" ~ "Estimated number of pregnancies",
+        den_target_key == "delivery"  ~ "Estimated number of deliveries",
+        den_target_key == "birth"     ~ "Estimated number of total births (live + stillbirths)",
+        den_target_key == "livebirth" ~ "Estimated number of live births",
+        den_target_key == "dpt"       ~ "Estimated number of infants eligible for DPT1",
+        den_target_key == "measles1"  ~ "Estimated number of children eligible for measles dose 1 (MCV1)",
+        den_target_key == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
+        TRUE ~ paste("Estimated population for target", den_target_key)
+      ),
+      denominator_label = paste0(target_phrase, " ", source_phrase, ".")
+    ) %>%
+    select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
 }
 
 # ------------------------------ Main Execution --------------------------------------------------------------
@@ -824,8 +840,6 @@ make_denominators_results <- function(summary_df) {
   if (is.null(summary_df) || nrow(summary_df) == 0) return(NULL)
   
   df <- summary_df
-  
-  # Normalize admin columns for a consistent output schema
   if ("admin_area_3" %in% names(df) && !("admin_area_2" %in% names(df))) {
     df <- rename(df, admin_area_2 = admin_area_3)
   }
@@ -840,8 +854,7 @@ make_denominators_results <- function(summary_df) {
     ) %>%
     select(
       admin_area_1, admin_area_2, year,
-      denominator = denominator_type, den_source, den_target,
-      target_population, value
+      denominator = denominator_type, den_source, den_target, value
     )
 }
 
@@ -850,6 +863,22 @@ denominators_national_results <- if (exists("national_summary")) make_denominato
 denominators_admin2_results   <- if (exists("admin2_summary"))   make_denominators_results(admin2_summary)   else NULL
 denominators_admin3_results   <- if (exists("admin3_summary"))   make_denominators_results(admin3_summary)   else NULL
 
+
+# Safely add labels only if results are non-null
+if (!is.null(denominators_national_results)) {
+  denominators_national_results <- denominators_national_results %>%
+    add_denominator_labels("denominator")
+}
+
+if (!is.null(denominators_admin2_results)) {
+  denominators_admin2_results <- denominators_admin2_results %>%
+    add_denominator_labels("denominator")
+}
+
+if (!is.null(denominators_admin3_results)) {
+  denominators_admin3_results <- denominators_admin3_results %>%
+    add_denominator_labels("denominator")
+}
 
 # ---------- Results 3: Survey RAW (long; DHS-preferred; keep source + detail) -------------------------------
 # Replace your function with this two-argument version
@@ -949,21 +978,24 @@ if (exists("numerators_admin3_long") && is.data.frame(numerators_admin3_long) &&
   message("✓ No numerators_admin3 results - saved empty file")
 }
 
-# ---- Results 2: Denominators (from *_summary normalized) ---------------------------------------------------
+
+# ---- Results 2: Denominators (from *_summary normalized, with labels) ---------------------------------------
 # National
 if (exists("denominators_national_results") && is.data.frame(denominators_national_results) && nrow(denominators_national_results) > 0) {
+  denominators_national_results <- add_denominator_labels(denominators_national_results, "denominator")
   write.csv(denominators_national_results, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_national: ", nrow(denominators_national_results), " rows")
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer(),
-    denominator = character(),
-    den_source = character(),
-    den_target = character(),
+    admin_area_1      = character(),
+    admin_area_2      = character(),
+    year              = integer(),
+    denominator       = character(),
+    den_source        = character(),
+    den_target        = character(),
     target_population = character(),
-    value = double()
+    value             = double(),
+    denominator_label = character()
   )
   write.csv(dummy, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_national results - saved empty file")
@@ -971,18 +1003,20 @@ if (exists("denominators_national_results") && is.data.frame(denominators_nation
 
 # Admin2
 if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_results) && nrow(denominators_admin2_results) > 0) {
+  denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
   write.csv(denominators_admin2_results, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_admin2: ", nrow(denominators_admin2_results), " rows")
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer(),
-    denominator = character(),
-    den_source = character(),
-    den_target = character(),
+    admin_area_1      = character(),
+    admin_area_2      = character(),
+    year              = integer(),
+    denominator       = character(),
+    den_source        = character(),
+    den_target        = character(),
     target_population = character(),
-    value = double()
+    value             = double(),
+    denominator_label = character()
   )
   write.csv(dummy, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_admin2 results - saved empty file")
@@ -990,18 +1024,20 @@ if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_r
 
 # Admin3
 if (exists("denominators_admin3_results") && is.data.frame(denominators_admin3_results) && nrow(denominators_admin3_results) > 0) {
+  denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
   write.csv(denominators_admin3_results, "M4_denominators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_admin3: ", nrow(denominators_admin3_results), " rows")
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer(),
-    denominator = character(),
-    den_source = character(),
-    den_target = character(),
+    admin_area_1      = character(),
+    admin_area_2      = character(),
+    year              = integer(),
+    denominator       = character(),
+    den_source        = character(),
+    den_target        = character(),
     target_population = character(),
-    value = double()
+    value             = double(),
+    denominator_label = character()
   )
   write.csv(dummy, "M4_denominators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_admin3 results - saved empty file")
