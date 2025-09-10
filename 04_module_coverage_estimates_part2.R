@@ -339,17 +339,11 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     survey_raw_df <- mutate(survey_raw_df, admin_area_2 = "NATIONAL")
   }
   
-  # Determine required columns based on available admin levels
+  # Required columns
   need_cov  <- c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","coverage")
   need_proj <- c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","projected")
-  
-  if ("admin_area_3" %in% names(coverage_df)) {
-    need_cov <- c(need_cov, "admin_area_3")
-  }
-  if ("admin_area_3" %in% names(proj_df)) {
-    need_proj <- c(need_proj, "admin_area_3")
-  }
-  
+  if ("admin_area_3" %in% names(coverage_df)) need_cov  <- c(need_cov, "admin_area_3")
+  if ("admin_area_3" %in% names(proj_df))     need_proj <- c(need_proj, "admin_area_3")
   stopifnot(all(need_cov  %in% names(coverage_df)))
   stopifnot(all(need_proj %in% names(proj_df)))
   
@@ -358,14 +352,12 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     coverage_df <- add_denominator_labels(coverage_df)
   }
   
-  # Determine grouping keys
+  # Keys
   base_keys <- c("admin_area_1", "admin_area_2")
-  if ("admin_area_3" %in% names(coverage_df)) {
-    base_keys <- c(base_keys, "admin_area_3")
-  }
+  if ("admin_area_3" %in% names(coverage_df)) base_keys <- c(base_keys, "admin_area_3")
   join_keys <- c(base_keys, "year", "indicator_common_id", "denominator")
   
-  # 1) HMIS coverage (coverage_cov)
+  # 1) HMIS coverage
   cov_base <- coverage_df %>%
     select(
       all_of(base_keys), year,
@@ -373,7 +365,7 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       coverage_cov = coverage
     )
   
-  # 2) Projections (coverage_avgsurveyprojection)
+  # 2) Projections
   cov_proj <- cov_base %>%
     left_join(
       proj_df %>%
@@ -385,7 +377,7 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       by = join_keys
     )
   
-  # If no survey provided, return HMIS+proj only
+  # If no survey: return HMIS + projections only
   if (is.null(survey_raw_df)) {
     return(
       cov_proj %>%
@@ -399,14 +391,11 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     )
   }
   
-  # Determine survey grouping keys
+  # 3) Collapse survey RAW
   survey_group_keys <- base_keys
-  if ("admin_area_3" %in% names(survey_raw_df)) {
-    survey_group_keys <- c(survey_group_keys, "admin_area_3")
-  }
+  if ("admin_area_3" %in% names(survey_raw_df)) survey_group_keys <- c(survey_group_keys, "admin_area_3")
   survey_group_keys <- c(survey_group_keys, "year", "indicator_common_id")
   
-  # 3) Collapse survey RAW to one row per geo-year-indicator
   survey_slim <- survey_raw_df %>%
     group_by(across(all_of(survey_group_keys))) %>%
     summarise(
@@ -416,31 +405,41 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       .groups = "drop"
     )
   
-  # 4) Build the denominator universe per (geo, indicator)
+  # 4) Denominator universe
   denom_index_keys <- c(base_keys, "indicator_common_id")
   denom_index <- coverage_df %>%
     distinct(across(all_of(c(denom_index_keys, "denominator", "denominator_label"))))
   
-  # 5) Expand survey years across ALL denominators for that (geo, indicator)
+  # 5) Expand survey across ALL denominators
   survey_expanded <- denom_index %>%
-    inner_join(
-      survey_slim,
-      by = denom_index_keys
-    )
+    inner_join(survey_slim, by = denom_index_keys)
   
-  # 6) Union HMIS+proj with survey-expanded (includes early years)
+  # 6) Union HMIS+proj with survey-expanded
   final_join_keys <- c(base_keys, "year", "indicator_common_id", "denominator", "denominator_label")
   
   final <- cov_proj %>%
-    full_join(
-      survey_expanded,
-      by = final_join_keys
-    ) %>%
+    full_join(survey_expanded, by = final_join_keys) %>%
     distinct() %>%
-    arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year"))))
+    arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year")))) %>%
+    
+    # For each (geo, indicator, denominator), find the last year with a non-NA survey value,
+    # and set projections to NA for years BEFORE that last survey year.
+    group_by(across(all_of(c(base_keys, "indicator_common_id", "denominator")))) %>%
+    mutate(
+      .last_svy_year = suppressWarnings(max(year[!is.na(coverage_original_estimate)], na.rm = TRUE)),
+      .last_svy_year = ifelse(is.infinite(.last_svy_year), NA_real_, .last_svy_year),
+      coverage_avgsurveyprojection = if_else(
+        !is.na(.last_svy_year) & year < .last_svy_year,
+        NA_real_,
+        coverage_avgsurveyprojection
+      )
+    ) %>%
+    ungroup() %>%
+    select(-.last_svy_year)
   
   final
 }
+
 # ------------------------------ Main Execution ------------------------------
 
 # ===== NATIONAL (always) =====
