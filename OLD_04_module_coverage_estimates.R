@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Aug 12
+# Last edit: 2025 Sep 8
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -156,7 +156,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     pnc1_renamed_to_mother <<- TRUE # Set flag to TRUE
   }
   
-
+  
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
   # Ensure year and month exist
