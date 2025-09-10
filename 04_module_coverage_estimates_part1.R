@@ -13,7 +13,7 @@ INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -511,7 +511,7 @@ process_national_population_data <- function(population_data, hmis_countries,
   # ensure source_detail exists if absent
   if (!"source_detail" %in% names(raw_long)) raw_long$source_detail <- NA_character_
   
-  # optional: revert pnc1_mother -> pnc1 if you use that convention elsewhere
+  # optional: revert pnc1_mother -> pnc1
   if (exists("rename_back_pnc1")) {
     raw_long$indicator_common_id <- rename_back_pnc1(raw_long$indicator_common_id)
   }
@@ -791,9 +791,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         rename(admin_area_2 = admin_area_3)
       
       # Prepare survey data for admin_area_3 analysis
-      survey_admin3 <- survey_data_subnational %>%
-        select(-admin_area_2) %>%
-        rename(admin_area_2 = admin_area_3)
+      survey_admin3 <- survey_data_subnational
       
       if (nrow(hmis_admin3) > 0) {
         # Run pipeline
@@ -809,7 +807,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
 
 # ------------------------------ Write Output Files ----------------------------------------------------------
-# Helper: consistent rename back to pnc1 iff original data had pnc1
+# Helper: consistent rename back to pnc1 if original data had pnc1
 rename_back_pnc1 <- function(x) {
   if (isTRUE(pnc1_renamed_to_mother)) recode(x, "pnc1_mother" = "pnc1", .default = x) else x
 }
@@ -881,7 +879,6 @@ if (!is.null(denominators_admin3_results)) {
 }
 
 # ---------- Results 3: Survey RAW (long; DHS-preferred; keep source + detail) -------------------------------
-# Replace your function with this two-argument version
 make_survey_raw_long <- function(dhs_mics_raw_long, unwpp_raw_long = NULL) {
   
   norm <- function(df) {
@@ -922,6 +919,62 @@ survey_raw_admin2_long <- if (exists("survey_processed_admin2"))
 survey_raw_admin3_long <- if (exists("survey_processed_admin3"))
   make_survey_raw_long(survey_processed_admin3$raw_long) else NULL
 
+# ---- Results 4: Survey EXPANDED (carried/expanded panels) --------------------------------------------------
+make_survey_reference_long <- function(survey_expanded_df) {
+  if (is.null(survey_expanded_df) || nrow(survey_expanded_df) == 0) return(NULL)
+  
+  # Ensure admin_area_2 exists
+  if (!"admin_area_2" %in% names(survey_expanded_df)) {
+    survey_expanded_df$admin_area_2 <- "NATIONAL"
+  }
+  
+  # Identify *_carry columns
+  carry_cols <- grep("carry$", names(survey_expanded_df), value = TRUE)
+  if (length(carry_cols) == 0) return(NULL)
+  
+  survey_expanded_df |>
+    select(admin_area_1, admin_area_2, year, all_of(carry_cols)) |>
+    pivot_longer(
+      cols          = all_of(carry_cols),
+      names_to      = "indicator_common_id",
+      names_pattern = "(.*)carry$",
+      values_to     = "reference_value"
+    ) |>
+    filter(!is.na(reference_value)) |>
+    arrange(admin_area_1, admin_area_2, year, indicator_common_id)
+}
+survey_reference_national <- if (exists("survey_processed_national") &&
+                                 is.list(survey_processed_national) &&
+                                 "carried" %in% names(survey_processed_national) &&
+                                 is.data.frame(survey_processed_national$carried) &&
+                                 nrow(survey_processed_national$carried) > 0) {
+  make_survey_reference_long(survey_processed_national$carried)
+} else NULL
+
+survey_reference_admin2 <- if (exists("survey_processed_admin2") &&
+                               is.list(survey_processed_admin2) &&
+                               "carried" %in% names(survey_processed_admin2) &&
+                               is.data.frame(survey_processed_admin2$carried) &&
+                               nrow(survey_processed_admin2$carried) > 0) {
+  make_survey_reference_long(survey_processed_admin2$carried)
+} else NULL
+
+survey_reference_admin3 <- if (exists("survey_processed_admin3") &&
+                               is.list(survey_processed_admin3) &&
+                               "carried" %in% names(survey_processed_admin3) &&
+                               is.data.frame(survey_processed_admin3$carried) &&
+                               nrow(survey_processed_admin3$carried) > 0) {
+  make_survey_reference_long(survey_processed_admin3$carried)
+} else NULL
+
+# --- Helper to ensure admin3 outputs have the right column name ---
+normalize_admin3_for_output <- function(df) {
+  if (!is.data.frame(df) || nrow(df) == 0) return(df)
+  if (!"admin_area_3" %in% names(df) && "admin_area_2" %in% names(df)) {
+    df <- rename(df, admin_area_3 = admin_area_2)
+  }
+  df
+}
 
 
 # ==============================================================================
@@ -963,21 +1016,27 @@ if (exists("numerators_admin2_long") && is.data.frame(numerators_admin2_long) &&
 }
 
 # Admin3
-if (exists("numerators_admin3_long") && is.data.frame(numerators_admin3_long) && nrow(numerators_admin3_long) > 0) {
-  write.csv(numerators_admin3_long, "M4_numerators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+if (exists("numerators_admin3_long") &&
+    is.data.frame(numerators_admin3_long) &&
+    nrow(numerators_admin3_long) > 0) {
+  
+  numerators_admin3_long <- normalize_admin3_for_output(numerators_admin3_long)
+  write.csv(numerators_admin3_long, "M4_numerators_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved numerators_admin3: ", nrow(numerators_admin3_long), " rows")
+  
 } else {
   dummy <- data.frame(
     admin_area_1 = character(),
-    admin_area_2 = character(),
+    admin_area_3 = character(),
     year = integer(),
     indicator_common_id = character(),
     count = double()
   )
-  write.csv(dummy, "M4_numerators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy, "M4_numerators_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No numerators_admin3 results - saved empty file")
 }
-
 
 # ---- Results 2: Denominators (from *_summary normalized, with labels) ---------------------------------------
 # National
@@ -993,7 +1052,6 @@ if (exists("denominators_national_results") && is.data.frame(denominators_nation
     denominator       = character(),
     den_source        = character(),
     den_target        = character(),
-    target_population = character(),
     value             = double(),
     denominator_label = character()
   )
@@ -1014,7 +1072,6 @@ if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_r
     denominator       = character(),
     den_source        = character(),
     den_target        = character(),
-    target_population = character(),
     value             = double(),
     denominator_label = character()
   )
@@ -1023,23 +1080,32 @@ if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_r
 }
 
 # Admin3
-if (exists("denominators_admin3_results") && is.data.frame(denominators_admin3_results) && nrow(denominators_admin3_results) > 0) {
-  denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
-  write.csv(denominators_admin3_results, "M4_denominators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved denominators_admin3: ", nrow(denominators_admin3_results), " rows")
+if (exists("denominators_admin3_results") &&
+    is.data.frame(denominators_admin3_results) &&
+    nrow(denominators_admin3_results) > 0) {
+  
+  df <- normalize_admin3_for_output(denominators_admin3_results) %>%
+    add_denominator_labels("denominator") %>%
+    select(admin_area_1, admin_area_3, year,
+           denominator, den_source, den_target, value, denominator_label)
+  
+  write.csv(df, "M4_denominators_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved denominators_admin3: ", nrow(df), " rows")
+  
 } else {
   dummy <- data.frame(
     admin_area_1      = character(),
-    admin_area_2      = character(),
+    admin_area_3      = character(),
     year              = integer(),
     denominator       = character(),
     den_source        = character(),
     den_target        = character(),
-    target_population = character(),
     value             = double(),
     denominator_label = character()
   )
-  write.csv(dummy, "M4_denominators_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy, "M4_denominators_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_admin3 results - saved empty file")
 }
 
@@ -1081,41 +1147,47 @@ if (exists("survey_raw_admin2_long") && is.data.frame(survey_raw_admin2_long) &&
 }
 
 # Admin3
-if (exists("survey_raw_admin3_long") && is.data.frame(survey_raw_admin3_long) && nrow(survey_raw_admin3_long) > 0) {
-  write.csv(survey_raw_admin3_long, "M4_survey_raw_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+if (exists("survey_raw_admin3_long") &&
+    is.data.frame(survey_raw_admin3_long) &&
+    nrow(survey_raw_admin3_long) > 0) {
+  
+  survey_raw_admin3_long <- normalize_admin3_for_output(survey_raw_admin3_long)
+  write.csv(survey_raw_admin3_long, "M4_survey_raw_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved survey_raw_admin3: ", nrow(survey_raw_admin3_long), " rows")
+  
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer(),
-    indicator_common_id = character(),
-    source = character(),
-    source_detail = character(),
-    survey_value = double()
+    admin_area_1       = character(),
+    admin_area_3       = character(),
+    year               = integer(),
+    indicator_common_id= character(),
+    source             = character(),
+    source_detail      = character(),
+    survey_value       = double()
   )
-  write.csv(dummy, "M4_survey_raw_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy, "M4_survey_raw_admin3.csv",
+            row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No survey_raw_admin3 results - saved empty file")
 }
 
-# ---- Results 4: Survey EXPANDED (carried/expanded panels) --------------------------------------------------
+
+# ---- Results 4: Survey REFERENCE (long, from carried values) -----------------------------------------------
+
 # National
-if (exists("survey_processed_national") &&
-    is.list(survey_processed_national) &&
-    "carried" %in% names(survey_processed_national) &&
-    is.data.frame(survey_processed_national$carried) &&
-    nrow(survey_processed_national$carried) > 0) {
-  
-  write.csv(survey_processed_national$carried,
+if (!is.null(survey_reference_national) && nrow(survey_reference_national) > 0) {
+  write.csv(survey_reference_national,
             "M4_survey_expanded_national.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved survey_expanded_national: ",
-          nrow(survey_processed_national$carried), " rows")
+          nrow(survey_reference_national), " rows")
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer()
+    admin_area_1       = character(),
+    admin_area_2       = character(),
+    year               = integer(),
+    indicator_common_id= character(),
+    reference_value    = double()
   )
   write.csv(dummy, "M4_survey_expanded_national.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
@@ -1123,22 +1195,19 @@ if (exists("survey_processed_national") &&
 }
 
 # Admin2
-if (exists("survey_processed_admin2") &&
-    is.list(survey_processed_admin2) &&
-    "carried" %in% names(survey_processed_admin2) &&
-    is.data.frame(survey_processed_admin2$carried) &&
-    nrow(survey_processed_admin2$carried) > 0) {
-  
-  write.csv(survey_processed_admin2$carried,
+if (!is.null(survey_reference_admin2) && nrow(survey_reference_admin2) > 0) {
+  write.csv(survey_reference_admin2,
             "M4_survey_expanded_admin2.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved survey_expanded_admin2: ",
-          nrow(survey_processed_admin2$carried), " rows")
+          nrow(survey_reference_admin2), " rows")
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer()
+    admin_area_1       = character(),
+    admin_area_2       = character(),
+    year               = integer(),
+    indicator_common_id= character(),
+    reference_value    = double()
   )
   write.csv(dummy, "M4_survey_expanded_admin2.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
@@ -1146,22 +1215,22 @@ if (exists("survey_processed_admin2") &&
 }
 
 # Admin3
-if (exists("survey_processed_admin3") &&
-    is.list(survey_processed_admin3) &&
-    "carried" %in% names(survey_processed_admin3) &&
-    is.data.frame(survey_processed_admin3$carried) &&
-    nrow(survey_processed_admin3$carried) > 0) {
+if (!is.null(survey_reference_admin3) &&
+    is.data.frame(survey_reference_admin3) &&
+    nrow(survey_reference_admin3) > 0) {
   
-  write.csv(survey_processed_admin3$carried,
-            "M4_survey_expanded_admin3.csv",
+  survey_reference_admin3 <- normalize_admin3_for_output(survey_reference_admin3)
+  write.csv(survey_reference_admin3, "M4_survey_expanded_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved survey_expanded_admin3: ",
-          nrow(survey_processed_admin3$carried), " rows")
+  message("✓ Saved survey_expanded_admin3: ", nrow(survey_reference_admin3), " rows")
+  
 } else {
   dummy <- data.frame(
-    admin_area_1 = character(),
-    admin_area_2 = character(),
-    year = integer()
+    admin_area_1        = character(),
+    admin_area_3        = character(),
+    year                = integer(),
+    indicator_common_id = character(),
+    reference_value     = double()
   )
   write.csv(dummy, "M4_survey_expanded_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")

@@ -55,7 +55,24 @@ if (RUN_ADMIN3) survey_raw_admin3 <- read.csv("M4_survey_raw_admin3.csv", fileEn
 # Part 1 - calculate coverage
 calculate_coverage <- function(denominators_data, numerators_data) {
   
-  geo_keys <- c("admin_area_1", "admin_area_2", "year")
+  # Dynamically determine geographic keys based on available columns
+  base_geo_keys <- c("admin_area_1", "year")
+  
+  # Add admin_area_2 if it exists, otherwise add a default
+  if ("admin_area_2" %in% names(denominators_data)) {
+    base_geo_keys <- c(base_geo_keys, "admin_area_2")
+  } else {
+    denominators_data <- denominators_data %>% mutate(admin_area_2 = "NATIONAL")
+    numerators_data <- numerators_data %>% mutate(admin_area_2 = "NATIONAL")
+    base_geo_keys <- c(base_geo_keys, "admin_area_2")
+  }
+  
+  # Add admin_area_3 if it exists
+  if ("admin_area_3" %in% names(denominators_data)) {
+    geo_keys <- c(base_geo_keys, "admin_area_3")
+  } else {
+    geo_keys <- base_geo_keys
+  }
   
   # Map denominator targets to indicators
   target_indicator_map <- tibble::tribble(
@@ -67,7 +84,6 @@ calculate_coverage <- function(denominators_data, numerators_data) {
     "measles1",  c("measles1"),
     "measles2",  c("measles2")
   )
-  
   
   # Expand denominators to match indicators
   denominator_expanded <- denominators_data %>%
@@ -126,51 +142,43 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
     select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
 }
 
-# Part 2 - compare coverage vs carried Survey (returns ONE tibble)
+# Part 2 - compare coverage vs carried Survey (LONG format only)
 compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   stopifnot(is.data.frame(coverage_data), is.data.frame(survey_expanded_df))
+  need_long <- c("admin_area_1","year","indicator_common_id","reference_value")
+  if (!all(need_long %in% names(survey_expanded_df))) {
+    stop("survey_expanded_df must be LONG with columns: ",
+         paste(need_long, collapse = ", "),
+         " (admin_area_2 and admin_area_3 optional; defaults to 'NATIONAL').")
+  }
   
-  # Geo keys: NATIONAL has admin_area_2 == "NATIONAL" in your exports
+  # Ensure admin_area_2 exists on both sides
+  if (!"admin_area_2" %in% names(coverage_data))     coverage_data     <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
+  if (!"admin_area_2" %in% names(survey_expanded_df)) survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
+  
+  # Handle admin_area_3 - ensure both datasets have same admin level structure
+  has_admin3_cov <- "admin_area_3" %in% names(coverage_data)
+  has_admin3_sur <- "admin_area_3" %in% names(survey_expanded_df)
+  
+  if (has_admin3_cov && !has_admin3_sur) {
+    survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_3 = "NATIONAL")
+  } else if (!has_admin3_cov && has_admin3_sur) {
+    coverage_data <- coverage_data %>% mutate(admin_area_3 = "NATIONAL")
+  }
+  
+  # Determine geo_keys based on available columns after standardization
   geo_keys <- c("admin_area_1", "admin_area_2", "year")
-  if (!"admin_area_2" %in% names(coverage_data)) {
-    coverage_data <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
-  }
-  if (!"admin_area_2" %in% names(survey_expanded_df)) {
-    survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
+  if ("admin_area_3" %in% names(coverage_data) && "admin_area_3" %in% names(survey_expanded_df)) {
+    geo_keys <- c(geo_keys, "admin_area_3")
   }
   
-  # Build reference (carried) values from survey_expanded_df
-  carry_cols <- grep("carry$", names(survey_expanded_df), value = TRUE)
-  if (length(carry_cols) == 0) {
-    warning("No *carry columns found in survey_expanded_df; returning empty comparison.")
-    return(
-      coverage_data %>%
-        mutate(
-          reference_value = NA_real_,
-          squared_error   = NA_real_,
-          source_type     = NA_character_,
-          rank            = NA_integer_
-        ) %>%
-        slice(0)
-    )
-  }
+  # Types & keys
+  coverage_data$year        <- as.integer(coverage_data$year)
+  survey_expanded_df$year   <- as.integer(survey_expanded_df$year)
   
-  carry_values <- survey_expanded_df %>%
-    select(any_of(geo_keys), all_of(carry_cols)) %>%
-    tidyr::pivot_longer(
-      cols = all_of(carry_cols),
-      names_to   = "indicator_common_id",
-      names_pattern = "(.*)carry$",
-      values_to  = "reference_value"
-    ) %>%
-    filter(!is.na(reference_value)) %>%
-    group_by(across(all_of(c(geo_keys, "indicator_common_id")))) %>%
-    summarise(reference_value = mean(reference_value, na.rm = TRUE), .groups = "drop")
-  
-  # Classify denominator "source type"
+  # Classify denominator source type
   dpt_family <- c("penta1","penta2","penta3","opv1","opv2","opv3",
                   "pcv1","pcv2","pcv3","rota1","rota2","ipv1","ipv2")
-  
   classify_source_type <- function(denominator, ind) {
     if (startsWith(denominator, "danc1_")     && ind %in% c("anc1","anc4")) return("reference_based")
     if (startsWith(denominator, "ddelivery_") && ind %in% c("delivery"))    return("reference_based")
@@ -180,22 +188,22 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     "independent"
   }
   
-  # Join, compute error, rank
-  coverage_with_error <- coverage_data %>%
-    left_join(carry_values, by = c(geo_keys, "indicator_common_id")) %>%
+  # Join, compute error, rank within geo × indicator
+  coverage_data %>%
+    left_join(
+      survey_expanded_df %>%
+        select(all_of(geo_keys), indicator_common_id, reference_value),
+      by = c(geo_keys, "indicator_common_id")
+    ) %>%
     mutate(
       squared_error = (coverage - reference_value)^2,
       source_type   = mapply(classify_source_type, denominator, indicator_common_id)
-    )
-  
-  ranked <- coverage_with_error %>%
+    ) %>%
     filter(!is.na(squared_error)) %>%
     group_by(across(all_of(geo_keys)), indicator_common_id) %>%
     arrange(squared_error, .by_group = TRUE) %>%
     mutate(rank = row_number()) %>%
     ungroup()
-  
-  ranked
 }
 
 # Part 3 — calculate delta per indicator × denominator × geo
@@ -209,13 +217,16 @@ coverage_deltas <- function(coverage_df,
     coverage_df <- mutate(coverage_df, admin_area_2 = "NATIONAL")
   }
   
-  group_keys <- c("admin_area_1", "admin_area_2",
-                  "indicator_common_id", "denominator")
+  # Determine group keys based on available columns
+  group_keys <- c("admin_area_1", "admin_area_2", "indicator_common_id", "denominator")
+  if ("admin_area_3" %in% names(coverage_df)) {
+    group_keys <- c(group_keys, "admin_area_3")
+  }
   
   coverage_df %>%
     mutate(year = as.integer(year)) %>%
     group_by(across(all_of(group_keys))) %>%
-    { if (complete_years) tidyr::complete(., year = tidyr::full_seq(year, 1)) else . } %>%
+    { if (complete_years) complete(., year = full_seq(year, 1)) else . } %>%
     arrange(year, .by_group = TRUE) %>%
     mutate(delta = coverage - lag(coverage, n = lag_n)) %>%
     ungroup()
@@ -224,26 +235,58 @@ coverage_deltas <- function(coverage_df,
 # Part 4 — project survey values using coverage deltas
 project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
   stopifnot(is.data.frame(deltas_df), is.data.frame(survey_raw_long))
+  
+  # Add admin_area_2 if missing from survey_raw_long
+  if (!"admin_area_2" %in% names(survey_raw_long)) {
+    survey_raw_long <- survey_raw_long %>% mutate(admin_area_2 = "NATIONAL")
+  }
+  
+  # Determine required columns based on available admin levels
   need_d <- c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","coverage")
   need_s <- c("admin_area_1","admin_area_2","year","indicator_common_id","survey_value")
-  stopifnot(all(need_d %in% names(deltas_df)))
-  stopifnot(all(need_s %in% names(survey_raw_long)))
+  
+  if ("admin_area_3" %in% names(deltas_df)) {
+    need_d <- c(need_d, "admin_area_3")
+  }
+  if ("admin_area_3" %in% names(survey_raw_long)) {
+    need_s <- c(need_s, "admin_area_3")
+  }
+  
+  # Check required columns exist
+  missing_d <- setdiff(need_d, names(deltas_df))
+  missing_s <- setdiff(need_s, names(survey_raw_long))
+  
+  if (length(missing_d) > 0) {
+    stop(paste("Missing columns in deltas_df:", paste(missing_d, collapse = ", ")))
+  }
+  if (length(missing_s) > 0) {
+    stop(paste("Missing columns in survey_raw_long:", paste(missing_s, collapse = ", ")))
+  }
+  
+  # Determine grouping keys
+  group_keys <- c("admin_area_1", "admin_area_2", "indicator_common_id")
+  if ("admin_area_3" %in% names(survey_raw_long)) {
+    group_keys <- c(group_keys, "admin_area_3")
+  }
   
   # last observed survey per (geo, indicator)
   baseline <- survey_raw_long %>%
-    group_by(admin_area_1, admin_area_2, indicator_common_id) %>%
+    group_by(across(all_of(group_keys))) %>%
     filter(year == max(year, na.rm = TRUE)) %>%
     slice_tail(n = 1) %>%   # tie-break safety
     ungroup() %>%
     transmute(
-      admin_area_1, admin_area_2, indicator_common_id,
+      across(all_of(group_keys)),
       baseline_year = as.integer(year),
       baseline_value = as.numeric(survey_value)
     )
   
+  # Determine delta grouping keys
+  delta_group_keys <- c(group_keys, "denominator")
+  
   # compute year-on-year deltas (ensure strictly by denominator)
   deltas <- deltas_df %>%
-    group_by(admin_area_1, admin_area_2, indicator_common_id, denominator) %>%
+    group_by(across(all_of(delta_group_keys))) %>%
     arrange(year, .by_group = TRUE) %>%
     mutate(delta = coverage - lag(coverage)) %>%
     ungroup() %>%
@@ -251,15 +294,14 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
   
   # attach baseline to every denom path for that (geo, indicator)
   seeds <- deltas %>%
-    distinct(admin_area_1, admin_area_2, indicator_common_id, denominator) %>%
-    left_join(baseline, by = c("admin_area_1","admin_area_2","indicator_common_id")) %>%
+    distinct(across(all_of(delta_group_keys))) %>%
+    left_join(baseline, by = group_keys) %>%
     filter(!is.na(baseline_year), !is.na(baseline_value))
   
   # build projections
   proj <- deltas %>%
-    inner_join(seeds,
-                      by = c("admin_area_1","admin_area_2","indicator_common_id","denominator")) %>%
-    group_by(admin_area_1, admin_area_2, indicator_common_id, denominator) %>%
+    inner_join(seeds, by = delta_group_keys) %>%
+    group_by(across(all_of(delta_group_keys))) %>%
     # ensure we start at baseline_year (copy forward baseline to first delta year)
     arrange(year, .by_group = TRUE) %>%
     mutate(
@@ -269,14 +311,14 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
     ) %>%
     ungroup() %>%
     select(
-      admin_area_1, admin_area_2, year, indicator_common_id, denominator,
+      all_of(group_keys), year, indicator_common_id, denominator,
       baseline_year, projected
     )
   
   # also include an explicit baseline row for traceability (optional)
   baseline_rows <- seeds %>%
     transmute(
-      admin_area_1, admin_area_2,
+      across(all_of(group_keys)),
       year = baseline_year,
       indicator_common_id, denominator,
       baseline_year, projected = baseline_value
@@ -284,12 +326,12 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
   
   bind_rows(proj, baseline_rows) %>%
     distinct() %>%
-    arrange(admin_area_1, admin_area_2, indicator_common_id, denominator, year)
+    arrange(across(all_of(c(group_keys, "indicator_common_id", "denominator", "year"))))
 }
 
 # Part 5 - prepare result tables
 build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
-
+  
   # Ensure admin_area_2 exists
   if (!"admin_area_2" %in% names(coverage_df)) coverage_df <- mutate(coverage_df, admin_area_2 = "NATIONAL")
   if (!"admin_area_2" %in% names(proj_df))     proj_df     <- mutate(proj_df,     admin_area_2 = "NATIONAL")
@@ -297,21 +339,36 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     survey_raw_df <- mutate(survey_raw_df, admin_area_2 = "NATIONAL")
   }
   
-  # Required cols
+  # Determine required columns based on available admin levels
   need_cov  <- c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","coverage")
   need_proj <- c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","projected")
+  
+  if ("admin_area_3" %in% names(coverage_df)) {
+    need_cov <- c(need_cov, "admin_area_3")
+  }
+  if ("admin_area_3" %in% names(proj_df)) {
+    need_proj <- c(need_proj, "admin_area_3")
+  }
+  
   stopifnot(all(need_cov  %in% names(coverage_df)))
   stopifnot(all(need_proj %in% names(proj_df)))
   
-  # Add labels if missing (does not change your existing wording)
+  # Add labels if missing
   if (!"denominator_label" %in% names(coverage_df)) {
     coverage_df <- add_denominator_labels(coverage_df)
   }
   
+  # Determine grouping keys
+  base_keys <- c("admin_area_1", "admin_area_2")
+  if ("admin_area_3" %in% names(coverage_df)) {
+    base_keys <- c(base_keys, "admin_area_3")
+  }
+  join_keys <- c(base_keys, "year", "indicator_common_id", "denominator")
+  
   # 1) HMIS coverage (coverage_cov)
   cov_base <- coverage_df %>%
     select(
-      admin_area_1, admin_area_2, year,
+      all_of(base_keys), year,
       indicator_common_id, denominator, denominator_label,
       coverage_cov = coverage
     )
@@ -321,11 +378,11 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     left_join(
       proj_df %>%
         select(
-          admin_area_1, admin_area_2, year,
+          all_of(base_keys), year,
           indicator_common_id, denominator,
           coverage_avgsurveyprojection = projected
         ),
-      by = c("admin_area_1","admin_area_2","year","indicator_common_id","denominator")
+      by = join_keys
     )
   
   # If no survey provided, return HMIS+proj only
@@ -338,13 +395,20 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
           survey_raw_source_detail = NA_character_
         ) %>%
         distinct() %>%
-        arrange(admin_area_1, admin_area_2, indicator_common_id, denominator, year)
+        arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year"))))
     )
   }
   
+  # Determine survey grouping keys
+  survey_group_keys <- base_keys
+  if ("admin_area_3" %in% names(survey_raw_df)) {
+    survey_group_keys <- c(survey_group_keys, "admin_area_3")
+  }
+  survey_group_keys <- c(survey_group_keys, "year", "indicator_common_id")
+  
   # 3) Collapse survey RAW to one row per geo-year-indicator
   survey_slim <- survey_raw_df %>%
-    group_by(admin_area_1, admin_area_2, year, indicator_common_id) %>%
+    group_by(across(all_of(survey_group_keys))) %>%
     summarise(
       coverage_original_estimate = mean(survey_value, na.rm = TRUE),
       survey_raw_source          = paste(sort(unique(stats::na.omit(source))), collapse = "; "),
@@ -353,32 +417,30 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     )
   
   # 4) Build the denominator universe per (geo, indicator)
+  denom_index_keys <- c(base_keys, "indicator_common_id")
   denom_index <- coverage_df %>%
-    distinct(admin_area_1, admin_area_2, indicator_common_id, denominator, denominator_label)
+    distinct(across(all_of(c(denom_index_keys, "denominator", "denominator_label"))))
   
   # 5) Expand survey years across ALL denominators for that (geo, indicator)
-  #    (this is what brings in earlier survey years, replicated per denominator)
   survey_expanded <- denom_index %>%
     inner_join(
       survey_slim,
-      by = c("admin_area_1","admin_area_2","indicator_common_id")
+      by = denom_index_keys
     )
-  # Note: joined *without year* initially to replicate across denoms,
-  # then the year comes from survey_slim; no many-to-many warning because
-  # we intend the cartesian expansion at this stage.
   
   # 6) Union HMIS+proj with survey-expanded (includes early years)
+  final_join_keys <- c(base_keys, "year", "indicator_common_id", "denominator", "denominator_label")
+  
   final <- cov_proj %>%
     full_join(
       survey_expanded,
-      by = c("admin_area_1","admin_area_2","year","indicator_common_id","denominator","denominator_label")
+      by = final_join_keys
     ) %>%
     distinct() %>%
-    arrange(admin_area_1, admin_area_2, indicator_common_id, denominator, year)
+    arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year"))))
   
   final
 }
-
 # ------------------------------ Main Execution ------------------------------
 
 # ===== NATIONAL (always) =====
@@ -481,7 +543,7 @@ if (RUN_ADMIN3) {
 # ==============================================================================
 message("Saving CSVs...")
 
-# ---- Required schemas ----
+# ---- Required fields ----
 nat_required_cols <- c(
   "admin_area_1", 
   "year", 
@@ -495,9 +557,23 @@ nat_required_cols <- c(
   "survey_raw_source_detail"
 )
 
-subnat_required_cols <- c(
+admin2_required_cols <- c(
   "admin_area_1",
   "admin_area_2",
+  "year",
+  "indicator_common_id",
+  "denominator",
+  "denominator_label",
+  "coverage_original_estimate",
+  "coverage_avgsurveyprojection",
+  "coverage_cov",
+  "survey_raw_source",
+  "survey_raw_source_detail"
+)
+
+admin3_required_cols <- c(
+  "admin_area_1",
+  "admin_area_3",  # Changed from admin_area_2 to admin_area_3
   "year",
   "indicator_common_id",
   "denominator",
@@ -513,6 +589,8 @@ subnat_required_cols <- c(
 if (exists("final_national") && is.data.frame(final_national) && nrow(final_national) > 0) {
   # drop admin_area_2 if it exists
   if ("admin_area_2" %in% names(final_national)) final_national$admin_area_2 <- NULL
+  # drop admin_area_3 if it exists (shouldn't be in national)
+  if ("admin_area_3" %in% names(final_national)) final_national$admin_area_3 <- NULL
   # add any missing cols as NA, and order
   for (cn in setdiff(nat_required_cols, names(final_national))) final_national[[cn]] <- NA
   final_national <- final_national[, nat_required_cols]
@@ -525,11 +603,9 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
     indicator_common_id = character(),
     denominator = character(),
     denominator_label = character(),
-    coverage_original_estimate_source = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_value = double(),
     survey_raw_source = character(),
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
@@ -540,8 +616,10 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
 
 # ---------------- ADMIN2 (keeps admin_area_2) ----------------
 if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) > 0) {
-  for (cn in setdiff(subnat_required_cols, names(final_admin2))) final_admin2[[cn]] <- NA
-  final_admin2 <- final_admin2[, subnat_required_cols]
+  # drop admin_area_3 if it exists (shouldn't be in admin2)
+  if ("admin_area_3" %in% names(final_admin2)) final_admin2$admin_area_3 <- NULL
+  for (cn in setdiff(admin2_required_cols, names(final_admin2))) final_admin2[[cn]] <- NA
+  final_admin2 <- final_admin2[, admin2_required_cols]
   write.csv(final_admin2, "M5_final_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved M5_final_admin2.csv: ", nrow(final_admin2), " rows")
 } else {
@@ -552,11 +630,9 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
     indicator_common_id = character(),
     denominator = character(),
     denominator_label = character(),
-    coverage_original_estimate_source = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_value = double(),
     survey_raw_source = character(),
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
@@ -565,25 +641,27 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
   message("✓ No ADMIN2 final results - saved empty file (or ADMIN2 skipped)")
 }
 
-# ---------------- ADMIN3 (keeps admin_area_2) ----------------
+# ---------------- ADMIN3 (keeps admin_area_3, removes admin_area_2) ----------------
 if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) > 0) {
-  for (cn in setdiff(subnat_required_cols, names(final_admin3))) final_admin3[[cn]] <- NA
-  final_admin3 <- final_admin3[, subnat_required_cols]
+  # Remove admin_area_2 if it exists (it was added by our functions but shouldn't be in final output)
+  if ("admin_area_2" %in% names(final_admin3)) final_admin3$admin_area_2 <- NULL
+  # Add any missing columns as NA
+  for (cn in setdiff(admin3_required_cols, names(final_admin3))) final_admin3[[cn]] <- NA
+  # Reorder columns to match schema
+  final_admin3 <- final_admin3[, admin3_required_cols]
   write.csv(final_admin3, "M5_final_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved M5_final_admin3.csv: ", nrow(final_admin3), " rows")
 } else {
   dummy_a3 <- data.frame(
     admin_area_1 = character(),
-    admin_area_2 = character(),
+    admin_area_3 = character(),  # Changed from admin_area_2 to admin_area_3
     year = integer(),
     indicator_common_id = character(),
     denominator = character(),
     denominator_label = character(),
-    coverage_original_estimate_source = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_value = double(),
     survey_raw_source = character(),
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
