@@ -1,5 +1,5 @@
-SELECTEDCOUNT <- "count_final_outliers"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_both" 
+SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
+VISUALIZATIONCOUNT <- "count_final_outliers" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -25,7 +25,7 @@ CONTROL_CHART_LEVEL <- "admin_area_3"  # Options: "admin_area_2" or "admin_area_
                                        # & admin_area_3 = State level
 
 
-PROJECT_DATA_HMIS <- "hmis_liberia.csv"
+PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Last edit: 2025 Aug 5
@@ -80,7 +80,7 @@ data <- read.csv("M2_adjusted_data.csv")
 
 
 admin_area_1_lookup <- raw_data %>%
-  dplyr::distinct(facility_id, admin_area_1)
+  distinct(facility_id, admin_area_1)
 rm(raw_data)
 gc()
 
@@ -275,7 +275,7 @@ print("Loading and preparing data for disruption analysis...")
 # Select only necessary columns from M3_chartout to avoid duplication
 
 M3_chartout_selected <- M3_chartout %>%
-  dplyr::select(date, indicator_common_id, !!sym(CONTROL_CHART_LEVEL), tagged)
+  select(date, indicator_common_id, !!sym(CONTROL_CHART_LEVEL), tagged)
 
 
 rm(M3_chartout)
@@ -365,15 +365,15 @@ for (indicator in indicators) {
 
 
 # Combine all indicator-level results
-indicator_results_long <- dplyr::bind_rows(indicator_results_list)
+indicator_results_long <- bind_rows(indicator_results_list)
 rm(indicator_results_list)
 gc()
 
 # Merge indicator-level results into main dataset
 data_disruption <- data_disruption %>%
-  dplyr::left_join(
+  left_join(
     indicator_results_long %>%
-      dplyr::select(
+      select(
         facility_id, date, indicator_common_id,
         expect_admin_area_1, b_admin_area_1,
         b_trend_admin_area_1, p_admin_area_1
@@ -465,13 +465,13 @@ for (indicator in indicators) {
 
 # Combine all province-level results into one dataframe
 if (length(province_results_list) > 0) {
-  province_results_long <- dplyr::bind_rows(province_results_list)
+  province_results_long <- bind_rows(province_results_list)
   
   # Merge province-level results into main dataset
   data_disruption <- data_disruption %>%
-    dplyr::left_join(
+    left_join(
       province_results_long %>%
-        dplyr::select(
+        select(
           facility_id, date, indicator_common_id, 
           expect_admin_area_2, b_admin_area_2, 
           p_admin_area_2, b_trend_admin_area_2
@@ -557,13 +557,13 @@ if (RUN_DISTRICT_MODEL) {
   
   # Combine all district-level results into one dataframe
   if (length(district_results_list) > 0) {
-    district_results_long <- dplyr::bind_rows(district_results_list)
+    district_results_long <- bind_rows(district_results_list)
     
     # Merge district-level results into main dataset
     data_disruption <- data_disruption %>%
-      dplyr::left_join(
+      left_join(
         district_results_long %>%
-          dplyr::select(
+          select(
             facility_id, date, indicator_common_id, admin_area_3,
             expect_admin_area_3, b_admin_area_3, p_admin_area_3
           ),
@@ -662,13 +662,13 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
 
   # Combine all admin_area_4-level results into one dataframe
   if (length(admin_area_4_results_list) > 0) {
-    admin_area_4_results_long <- dplyr::bind_rows(admin_area_4_results_list)
+    admin_area_4_results_long <- bind_rows(admin_area_4_results_list)
 
     # Merge admin_area_4-level results into main dataset
     data_disruption <- data_disruption %>%
-      dplyr::left_join(
+      left_join(
         admin_area_4_results_long %>%
-          dplyr::select(
+          select(
             facility_id, date, indicator_common_id, admin_area_4,
             expect_admin_area_4, b_admin_area_4, p_admin_area_4, b_trend_admin_area_4
           ),
@@ -695,8 +695,8 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
 #-------------------------------------------------------------------------------------------------------------
 
 data_disruption <- data_disruption %>%
-  dplyr::left_join(admin_area_1_lookup, by = "facility_id") %>%
-  dplyr::mutate(period_id = as.integer(format(as.Date(date), "%Y%m")))
+  left_join(admin_area_1_lookup, by = "facility_id") %>%
+  mutate(period_id = as.integer(format(as.Date(date), "%Y%m")))
 
 
 print("Creating summary disruptions at national level...")
@@ -849,87 +849,67 @@ rm(data_disruption)
 # Save Result Objects ----------------------------------------------------------
 print("Saving results...")
 
-# Load and save adjusted data
+# Load and save adjusted data (pass-through for viz)
 print("Reloading adjusted data and writing service utilization output...")
-data_adjusted <- read.csv("M2_adjusted_data.csv", colClasses = c(
-  facility_id = "character",
-  indicator_common_id = "character",
-  period_id = "integer",
-  admin_area_2 = "character",
-  admin_area_3 = "character",
-  count_final_none = "numeric",
-  count_final_completeness = "numeric"
-))
+data_adjusted <- read.csv(
+  "M2_adjusted_data.csv",
+  colClasses = c(
+    facility_id = "character",
+    indicator_common_id = "character",
+    period_id = "integer",
+    admin_area_2 = "character",
+    admin_area_3 = "character",
+    count_final_none = "numeric",
+    count_final_completeness = "numeric"
+  )
+)
 write.csv(data_adjusted, "M3_service_utilization.csv", row.names = FALSE)
-gc()
-rm(data_adjusted)
+gc(); rm(data_adjusted)
 
-# Export control chart results (always created - at whatever level was used)
+# Export control chart results (period_id only)
 print("Saving control chart results...")
 M3_chartout_export <- M3_chartout_selected %>%
-  mutate(
-    period_id = as.integer(format(date, "%Y%m")),
-    year = as.integer(format(date, "%Y")),
-    quarter = as.integer((as.integer(format(date, "%m")) - 1) %/% 3 + 1),
-    quarter_id = sprintf("%d%02d", year, quarter)
-  ) %>%
-  dplyr::select(!!sym(CONTROL_CHART_LEVEL),  # Dynamic column based on parameter
-                indicator_common_id, 
-                period_id, 
-                quarter_id, 
-                year, 
-                tagged)
-
+  mutate(period_id = as.integer(format(date, "%Y%m"))) %>%
+  select(
+    !!sym(CONTROL_CHART_LEVEL),  # dynamic column
+    indicator_common_id,
+    period_id,
+    tagged
+  )
 write.csv(M3_chartout_export, "M3_chartout.csv", row.names = FALSE)
 
-# Export summary disruptions at national level
+# Export summary disruptions at national level (admin_area_1)
 print("Saving national level disruption analysis...")
 summary_disruption_admin1_export <- summary_disruption_admin1 %>%
-  mutate(
-    year = as.integer(period_id %/% 100),
-    quarter = ((period_id %% 100 - 1) %/% 3) + 1,
-    quarter_id = sprintf("%d%02d", year, quarter)
-  ) %>%
-  dplyr::select(admin_area_1, 
-                indicator_common_id, 
-                period_id, 
-                quarter_id, 
-                year, 
-                count_sum,
-                count_expect_sum,
-                count_expected_if_above_diff_threshold)
-
+  select(
+    admin_area_1,
+    indicator_common_id,
+    period_id,
+    count_sum,
+    count_expect_sum,
+    count_expected_if_above_diff_threshold
+  )
 write.csv(summary_disruption_admin1_export, "M3_disruptions_analysis_admin_area_1.csv", row.names = FALSE)
 
 # Export summary disruptions at admin_area_2 level 
 if (exists("summary_disruption_admin2")) {
   print("Saving regional level disruption analysis...")
-  
   summary_disruption_admin2_export <- summary_disruption_admin2 %>%
-    mutate(
-      year = as.integer(period_id %/% 100),
-      quarter = ((period_id %% 100 - 1) %/% 3) + 1,
-      quarter_id = sprintf("%d%02d", year, quarter)
-    ) %>%
-    dplyr::select(admin_area_2, 
-                  indicator_common_id, 
-                  period_id, quarter_id, 
-                  year, 
-                  count_sum,
-                  count_expect_sum,
-                  count_expected_if_above_diff_threshold)
-  
+    select(
+      admin_area_2,
+      indicator_common_id,
+      period_id,
+      count_sum,
+      count_expect_sum,
+      count_expected_if_above_diff_threshold
+    )
   write.csv(summary_disruption_admin2_export, "M3_disruptions_analysis_admin_area_2.csv", row.names = FALSE)
-  
 } else {
   print("Creating empty admin_area_2 file for compatibility...")
-  
   dummy_disruption_admin2 <- data.frame(
     admin_area_2 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
-    quarter_id = character(0),
-    year = integer(0),
     count_sum = numeric(0),
     count_expect_sum = numeric(0),
     count_expected_if_above_diff_threshold = numeric(0)
@@ -940,35 +920,22 @@ if (exists("summary_disruption_admin2")) {
 # Export summary disruptions at admin_area_3 level (conditional)
 if (RUN_DISTRICT_MODEL & exists("summary_disruption_admin3")) {
   print("Saving state level disruption analysis...")
-  
   summary_disruption_admin3_export <- summary_disruption_admin3 %>%
-    mutate(
-      year = as.integer(period_id %/% 100),
-      quarter = ((period_id %% 100 - 1) %/% 3) + 1,
-      quarter_id = sprintf("%d%02d", year, quarter)
-    ) %>%
-    dplyr::select(
+    select(
       admin_area_3,
       indicator_common_id,
       period_id,
-      quarter_id,
-      year,
       count_sum,
       count_expect_sum,
       count_expected_if_above_diff_threshold
     )
-  
   write.csv(summary_disruption_admin3_export, "M3_disruptions_analysis_admin_area_3.csv", row.names = FALSE)
-  
 } else {
   print("Creating empty admin_area_3 file for compatibility...")
-  
   dummy_disruption_admin3 <- data.frame(
     admin_area_3 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
-    quarter_id = character(0),
-    year = integer(0),
     count_sum = numeric(0),
     count_expect_sum = numeric(0),
     count_expected_if_above_diff_threshold = numeric(0)
@@ -979,35 +946,22 @@ if (RUN_DISTRICT_MODEL & exists("summary_disruption_admin3")) {
 # Export summary disruptions at admin_area_4 level (conditional)
 if (RUN_ADMIN_AREA_4_ANALYSIS & exists("summary_disruption_admin4")) {
   print("Saving district level disruption analysis...")
-  
   summary_disruption_admin4_export <- summary_disruption_admin4 %>%
-    mutate(
-      year = as.integer(period_id %/% 100),
-      quarter = ((period_id %% 100 - 1) %/% 3) + 1,
-      quarter_id = sprintf("%d%02d", year, quarter)
-    ) %>%
-    dplyr::select(
+    select(
       admin_area_4,
       indicator_common_id,
       period_id,
-      quarter_id,
-      year,
       count_sum,
       count_expect_sum,
       count_expected_if_above_diff_threshold
     )
-  
   write.csv(summary_disruption_admin4_export, "M3_disruptions_analysis_admin_area_4.csv", row.names = FALSE)
-  
 } else {
   print("Creating empty admin_area_4 file for compatibility...")
-  
   dummy_disruption_admin4 <- data.frame(
     admin_area_4 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
-    quarter_id = character(0),
-    year = integer(0),
     count_sum = numeric(0),
     count_expect_sum = numeric(0),
     count_expected_if_above_diff_threshold = numeric(0)
