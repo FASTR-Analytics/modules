@@ -1,5 +1,5 @@
-SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_outliers" 
+SELECTEDCOUNT <- "count_final_outliers"  #use count_final_none or count_final_completeness
+VISUALIZATIONCOUNT <- "count_final_both" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -28,7 +28,7 @@ CONTROL_CHART_LEVEL <- "admin_area_3"  # Options: "admin_area_2" or "admin_area_
 PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Aug 5
+# Last edit: 2025 Sept 10
 # Module: SERVICE UTILIZATION
 
 
