@@ -1,4 +1,4 @@
-PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
+PROJECT_DATA_HMIS <- "hmis_liberia.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -16,7 +16,7 @@ library(data.table)
 library(zoo)
 library(lubridate)
 
-EXCLUDED_FROM_ADJUSTMENT <- c("u5_deaths", "maternal_deaths")
+EXCLUDED_FROM_ADJUSTMENT <- c("u5_deaths", "maternal_deaths", "neonatal_deaths")
 
 # Load
 raw_data         <- fread(PROJECT_DATA_HMIS)
