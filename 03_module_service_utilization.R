@@ -268,7 +268,7 @@ gc()
 print("Control chart analysis complete")
 
 #-------------------------------------------------------------------------------------------------------------
-# STEP 2: DISRUPTION REGRESSION ANALYSIS (FINAL, BULLETPROOF & MEMORY-OPTIMIZED)
+# STEP 2: DISRUPTION REGRESSION ANALYSIS (MEMORY-OPTIMIZED)
 #-------------------------------------------------------------------------------------------------------------
 # Step 1: Load and Prepare Data (Your original code, unchanged)
 print("Loading and preparing data for disruption analysis...")
