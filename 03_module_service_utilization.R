@@ -419,9 +419,9 @@ print("Province-level regression complete.")
 
 
 
-# Step 4c: Run Regression for Each Indicator × District/State (CONDITIONAL & ROBUST)
+# Step 4c: Run Regression for Each Indicator × District ------------------------
 if (RUN_DISTRICT_MODEL) {
-  print("Running regressions at the district/state level...")
+  print("Running regressions at the district level...")
   district_results_list <- list()
   
   for (indicator in indicators) {
@@ -478,9 +478,9 @@ if (RUN_DISTRICT_MODEL) {
   print("District/State-level regression complete.")
 }
 
-# Step 4d: Run Regression for Each Indicator × Facility (CONDITIONAL & ROBUST)
+# Step 4d: Run Regression for Each Indicator × admin area 4 --------------------
 if (RUN_ADMIN_AREA_4_ANALYSIS) {
-  print("Running regressions at the district/facility level (admin_area_4)...")
+  print("Running regressions at the admin area 4 level...")
   admin_area_4_units <- unique(data_disruption$admin_area_4)
   admin_area_4_results_list <- list()
   
@@ -539,9 +539,9 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
   print("Admin_area_4-level regression complete.")
 }
 
-#-------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # STEP 3: PREPARE RESULTS FOR VISUALIZATION
-#-------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 data_disruption <- data_disruption %>%
   left_join(admin_area_1_lookup, by = "facility_id") %>%
