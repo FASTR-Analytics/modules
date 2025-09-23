@@ -10,9 +10,6 @@ P1_NMR <- 0.041      #Default = 0.03
 P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
-PROJECT_DATA_COVERAGE <-"survey_data_unified.csv"
-PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
-
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
@@ -29,6 +26,12 @@ library(stringr)
 library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------
+# Direct read from GitHub
+PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
+PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
+
+
+
 # Input Datasets
 adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
 adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
