@@ -943,11 +943,12 @@ best_denom_summary <- best_denom_per_indicator %>%
   distinct(indicator_common_id, denominator) %>%
   arrange(indicator_common_id)
 
+
 # ------------------------------ Subnational Analysis -------------------------
 # Run separate analyses for admin_area_2 and admin_area_3 to get distinct output files
 if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   
-  message("\n=== RUNNING SUBNATIONAL ANALYSIS ===")
+  message("\n=== RUNNING SUBNATIONAL ANALYSIS (without projection) ===")
   
   # Get admin_area_1 value for consistency
   admin_area_1_value <- adjusted_volume_data %>% distinct(admin_area_1) %>% pull(admin_area_1)
@@ -964,21 +965,16 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     # Prepare HMIS admin_area_2 data (drop admin_area_3)
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
     
-    # Run pipeline
+    # Run pipeline up to coverage evaluation (skip projection)
     hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
     survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
     denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
     coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
-    coverage_projected_admin2 <- project_coverage_from_all(coverage_eval_admin2$full_ranking)
-    combined_admin2 <- prepare_combined_coverage_from_projected(coverage_projected_admin2, survey_processed_admin2$raw)
     
-    # Export admin_area_2 results
-    combined_admin2_export <- combined_admin2 %>%
-      filter(source_type == "independent") %>%
-      group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-      filter(rank == min(rank, na.rm = TRUE)) %>%
-      ungroup() %>%
-      select(admin_area_2, indicator_common_id, year, coverage_cov)
+    # SKIP PROJECTION - just use the best coverage estimates directly
+    combined_admin2_export <- coverage_eval_admin2$best_only %>%
+      select(admin_area_2, indicator_common_id, year, coverage) %>%
+      rename(coverage_cov = coverage)
     
     message("✓ Admin_area_2 analysis completed - ", nrow(combined_admin2_export), " result rows")
   }
@@ -996,22 +992,16 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         rename(admin_area_2 = admin_area_3)
       
       if (nrow(hmis_admin3) > 0) {
-        # Run pipeline
+        # Run pipeline up to coverage evaluation (skip projection)
         hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
         survey_processed_admin3 <- process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
         denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
         coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
-        coverage_projected_admin3 <- project_coverage_from_all(coverage_eval_admin3$full_ranking)
-        combined_admin3 <- prepare_combined_coverage_from_projected(coverage_projected_admin3, survey_processed_admin3$raw)
         
-        # Export admin_area_3 results (rename admin_area_2 back to admin_area_3 in output)
-        combined_admin3_export <- combined_admin3 %>%
-          filter(source_type == "independent") %>%
-          group_by(admin_area_1, admin_area_2, indicator_common_id, year) %>%
-          filter(rank == min(rank, na.rm = TRUE)) %>%
-          ungroup() %>%
-          select(admin_area_2, indicator_common_id, year, coverage_cov) %>%
-          rename(admin_area_3 = admin_area_2)  # Rename back for output
+        # SKIP PROJECTION - just use the best coverage estimates directly (rename back to admin_area_3)
+        combined_admin3_export <- coverage_eval_admin3$best_only %>%
+          select(admin_area_2, indicator_common_id, year, coverage) %>%
+          rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
         
         message("✓ Admin_area_3 analysis completed - ", nrow(combined_admin3_export), " result rows")
       } else {
@@ -1027,7 +1017,6 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   combined_admin2_export <- NULL
   combined_admin3_export <- NULL
 }
-
 # ------------------------------ Write Output Files -------------------------
 # Conditionally rename pnc1_mother back to pnc1 if the original data was pnc1
 if (pnc1_renamed_to_mother) {
