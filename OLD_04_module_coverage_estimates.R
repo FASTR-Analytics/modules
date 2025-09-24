@@ -948,7 +948,7 @@ best_denom_summary <- best_denom_per_indicator %>%
 # Run separate analyses for admin_area_2 and admin_area_3 to get distinct output files
 if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   
-  message("\n=== RUNNING SUBNATIONAL ANALYSIS (without projection) ===")
+  message("\n=== RUNNING SUBNATIONAL ANALYSIS ===")
   
   # Get admin_area_1 value for consistency
   admin_area_1_value <- adjusted_volume_data %>% distinct(admin_area_1) %>% pull(admin_area_1)
@@ -962,10 +962,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
     message("Running admin_area_2 level analysis...")
     
-    # Prepare HMIS admin_area_2 data (drop admin_area_3)
+    # Prepare HMIS admin_area_2 data
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
     
-    # Run pipeline up to coverage evaluation (skip projection)
+    # Run pipeline up to coverage evaluation
     hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
     survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
     denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
