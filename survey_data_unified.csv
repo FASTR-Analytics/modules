@@ -1628,7 +1628,7 @@ Federal Govt of Somalia,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,65.57
 Federal Govt of Somalia,NATIONAL,2024,IM_DTP1,penta1,percent,0.78,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Somalia,SO,SOM
 Federal Govt of Somalia,NATIONAL,2024,IM_DTP3,penta3,percent,0.7,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Somalia,SO,SOM
 Federal Govt of Somalia,NATIONAL,2025,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.833,UNWPP,UNWPP,modeled,Somalia,SO,SOM
-Federal Govt of Somalia,NATIONAL,2025,Infant mortality rate (IMR),imr,rate,64.98993,UNWPP,UNWPP,modeled,Somalia,SO,SOM
+Federal Govt of Somalia,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,64.98993,UNWPP,UNWPP,modeled,Somalia,SO,SOM
 Federal Ministry Of Health,Addis Ababa City Administration,1992,rh_ancn_w_n01,anc1_old,percent,0.048,DHS Sub-national,ET2000DHS,household,Ethiopia,ET,ETH
 Federal Ministry Of Health,Addis Ababa City Administration,1992,rh_ancn_w_n4p,anc4,percent,0.713,DHS Sub-national,ET2000DHS,household,Ethiopia,ET,ETH
 Federal Ministry Of Health,Addis Ababa City Administration,1992,rh_delp_c_dhf,delivery,percent,0.722,DHS Sub-national,ET2000DHS,household,Ethiopia,ET,ETH
@@ -15651,3 +15651,11 @@ Guinée,IRS Kindia,2018,CH_VACC_C_MSL,measles1,percent,0.211,DHS Sub-national,GN
 Guinée,IRS Labé,2018,CH_VACC_C_MSL,measles1,percent,0.171,DHS Sub-national,GN2018DHS,household,Guinea,GN,GIN
 Guinée,IRS Mamou,2018,CH_VACC_C_MSL,measles1,percent,0.308,DHS Sub-national,GN2018DHS,household,Guinea,GN,GIN
 Guinée,IRS Nzérékoré,2018,CH_VACC_C_MSL,measles1,percent,0.5,DHS Sub-national,GN2018DHS,household,Guinea,GN,GIN
+Federal Govt of Somalia,Banadir Administration,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Galmudug State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Hirshabelle State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Jubaland State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Puntland State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Somaliland State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,Southwest State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
+Federal Govt of Somalia,SSC Khatumo State,2024,CH_VACC_C_PT1,penta1,percent,,,,,Somalia,SO,SOM
