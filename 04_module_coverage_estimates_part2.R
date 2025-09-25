@@ -1,9 +1,30 @@
-## GLOBAL PARAMETERS GO HERE
+DENOMINATOR_SELECTION <- list(
+  # PREGNANCY-RELATED INDICATORS
+  anc1 = "best",                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
+  anc4 = "best",                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
+
+  # LIVE BIRTH-RELATED INDICATORS
+  delivery = "best",                # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  bcg = "best",                     # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  pnc1_mother = "best",             # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+
+  # DPT-ELIGIBLE AGE GROUP INDICATORS
+  penta1 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  penta2 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  penta3 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv1 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv2 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv3 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+
+  # MEASLES-ELIGIBLE AGE GROUP INDICATORS
+  measles1 = "best",                # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
+  measles2 = "best"                 # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
+)
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Sep 9
-# Module: COVERAGE ESTIMATES (PART2 - COVERAGE)
+# Last edit: 2025 Sep 25
+# Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -15,198 +36,42 @@ library(purrr)
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------
 # These parameters control the administrative levels (national, admin2, admin3)
-# for which the coverage analysis will be performed.
+# for which the analysis will be performed.
 RUN_NATIONAL <- TRUE  # Always run national
-RUN_ADMIN2 <- FALSE   # Will be set based on data
-RUN_ADMIN3 <- FALSE   # Will be set based on data
+RUN_ADMIN2 <- FALSE   # Will be set based on data availability
+RUN_ADMIN3 <- FALSE   # Will be set based on data availability
 
 #------------------------------- Load the Data ---------------------------------------------------------------
-# Load denominators first to check data availability
-denominators_national <- read.csv("M4_denominators_national.csv", fileEncoding = "UTF-8")
-denominators_admin2 <- read.csv("M4_denominators_admin2.csv", fileEncoding = "UTF-8")
-denominators_admin3 <- read.csv("M4_denominators_admin3.csv", fileEncoding = "UTF-8")
+# Load combined results from Part 1 (contains coverage estimates for all denominators)
+combined_results_national <- read.csv("M4_combined_results_national.csv", fileEncoding = "UTF-8")
+combined_results_admin2 <- read.csv("M4_combined_results_admin2.csv", fileEncoding = "UTF-8")
+combined_results_admin3 <- read.csv("M4_combined_results_admin3.csv", fileEncoding = "UTF-8")
 
 # Check which admin levels have data and update global parameters
-RUN_ADMIN2 <- nrow(denominators_admin2) > 0
-RUN_ADMIN3 <- nrow(denominators_admin3) > 0
+RUN_ADMIN2 <- nrow(combined_results_admin2) > 0
+RUN_ADMIN3 <- nrow(combined_results_admin3) > 0
 
 # Message about data availability
-if (!RUN_ADMIN2) message("No data in admin2 denominators - admin2 coverage analysis will be skipped")
-if (!RUN_ADMIN3) message("No data in admin3 denominators - admin3 coverage analysis will be skipped")
+if (!RUN_ADMIN2) message("No data in admin2 combined results - admin2 analysis will be skipped")
+if (!RUN_ADMIN3) message("No data in admin3 combined results - admin3 analysis will be skipped")
 
-# Load numerators
-numerators_national <- read.csv("M4_numerators_national.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN2) numerators_admin2 <- read.csv("M4_numerators_admin2.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN3) numerators_admin3 <- read.csv("M4_numerators_admin3.csv", fileEncoding = "UTF-8")
+# Load raw survey data (needed for projection baseline)
+# Extract survey data from combined results
+extract_survey_from_combined <- function(combined_df) {
+  combined_df %>%
+    filter(denominator_best_or_survey == "survey") %>%
+    mutate(survey_value = value) %>%
+    select(admin_area_1, admin_area_2, year, indicator_common_id, survey_value)
+}
 
-
-# Load carried survey data
-survey_expanded_national <- read.csv("M4_survey_expanded_national.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN2) survey_expanded_admin2 <- read.csv("M4_survey_expanded_admin2.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN3) survey_expanded_admin3 <- read.csv("M4_survey_expanded_admin3.csv", fileEncoding = "UTF-8")
-
-# Load raw survey data
-survey_raw_national <- read.csv("M4_survey_raw_national.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN2) survey_raw_admin2 <- read.csv("M4_survey_raw_admin2.csv", fileEncoding = "UTF-8")
-if (RUN_ADMIN3) survey_raw_admin3 <- read.csv("M4_survey_raw_admin3.csv", fileEncoding = "UTF-8")
+survey_raw_national <- extract_survey_from_combined(combined_results_national)
+if (RUN_ADMIN2) survey_raw_admin2 <- extract_survey_from_combined(combined_results_admin2)
+if (RUN_ADMIN3) survey_raw_admin3 <- extract_survey_from_combined(combined_results_admin3)
 
 
 # ------------------------------ Define Functions ------------------------------------------------------------
-# Part 1 - calculate coverage
-calculate_coverage <- function(denominators_data, numerators_data) {
-  
-  # Dynamically determine geographic keys based on available columns
-  base_geo_keys <- c("admin_area_1", "year")
-  
-  # Add admin_area_2 if it exists, otherwise add a default
-  if ("admin_area_2" %in% names(denominators_data)) {
-    base_geo_keys <- c(base_geo_keys, "admin_area_2")
-  } else {
-    denominators_data <- denominators_data %>% mutate(admin_area_2 = "NATIONAL")
-    numerators_data <- numerators_data %>% mutate(admin_area_2 = "NATIONAL")
-    base_geo_keys <- c(base_geo_keys, "admin_area_2")
-  }
-  
-  # Add admin_area_3 if it exists
-  if ("admin_area_3" %in% names(denominators_data)) {
-    geo_keys <- c(base_geo_keys, "admin_area_3")
-  } else {
-    geo_keys <- base_geo_keys
-  }
-  
-  # Map denominator targets to indicators
-  target_indicator_map <- tibble::tribble(
-    ~den_target, ~indicators,
-    "pregnancy", c("anc1", "anc4"),
-    "livebirth", c("delivery", "bcg", "pnc1_mother"),
-    "dpt",       c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
-                   "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
-    "measles1",  c("measles1"),
-    "measles2",  c("measles2")
-  )
-  
-  # Expand denominators to match indicators
-  denominator_expanded <- denominators_data %>%
-    left_join(target_indicator_map, by = "den_target") %>%
-    unnest_longer(indicators) %>%
-    filter(!is.na(indicators)) %>%
-    rename(indicator_common_id = indicators,
-           denominator_value = value) %>%
-    select(all_of(geo_keys), denominator, den_source, den_target, 
-           indicator_common_id, denominator_value)
-  
-  # Join numerators with denominators and calculate coverage
-  coverage_data <- numerators_data %>%
-    rename(numerator = count) %>%
-    left_join(denominator_expanded, by = c(geo_keys, "indicator_common_id")) %>%
-    filter(!is.na(denominator_value), denominator_value > 0) %>%
-    mutate(coverage = numerator / denominator_value) %>%
-    filter(!is.na(coverage), !is.infinite(coverage))
-  
-  return(coverage_data)
-}
 
-# Add denominator_label
-add_denominator_labels <- function(df, denom_col = "denominator") {
-  stopifnot(is.data.frame(df), denom_col %in% names(df))
-  
-  df %>%
-    mutate(
-      .den = .data[[denom_col]],
-      den_source_key = str_replace(.den, "^d([^_]+)_.*$", "\\1"),
-      den_target_key = str_replace(.den, "^d[^_]+_(.*)$", "\\1"),
-      den_target_key = recode(den_target_key,
-                                     "livebirths" = "livebirth",
-                                     .default = den_target_key),
-      source_phrase = case_when(
-        den_source_key == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
-        den_source_key == "delivery"   ~ "derived from HMIS data on institutional deliveries",
-        den_source_key == "bcg"        ~ "derived from HMIS data on BCG doses",
-        den_source_key == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
-        den_source_key == "wpp"        ~ "based on UN WPP estimates",
-        den_source_key == "livebirths" ~ "derived from HMIS data on live births",
-        TRUE ~ "from other sources"
-      ),
-      target_phrase = case_when(
-        den_target_key == "pregnancy" ~ "Estimated number of pregnancies",
-        den_target_key == "delivery"  ~ "Estimated number of deliveries",
-        den_target_key == "birth"     ~ "Estimated number of total births (live + stillbirths)",
-        den_target_key == "livebirth" ~ "Estimated number of live births",
-        den_target_key == "dpt"       ~ "Estimated number of infants eligible for DPT1",
-        den_target_key == "measles1"  ~ "Estimated number of children eligible for measles dose 1 (MCV1)",
-        den_target_key == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
-        TRUE ~ paste("Estimated population for target", den_target_key)
-      ),
-      denominator_label = paste0(target_phrase, " ", source_phrase, ".")
-    ) %>%
-    select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
-}
-
-# Part 2 - compare coverage vs carried Survey (LONG format only)
-compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
-  stopifnot(is.data.frame(coverage_data), is.data.frame(survey_expanded_df))
-  need_long <- c("admin_area_1","year","indicator_common_id","reference_value")
-  if (!all(need_long %in% names(survey_expanded_df))) {
-    stop("survey_expanded_df must be LONG with columns: ",
-         paste(need_long, collapse = ", "),
-         " (admin_area_2 and admin_area_3 optional; defaults to 'NATIONAL').")
-  }
-  
-  # Ensure admin_area_2 exists on both sides
-  if (!"admin_area_2" %in% names(coverage_data))     coverage_data     <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
-  if (!"admin_area_2" %in% names(survey_expanded_df)) survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
-  
-  # Handle admin_area_3 - ensure both datasets have same admin level structure
-  has_admin3_cov <- "admin_area_3" %in% names(coverage_data)
-  has_admin3_sur <- "admin_area_3" %in% names(survey_expanded_df)
-  
-  if (has_admin3_cov && !has_admin3_sur) {
-    survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_3 = "NATIONAL")
-  } else if (!has_admin3_cov && has_admin3_sur) {
-    coverage_data <- coverage_data %>% mutate(admin_area_3 = "NATIONAL")
-  }
-  
-  # Determine geo_keys based on available columns after standardization
-  geo_keys <- c("admin_area_1", "admin_area_2", "year")
-  if ("admin_area_3" %in% names(coverage_data) && "admin_area_3" %in% names(survey_expanded_df)) {
-    geo_keys <- c(geo_keys, "admin_area_3")
-  }
-  
-  # Types & keys
-  coverage_data$year        <- as.integer(coverage_data$year)
-  survey_expanded_df$year   <- as.integer(survey_expanded_df$year)
-  
-  # Classify denominator source type
-  dpt_family <- c("penta1","penta2","penta3","opv1","opv2","opv3",
-                  "pcv1","pcv2","pcv3","rota1","rota2","ipv1","ipv2")
-  classify_source_type <- function(denominator, ind) {
-    if (startsWith(denominator, "danc1_")     && ind %in% c("anc1","anc4")) return("reference_based")
-    if (startsWith(denominator, "ddelivery_") && ind %in% c("delivery"))    return("reference_based")
-    if (startsWith(denominator, "dpenta1_")   && ind %in% dpt_family)       return("reference_based")
-    if (startsWith(denominator, "dbcg_")      && ind %in% c("bcg"))         return("reference_based")
-    if (startsWith(denominator, "dwpp_"))                                   return("unwpp_based")
-    "independent"
-  }
-  
-  # Join, compute error, rank within geo × indicator
-  coverage_data %>%
-    left_join(
-      survey_expanded_df %>%
-        select(all_of(geo_keys), indicator_common_id, reference_value),
-      by = c(geo_keys, "indicator_common_id")
-    ) %>%
-    mutate(
-      squared_error = (coverage - reference_value)^2,
-      source_type   = mapply(classify_source_type, denominator, indicator_common_id)
-    ) %>%
-    filter(!is.na(squared_error)) %>%
-    group_by(across(all_of(geo_keys)), indicator_common_id) %>%
-    arrange(squared_error, .by_group = TRUE) %>%
-    mutate(rank = row_number()) %>%
-    ungroup()
-}
-
-# Part 3 — calculate delta per indicator × denominator × geo
+# Part 1 — calculate delta per indicator × denominator × geo
 coverage_deltas <- function(coverage_df,
                             lag_n = 1,
                             complete_years = TRUE) {
@@ -232,7 +97,7 @@ coverage_deltas <- function(coverage_df,
     ungroup()
 }
 
-# Part 4 — project survey values using coverage deltas
+# Part 2 — project survey values using coverage deltas
 project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
   stopifnot(is.data.frame(deltas_df), is.data.frame(survey_raw_long))
   
@@ -329,7 +194,7 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
     arrange(across(all_of(c(group_keys, "indicator_common_id", "denominator", "year"))))
 }
 
-# Part 5 - prepare result tables
+# Part 3 - prepare result tables
 build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
   
   # Ensure admin_area_2 exists
@@ -400,8 +265,6 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     group_by(across(all_of(survey_group_keys))) %>%
     summarise(
       coverage_original_estimate = mean(survey_value, na.rm = TRUE),
-      survey_raw_source          = paste(sort(unique(stats::na.omit(source))), collapse = "; "),
-      survey_raw_source_detail   = paste(sort(unique(stats::na.omit(source_detail))), collapse = "; "),
       .groups = "drop"
     )
   
@@ -440,30 +303,76 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
   final
 }
 
+# ------------------------------ Helper Functions for New Approach ---------------------------
+
+# Function to filter combined results based on user denominator selection
+filter_by_denominator_selection <- function(combined_results_df, selection_list) {
+
+  # Initialize empty results
+  filtered_results <- data.frame()
+
+  # Process each indicator in selection list
+  for (indicator in names(selection_list)) {
+    selected_denom <- selection_list[[indicator]]
+
+    # Filter data for this indicator
+    indicator_data <- combined_results_df %>%
+      filter(indicator_common_id == indicator)
+
+    if (nrow(indicator_data) == 0) next
+
+    if (selected_denom == "best") {
+      # Use "best" entries (already selected by Part 1)
+      selected_data <- indicator_data %>%
+        filter(denominator_best_or_survey == "best")
+    } else {
+      # Use specific denominator entries
+      selected_data <- indicator_data %>%
+        filter(denominator_best_or_survey == selected_denom)
+    }
+
+    # Add to results
+    if (nrow(selected_data) > 0) {
+      # Convert to coverage format expected by downstream functions
+      coverage_format <- selected_data %>%
+        mutate(
+          denominator = denominator_best_or_survey,
+          coverage = value,
+          denominator_label = denominator_label
+        ) %>%
+        # Only keep coverage estimates (not survey entries)
+        filter(denominator_best_or_survey != "survey") %>%
+        select(-denominator_best_or_survey, -value)
+
+      filtered_results <- bind_rows(filtered_results, coverage_format)
+    }
+  }
+
+  return(filtered_results)
+}
+
 # ------------------------------ Main Execution ------------------------------
 
 # ===== NATIONAL (always) =====
-message("Step 1 (NATIONAL): Calculating coverage...")
-coverage_national <- calculate_coverage(denominators_national, numerators_national)
-coverage_national <- add_denominator_labels(coverage_national)
-message("✓ Coverage complete")
+message("Step 1 (NATIONAL): Filtering combined results by user denominator selection...")
+coverage_national <- filter_by_denominator_selection(
+  combined_results_national,
+  DENOMINATOR_SELECTION
+)
+message("✓ Coverage filtering complete: ", nrow(coverage_national), " records selected")
 
-message("Step 2 (NATIONAL): Comparing to carried survey values...")
-comparison_national <- compare_coverage_to_survey(coverage_national, survey_expanded_national)
-message("✓ Comparison complete")
-
-message("Step 3 (NATIONAL): Computing deltas...")
+message("Step 2 (NATIONAL): Computing deltas...")
 coverage_delta_national <- coverage_deltas(coverage_national)
 message("✓ Deltas complete")
 
-message("Step 4 (NATIONAL): Projecting survey from deltas...")
+message("Step 3 (NATIONAL): Projecting survey from deltas...")
 proj_survey_national <- project_survey_from_deltas(
   deltas_df       = coverage_delta_national,
   survey_raw_long = survey_raw_national
 )
 message("✓ Projection complete")
 
-message("Step 5 (NATIONAL): Preparing final results...")
+message("Step 4 (NATIONAL): Preparing final results...")
 final_national <- build_final_results(
   coverage_df   = coverage_national,
   proj_df       = proj_survey_national,
@@ -473,27 +382,25 @@ message("✓ Final results (NATIONAL) ready")
 
 # ===== ADMIN2 (conditional) =====
 if (RUN_ADMIN2) {
-  message("Step 1 (ADMIN2): Calculating coverage...")
-  coverage_admin2 <- calculate_coverage(denominators_admin2, numerators_admin2)
-  coverage_admin2 <- add_denominator_labels(coverage_admin2)
-  message("✓ Coverage complete")
-  
-  message("Step 2 (ADMIN2): Comparing to carried survey values...")
-  comparison_admin2 <- compare_coverage_to_survey(coverage_admin2, survey_expanded_admin2)
-  message("✓ Comparison complete")
-  
-  message("Step 3 (ADMIN2): Computing deltas...")
+  message("Step 1 (ADMIN2): Filtering combined results by user denominator selection...")
+  coverage_admin2 <- filter_by_denominator_selection(
+    combined_results_admin2,
+    DENOMINATOR_SELECTION
+  )
+  message("✓ Coverage filtering complete: ", nrow(coverage_admin2), " records selected")
+
+  message("Step 2 (ADMIN2): Computing deltas...")
   coverage_delta_admin2 <- coverage_deltas(coverage_admin2)
   message("✓ Deltas complete")
-  
-  message("Step 4 (ADMIN2): Projecting survey from deltas...")
+
+  message("Step 3 (ADMIN2): Projecting survey from deltas...")
   proj_survey_admin2 <- project_survey_from_deltas(
     deltas_df       = coverage_delta_admin2,
     survey_raw_long = survey_raw_admin2
   )
   message("✓ Projection complete")
-  
-  message("Step 5 (ADMIN2): Preparing final results...")
+
+  message("Step 4 (ADMIN2): Preparing final results...")
   final_admin2 <- build_final_results(
     coverage_df   = coverage_admin2,
     proj_df       = proj_survey_admin2,
@@ -506,27 +413,25 @@ if (RUN_ADMIN2) {
 
 # ===== ADMIN3 (conditional) =====
 if (RUN_ADMIN3) {
-  message("Step 1 (ADMIN3): Calculating coverage...")
-  coverage_admin3 <- calculate_coverage(denominators_admin3, numerators_admin3)
-  coverage_admin3 <- add_denominator_labels(coverage_admin3)
-  message("✓ Coverage complete")
-  
-  message("Step 2 (ADMIN3): Comparing to carried survey values...")
-  comparison_admin3 <- compare_coverage_to_survey(coverage_admin3, survey_expanded_admin3)
-  message("✓ Comparison complete")
-  
-  message("Step 3 (ADMIN3): Computing deltas...")
+  message("Step 1 (ADMIN3): Filtering combined results by user denominator selection...")
+  coverage_admin3 <- filter_by_denominator_selection(
+    combined_results_admin3,
+    DENOMINATOR_SELECTION
+  )
+  message("✓ Coverage filtering complete: ", nrow(coverage_admin3), " records selected")
+
+  message("Step 2 (ADMIN3): Computing deltas...")
   coverage_delta_admin3 <- coverage_deltas(coverage_admin3)
   message("✓ Deltas complete")
-  
-  message("Step 4 (ADMIN3): Projecting survey from deltas...")
+
+  message("Step 3 (ADMIN3): Projecting survey from deltas...")
   proj_survey_admin3 <- project_survey_from_deltas(
     deltas_df       = coverage_delta_admin3,
     survey_raw_long = survey_raw_admin3
   )
   message("✓ Projection complete")
-  
-  message("Step 5 (ADMIN3): Preparing final results...")
+
+  message("Step 4 (ADMIN3): Preparing final results...")
   final_admin3 <- build_final_results(
     coverage_df   = coverage_admin3,
     proj_df       = proj_survey_admin3,
@@ -544,16 +449,14 @@ message("Saving CSVs...")
 
 # ---- Required fields ----
 nat_required_cols <- c(
-  "admin_area_1", 
-  "year", 
+  "admin_area_1",
+  "year",
   "indicator_common_id",
-  "denominator", 
+  "denominator",
   "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 admin2_required_cols <- c(
@@ -565,9 +468,7 @@ admin2_required_cols <- c(
   "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 admin3_required_cols <- c(
@@ -579,9 +480,7 @@ admin3_required_cols <- c(
   "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 # ---------------- NATIONAL (no admin_area_2) ----------------
