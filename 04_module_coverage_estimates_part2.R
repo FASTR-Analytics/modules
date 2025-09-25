@@ -7,6 +7,7 @@ DENOMINATOR_SELECTION <- list(
   delivery = "best",                # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   bcg = "best",                     # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   pnc1_mother = "best",             # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  pnc1 = "best",                    # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
 
   # DPT-ELIGIBLE AGE GROUP INDICATORS
   penta1 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"

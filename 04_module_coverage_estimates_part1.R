@@ -252,14 +252,52 @@ process_survey_data <- function(survey_data, hmis_countries,
   survey_data <- survey_data %>%
     filter(admin_area_1 %in% hmis_countries) %>%
     mutate(
-      indicator_common_id = recode(
-        indicator_common_id,
-        "polio1" = "opv1", "polio2" = "opv2", "polio3" = "opv3",
-        "pnc1"   = "pnc1_mother", .default = indicator_common_id
-      ),
       source = tolower(source),
       year   = as.integer(year)
     )
+
+  # Intelligent PNC1 matching based on what exists in survey data
+  survey_pnc_indicators <- unique(survey_data$indicator_common_id)
+  has_survey_pnc1 <- "pnc1" %in% survey_pnc_indicators
+  has_survey_pnc1_mother <- "pnc1_mother" %in% survey_pnc_indicators
+
+  # Apply recoding logic
+  survey_data <- survey_data %>%
+    mutate(
+      indicator_common_id = recode(
+        indicator_common_id,
+        "polio1" = "opv1", "polio2" = "opv2", "polio3" = "opv3",
+        .default = indicator_common_id
+      )
+    )
+
+  # Handle PNC1 mapping intelligently
+  if (has_survey_pnc1 && has_survey_pnc1_mother) {
+    # Both exist: keep as-is (pnc1 stays pnc1, pnc1_mother stays pnc1_mother)
+    message("Survey data has both pnc1 and pnc1_mother - keeping both")
+  } else if (has_survey_pnc1 && !has_survey_pnc1_mother) {
+    # Only pnc1 exists: decide based on HMIS data
+    if (isTRUE(pnc1_renamed_to_mother)) {
+      # HMIS originally had pnc1 (renamed to pnc1_mother) -> keep survey pnc1 as pnc1
+      message("Survey has pnc1, HMIS originally had pnc1 - keeping survey pnc1 as pnc1")
+    } else {
+      # HMIS has pnc1_mother -> rename survey pnc1 to pnc1_mother
+      survey_data <- survey_data %>%
+        mutate(indicator_common_id = recode(indicator_common_id, "pnc1" = "pnc1_mother"))
+      message("Survey has pnc1, HMIS has pnc1_mother - renaming survey pnc1 to pnc1_mother")
+    }
+  } else if (!has_survey_pnc1 && has_survey_pnc1_mother) {
+    # Only pnc1_mother exists: decide based on HMIS data
+    if (isTRUE(pnc1_renamed_to_mother)) {
+      # HMIS originally had pnc1 -> rename survey pnc1_mother to pnc1
+      survey_data <- survey_data %>%
+        mutate(indicator_common_id = recode(indicator_common_id, "pnc1_mother" = "pnc1"))
+      message("Survey has pnc1_mother, HMIS originally had pnc1 - renaming survey pnc1_mother to pnc1")
+    } else {
+      # HMIS has pnc1_mother -> keep survey pnc1_mother as pnc1_mother
+      message("Survey has pnc1_mother, HMIS has pnc1_mother - keeping survey pnc1_mother as pnc1_mother")
+    }
+  }
   
   # national vs subnational
   is_national <- all(survey_data$admin_area_2 == "NATIONAL", na.rm = TRUE)
@@ -558,6 +596,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     bcg = c("countbcg", "bcgcarry"),
     livebirth = c("countlivebirth", "livebirthcarry"),
     pnc1_mother = c("countpnc1_mother", "pnc1_mothercarry"),
+    pnc1 = c("countpnc1", "pnc1carry"),
     nmr = c("countnmr", "nmrcarry")
   )
   
@@ -754,7 +793,7 @@ calculate_coverage <- function(denominators_data, numerators_data) {
   target_indicator_map <- tibble::tribble(
     ~den_target, ~indicators,
     "pregnancy", c("anc1", "anc4"),
-    "livebirth", c("delivery", "bcg", "pnc1_mother"),
+    "livebirth", c("delivery", "bcg", "pnc1_mother", "pnc1"),
     "dpt",       c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     "measles1",  c("measles1"),
@@ -950,8 +989,14 @@ create_combined_results_table <- function(coverage_comparison, survey_raw_df, al
     survey_raw_df <- survey_raw_df %>% mutate(admin_area_3 = "NATIONAL")
   }
 
+  # Get list of indicators that have coverage estimates
+  coverage_indicators <- coverage_results %>%
+    distinct(indicator_common_id) %>%
+    pull(indicator_common_id)
+
   survey_results <- survey_raw_df %>%
     filter(!is.na(survey_value)) %>%  # Only actual survey observations
+    filter(indicator_common_id %in% coverage_indicators) %>%  # Only indicators with coverage estimates
     mutate(
       denominator_best_or_survey = "survey",
       denominator_label = "Survey estimate"
@@ -1086,9 +1131,9 @@ normalize_admin3_for_output <- function(df) {
 }
 
 
-## draft exec 
 
-# ============================== EXECUTION FLOW (LINEAR) ==============================
+
+# ============================== EXECUTION FLOW   ==============================
 
 # --- NATIONAL PREP ---
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
