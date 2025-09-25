@@ -13034,10 +13034,10 @@ Sierra Leone,Eastern,2008,FE_FRTR_W_TFR,total_fertility_rate,rate,5.6,DHS Sub-na
 Sierra Leone,Northern (before 2017),2008,FE_FRTR_W_TFR,total_fertility_rate,rate,5.8,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Southern,2008,FE_FRTR_W_TFR,total_fertility_rate,rate,5,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Western,2008,FE_FRTR_W_TFR,total_fertility_rate,rate,3.4,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Eastern,2008,FE_FRTR_W_CBR,crude_birth_rate,rate,34.8,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern (before 2017),2008,FE_FRTR_W_CBR,crude_birth_rate,rate,31.7,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Southern,2008,FE_FRTR_W_CBR,crude_birth_rate,rate,32.3,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western,2008,FE_FRTR_W_CBR,crude_birth_rate,rate,26.5,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Eastern,2008,FE_FRTR_W_CBR,crudebr,rate,34.8,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern (before 2017),2008,FE_FRTR_W_CBR,crudebr,rate,31.7,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Southern,2008,FE_FRTR_W_CBR,crudebr,rate,32.3,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western,2008,FE_FRTR_W_CBR,crudebr,rate,26.5,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Eastern,2008,FE_FRTY_W_NPG,womenrepage,other,1325,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Northern (before 2017),2008,FE_FRTY_W_NPG,womenrepage,other,3001,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Southern,2008,FE_FRTY_W_NPG,womenrepage,other,1542,DHS Sub-national,SL2008DHS,household,Sierra Leone,SL,SLE
@@ -13109,25 +13109,25 @@ Sierra Leone,Southern,2013,FE_FRTR_W_TFR,total_fertility_rate,rate,3.7,DHS Sub-n
 Sierra Leone,Bo District,2013,FE_FRTR_W_TFR,total_fertility_rate,rate,3.8,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Bonthe District,2013,FE_FRTR_W_TFR,total_fertility_rate,rate,3.1,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Pujehun District,2013,FE_FRTR_W_TFR,total_fertility_rate,rate,6.3,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Eastern,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,36.9,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kailahun District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37.9,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kenema District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,33.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kono District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,41.3,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern (before 2017),2013,FE_FRTR_W_CBR,crude_birth_rate,rate,36.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,35.8,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Koinadugu (before 2017),2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Koinadugu District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,36.8,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Falaba District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bombali District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,29.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Tonkolili District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,North Western,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kambia District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,37.3,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Karene District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,31.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Port Loko District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,40.5,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Southern,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,32.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bo District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,33.5,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bonthe District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,30.1,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Pujehun District,2013,FE_FRTR_W_CBR,crude_birth_rate,rate,39.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Eastern,2013,FE_FRTR_W_CBR,crudebr,rate,36.9,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kailahun District,2013,FE_FRTR_W_CBR,crudebr,rate,37.9,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kenema District,2013,FE_FRTR_W_CBR,crudebr,rate,33.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kono District,2013,FE_FRTR_W_CBR,crudebr,rate,41.3,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern (before 2017),2013,FE_FRTR_W_CBR,crudebr,rate,36.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern,2013,FE_FRTR_W_CBR,crudebr,rate,35.8,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Koinadugu (before 2017),2013,FE_FRTR_W_CBR,crudebr,rate,37.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Koinadugu District,2013,FE_FRTR_W_CBR,crudebr,rate,36.8,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Falaba District,2013,FE_FRTR_W_CBR,crudebr,rate,37.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bombali District,2013,FE_FRTR_W_CBR,crudebr,rate,29.2,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Tonkolili District,2013,FE_FRTR_W_CBR,crudebr,rate,37.6,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,North Western,2013,FE_FRTR_W_CBR,crudebr,rate,37,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kambia District,2013,FE_FRTR_W_CBR,crudebr,rate,37.3,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Karene District,2013,FE_FRTR_W_CBR,crudebr,rate,31.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Port Loko District,2013,FE_FRTR_W_CBR,crudebr,rate,40.5,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Southern,2013,FE_FRTR_W_CBR,crudebr,rate,32.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bo District,2013,FE_FRTR_W_CBR,crudebr,rate,33.5,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bonthe District,2013,FE_FRTR_W_CBR,crudebr,rate,30.1,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Pujehun District,2013,FE_FRTR_W_CBR,crudebr,rate,39.7,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Eastern,2013,FE_FRTY_W_NPG,womenrepage,other,3614,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kailahun District,2013,FE_FRTY_W_NPG,womenrepage,other,984,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kenema District,2013,FE_FRTY_W_NPG,womenrepage,other,1651,DHS Sub-national,SL2013DHS,household,Sierra Leone,SL,SLE
@@ -13392,24 +13392,24 @@ Sierra Leone,Pujehun District,2016,FE_FRTR_W_TFR,total_fertility_rate,rate,4.8,D
 Sierra Leone,Western,2016,FE_FRTR_W_TFR,total_fertility_rate,rate,3.4,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
 Sierra Leone,Western Area Rural District,2016,FE_FRTR_W_TFR,total_fertility_rate,rate,4.8,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
 Sierra Leone,Western Area Urban District,2016,FE_FRTR_W_TFR,total_fertility_rate,rate,2.5,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Eastern,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,30.7,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kailahun District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,31,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kenema District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,28.6,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kono District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,32,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern (before 2017),2016,FE_FRTR_W_CBR,crude_birth_rate,rate,34.1,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Koinadugu (before 2017),2016,FE_FRTR_W_CBR,crude_birth_rate,rate,32.4,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Tonkolili District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,36.4,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kambia District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,35.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bombali (before 2017),2016,FE_FRTR_W_CBR,crude_birth_rate,rate,30.9,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Port Loko (before 2017),2016,FE_FRTR_W_CBR,crude_birth_rate,rate,35.1,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Southern,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,28.3,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bo District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,26.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bonthe District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,28.8,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Moyamba District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,28.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Pujehun District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,32,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,33.6,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western Area Rural District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,44.7,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western Area Urban District,2016,FE_FRTR_W_CBR,crude_birth_rate,rate,25.3,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Eastern,2016,FE_FRTR_W_CBR,crudebr,rate,30.7,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kailahun District,2016,FE_FRTR_W_CBR,crudebr,rate,31,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kenema District,2016,FE_FRTR_W_CBR,crudebr,rate,28.6,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kono District,2016,FE_FRTR_W_CBR,crudebr,rate,32,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern (before 2017),2016,FE_FRTR_W_CBR,crudebr,rate,34.1,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Koinadugu (before 2017),2016,FE_FRTR_W_CBR,crudebr,rate,32.4,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Tonkolili District,2016,FE_FRTR_W_CBR,crudebr,rate,36.4,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kambia District,2016,FE_FRTR_W_CBR,crudebr,rate,35.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bombali (before 2017),2016,FE_FRTR_W_CBR,crudebr,rate,30.9,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Port Loko (before 2017),2016,FE_FRTR_W_CBR,crudebr,rate,35.1,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Southern,2016,FE_FRTR_W_CBR,crudebr,rate,28.3,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bo District,2016,FE_FRTR_W_CBR,crudebr,rate,26.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bonthe District,2016,FE_FRTR_W_CBR,crudebr,rate,28.8,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Moyamba District,2016,FE_FRTR_W_CBR,crudebr,rate,28.2,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Pujehun District,2016,FE_FRTR_W_CBR,crudebr,rate,32,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western,2016,FE_FRTR_W_CBR,crudebr,rate,33.6,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western Area Rural District,2016,FE_FRTR_W_CBR,crudebr,rate,44.7,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western Area Urban District,2016,FE_FRTR_W_CBR,crudebr,rate,25.3,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
 Sierra Leone,Eastern,2016,FE_FRTY_W_NPG,womenrepage,other,1936,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kailahun District,2016,FE_FRTY_W_NPG,womenrepage,other,670,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kenema District,2016,FE_FRTY_W_NPG,womenrepage,other,656,DHS Sub-national,SL2016MIS,household,Sierra Leone,SL,SLE
@@ -13523,29 +13523,29 @@ Sierra Leone,Pujehun District,2019,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,D
 Sierra Leone,Western,2019,FE_FRTR_W_TFR,total_fertility_rate,rate,2.9,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Western Area Rural District,2019,FE_FRTR_W_TFR,total_fertility_rate,rate,3.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Western Area Urban District,2019,FE_FRTR_W_TFR,total_fertility_rate,rate,2.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Eastern,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,30.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kailahun District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,29.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kenema District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,31.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kono District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,29.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern (before 2017),2019,FE_FRTR_W_CBR,crude_birth_rate,rate,30.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Northern,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,28.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Koinadugu (before 2017),2019,FE_FRTR_W_CBR,crude_birth_rate,rate,28.8,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Koinadugu District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,32.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Falaba District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,24.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bombali District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,27.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Tonkolili District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,28.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,North Western,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,33.1,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Kambia District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,31.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Karene District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,34.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Port Loko District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,33.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Southern,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,33.1,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bo District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,30.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Bonthe District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,37.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Moyamba District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,34.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Pujehun District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,33.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,27.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western Area Rural District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,32.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
-Sierra Leone,Western Area Urban District,2019,FE_FRTR_W_CBR,crude_birth_rate,rate,24.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Eastern,2019,FE_FRTR_W_CBR,crudebr,rate,30.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kailahun District,2019,FE_FRTR_W_CBR,crudebr,rate,29.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kenema District,2019,FE_FRTR_W_CBR,crudebr,rate,31.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kono District,2019,FE_FRTR_W_CBR,crudebr,rate,29.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern (before 2017),2019,FE_FRTR_W_CBR,crudebr,rate,30.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Northern,2019,FE_FRTR_W_CBR,crudebr,rate,28.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Koinadugu (before 2017),2019,FE_FRTR_W_CBR,crudebr,rate,28.8,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Koinadugu District,2019,FE_FRTR_W_CBR,crudebr,rate,32.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Falaba District,2019,FE_FRTR_W_CBR,crudebr,rate,24.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bombali District,2019,FE_FRTR_W_CBR,crudebr,rate,27.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Tonkolili District,2019,FE_FRTR_W_CBR,crudebr,rate,28.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,North Western,2019,FE_FRTR_W_CBR,crudebr,rate,33.1,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Kambia District,2019,FE_FRTR_W_CBR,crudebr,rate,31.6,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Karene District,2019,FE_FRTR_W_CBR,crudebr,rate,34.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Port Loko District,2019,FE_FRTR_W_CBR,crudebr,rate,33.7,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Southern,2019,FE_FRTR_W_CBR,crudebr,rate,33.1,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bo District,2019,FE_FRTR_W_CBR,crudebr,rate,30.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Bonthe District,2019,FE_FRTR_W_CBR,crudebr,rate,37.5,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Moyamba District,2019,FE_FRTR_W_CBR,crudebr,rate,34.2,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Pujehun District,2019,FE_FRTR_W_CBR,crudebr,rate,33.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western,2019,FE_FRTR_W_CBR,crudebr,rate,27.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western Area Rural District,2019,FE_FRTR_W_CBR,crudebr,rate,32.4,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
+Sierra Leone,Western Area Urban District,2019,FE_FRTR_W_CBR,crudebr,rate,24.3,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Eastern,2019,FE_FRTY_W_NPG,womenrepage,other,3069,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kailahun District,2019,FE_FRTY_W_NPG,womenrepage,other,707,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
 Sierra Leone,Kenema District,2019,FE_FRTY_W_NPG,womenrepage,other,1437,DHS Sub-national,SL2019DHS,household,Sierra Leone,SL,SLE
