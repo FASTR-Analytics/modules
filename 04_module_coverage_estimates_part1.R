@@ -31,18 +31,32 @@ library(purrr)
 PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
 
+message("✓ Step 1/7: Loading input datasets...")
 
 # Input Datasets
+message("  → Loading adjusted HMIS data (national)...")
 adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
+
+message("  → Loading adjusted HMIS data (subnational)...")
 adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
+
+message("  → Loading survey data from GitHub...")
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
+
+message("  → Loading population estimates from GitHub...")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
+message("✓ Step 1/7 completed: All datasets loaded successfully!")
+
 # ------------------------------ Prepare Data for Analysis ---------------------------------------------------
+
+message("✓ Step 2/7: Preparing data for analysis...")
+
 # A flag to track if pnc1 was renamed to pnc1_mother
 pnc1_renamed_to_mother <- FALSE
 
 # Dynamically detect the country from the HMIS data and filter other datasets
+message("  → Detecting country and filtering datasets...")
 COUNTRY_NAME <- unique(adjusted_volume_data$admin_area_1)
 
 if (length(COUNTRY_NAME) > 1) {
@@ -115,6 +129,8 @@ if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
 }
 
 message("Final analysis level: ", ANALYSIS_LEVEL)
+
+message("✓ Step 2/7 completed: Data preparation finished!")
 
 # ------------------------------ Rename for Test Instance ----------------------------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
@@ -862,9 +878,9 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   dpt_family <- c("penta1","penta2","penta3","opv1","opv2","opv3",
                   "pcv1","pcv2","pcv3","rota1","rota2","ipv1","ipv2")
   classify_source_type <- function(denominator, ind) {
-    if (startsWith(denominator, "danc1_")     && ind %in% c("anc1","anc4")) return("reference_based")
+    if (startsWith(denominator, "danc1_")     && ind %in% c("anc1")) return("reference_based")
     if (startsWith(denominator, "ddelivery_") && ind %in% c("delivery"))    return("reference_based")
-    if (startsWith(denominator, "dpenta1_")   && ind %in% dpt_family)       return("reference_based")
+    if (startsWith(denominator, "dpenta1_")   && ind %in% c("penta1"))       return("reference_based")
     if (startsWith(denominator, "dbcg_")      && ind %in% c("bcg"))         return("reference_based")
     if (startsWith(denominator, "dwpp_"))                                   return("unwpp_based")
     "independent"
@@ -884,30 +900,16 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     # NOTE: Don't filter out NAs here - we need all denominators for ranking
 
   # Step 1: Select best denominator for each geo × indicator
-  # For now, let's use a simpler approach that doesn't penalize UNWPP for having shorter time series
-  # We'll include ALL denominators in the results and let users see all options
+  # Logic: 1) Prefer non-reference-based with lowest error
+  #        2) Fallback to reference-based only if no other options exist
 
-  # Create a "best" designation based on source type priority when no survey comparison is available
   best_denominators <- coverage_with_reference %>%
-    group_by(across(all_of(geo_only_keys)), indicator_common_id, denominator, source_type) %>%
-    summarise(
-      avg_squared_error = mean(squared_error, na.rm = TRUE),
-      n_years_with_survey = sum(!is.na(squared_error)),  # Count years with valid comparison
-      n_years_total = n(),
-      .groups = "drop"
-    ) %>%
-    # For each geo × indicator, select based on:
-    # 1. If we have survey comparisons, pick the one with lowest error
-    # 2. If no survey comparisons, pick reference-based over others
+    filter(!is.na(squared_error)) %>%  # Only consider denominators with survey comparisons
     group_by(across(all_of(geo_only_keys)), indicator_common_id) %>%
-    mutate(
-      has_survey_comparison = n_years_with_survey > 0,
-      is_reference_based = source_type == "reference_based"
-    ) %>%
+    mutate(is_reference_based = source_type == "reference_based") %>%
     arrange(
-      desc(has_survey_comparison),  # Prioritize those with survey comparisons
-      avg_squared_error,            # Among those with comparisons, pick lowest error
-      desc(is_reference_based),     # Among those without comparisons, prefer reference-based
+      is_reference_based,    # FALSE (non-reference) comes first, TRUE (reference) comes last
+      squared_error,         # Among each type, pick lowest error
       .by_group = TRUE
     ) %>%
     slice_head(n = 1) %>%  # Take the top one from each group
@@ -1135,25 +1137,32 @@ normalize_admin3_for_output <- function(df) {
 
 # ============================== EXECUTION FLOW   ==============================
 
+message("✓ Step 3/7: Processing national data...")
+
 # --- NATIONAL PREP ---
+message("  → Processing HMIS adjusted volume data...")
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
+message("  → Processing survey data...")
 survey_processed_national <- process_survey_data(
   survey_data    = survey_data_national,
   hmis_countries = hmis_processed$hmis_countries
 )
 
+message("  → Processing population data...")
 national_population_processed <- process_national_population_data(
   population_data = population_estimates_only,
   hmis_countries  = hmis_processed$hmis_countries
 )
 
+message("  → Calculating denominators...")
 denominators_national <- calculate_denominators(
   hmis_data      = hmis_processed$annual_hmis,
   survey_data    = survey_processed_national$carried,
   population_data= national_population_processed$wide
 )
 
+message("  → Creating denominator summary...")
 national_summary <- create_denominator_summary(denominators_national, "NATIONAL")
 
 # --- NATIONAL RESULTS BUILDERS (must come after summary) ---
@@ -1181,12 +1190,15 @@ survey_reference_national <- if (exists("survey_processed_national") &&
 if (!is.null(denominators_national_results) &&
     !is.null(numerators_national_long) &&
     !is.null(survey_reference_national)) {
-  
+
+  message("  → Calculating national coverage estimates...")
   national_coverage <- calculate_coverage(denominators_national_results, numerators_national_long)
   national_coverage <- add_denominator_labels(national_coverage)
-  
+
+  message("  → Comparing coverage to survey data...")
   national_comparison <- compare_coverage_to_survey(national_coverage, survey_reference_national)
-  
+
+  message("  → Creating combined results table...")
   national_combined_results <- create_combined_results_table(
     coverage_comparison = national_comparison,
     survey_raw_df       = survey_raw_national_long,
@@ -1194,16 +1206,23 @@ if (!is.null(denominators_national_results) &&
   )
 }
 
+message("✓ Step 3/7 completed: National analysis finished!")
+
 # ============================ SUBNATIONAL FLOW (IF APPLICABLE) ============================
 
 if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
-  
+
+  message("✓ Step 4/7: Processing subnational data...")
+
   # Ensure admin_area_1 is consistent
+  message("  → Ensuring data consistency...")
   admin_area_1_value <- adjusted_volume_data %>% distinct(admin_area_1) %>% pull(admin_area_1)
   hmis_data_subnational <- hmis_data_subnational %>% mutate(admin_area_1 = admin_area_1_value)
-  
+
   # ----------------- ADMIN_AREA_2 -----------------
   if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
+
+    message("  → Processing admin area 2 data...")
     
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
     
@@ -1242,12 +1261,15 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     if (!is.null(denominators_admin2_results) &&
         !is.null(numerators_admin2_long) &&
         !is.null(survey_reference_admin2)) {
-      
+
+      message("  → Calculating admin area 2 coverage estimates...")
       admin2_coverage <- calculate_coverage(denominators_admin2_results, numerators_admin2_long)
       admin2_coverage <- add_denominator_labels(admin2_coverage)
-      
+
+      message("  → Comparing admin area 2 coverage to survey data...")
       admin2_comparison <- compare_coverage_to_survey(admin2_coverage, survey_reference_admin2)
-      
+
+      message("  → Creating admin area 2 combined results table...")
       admin2_combined_results <- create_combined_results_table(
         coverage_comparison = admin2_comparison,
         survey_raw_df       = survey_raw_admin2_long,
@@ -1258,7 +1280,9 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   
   # ----------------- ADMIN_AREA_3 -----------------
   if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3" && "admin_area_3" %in% names(hmis_data_subnational)) {
-    
+
+    message("  → Processing admin area 3 data...")
+
     hmis_admin3 <- hmis_data_subnational %>%
       filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
       select(-admin_area_2) %>%
@@ -1301,12 +1325,15 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       if (!is.null(denominators_admin3_results) &&
           !is.null(numerators_admin3_long) &&
           !is.null(survey_reference_admin3)) {
-        
+
+        message("  → Calculating admin area 3 coverage estimates...")
         admin3_coverage <- calculate_coverage(denominators_admin3_results, numerators_admin3_long)
         admin3_coverage <- add_denominator_labels(admin3_coverage)
-        
+
+        message("  → Comparing admin area 3 coverage to survey data...")
         admin3_comparison <- compare_coverage_to_survey(admin3_coverage, survey_reference_admin3)
-        
+
+        message("  → Creating admin area 3 combined results table...")
         admin3_combined_results <- create_combined_results_table(
           coverage_comparison = admin3_comparison,
           survey_raw_df       = survey_raw_admin3_long,
@@ -1315,17 +1342,18 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       }
     }
   }
+
+  message("✓ Step 4/7 completed: Subnational analysis finished!")
+
+} else {
+  message("✓ Step 4/7 completed: No subnational analysis (national only)!")
 }
 
-# ============================== SAVE CSV (USE YOUR EXISTING BLOCKS) ==============================
-# Your existing write.csv blocks can remain unchanged; they’ll now find the objects in the right order.
+message("✓ Step 5/7: Data processing completed! Beginning output generation...")
 
-# ==============================================================================
+message("✓ Step 6/7: Saving coverage analysis results...")
 
-
-# ---- Results 1: Numerators (REMOVED - not needed) ---------------------------------------------------------------------------------
-
-# ---- Results 2: Denominators (from *_summary normalized, with labels) ---------------------------------------
+message("  → Saving denominators results...")
 # National
 if (exists("denominators_national_results") && is.data.frame(denominators_national_results) && nrow(denominators_national_results) > 0) {
   denominators_national_results <- add_denominator_labels(denominators_national_results, "denominator")
@@ -1396,13 +1424,9 @@ if (exists("denominators_admin3_results") &&
   message("✓ No denominators_admin3 results - saved empty file")
 }
 
-# ---- Results 3: Survey RAW (REMOVED - now extracted from combined results in Part 2) -------------------
+# Combined Coverage and Survey Results
 
-
-# ---- Results 4: Survey REFERENCE (REMOVED - not needed) -----------------------------------------------
-
-# ---- Results 5: Combined Coverage and Survey Results (NEW) ---------------------------------------------
-
+message("  → Saving combined coverage and survey results...")
 # National
 if (exists("national_combined_results") && is.data.frame(national_combined_results) && nrow(national_combined_results) > 0) {
   write.csv(national_combined_results, "M4_combined_results_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
@@ -1460,3 +1484,10 @@ if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) 
   write.csv(dummy, "M4_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No combined_results_admin3 results - saved empty file")
 }
+
+message("✓ Step 6/7 completed: All results saved successfully!")
+message("✓ Step 7/7: COVERAGE ESTIMATION ANALYSIS COMPLETE! ✓")
+message("================================================================================")
+message("All output files have been generated and saved to the working directory.")
+message("Check the M4_*.csv files for your coverage analysis results.")
+message("================================================================================")
