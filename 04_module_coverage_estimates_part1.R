@@ -900,21 +900,49 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     # NOTE: Don't filter out NAs here - we need all denominators for ranking
 
   # Step 1: Select best denominator for each geo × indicator
-  # Logic: 1) Prefer non-reference-based with lowest error
-  #        2) Fallback to reference-based only if no other options exist
+  # Logic: 1) Prefer independent (non-reference, non-UNWPP) with lowest error
+  #        2) Fallback to reference-based only if no independent options exist
+  #        3) UNWPP denominators are EXCLUDED from "best" selection
+  #        4) Exception: UNWPP used as last resort if no other denominators exist
 
-  best_denominators <- coverage_with_reference %>%
+  # Try to select best denominators excluding UNWPP
+  best_denominators_no_unwpp <- coverage_with_reference %>%
     filter(!is.na(squared_error)) %>%  # Only consider denominators with survey comparisons
+    filter(source_type != "unwpp_based") %>%  # EXCLUDE UNWPP from best selection
     group_by(across(all_of(geo_only_keys)), indicator_common_id) %>%
     mutate(is_reference_based = source_type == "reference_based") %>%
     arrange(
-      is_reference_based,    # FALSE (non-reference) comes first, TRUE (reference) comes last
+      is_reference_based,    # FALSE (independent) comes first, TRUE (reference) comes last
       squared_error,         # Among each type, pick lowest error
       .by_group = TRUE
     ) %>%
     slice_head(n = 1) %>%  # Take the top one from each group
     ungroup() %>%
     select(all_of(geo_only_keys), indicator_common_id, best_denominator = denominator)
+
+  # Fallback: if no non-UNWPP denominators exist for some indicators, include UNWPP as last resort
+  missing_indicators <- coverage_with_reference %>%
+    filter(!is.na(squared_error)) %>%
+    distinct(across(all_of(geo_only_keys)), indicator_common_id) %>%
+    anti_join(best_denominators_no_unwpp, by = c(geo_only_keys, "indicator_common_id"))
+
+  if (nrow(missing_indicators) > 0) {
+    warning("Some indicators only have UNWPP denominators available. Including UNWPP as fallback for these cases.")
+
+    unwpp_fallbacks <- coverage_with_reference %>%
+      filter(!is.na(squared_error)) %>%
+      semi_join(missing_indicators, by = c(geo_only_keys, "indicator_common_id")) %>%
+      filter(source_type == "unwpp_based") %>%
+      group_by(across(all_of(geo_only_keys)), indicator_common_id) %>%
+      arrange(squared_error, .by_group = TRUE) %>%
+      slice_head(n = 1) %>%
+      ungroup() %>%
+      select(all_of(geo_only_keys), indicator_common_id, best_denominator = denominator)
+
+    best_denominators <- bind_rows(best_denominators_no_unwpp, unwpp_fallbacks)
+  } else {
+    best_denominators <- best_denominators_no_unwpp
+  }
 
   # Step 2: Filter coverage data to use only the best denominator for each geo × indicator
   # and apply ranking within years for the selected denominators
