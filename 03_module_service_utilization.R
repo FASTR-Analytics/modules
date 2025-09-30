@@ -14,21 +14,21 @@ DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged 
 DIFFPERCENT <- 10                      # Difference threshold (in percent): if the actual volume differs from the predicted
                                        # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
-RUN_ADMIN_AREA_4_ANALYSIS <- TRUE      # Set to TRUE to run finest-level analysis (admin_area_4)
+RUN_ADMIN_AREA_4_ANALYSIS <- FALSE      # Set to TRUE to run finest-level analysis (admin_area_4)
                                        # Warning: This can be very slow for large datasets
 
-CONTROL_CHART_LEVEL <- "admin_area_3"  # Options: "admin_area_2" or "admin_area_3" default should be admin_area_2!
+CONTROL_CHART_LEVEL <- "admin_area_2"  # Options: "admin_area_2" or "admin_area_3" default should be admin_area_2!
                                        # in new Nigeria instance >>> admin_area_2 = Geopolitical Regions 
                                        # & admin_area_3 = State level
 
 
-PROJECT_DATA_HMIS <- "hmis_nigeria_q2.csv"
+PROJECT_DATA_HMIS <- "hmis_somalia.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Sept 10
+# Last edit: 2025 Sept 30
 # Module: SERVICE UTILIZATION
 
 
@@ -576,10 +576,10 @@ summary_disruption_admin1 <- data_disruption %>%
 gc()
 
 
-# Export data for external key message calculation
+# Export data for external key message calculation - NATIONAL LEVEL
 print("Saving disruptions data for external analysis...")
 
-key_messages_dataset <- summary_disruption_admin1 %>%
+key_messages_dataset_admin1 <- summary_disruption_admin1 %>%
   mutate(
     year = as.integer(period_id %/% 100),
     month = period_id %% 100,
@@ -596,8 +596,139 @@ key_messages_dataset <- summary_disruption_admin1 %>%
          surplus_absolute, surplus_percent) %>%
   arrange(indicator_common_id, period_id)
 
-write.csv(key_messages_dataset, "M3_all_indicators_shortfalls.csv", row.names = FALSE)
-cat("Key messages dataset saved to: M3_all_indicators_shortfalls.csv\n")
+write.csv(key_messages_dataset_admin1, "M3_all_indicators_shortfalls_admin_area_1.csv", row.names = FALSE)
+
+
+# Export data for external key message calculation - ADMIN_AREA_2 LEVEL
+if (exists("summary_disruption_admin2") && nrow(summary_disruption_admin2) > 0) {
+  print("Saving admin area 2 level key messages dataset...")
+  
+  key_messages_dataset_admin2 <- summary_disruption_admin2 %>%
+    mutate(
+      year = as.integer(period_id %/% 100),
+      month = period_id %% 100,
+      shortfall_absolute = pmax(0, count_expect_sum - count_sum, na.rm = TRUE),
+      shortfall_percent = ifelse(count_expect_sum > 0, 
+                                 (count_expect_sum - count_sum) / count_expect_sum * 100, 0),
+      surplus_absolute = pmax(0, count_sum - count_expect_sum, na.rm = TRUE),
+      surplus_percent = ifelse(count_expect_sum > 0,
+                               (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
+    ) %>%
+    select(admin_area_2, indicator_common_id, period_id,
+           count_sum, count_expect_sum, 
+           shortfall_absolute, shortfall_percent,
+           surplus_absolute, surplus_percent) %>%
+    arrange(indicator_common_id, period_id)
+  
+  write.csv(key_messages_dataset_admin2, "M3_all_indicators_shortfalls_admin_area_2.csv", row.names = FALSE)
+  
+} else {
+  print("No admin_area_2 data available - creating empty key messages file for compatibility...")
+  dummy_key_messages_admin2 <- data.frame(
+    admin_area_2 = character(0),
+    indicator_common_id = character(0),
+    period_id = integer(0),
+    count_sum = numeric(0),
+    count_expect_sum = numeric(0),
+    shortfall_absolute = numeric(0),
+    shortfall_percent = numeric(0),
+    surplus_absolute = numeric(0),
+    surplus_percent = numeric(0)
+  )
+  write.csv(dummy_key_messages_admin2, "M3_all_indicators_shortfalls_admin_area_2.csv", row.names = FALSE)
+  
+}
+
+# Export data for external key message calculation - ADMIN_AREA_3 LEVEL
+if (RUN_DISTRICT_MODEL && exists("summary_disruption_admin3") && nrow(summary_disruption_admin3) > 0) {
+  print("Saving admin area 3 level key messages dataset...")
+  
+  key_messages_dataset_admin3 <- summary_disruption_admin3 %>%
+    mutate(
+      year = as.integer(period_id %/% 100),
+      month = period_id %% 100,
+      shortfall_absolute = pmax(0, count_expect_sum - count_sum, na.rm = TRUE),
+      shortfall_percent = ifelse(count_expect_sum > 0, 
+                                 (count_expect_sum - count_sum) / count_expect_sum * 100, 0),
+      surplus_absolute = pmax(0, count_sum - count_expect_sum, na.rm = TRUE),
+      surplus_percent = ifelse(count_expect_sum > 0,
+                               (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
+    ) %>%
+    select(admin_area_3, indicator_common_id, period_id,
+           count_sum, count_expect_sum, 
+           shortfall_absolute, shortfall_percent,
+           surplus_absolute, surplus_percent) %>%
+    arrange(indicator_common_id, period_id)
+  
+  write.csv(key_messages_dataset_admin3, "M3_all_indicators_shortfalls_admin_area_3.csv", row.names = FALSE)
+  
+} else {
+  print("No admin_area_3 data available or RUN_DISTRICT_MODEL=FALSE - creating empty key messages file for compatibility...")
+  dummy_key_messages_admin3 <- data.frame(
+    admin_area_3 = character(0),
+    indicator_common_id = character(0),
+    period_id = integer(0),
+    count_sum = numeric(0),
+    count_expect_sum = numeric(0),
+    shortfall_absolute = numeric(0),
+    shortfall_percent = numeric(0),
+    surplus_absolute = numeric(0),
+    surplus_percent = numeric(0)
+  )
+  write.csv(dummy_key_messages_admin3, "M3_all_indicators_shortfalls_admin_area_3.csv", row.names = FALSE)
+  
+}
+
+# Export data for external key message calculation - ADMIN_AREA_4 LEVEL 
+if (RUN_ADMIN_AREA_4_ANALYSIS && exists("summary_disruption_admin4") && nrow(summary_disruption_admin4) > 0) {
+  print("Saving admin area 4 level key messages dataset...")
+  
+  key_messages_dataset_admin4 <- summary_disruption_admin4 %>%
+    mutate(
+      year = as.integer(period_id %/% 100),
+      month = period_id %% 100,
+      shortfall_absolute = pmax(0, count_expect_sum - count_sum, na.rm = TRUE),
+      shortfall_percent = ifelse(count_expect_sum > 0, 
+                                 (count_expect_sum - count_sum) / count_expect_sum * 100, 0),
+      surplus_absolute = pmax(0, count_sum - count_expect_sum, na.rm = TRUE),
+      surplus_percent = ifelse(count_expect_sum > 0,
+                               (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
+    ) %>%
+    select(admin_area_4, indicator_common_id, period_id,
+           count_sum, count_expect_sum, 
+           shortfall_absolute, shortfall_percent,
+           surplus_absolute, surplus_percent) %>%
+    arrange(indicator_common_id, period_id)
+  
+  write.csv(key_messages_dataset_admin4, "M3_all_indicators_shortfalls_admin_area_4.csv", row.names = FALSE)
+  
+} else {
+  print("No admin_area_4 data available or RUN_ADMIN_AREA_4_ANALYSIS=FALSE - creating empty key messages file for compatibility...")
+  dummy_key_messages_admin4 <- data.frame(
+    admin_area_4 = character(0),
+    indicator_common_id = character(0),
+    period_id = integer(0),
+    count_sum = numeric(0),
+    count_expect_sum = numeric(0),
+    shortfall_absolute = numeric(0),
+    shortfall_percent = numeric(0),
+    surplus_absolute = numeric(0),
+    surplus_percent = numeric(0)
+  )
+  write.csv(dummy_key_messages_admin4, "M3_all_indicators_shortfalls_admin_area_4.csv", row.names = FALSE)
+  
+}
+
+### MUST CHANGE M3_all_indicators_shortfalls.csv to >>> M3_all_indicators_shortfalls_admin_area_1.csv <<<
+
+print("=== KEY MESSAGES DATASETS EXPORT COMPLETE ===")
+print("Generated key messages files:")
+
+print("- M3_all_indicators_shortfalls_admin_area_1.csv (National level)")
+print("- M3_all_indicators_shortfalls_admin_area_2.csv (Regional level)")
+print("- M3_all_indicators_shortfalls_admin_area_3.csv (State level)")
+print("- M3_all_indicators_shortfalls_admin_area_4.csv (District level)")
+
 
 
 
