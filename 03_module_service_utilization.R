@@ -20,11 +20,6 @@ RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the 
 RUN_ADMIN_AREA_4_ANALYSIS <- FALSE      # Set to TRUE to run finest-level analysis (admin_area_4)
                                        # Warning: This can be very slow for large datasets
 
-CONTROL_CHART_LEVEL <- "admin_area_2"  # Options: "admin_area_2" or "admin_area_3" OR "admin_area_4"
-                                       # default should be admin_area_2!
-                                       # in new Nigeria instance >>> admin_area_2 = Geopolitical Regions 
-                                       # & admin_area_3 = State level
-
 
 PROJECT_DATA_HMIS <- "hmis_somalia.csv"
 #-------------------------------------------------------------------------------------------------------------
@@ -63,6 +58,17 @@ library(fixest)  # For panel regressions (alternative to 'xtreg' in Stata)
 library(stringr)
 library(dplyr)
 library(tidyr)
+
+# Set CONTROL_CHART_LEVEL conditionally based on analysis flags
+# Options: "admin_area_2" or "admin_area_3" OR "admin_area_4"
+# in new Nigeria instance >>> admin_area_2 = Geopolitical Regions & admin_area_3 = State level
+if (RUN_ADMIN_AREA_4_ANALYSIS) {
+  CONTROL_CHART_LEVEL <- "admin_area_4"
+} else if (RUN_DISTRICT_MODEL) {
+  CONTROL_CHART_LEVEL <- "admin_area_3"
+} else {
+  CONTROL_CHART_LEVEL <- "admin_area_2"  # Default
+}
 
 #-------------------------------------------------------------------------------------------------------------
 # STEP 1: CONTROL CHART ANALYSIS
