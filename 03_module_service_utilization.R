@@ -14,14 +14,14 @@ DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged 
 DIFFPERCENT <- 10                      # Difference threshold (in percent): if the actual volume differs from the predicted
                                        # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
-RUN_ADMIN_AREA_4_ANALYSIS <- FALSE      # Set to TRUE to run finest-level analysis (admin_area_4)
+RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
                                        # Warning: This can be very slow for large datasets
 
 
-PROJECT_DATA_HMIS <- "hmis_somalia.csv"
+PROJECT_DATA_HMIS <- "hmis_nigeria_JAR.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Last edit: 2025 Oct 2
