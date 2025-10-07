@@ -5,7 +5,17 @@ GEOLEVEL <- "admin_area_4"           # Admin level used to join facilities to co
 DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
-PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
+# Consistency pair indicator definitions
+PAIR_PENTA_A    <- "penta1"
+PAIR_PENTA_B    <- "penta3"
+PAIR_ANC_A      <- "anc1"
+PAIR_ANC_B      <- "anc4"
+PAIR_DELIVERY_A <- "bcg"
+PAIR_DELIVERY_B <- "delivery"     # For Somalia: change to "sba"
+PAIR_MALARIA_A  <- "rdt_positive_plus_micro"
+PAIR_MALARIA_B  <- "confirmed_malaria_treated_with_act"
+
+PROJECT_DATA_HMIS <- "hmis_NG.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -27,12 +37,12 @@ outlier_params <- list(
 )
 
 
-# Consistency Analysis Parameters 
+# Consistency Analysis Parameters
 all_consistency_pairs <- list(
-  pair_penta    = c("penta1", "penta3"),
-  pair_anc      = c("anc1", "anc4"),
-  pair_delivery = c("bcg", "delivery"),
-  pair_malaria  = c("rdt_positive_plus_micro", "confirmed_malaria_treated_with_act")
+  pair_penta    = c(PAIR_PENTA_A, PAIR_PENTA_B),
+  pair_anc      = c(PAIR_ANC_A, PAIR_ANC_B),
+  pair_delivery = c(PAIR_DELIVERY_A, PAIR_DELIVERY_B),
+  pair_malaria  = c(PAIR_MALARIA_A, PAIR_MALARIA_B)
 )
 
 
