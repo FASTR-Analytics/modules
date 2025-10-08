@@ -1,5 +1,5 @@
 SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_both" 
+VISUALIZATIONCOUNT <- "count_final_outliers" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -14,7 +14,7 @@ DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged 
 DIFFPERCENT <- 10                      # Difference threshold (in percent): if the actual volume differs from the predicted
                                        # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
 RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
@@ -58,6 +58,9 @@ library(fixest)  # For panel regressions (alternative to 'xtreg' in Stata)
 library(stringr)
 library(dplyr)
 library(tidyr)
+
+# Ensure dplyr::select is used (MASS::select masks it)
+select <- dplyr::select
 
 # Set CONTROL_CHART_LEVEL conditionally based on analysis flags
 if (RUN_ADMIN_AREA_4_ANALYSIS) {
@@ -604,6 +607,100 @@ key_messages_dataset_admin1 <- summary_disruption_admin1 %>%
 write.csv(key_messages_dataset_admin1, "M3_all_indicators_shortfalls_admin_area_1.csv", row.names = FALSE)
 
 
+# CREATE SUMMARY OBJECTS FIRST (before exporting)
+# Admin_area_2 level
+if ("expect_admin_area_2" %in% names(data_disruption)) {
+  print("Creating summary disruptions at admin_area_2 level...")
+
+  summary_disruption_admin2 <- data_disruption %>%
+    group_by(admin_area_2, period_id, indicator_common_id) %>%
+    summarise(
+      count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+      count_expect       = mean(expect_admin_area_2, na.rm = TRUE),
+      b                  = mean(b_admin_area_2, na.rm = TRUE),
+      p                  = mean(p_admin_area_2, na.rm = TRUE),
+      num_obs            = n(),
+      count_expect_sum   = sum(expect_admin_area_2, na.rm = TRUE),
+      count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+      diff_percent       = 100 * (mean(expect_admin_area_2, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+        mean(expect_admin_area_2, na.rm = TRUE),
+      diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
+      count_expected_if_above_diff_threshold = ifelse(
+        abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
+        count_expect_sum, count_sum),
+      count_expect_diff = ifelse(
+        abs(100 * (mean(expect_admin_area_2, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+              mean(expect_admin_area_2, na.rm = TRUE)) > DIFFPERCENT,
+        mean(expect_admin_area_2, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
+      ),
+      .groups = "drop"
+    )
+} else {
+  print("Warning: expect_admin_area_2 columns not found - will create empty admin_area_2 file")
+}
+
+# Admin_area_3 level
+if (RUN_DISTRICT_MODEL & "expect_admin_area_3" %in% names(data_disruption)) {
+    print("Creating summary disruptions at admin_area_3 level...")
+
+    summary_disruption_admin3 <- data_disruption %>%
+      group_by(admin_area_3, period_id, indicator_common_id) %>%
+      summarise(
+        count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+        count_expect       = mean(expect_admin_area_3, na.rm = TRUE),
+        b                  = mean(b_admin_area_3, na.rm = TRUE),
+        p                  = mean(p_admin_area_3, na.rm = TRUE),
+        num_obs            = n(),
+        count_expect_sum   = sum(expect_admin_area_3, na.rm = TRUE),
+        count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+        diff_percent       = 100 * (mean(expect_admin_area_3, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+          mean(expect_admin_area_3, na.rm = TRUE),
+        diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
+        count_expected_if_above_diff_threshold = ifelse(
+          abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
+          count_expect_sum, count_sum),
+        count_expect_diff = ifelse(
+          abs(100 * (mean(expect_admin_area_3, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+                mean(expect_admin_area_3, na.rm = TRUE)) > DIFFPERCENT,
+          mean(expect_admin_area_3, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
+        ),
+        .groups = "drop"
+      )
+  } else {
+    print("Warning: expect_admin_area_3 columns not found - will create empty admin_area_3 file")
+  }
+
+# Admin_area_4 level
+if ("expect_admin_area_4" %in% names(data_disruption)) {
+    print("Creating summary disruptions at admin_area_4 level...")
+    summary_disruption_admin4 <- data_disruption %>%
+      group_by(admin_area_4, period_id, indicator_common_id) %>%
+      summarise(
+        count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+        count_expect       = mean(expect_admin_area_4, na.rm = TRUE),
+        b                  = mean(b_admin_area_4, na.rm = TRUE),
+        p                  = mean(p_admin_area_4, na.rm = TRUE),
+        num_obs            = n(),
+        count_expect_sum   = sum(expect_admin_area_4, na.rm = TRUE),
+        count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
+        diff_percent       = 100 * (mean(expect_admin_area_4, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+          mean(expect_admin_area_4, na.rm = TRUE),
+        diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
+        count_expected_if_above_diff_threshold = ifelse(
+          abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
+          count_expect_sum, count_sum),
+        count_expect_diff = ifelse(
+          abs(100 * (mean(expect_admin_area_4, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
+                mean(expect_admin_area_4, na.rm = TRUE)) > DIFFPERCENT,
+          mean(expect_admin_area_4, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
+        ),
+        .groups = "drop"
+      )
+  } else {
+    print("Warning: expect_admin_area_4 columns not found - will create empty admin_area_4 file")
+  }
+
+# NOW EXPORT THE KEY MESSAGES DATASETS
 # Export data for external key message calculation - ADMIN_AREA_2 LEVEL
 if (exists("summary_disruption_admin2") && nrow(summary_disruption_admin2) > 0) {
   print("Saving admin area 2 level key messages dataset...")
@@ -733,101 +830,6 @@ print("- M3_all_indicators_shortfalls_admin_area_1.csv (National level)")
 print("- M3_all_indicators_shortfalls_admin_area_2.csv (Regional level)")
 print("- M3_all_indicators_shortfalls_admin_area_3.csv (State level)")
 print("- M3_all_indicators_shortfalls_admin_area_4.csv (District level)")
-
-
-
-
-if ("expect_admin_area_2" %in% names(data_disruption)) {
-  print("Creating summary disruptions at admin_area_2 level...")
-  
-  summary_disruption_admin2 <- data_disruption %>%
-    group_by(admin_area_2, period_id, indicator_common_id) %>%
-    summarise(
-      count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-      count_expect       = mean(expect_admin_area_2, na.rm = TRUE),
-      b                  = mean(b_admin_area_2, na.rm = TRUE),
-      p                  = mean(p_admin_area_2, na.rm = TRUE),
-      num_obs            = n(),
-      count_expect_sum   = sum(expect_admin_area_2, na.rm = TRUE),
-      count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-      diff_percent       = 100 * (mean(expect_admin_area_2, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-        mean(expect_admin_area_2, na.rm = TRUE),
-      diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
-      count_expected_if_above_diff_threshold = ifelse(
-        abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
-        count_expect_sum, count_sum),
-      count_expect_diff = ifelse(
-        abs(100 * (mean(expect_admin_area_2, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-              mean(expect_admin_area_2, na.rm = TRUE)) > DIFFPERCENT,
-        mean(expect_admin_area_2, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
-      ),
-      .groups = "drop"
-    )
-} else {
-  print("Warning: expect_admin_area_2 columns not found - will create empty admin_area_2 file")
-}
-
-
-
-if (RUN_DISTRICT_MODEL & "expect_admin_area_3" %in% names(data_disruption)) {
-    print("Creating summary disruptions at admin_area_3 level...")
-  
-    summary_disruption_admin3 <- data_disruption %>%
-      group_by(admin_area_3, period_id, indicator_common_id) %>%
-      summarise(
-        count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-        count_expect       = mean(expect_admin_area_3, na.rm = TRUE),
-        b                  = mean(b_admin_area_3, na.rm = TRUE),
-        p                  = mean(p_admin_area_3, na.rm = TRUE),
-        num_obs            = n(),
-        count_expect_sum   = sum(expect_admin_area_3, na.rm = TRUE),
-        count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-        diff_percent       = 100 * (mean(expect_admin_area_3, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-          mean(expect_admin_area_3, na.rm = TRUE),
-        diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
-        count_expected_if_above_diff_threshold = ifelse(
-          abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
-          count_expect_sum, count_sum),
-        count_expect_diff = ifelse(
-          abs(100 * (mean(expect_admin_area_3, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-                mean(expect_admin_area_3, na.rm = TRUE)) > DIFFPERCENT,
-          mean(expect_admin_area_3, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
-        ),
-        .groups = "drop"
-      )
-  } else {
-    print("Warning: expect_admin_area_3 columns not found - will create empty admin_area_3 file")
-  }
-
-
-if ("expect_admin_area_4" %in% names(data_disruption)) {
-    print("Creating summary disruptions at admin_area_4 level...")
-    summary_disruption_admin4 <- data_disruption %>%
-      group_by(admin_area_4, period_id, indicator_common_id) %>%
-      summarise(
-        count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-        count_expect       = mean(expect_admin_area_4, na.rm = TRUE),
-        b                  = mean(b_admin_area_4, na.rm = TRUE),
-        p                  = mean(p_admin_area_4, na.rm = TRUE),
-        num_obs            = n(),
-        count_expect_sum   = sum(expect_admin_area_4, na.rm = TRUE),
-        count_sum          = sum(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
-        diff_percent       = 100 * (mean(expect_admin_area_4, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-          mean(expect_admin_area_4, na.rm = TRUE),
-        diff_percent_sum   = 100 * (count_expect_sum - count_sum) / count_expect_sum,
-        count_expected_if_above_diff_threshold = ifelse(
-          abs(100 * (count_expect_sum - count_sum) / count_expect_sum) > DIFFPERCENT,
-          count_expect_sum, count_sum),
-        count_expect_diff = ifelse(
-          abs(100 * (mean(expect_admin_area_4, na.rm = TRUE) - mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)) /
-                mean(expect_admin_area_4, na.rm = TRUE)) > DIFFPERCENT,
-          mean(expect_admin_area_4, na.rm = TRUE), mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE)
-        ),
-        .groups = "drop"
-      )
-  } else {
-    print("Warning: expect_admin_area_4 columns not found - will create empty admin_area_4 file")
-  }
 
 rm(data_disruption)
 
