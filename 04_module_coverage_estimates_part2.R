@@ -513,8 +513,8 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
   # add any missing cols as NA, and order
   for (cn in setdiff(nat_required_cols, names(final_national))) final_national[[cn]] <- NA
   final_national <- final_national[, nat_required_cols]
-  write.csv(final_national, "M5_final_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved M5_final_national.csv: ", nrow(final_national), " rows")
+  write.csv(final_national, "M5_coverage_estimation_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved M5_coverage_estimation_national.csv: ", nrow(final_national), " rows")
 } else {
   dummy_nat <- data.frame(
     admin_area_1 = character(),
@@ -528,7 +528,7 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
-  write.csv(dummy_nat, "M5_final_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy_nat, "M5_coverage_estimation_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No NATIONAL final results - saved empty file")
 }
 
@@ -538,8 +538,8 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
   if ("admin_area_3" %in% names(final_admin2)) final_admin2$admin_area_3 <- NULL
   for (cn in setdiff(admin2_required_cols, names(final_admin2))) final_admin2[[cn]] <- NA
   final_admin2 <- final_admin2[, admin2_required_cols]
-  write.csv(final_admin2, "M5_final_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved M5_final_admin2.csv: ", nrow(final_admin2), " rows")
+  write.csv(final_admin2, "M5_coverage_estimation_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved M5_coverage_estimation_admin2.csv: ", nrow(final_admin2), " rows")
 } else {
   dummy_a2 <- data.frame(
     admin_area_1 = character(),
@@ -554,7 +554,7 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
-  write.csv(dummy_a2, "M5_final_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy_a2, "M5_coverage_estimation_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No ADMIN2 final results - saved empty file (or ADMIN2 skipped)")
 }
 
@@ -566,8 +566,8 @@ if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) 
   for (cn in setdiff(admin3_required_cols, names(final_admin3))) final_admin3[[cn]] <- NA
   # Reorder columns to match schema
   final_admin3 <- final_admin3[, admin3_required_cols]
-  write.csv(final_admin3, "M5_final_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved M5_final_admin3.csv: ", nrow(final_admin3), " rows")
+  write.csv(final_admin3, "M5_coverage_estimation_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved M5_coverage_estimation_admin3.csv: ", nrow(final_admin3), " rows")
 } else {
   dummy_a3 <- data.frame(
     admin_area_1 = character(),
@@ -582,7 +582,7 @@ if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) 
     survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
-  write.csv(dummy_a3, "M5_final_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(dummy_a3, "M5_coverage_estimation_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No ADMIN3 final results - saved empty file (or ADMIN3 skipped)")
 }
 
