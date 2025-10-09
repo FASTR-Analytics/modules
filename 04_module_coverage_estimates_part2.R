@@ -1,30 +1,22 @@
-DENOMINATOR_SELECTION <- list(
-  # PREGNANCY-RELATED INDICATORS
-  anc1 = "best",                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
-  anc4 = "best",                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
+COUNTRY_ISO3 <- "SOM"
 
-  # LIVE BIRTH-RELATED INDICATORS
-  delivery = "best",                # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
-  bcg = "best",                     # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
-  pnc1_mother = "best",             # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
-  pnc1 = "best",                    # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
-
-  # DPT-ELIGIBLE AGE GROUP INDICATORS
-  penta1 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  penta2 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  penta3 = "best",                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  opv1 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  opv2 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  opv3 = "best",                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-
-  # MEASLES-ELIGIBLE AGE GROUP INDICATORS
-  measles1 = "best",                # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
-  measles2 = "best"                 # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
-)
-
+DENOM_ANC1 <- "best"
+DENOM_ANC4 <- "best"
+DENOM_DELIVERY <- "best"
+DENOM_BCG <- "best"
+DENOM_PNC1_MOTHER <- "best"
+DENOM_PNC1 <- "best"
+DENOM_PENTA1 <- "best"
+DENOM_PENTA2 <- "best"
+DENOM_PENTA3 <- "best"
+DENOM_OPV1 <- "best"
+DENOM_OPV2 <- "best"
+DENOM_OPV3 <- "best"
+DENOM_MEASLES1 <- "best"
+DENOM_MEASLES2 <- "best"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Sep 26
+# Last edit: 2025 Oct 9
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -34,6 +26,30 @@ library(tidyr)
 library(zoo)
 library(stringr)
 library(purrr)
+
+DENOMINATOR_SELECTION <- list(
+  # PREGNANCY-RELATED INDICATORS
+  anc1 = DENOM_ANC1,                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
+  anc4 = DENOM_ANC4,                    # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
+  
+  # LIVE BIRTH-RELATED INDICATORS
+  delivery = DENOM_DELIVERY,            # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  bcg = DENOM_BCG,                      # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  pnc1_mother = DENOM_PNC1_MOTHER,      # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  pnc1 = DENOM_PNC1,                    # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  
+  # DPT-ELIGIBLE AGE GROUP INDICATORS
+  penta1 = DENOM_PENTA1,                # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  penta2 = DENOM_PENTA2,                # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  penta3 = DENOM_PENTA3,                # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv1 = DENOM_OPV1,                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv2 = DENOM_OPV2,                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  opv3 = DENOM_OPV3,                    # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
+  
+  # MEASLES-ELIGIBLE AGE GROUP INDICATORS
+  measles1 = DENOM_MEASLES1,            # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
+  measles2 = DENOM_MEASLES2             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
+)
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------
 # These parameters control the administrative levels (national, admin2, admin3)

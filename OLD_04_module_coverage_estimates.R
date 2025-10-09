@@ -1,3 +1,5 @@
+COUNTRY_ISO3 <- "SOM"
+
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
@@ -15,7 +17,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Sep 8
+# Last edit: 2025 Oct 9
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -276,15 +278,54 @@ process_survey_data <- function(survey_data, hmis_countries, min_year = MIN_YEAR
                 values_from = survey_value_carry,
                 names_glue = "{indicator_common_id}_{source}",
                 values_fn = mean)
-  
-  for (ind in indicators) {
-    dhs_col <- paste0(ind, "_dhs")
-    mics_col <- paste0(ind, "_mics")
-    avg_col <- paste0("avgsurvey_", ind)
-    if (dhs_col %in% names(survey_wide) || mics_col %in% names(survey_wide)) {
-      survey_wide[[avg_col]] <- coalesce(survey_wide[[dhs_col]], survey_wide[[mics_col]])
-    }
+
+  # NEW: Time-aware source selection - prefer most recent source (ties → DHS)
+  # Build geo×year grid for tracking last appearance of each source
+  geo_keys <- if (is_national) c("admin_area_1") else c("admin_area_1", "admin_area_2")
+  geos <- (if (nrow(survey_wide)) survey_wide else survey_filtered) %>%
+    distinct(across(all_of(geo_keys)))
+  grid <- expand_grid(geos, year = full_years)
+
+  # Helper function to track last year each source appeared
+  build_last_table <- function(sf, src_label, last_name) {
+    yrs <- sf %>%
+      filter(source == src_label, year %in% full_years) %>%
+      distinct(across(all_of(geo_keys)), year)
+    grid %>%
+      left_join(yrs %>% mutate(obs = 1L), by = c(geo_keys, "year")) %>%
+      group_by(across(all_of(geo_keys))) %>%
+      arrange(year, .by_group = TRUE) %>%
+      mutate(
+        tmp = if_else(!is.na(obs) & obs == 1L, year, NA_integer_),
+        !!last_name := zoo::na.locf(tmp, na.rm = FALSE)
+      ) %>%
+      ungroup() %>%
+      select(all_of(c(geo_keys, "year", last_name)))
   }
+
+  dhs_last  <- build_last_table(survey_filtered, "dhs",  "dhs_lastyear")
+  mics_last <- build_last_table(survey_filtered, "mics", "mics_lastyear")
+
+  survey_wide <- survey_wide %>%
+    right_join(grid, by = c(geo_keys, "year")) %>%
+    left_join(dhs_last,  by = c(geo_keys, "year")) %>%
+    left_join(mics_last, by = c(geo_keys, "year"))
+
+  # Choose most-recent source per year (ties → DHS)
+  choose_most_recent <- function(df, ind) {
+    dhs_col  <- paste0(ind, "_dhs")
+    mics_col <- paste0(ind, "_mics")
+    avg_col  <- paste0("avgsurvey_", ind)
+    if (!(dhs_col %in% names(df)))  df[[dhs_col]]  <- NA_real_
+    if (!(mics_col %in% names(df))) df[[mics_col]] <- NA_real_
+    if (!("dhs_lastyear"  %in% names(df))) df$dhs_lastyear  <- NA_integer_
+    if (!("mics_lastyear" %in% names(df))) df$mics_lastyear <- NA_integer_
+    take_mics <- !is.na(df$mics_lastyear) &
+      (is.na(df$dhs_lastyear) | df$mics_lastyear > df$dhs_lastyear)
+    df[[avg_col]] <- as.numeric(ifelse(take_mics, df[[mics_col]], df[[dhs_col]]))
+    df
+  }
+  for (ind in indicators) survey_wide <- choose_most_recent(survey_wide, ind)
   
   survey_wide <- survey_wide %>%
     mutate(postnmr = ifelse("avgsurvey_imr" %in% names(.) & "avgsurvey_nmr" %in% names(.),

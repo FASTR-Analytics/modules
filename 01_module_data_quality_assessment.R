@@ -1,25 +1,17 @@
+COUNTRY_ISO3 <- "SOM"
 OUTLIER_PROPORTION_THRESHOLD <- 0.8  # Proportion threshold for outlier detection
 MINIMUM_COUNT_THRESHOLD <- 100       # Minimum count threshold for consideration
 MADS <- 10                           # Number of MADs
 GEOLEVEL <- "admin_area_4"           # Admin level used to join facilities to corresponding geo-consistency
 DQA_INDICATORS <- c("penta1", "anc1")
-CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
+CONSISTENCY_PAIRS_USED <- c("penta", "anc", "delivery")  # current options: "penta", "anc", "delivery", "malaria"
 
-# Consistency pair indicator definitions
-PAIR_PENTA_A    <- "penta1"
-PAIR_PENTA_B    <- "penta3"
-PAIR_ANC_A      <- "anc1"
-PAIR_ANC_B      <- "anc4"
-PAIR_DELIVERY_A <- "bcg"
-PAIR_DELIVERY_B <- "delivery"     # For Somalia: change to "sba"
-PAIR_MALARIA_A  <- "rdt_positive_plus_micro"
-PAIR_MALARIA_B  <- "confirmed_malaria_treated_with_act"
 
-PROJECT_DATA_HMIS <- "hmis_NG.csv"
+PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Sept 10
+# Last edit: 2025 Oct 9
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -30,6 +22,17 @@ PROJECT_DATA_HMIS <- "hmis_NG.csv"
 
 
 # ------------------------------------- PARAMETERS -----------------------------------------------------------
+# Consistency pair indicator definitions
+PAIR_PENTA_A    <- "penta1"
+PAIR_PENTA_B    <- "penta3"
+PAIR_ANC_A      <- "anc1"
+PAIR_ANC_B      <- "anc4"
+PAIR_DELIVERY_A <- "bcg"
+# Dynamic rule: will be set to "delivery" if available, otherwise "sba"
+PAIR_DELIVERY_B <- NULL  # Will be determined dynamically based on available indicators
+PAIR_MALARIA_A  <- "rdt_positive_plus_micro"
+PAIR_MALARIA_B  <- "confirmed_malaria_treated_with_act"
+
 # Outlier Analysis Parameters
 outlier_params <- list(
   outlier_pc_threshold = OUTLIER_PROPORTION_THRESHOLD,  # Threshold for proportional contribution to flag outliers
@@ -38,14 +41,6 @@ outlier_params <- list(
 
 
 # Consistency Analysis Parameters
-all_consistency_pairs <- list(
-  pair_penta    = c(PAIR_PENTA_A, PAIR_PENTA_B),
-  pair_anc      = c(PAIR_ANC_A, PAIR_ANC_B),
-  pair_delivery = c(PAIR_DELIVERY_A, PAIR_DELIVERY_B),
-  pair_malaria  = c(PAIR_MALARIA_A, PAIR_MALARIA_B)
-)
-
-
 # Edit July 30 - for anc and penta.. allow the later contact to be up to 5% higher before flagging as inconsistent
 all_consistency_ranges <- list(
   pair_penta    = c(lower = 0.95, upper = Inf),
@@ -54,11 +49,8 @@ all_consistency_ranges <- list(
   pair_malaria  = c(lower = 0.9, upper = 1.1)
 )
 
-# Dynamically select only specified pairs
-consistency_params <- list(
-  consistency_pairs  = all_consistency_pairs[names(all_consistency_pairs) %in% paste0("pair_", CONSISTENCY_PAIRS_USED)],
-  consistency_ranges = all_consistency_ranges[names(all_consistency_ranges) %in% paste0("pair_", CONSISTENCY_PAIRS_USED)]
-)
+# Note: all_consistency_pairs and consistency_params will be created dynamically
+# after data loading to allow for dynamic selection of delivery vs sba
 
 
 # DQA Rules
@@ -133,11 +125,17 @@ detect_admin_cols <- function(data) {
 # Function to validate consistency pairs
 validate_consistency_pairs <- function(consistency_params, data) {
   print("Validating consistency pairs based on available indicators...")
-  
+
+  # Early return if no consistency pairs were specified
+  if (length(consistency_params$consistency_pairs) == 0) {
+    message("No consistency pairs specified. Skipping consistency analysis.")
+    return(consistency_params)
+  }
+
   if (!"indicator_common_id" %in% names(data)) {
     stop("Column 'indicator_common_id' not found in input data.")
   }
-  
+
   available_indicators <- unique(data$indicator_common_id)
   consistency_pairs_names <- names(consistency_params$consistency_pairs)
   
@@ -499,10 +497,12 @@ dqa_without_consistency <- function(
     summarise(
       total_indicator_points = sum(completeness_pass + outlier_pass, na.rm = TRUE),
       max_points = 2L * length(dqa_indicators_to_use),
+      completeness_outlier_score = total_indicator_points / max_points,
+      dqa_mean   = total_indicator_points / max_points,  # Same as completeness_outlier_score when no consistency checks
       dqa_score  = ifelse(total_indicator_points == max_points, 1L, 0L),
       .groups = "drop"
     )
-  
+
   return(dqa_results)
 }
 
@@ -512,6 +512,33 @@ data <- inputs$data
 geo_cols <- inputs$geo_cols
 
 geo_columns_export <- detect_admin_cols(data)
+
+# Dynamic rule: Set PAIR_DELIVERY_B based on available indicators
+available_indicators <- unique(data$indicator_common_id)
+if ("delivery" %in% available_indicators) {
+  PAIR_DELIVERY_B <- "delivery"
+  print("Using 'delivery' for PAIR_DELIVERY_B")
+} else if ("sba" %in% available_indicators) {
+  PAIR_DELIVERY_B <- "sba"
+  print("Using 'sba' for PAIR_DELIVERY_B (delivery not found)")
+} else {
+  PAIR_DELIVERY_B <- "delivery"  # Default fallback
+  print("Neither 'delivery' nor 'sba' found - defaulting to 'delivery'")
+}
+
+# Update the consistency pairs with the dynamically selected delivery indicator
+all_consistency_pairs <- list(
+  pair_penta    = c(PAIR_PENTA_A, PAIR_PENTA_B),
+  pair_anc      = c(PAIR_ANC_A, PAIR_ANC_B),
+  pair_delivery = c(PAIR_DELIVERY_A, PAIR_DELIVERY_B),
+  pair_malaria  = c(PAIR_MALARIA_A, PAIR_MALARIA_B)
+)
+
+# Dynamically select only specified pairs
+consistency_params <- list(
+  consistency_pairs  = all_consistency_pairs[names(all_consistency_pairs) %in% paste0("pair_", CONSISTENCY_PAIRS_USED)],
+  consistency_ranges = all_consistency_ranges[names(all_consistency_ranges) %in% paste0("pair_", CONSISTENCY_PAIRS_USED)]
+)
 
 # Validate Consistency Pairs
 consistency_params <- validate_consistency_pairs(consistency_params, data)
