@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SLE"
+COUNTRY_ISO3 <- "SEN"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -855,6 +855,16 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
     select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
 }
 
+# Helper function: Classify denominator source type (used by multiple functions)
+classify_source_type <- function(denominator, ind) {
+  if (startsWith(denominator, "danc1_")     && ind %in% c("anc1")) return("reference_based")
+  if (startsWith(denominator, "ddelivery_") && ind %in% c("delivery"))    return("reference_based")
+  if (startsWith(denominator, "dpenta1_")   && ind %in% c("penta1"))       return("reference_based")
+  if (startsWith(denominator, "dbcg_")      && ind %in% c("bcg"))         return("reference_based")
+  if (startsWith(denominator, "dwpp_"))                                   return("unwpp_based")
+  "independent"
+}
+
 # Part 5 - Calculate coverage estimates (from Part 2)
 calculate_coverage <- function(denominators_data, numerators_data) {
 
@@ -946,18 +956,6 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   coverage_data$year        <- as.integer(coverage_data$year)
   survey_expanded_df$year   <- as.integer(survey_expanded_df$year)
 
-  # Classify denominator source type
-  dpt_family <- c("penta1","penta2","penta3","opv1","opv2","opv3",
-                  "pcv1","pcv2","pcv3","rota1","rota2","ipv1","ipv2")
-  classify_source_type <- function(denominator, ind) {
-    if (startsWith(denominator, "danc1_")     && ind %in% c("anc1")) return("reference_based")
-    if (startsWith(denominator, "ddelivery_") && ind %in% c("delivery"))    return("reference_based")
-    if (startsWith(denominator, "dpenta1_")   && ind %in% c("penta1"))       return("reference_based")
-    if (startsWith(denominator, "dbcg_")      && ind %in% c("bcg"))         return("reference_based")
-    if (startsWith(denominator, "dwpp_"))                                   return("unwpp_based")
-    "independent"
-  }
-
   # Join coverage with survey reference values
   coverage_with_reference <- coverage_data %>%
     left_join(
@@ -1042,8 +1040,11 @@ create_combined_results_table <- function(coverage_comparison, survey_raw_df, al
 
   # Step 1: Prepare ALL coverage results with original denominator names
   # Use all_coverage_data if provided (to include ALL denominators including UNWPP)
+  # EXCLUDE reference-based denominators (per indicator)
   if (!is.null(all_coverage_data)) {
     coverage_all <- all_coverage_data %>%
+      mutate(source_type = mapply(classify_source_type, denominator, indicator_common_id, SIMPLIFY = TRUE)) %>%
+      filter(source_type != "reference_based") %>%
       select(
         all_of(geo_keys),
         indicator_common_id,
@@ -1332,53 +1333,77 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     
     hmis_processed_admin2   <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
     survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
-    
-    denominators_admin2 <- calculate_denominators(
-      hmis_data   = hmis_processed_admin2$annual_hmis,
-      survey_data = survey_processed_admin2$carried
-    )
-    
-    admin2_summary <- create_denominator_summary(denominators_admin2, "ADMIN2")
-    
-    # --- ADMIN2 RESULTS BUILDERS ---
-    numerators_admin2_long <- make_numerators_long(hmis_processed_admin2$annual_hmis)
-    
-    denominators_admin2_results <- if (exists("admin2_summary")) make_denominators_results(admin2_summary) else NULL
-    if (!is.null(denominators_admin2_results)) {
-      denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
-    }
-    
-    survey_raw_admin2_long <- make_survey_raw_long(
-      dhs_mics_raw_long = survey_processed_admin2$raw_long,
-      unwpp_raw_long    = NULL
-    )
-    
-    survey_reference_admin2 <- if (exists("survey_processed_admin2") &&
-                                   is.list(survey_processed_admin2) &&
-                                   "carried" %in% names(survey_processed_admin2) &&
-                                   is.data.frame(survey_processed_admin2$carried) &&
-                                   nrow(survey_processed_admin2$carried) > 0) {
-      make_survey_reference_long(survey_processed_admin2$carried)
-    } else NULL
-    
-    # --- ADMIN2 COVERAGE / COMPARISON / COMBINED ---
-    if (!is.null(denominators_admin2_results) &&
-        !is.null(numerators_admin2_long) &&
-        !is.null(survey_reference_admin2)) {
 
-      message("  → Calculating admin area 2 coverage estimates...")
-      admin2_coverage <- calculate_coverage(denominators_admin2_results, numerators_admin2_long)
-      admin2_coverage <- add_denominator_labels(admin2_coverage)
+    # SAFEGUARD: Validate admin_area_2 matching between HMIS and survey data
+    hmis_admin2_regions <- hmis_processed_admin2$annual_hmis %>%
+      distinct(admin_area_2) %>%
+      pull(admin_area_2)
 
-      message("  → Comparing admin area 2 coverage to survey data...")
-      admin2_comparison <- compare_coverage_to_survey(admin2_coverage, survey_reference_admin2)
+    survey_admin2_regions <- survey_processed_admin2$carried %>%
+      distinct(admin_area_2) %>%
+      pull(admin_area_2)
 
-      message("  → Creating admin area 2 combined results table...")
-      admin2_combined_results <- create_combined_results_table(
-        coverage_comparison = admin2_comparison,
-        survey_raw_df       = survey_raw_admin2_long,
-        all_coverage_data   = admin2_coverage
+    matching_regions_admin2 <- intersect(hmis_admin2_regions, survey_admin2_regions)
+
+    if (length(matching_regions_admin2) == 0) {
+      warning("SAFEGUARD: No matching admin_area_2 values found between HMIS and survey data.")
+      warning("  HMIS regions (", length(hmis_admin2_regions), "): ", paste(head(hmis_admin2_regions, 5), collapse = ", "),
+              if(length(hmis_admin2_regions) > 5) "..." else "")
+      warning("  Survey regions (", length(survey_admin2_regions), "): ", paste(head(survey_admin2_regions, 5), collapse = ", "),
+              if(length(survey_admin2_regions) > 5) "..." else "")
+      message("SAFEGUARD: Skipping admin_area_2 analysis due to region name mismatch. Continuing with national only.")
+      ANALYSIS_LEVEL <- "NATIONAL_ONLY"
+    } else {
+      message("✓ admin_area_2 validation passed: ", length(matching_regions_admin2), "/", length(hmis_admin2_regions), " regions match")
+
+      # ONLY proceed if validation passed
+      denominators_admin2 <- calculate_denominators(
+        hmis_data   = hmis_processed_admin2$annual_hmis,
+        survey_data = survey_processed_admin2$carried
       )
+
+      admin2_summary <- create_denominator_summary(denominators_admin2, "ADMIN2")
+
+      # --- ADMIN2 RESULTS BUILDERS ---
+      numerators_admin2_long <- make_numerators_long(hmis_processed_admin2$annual_hmis)
+
+      denominators_admin2_results <- if (exists("admin2_summary")) make_denominators_results(admin2_summary) else NULL
+      if (!is.null(denominators_admin2_results)) {
+        denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
+      }
+
+      survey_raw_admin2_long <- make_survey_raw_long(
+        dhs_mics_raw_long = survey_processed_admin2$raw_long,
+        unwpp_raw_long    = NULL
+      )
+
+      survey_reference_admin2 <- if (exists("survey_processed_admin2") &&
+                                     is.list(survey_processed_admin2) &&
+                                     "carried" %in% names(survey_processed_admin2) &&
+                                     is.data.frame(survey_processed_admin2$carried) &&
+                                     nrow(survey_processed_admin2$carried) > 0) {
+        make_survey_reference_long(survey_processed_admin2$carried)
+      } else NULL
+
+      # --- ADMIN2 COVERAGE / COMPARISON / COMBINED ---
+      if (!is.null(denominators_admin2_results) &&
+          !is.null(numerators_admin2_long) &&
+          !is.null(survey_reference_admin2)) {
+
+        message("  → Calculating admin area 2 coverage estimates...")
+        admin2_coverage <- calculate_coverage(denominators_admin2_results, numerators_admin2_long)
+        admin2_coverage <- add_denominator_labels(admin2_coverage)
+
+        message("  → Comparing admin area 2 coverage to survey data...")
+        admin2_comparison <- compare_coverage_to_survey(admin2_coverage, survey_reference_admin2)
+
+        message("  → Creating admin area 2 combined results table...")
+        admin2_combined_results <- create_combined_results_table(
+          coverage_comparison = admin2_comparison,
+          survey_raw_df       = survey_raw_admin2_long,
+          all_coverage_data   = admin2_coverage
+        )
+      }
     }
   }
 
@@ -1391,58 +1416,82 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
       select(-admin_area_2) %>%
       rename(admin_area_2 = admin_area_3)
-    
+
     if (nrow(hmis_admin3) > 0) {
       hmis_processed_admin3   <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
       survey_processed_admin3 <- process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
-      
-      denominators_admin3 <- calculate_denominators(
-        hmis_data   = hmis_processed_admin3$annual_hmis,
-        survey_data = survey_processed_admin3$carried
-      )
-      
-      admin3_summary <- create_denominator_summary(denominators_admin3, "ADMIN3")
-      
-      # --- ADMIN3 RESULTS BUILDERS ---
-      numerators_admin3_long <- make_numerators_long(hmis_processed_admin3$annual_hmis)
-      
-      denominators_admin3_results <- if (exists("admin3_summary")) make_denominators_results(admin3_summary) else NULL
-      if (!is.null(denominators_admin3_results)) {
-        denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
-      }
-      
-      survey_raw_admin3_long <- make_survey_raw_long(
-        dhs_mics_raw_long = survey_processed_admin3$raw_long,
-        unwpp_raw_long    = NULL
-      )
-      survey_raw_admin3_long <- normalize_admin3_for_output(survey_raw_admin3_long)
-      
-      survey_reference_admin3 <- if (exists("survey_processed_admin3") &&
-                                     is.list(survey_processed_admin3) &&
-                                     "carried" %in% names(survey_processed_admin3) &&
-                                     is.data.frame(survey_processed_admin3$carried) &&
-                                     nrow(survey_processed_admin3$carried) > 0) {
-        make_survey_reference_long(survey_processed_admin3$carried) %>% normalize_admin3_for_output()
-      } else NULL
-      
-      # --- ADMIN3 COVERAGE / COMPARISON / COMBINED ---
-      if (!is.null(denominators_admin3_results) &&
-          !is.null(numerators_admin3_long) &&
-          !is.null(survey_reference_admin3)) {
 
-        message("  → Calculating admin area 3 coverage estimates...")
-        admin3_coverage <- calculate_coverage(denominators_admin3_results, numerators_admin3_long)
-        admin3_coverage <- add_denominator_labels(admin3_coverage)
+      # SAFEGUARD: Validate admin_area_3 matching between HMIS and survey data
+      # Note: HMIS admin_area_3 is renamed to admin_area_2 for processing
+      hmis_admin3_regions <- hmis_processed_admin3$annual_hmis %>%
+        distinct(admin_area_2) %>%
+        pull(admin_area_2)
 
-        message("  → Comparing admin area 3 coverage to survey data...")
-        admin3_comparison <- compare_coverage_to_survey(admin3_coverage, survey_reference_admin3)
+      survey_admin3_regions <- survey_processed_admin3$carried %>%
+        distinct(admin_area_2) %>%
+        pull(admin_area_2)
 
-        message("  → Creating admin area 3 combined results table...")
-        admin3_combined_results <- create_combined_results_table(
-          coverage_comparison = admin3_comparison,
-          survey_raw_df       = survey_raw_admin3_long,
-          all_coverage_data   = admin3_coverage
+      matching_regions_admin3 <- intersect(hmis_admin3_regions, survey_admin3_regions)
+
+      if (length(matching_regions_admin3) == 0) {
+        warning("SAFEGUARD: No matching admin_area_3 values found between HMIS and survey data.")
+        warning("  HMIS admin3 regions (", length(hmis_admin3_regions), "): ", paste(head(hmis_admin3_regions, 5), collapse = ", "),
+                if(length(hmis_admin3_regions) > 5) "..." else "")
+        warning("  Survey regions (", length(survey_admin3_regions), "): ", paste(head(survey_admin3_regions, 5), collapse = ", "),
+                if(length(survey_admin3_regions) > 5) "..." else "")
+        message("SAFEGUARD: Skipping admin_area_3 analysis due to region name mismatch.")
+      } else {
+        message("✓ admin_area_3 validation passed: ", length(matching_regions_admin3), "/", length(hmis_admin3_regions), " regions match")
+
+        # ONLY proceed if validation passed
+        denominators_admin3 <- calculate_denominators(
+          hmis_data   = hmis_processed_admin3$annual_hmis,
+          survey_data = survey_processed_admin3$carried
         )
+
+        admin3_summary <- create_denominator_summary(denominators_admin3, "ADMIN3")
+
+        # --- ADMIN3 RESULTS BUILDERS ---
+        numerators_admin3_long <- make_numerators_long(hmis_processed_admin3$annual_hmis)
+
+        denominators_admin3_results <- if (exists("admin3_summary")) make_denominators_results(admin3_summary) else NULL
+        if (!is.null(denominators_admin3_results)) {
+          denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
+        }
+
+        survey_raw_admin3_long <- make_survey_raw_long(
+          dhs_mics_raw_long = survey_processed_admin3$raw_long,
+          unwpp_raw_long    = NULL
+        )
+        survey_raw_admin3_long <- normalize_admin3_for_output(survey_raw_admin3_long)
+
+        survey_reference_admin3 <- if (exists("survey_processed_admin3") &&
+                                       is.list(survey_processed_admin3) &&
+                                       "carried" %in% names(survey_processed_admin3) &&
+                                       is.data.frame(survey_processed_admin3$carried) &&
+                                       nrow(survey_processed_admin3$carried) > 0) {
+          make_survey_reference_long(survey_processed_admin3$carried) %>% normalize_admin3_for_output()
+        } else NULL
+
+        # --- ADMIN3 COVERAGE / COMPARISON / COMBINED ---
+        if (!is.null(denominators_admin3_results) &&
+            !is.null(numerators_admin3_long) &&
+            !is.null(survey_reference_admin3)) {
+
+          message("  → Calculating admin area 3 coverage estimates...")
+          admin3_coverage <- calculate_coverage(denominators_admin3_results, numerators_admin3_long)
+          admin3_coverage <- add_denominator_labels(admin3_coverage)
+
+          message("  → Comparing admin area 3 coverage to survey data...")
+          admin3_comparison <- compare_coverage_to_survey(admin3_coverage, survey_reference_admin3)
+
+          message("  → Creating admin area 3 combined results table...")
+          admin3_combined_results <- create_combined_results_table(
+            coverage_comparison = admin3_comparison,
+            survey_raw_df       = survey_raw_admin3_long,
+            all_coverage_data   = admin3_coverage
+          )
+        }
       }
     }
   }
