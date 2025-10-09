@@ -2,9 +2,6 @@ COUNTRY_ISO3 <- "SOM"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
-CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
-MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
-
 PREGNANCY_LOSS_RATE <- 0.03
 TWIN_RATE <- 0.015
 STILLBIRTH_RATE <- 0.02
@@ -32,6 +29,9 @@ library(purrr)
 # Direct read from GitHub
 PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
+
+CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
+MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
 
 message("✓ Step 1/7: Loading input datasets...")
 
