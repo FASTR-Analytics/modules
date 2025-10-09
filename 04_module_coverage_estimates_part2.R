@@ -351,8 +351,7 @@ filter_by_denominator_selection <- function(combined_results_df, selection_list)
       coverage_format <- selected_data %>%
         mutate(
           denominator = denominator_best_or_survey,
-          coverage = value,
-          denominator_label = denominator_label
+          coverage = value
         ) %>%
         # Only keep coverage estimates (not survey entries)
         filter(denominator_best_or_survey != "survey") %>%
