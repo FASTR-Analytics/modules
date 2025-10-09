@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SLE"
+COUNTRY_ISO3 <- "SOM"
 
 DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"
@@ -228,22 +228,17 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
   if ("admin_area_3" %in% names(proj_df))     need_proj <- c(need_proj, "admin_area_3")
   stopifnot(all(need_cov  %in% names(coverage_df)))
   stopifnot(all(need_proj %in% names(proj_df)))
-  
-  # Add labels if missing
-  if (!"denominator_label" %in% names(coverage_df)) {
-    coverage_df <- add_denominator_labels(coverage_df)
-  }
-  
+
   # Keys
   base_keys <- c("admin_area_1", "admin_area_2")
   if ("admin_area_3" %in% names(coverage_df)) base_keys <- c(base_keys, "admin_area_3")
   join_keys <- c(base_keys, "year", "indicator_common_id", "denominator")
-  
+
   # 1) HMIS coverage
   cov_base <- coverage_df %>%
     select(
       all_of(base_keys), year,
-      indicator_common_id, denominator, denominator_label,
+      indicator_common_id, denominator,
       coverage_cov = coverage
     )
   
@@ -272,30 +267,32 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
         arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year"))))
     )
   }
-  
-  # 3) Collapse survey RAW
+
+  # 3) Collapse survey RAW (preserve source and source_detail)
   survey_group_keys <- base_keys
   if ("admin_area_3" %in% names(survey_raw_df)) survey_group_keys <- c(survey_group_keys, "admin_area_3")
   survey_group_keys <- c(survey_group_keys, "year", "indicator_common_id")
-  
+
   survey_slim <- survey_raw_df %>%
     group_by(across(all_of(survey_group_keys))) %>%
     summarise(
       coverage_original_estimate = mean(survey_value, na.rm = TRUE),
+      survey_raw_source = first(source, na_rm = TRUE),
+      survey_raw_source_detail = first(source_detail, na_rm = TRUE),
       .groups = "drop"
     )
   
   # 4) Denominator universe
   denom_index_keys <- c(base_keys, "indicator_common_id")
   denom_index <- coverage_df %>%
-    distinct(across(all_of(c(denom_index_keys, "denominator", "denominator_label"))))
-  
+    distinct(across(all_of(c(denom_index_keys, "denominator"))))
+
   # 5) Expand survey across ALL denominators
   survey_expanded <- denom_index %>%
     inner_join(survey_slim, by = denom_index_keys)
-  
+
   # 6) Union HMIS+proj with survey-expanded
-  final_join_keys <- c(base_keys, "year", "indicator_common_id", "denominator", "denominator_label")
+  final_join_keys <- c(base_keys, "year", "indicator_common_id", "denominator")
   
   final <- cov_proj %>%
     full_join(survey_expanded, by = final_join_keys) %>%
@@ -470,10 +467,11 @@ nat_required_cols <- c(
   "year",
   "indicator_common_id",
   "denominator",
-  "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov"
+  "coverage_cov",
+  "survey_raw_source",
+  "survey_raw_source_detail"
 )
 
 admin2_required_cols <- c(
@@ -482,10 +480,11 @@ admin2_required_cols <- c(
   "year",
   "indicator_common_id",
   "denominator",
-  "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov"
+  "coverage_cov",
+  "survey_raw_source",
+  "survey_raw_source_detail"
 )
 
 admin3_required_cols <- c(
@@ -494,10 +493,11 @@ admin3_required_cols <- c(
   "year",
   "indicator_common_id",
   "denominator",
-  "denominator_label",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov"
+  "coverage_cov",
+  "survey_raw_source",
+  "survey_raw_source_detail"
 )
 
 # ---------------- NATIONAL (no admin_area_2) ----------------
@@ -517,7 +517,6 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
     year = integer(),
     indicator_common_id = character(),
     denominator = character(),
-    denominator_label = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
@@ -544,7 +543,6 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
     year = integer(),
     indicator_common_id = character(),
     denominator = character(),
-    denominator_label = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
@@ -573,7 +571,6 @@ if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) 
     year = integer(),
     indicator_common_id = character(),
     denominator = character(),
-    denominator_label = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
