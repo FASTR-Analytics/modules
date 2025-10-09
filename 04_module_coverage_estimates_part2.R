@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "SLE"
 
 DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"

@@ -92,10 +92,11 @@ if ("iso3_code" %in% names(population_estimates_only)) {
 }
 
 message("✓ Step 1/7 completed: All datasets loaded successfully!")
+message("================================================================================")
 
 # ------------------------------ Prepare Data for Analysis ---------------------------------------------------
 
-message("✓ Step 2/7: Preparing data for analysis...")
+message("\n✓ Step 2/7: Preparing data for analysis...")
 
 # A flag to track if pnc1 was renamed to pnc1_mother
 pnc1_renamed_to_mother <- FALSE
@@ -179,6 +180,7 @@ if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
 message("Final analysis level: ", ANALYSIS_LEVEL)
 
 message("✓ Step 2/7 completed: Data preparation finished!")
+message("================================================================================")
 
 # ------------------------------ Rename for Test Instance ----------------------------------------------------
 adjusted_volume_data <- adjusted_volume_data %>%
@@ -241,8 +243,6 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother"
   )
   
-  message("Loading and mapping adjusted HMIS volume...")
-  
   # Check if both pnc1_mother and pnc1 exist in the data
   has_pnc1_mother <- "pnc1_mother" %in% adjusted_volume_data$indicator_common_id
   has_pnc1 <- "pnc1" %in% adjusted_volume_data$indicator_common_id
@@ -279,17 +279,14 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   if (length(missing) > 0) {
     warning("The following indicators are not available in the HMIS data: ", paste(missing, collapse = ", "))
   }
-  
+
   hmis_countries <- unique(adjusted_volume$admin_area_1)
-  message("HMIS data for country: ", paste(hmis_countries, collapse = ", "))
   
   nummonth_data <- adjusted_volume %>%
     distinct(across(all_of(c(group_vars, "month")))) %>%
     group_by(across(all_of(group_vars))) %>%
     summarise(nummonth = n_distinct(month, na.rm = TRUE), .groups = "drop")
-  
-  message("Aggregating HMIS volume to annual level...")
-  
+
   annual_hmis <- adjusted_volume %>%
     group_by(across(all_of(c(group_vars, "indicator_common_id")))) %>%
     summarise(count = sum(count, na.rm = TRUE), .groups = "drop") %>%
@@ -817,9 +814,7 @@ create_denominator_summary <- function(denominators_data, analysis_type = "NATIO
     ) %>%
     filter(!is.na(value)) %>%
     arrange(year, denominator_type)
-  
-  cat("\n=== ", analysis_type, " DENOMINATORS ===\n")
-  print(summary_stats)
+
   summary_stats
 }
 
@@ -1242,7 +1237,7 @@ normalize_admin3_for_output <- function(df) {
 
 # ============================== EXECUTION FLOW   ==============================
 
-message("✓ Step 3/7: Processing national data...")
+message("✓ Step 3/7: Processing national data")
 
 # --- NATIONAL PREP ---
 message("  → Processing HMIS adjusted volume data...")
@@ -1313,13 +1308,15 @@ if (!is.null(denominators_national_results) &&
   )
 }
 
+
 message("✓ Step 3/7 completed: National analysis finished!")
+message("================================================================================")
 
 # ============================ SUBNATIONAL FLOW (IF APPLICABLE) ============================
 
 if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
-  message("✓ Step 4/7: Processing subnational data...")
+  message("✓ Step 4/7: Processing subnational data")
 
   # Ensure admin_area_1 is consistent
   message("  → Ensuring data consistency...")
@@ -1384,7 +1381,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       )
     }
   }
-  
+
   # ----------------- ADMIN_AREA_3 -----------------
   if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3" && "admin_area_3" %in% names(hmis_data_subnational)) {
 
@@ -1450,15 +1447,18 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     }
   }
 
+  
   message("✓ Step 4/7 completed: Subnational analysis finished!")
 
 } else {
   message("✓ Step 4/7 completed: No subnational analysis (national only)!")
 }
+message("================================================================================")
 
 message("✓ Step 5/7: Data processing completed! Beginning output generation...")
+message("================================================================================")
 
-message("✓ Step 6/7: Saving coverage analysis results...")
+message("✓ Step 6/7: Saving coverage analysis results")
 
 message("  → Saving denominators results...")
 # National
@@ -1592,8 +1592,11 @@ if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) 
   message("✓ No combined_results_admin3 results - saved empty file")
 }
 
+
 message("✓ Step 6/7 completed: All results saved successfully!")
-message("✓ Step 7/7: COVERAGE ESTIMATION ANALYSIS COMPLETE! ✓")
+message("================================================================================")
+
+message("✓ Step 7/7: COVERAGE ESTIMATION ANALYSIS COMPLETE!")
 message("================================================================================")
 message("All output files have been generated and saved to the working directory.")
 message("Check the M4_*.csv files for your coverage analysis results.")

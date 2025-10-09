@@ -20,9 +20,9 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
 library(dplyr)
-library(tidyr)       
-library(zoo)       
-library(stringr)     
+library(tidyr)
+library(zoo)
+library(stringr)
 library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------
@@ -33,7 +33,7 @@ PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/mo
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
 MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
 
-message("✓ Step 1/6: Loading input datasets...")
+message("✓ Step 1/6: Loading input datasets")
 
 message("  → Loading adjusted HMIS data (national)...")
 # Input Datasets
@@ -67,27 +67,31 @@ if ("iso3_code" %in% names(survey_data_unified)) {
       stringsAsFactors = FALSE
     )
   } else {
-    message("✓ Found ", nrow(survey_data_unified), " survey records for ", COUNTRY_ISO3)
+    message("  → Found ", nrow(survey_data_unified), " survey records for ", COUNTRY_ISO3)
   }
 } else {
   warning("iso3_code column not found in survey data - cannot filter by country")
 }
 
+message("  → Loading population estimates from GitHub...")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
 # Filter by ISO3 code
 if ("iso3_code" %in% names(population_estimates_only)) {
   population_estimates_only <- population_estimates_only %>% filter(iso3_code == COUNTRY_ISO3)
-  message("Filtered population data for ISO3: ", COUNTRY_ISO3)
+  message("  → Filtered population data for ISO3: ", COUNTRY_ISO3)
 
   # Check if data exists for this country
   if (nrow(population_estimates_only) == 0) {
     stop("ERROR: No population data found for country ISO3 code '", COUNTRY_ISO3, "'. Please check the ISO3 code and data availability.")
   }
-  message("✓ Found ", nrow(population_estimates_only), " population records for ", COUNTRY_ISO3)
+  message("  → Found ", nrow(population_estimates_only), " population records for ", COUNTRY_ISO3)
 } else {
   warning("iso3_code column not found in population data - cannot filter by country")
 }
+
+
+message("✓ Step 1/6 completed: All datasets loaded successfully!")
 
 # ------------------------------ Prepare Data for Analysis -------------------------
 # A flag to track if pnc1 was renamed to pnc1_mother
@@ -885,16 +889,22 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
 }
 
 # ------------------------------ Main Execution ---------------------------------------------------------------
+
+message("✓ Step 2/6: Processing national data")
+
 # 1 - prepare the hmis data
+message("  → Preparing HMIS adjusted volume data...")
 hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
 # 2 - prepare the survey data
+message("  → Preparing survey data...")
 survey_processed_national <- process_survey_data(
   survey_data = survey_data_national,
   hmis_countries = hmis_processed$hmis_countries,
   hmis_iso3 = hmis_processed$hmis_iso3
 )
 
+message("  → Preparing population data...")
 national_population_processed <- process_national_population_data(
   population_data = population_estimates_only,
   hmis_countries = hmis_processed$hmis_countries,
@@ -902,6 +912,7 @@ national_population_processed <- process_national_population_data(
 )
 
 # 3 - calculate the denominators
+message("  → Calculating denominators...")
 denominators_national <- calculate_denominators(
   hmis_data = hmis_processed$annual_hmis,
   survey_data = survey_processed_national$carried,
@@ -909,12 +920,15 @@ denominators_national <- calculate_denominators(
 )
 
 # 4 - calculate coverage and compare the denominators
+message("  → Evaluating coverage by denominator...")
 national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national)
 
 # 5 - project survey coverage forward using HMIS deltas
+message("  → Projecting coverage forward...")
 national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
 
 # 6 - prepare results and save
+message("  → Preparing combined coverage results...")
 combined_national <- prepare_combined_coverage_from_projected(
   projected_data = national_coverage_projected,
   raw_survey_wide = survey_processed_national$raw
@@ -969,6 +983,11 @@ combined_national_export <- bind_rows(
   early_survey %>%
     mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
 )
+
+
+message("✓ Step 2/6 completed: National data processing finished!")
+
+message("✓ Step 3/6: Finalizing national results")
 
 combined_national_export_fixed <- combined_national_export %>%
   arrange(indicator_common_id, year) %>%
@@ -1053,11 +1072,13 @@ best_denom_summary <- best_denom_per_indicator %>%
   arrange(indicator_common_id)
 
 
+message("✓ Step 3/6 completed: National results finalized!")
+
 # ------------------------------ Subnational Analysis -------------------------
 # Run separate analyses for admin_area_2 and admin_area_3 to get distinct output files
 if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
-  
-  message("\n=== RUNNING SUBNATIONAL ANALYSIS ===")
+
+  message("✓ Step 4/6: Processing subnational data")
   
   # Get admin_area_1 value for consistency
   admin_area_1_value <- adjusted_volume_data %>% distinct(admin_area_1) %>% pull(admin_area_1)
@@ -1069,7 +1090,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   
   # === ADMIN_AREA_2 ANALYSIS ===
   if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
-    message("Running admin_area_2 level analysis...")
+    message("  → Processing admin area 2 data...")
     
     # Prepare HMIS admin_area_2 data
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
@@ -1085,12 +1106,12 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       select(admin_area_2, indicator_common_id, year, coverage) %>%
       rename(coverage_cov = coverage)
     
-    message("✓ Admin_area_2 analysis completed - ", nrow(combined_admin2_export), " result rows")
+    message("  → Admin area 2 analysis completed: ", nrow(combined_admin2_export), " result rows")
   }
-  
+
   # === ADMIN_AREA_3 ANALYSIS ===
   if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3") {
-    message("Running admin_area_3 level analysis...")
+    message("  → Processing admin area 3 data...")
     
     # Check if admin_area_3 data is actually usable
     if ("admin_area_3" %in% names(hmis_data_subnational)) {
@@ -1112,20 +1133,26 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           select(admin_area_2, indicator_common_id, year, coverage) %>%
           rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
         
-        message("✓ Admin_area_3 analysis completed - ", nrow(combined_admin3_export), " result rows")
+        message("  → Admin area 3 analysis completed: ", nrow(combined_admin3_export), " result rows")
       } else {
-        message("No usable admin_area_3 data found")
+        message("  → No usable admin_area_3 data found")
       }
     } else {
-      message("No admin_area_3 column found in HMIS data")
+      message("  → No admin_area_3 column found in HMIS data")
     }
   }
+
   
+  message("✓ Step 4/6 completed: Subnational analysis finished!")
+
 } else {
-  message("\n=== SKIPPING SUBNATIONAL ANALYSIS ===")
+  message("✓ Step 4/6 completed: No subnational analysis (national only)!")
   combined_admin2_export <- NULL
   combined_admin3_export <- NULL
 }
+
+message("✓ Step 5/6: Finalizing results and preparing outputs")
+
 # ------------------------------ Write Output Files -------------------------
 # Conditionally rename pnc1_mother back to pnc1 if the original data was pnc1
 if (pnc1_renamed_to_mother) {
@@ -1151,48 +1178,62 @@ if (pnc1_renamed_to_mother) {
 }
 
 
+message("✓ Step 5/6 completed: Results finalized!")
+
+message("✓ Step 6/6: Saving output files")
+
 # Write national CSV
+message("  → Saving national results...")
 write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
 message("✓ Saved national results: M4_coverage_estimation.csv")
 
 # Best denominator summary
+message("  → Saving denominator summary...")
 write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
 message("✓ Saved denominator summary: M4_selected_denominator_per_indicator.csv")
 
-# Write admin_area_2 CSV 
-if (exists("combined_admin2_export") && 
-    is.data.frame(combined_admin2_export) && 
+# Write admin_area_2 CSV
+message("  → Saving subnational results...")
+if (exists("combined_admin2_export") &&
+    is.data.frame(combined_admin2_export) &&
     nrow(combined_admin2_export) > 0) {
   write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_2 results: ", nrow(combined_admin2_export), " rows")
 } else {
   # Create empty file
-  dummy_data_admin2 <- data.frame(admin_area_2 = character(), indicator_common_id = character(), 
+  dummy_data_admin2 <- data.frame(admin_area_2 = character(), indicator_common_id = character(),
                                   year = numeric(), coverage_cov = numeric())
   write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
   message("✓ No admin_area_2 results - saved empty file")
 }
 
 # Write admin_area_3 CSV
-if (exists("combined_admin3_export") && 
-    is.data.frame(combined_admin3_export) && 
+if (exists("combined_admin3_export") &&
+    is.data.frame(combined_admin3_export) &&
     nrow(combined_admin3_export) > 0) {
   write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_3 results: ", nrow(combined_admin3_export), " rows")
 } else {
   # Create empty file
-  dummy_data_admin3 <- data.frame(admin_area_3 = character(), indicator_common_id = character(), 
+  dummy_data_admin3 <- data.frame(admin_area_3 = character(), indicator_common_id = character(),
                                   year = numeric(), coverage_cov = numeric())
   write.csv(dummy_data_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE)
   message("✓ No admin_area_3 results - saved empty file")
 }
 
-message("\n✓ Analysis complete for level: ", ANALYSIS_LEVEL)
+
+message("✓ Step 6/6 completed: All output files saved!")
+
+message("\n================================================================================")
+message("✓ COVERAGE ESTIMATION ANALYSIS COMPLETE!")
+message("================================================================================")
+message("Analysis level: ", ANALYSIS_LEVEL)
 if (exists("original_level") && original_level != ANALYSIS_LEVEL) {
   message("  (Originally requested: ", original_level, ", adjusted due to data availability)")
 }
-message("Output files:")
+message("\nOutput files:")
 message("  - M4_coverage_estimation.csv (national)")
 message("  - M4_coverage_estimation_admin_area_2.csv (zone/province level)")
-message("  - M4_coverage_estimation_admin_area_3.csv (district level)")  
+message("  - M4_coverage_estimation_admin_area_3.csv (district level)")
 message("  - M4_selected_denominator_per_indicator.csv (denominator summary)")
+message("================================================================================")
