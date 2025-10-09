@@ -1464,18 +1464,17 @@ message("  → Saving denominators results...")
 # National
 if (exists("denominators_national_results") && is.data.frame(denominators_national_results) && nrow(denominators_national_results) > 0) {
   denominators_national_results <- add_denominator_labels(denominators_national_results, "denominator")
+  # Remove admin_area_2 for national results and remove label columns
+  denominators_national_results <- denominators_national_results %>%
+    select(-admin_area_2, -denominator_label, -den_source, -den_target)
   write.csv(denominators_national_results, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_national: ", nrow(denominators_national_results), " rows")
 } else {
   dummy <- data.frame(
     admin_area_1      = character(),
-    admin_area_2      = character(),
     year              = integer(),
     denominator       = character(),
-    den_source        = character(),
-    den_target        = character(),
-    value             = double(),
-    denominator_label = character()
+    value             = double()
   )
   write.csv(dummy, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_national results - saved empty file")
@@ -1484,6 +1483,9 @@ if (exists("denominators_national_results") && is.data.frame(denominators_nation
 # Admin2
 if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_results) && nrow(denominators_admin2_results) > 0) {
   denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
+  # Remove label columns
+  denominators_admin2_results <- denominators_admin2_results %>%
+    select(-denominator_label, -den_source, -den_target)
   write.csv(denominators_admin2_results, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_admin2: ", nrow(denominators_admin2_results), " rows")
 } else {
@@ -1492,10 +1494,7 @@ if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_r
     admin_area_2      = character(),
     year              = integer(),
     denominator       = character(),
-    den_source        = character(),
-    den_target        = character(),
-    value             = double(),
-    denominator_label = character()
+    value             = double()
   )
   write.csv(dummy, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No denominators_admin2 results - saved empty file")
@@ -1505,26 +1504,23 @@ if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_r
 if (exists("denominators_admin3_results") &&
     is.data.frame(denominators_admin3_results) &&
     nrow(denominators_admin3_results) > 0) {
-  
+
   df <- normalize_admin3_for_output(denominators_admin3_results) %>%
     add_denominator_labels("denominator") %>%
-    select(admin_area_1, admin_area_3, year,
-           denominator, den_source, den_target, value, denominator_label)
-  
+    # Remove label columns
+    select(admin_area_1, admin_area_3, year, denominator, value)
+
   write.csv(df, "M4_denominators_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_admin3: ", nrow(df), " rows")
-  
+
 } else {
   dummy <- data.frame(
     admin_area_1      = character(),
     admin_area_3      = character(),
     year              = integer(),
     denominator       = character(),
-    den_source        = character(),
-    den_target        = character(),
-    value             = double(),
-    denominator_label = character()
+    value             = double()
   )
   write.csv(dummy, "M4_denominators_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
