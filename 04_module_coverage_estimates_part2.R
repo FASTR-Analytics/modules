@@ -60,9 +60,7 @@ RUN_ADMIN3 <- FALSE   # Will be set based on data availability
 
 #------------------------------- Load the Data ---------------------------------------------------------------
 # Load combined results from Part 1 (contains coverage estimates for all denominators)
-combined_results_national <- read.csv("M4_combined_results_national.csv", fileEncoding = "UTF-8")
-# recreate admin_area_2 for national-level data
-combined_results_national$admin_area_2 <- "NATIONAL"
+combined_results_national <- transform(read.csv("M4_combined_results_national.csv", fileEncoding = "UTF-8"), admin_area_2 = "NATIONAL")
 combined_results_admin2 <- read.csv("M4_combined_results_admin2.csv", fileEncoding = "UTF-8")
 combined_results_admin3 <- read.csv("M4_combined_results_admin3.csv", fileEncoding = "UTF-8")
 

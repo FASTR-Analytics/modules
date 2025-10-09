@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "SLE"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -1530,8 +1530,16 @@ if (exists("denominators_admin3_results") &&
 # Combined Coverage and Survey Results
 
 message("  → Saving combined coverage and survey results...")
-# National
+# ---------------- NATIONAL ------------------
 if (exists("national_combined_results") && is.data.frame(national_combined_results) && nrow(national_combined_results) > 0) {
+  # Remove admin_area_2 for national results
+  if ("admin_area_2" %in% names(national_combined_results)) {
+    national_combined_results <- national_combined_results %>% select(-admin_area_2)
+  }
+  # Remove denominator_label if present
+  if ("denominator_label" %in% names(national_combined_results)) {
+    national_combined_results <- national_combined_results %>% select(-denominator_label)
+  }
   write.csv(national_combined_results, "M4_combined_results_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_national: ", nrow(national_combined_results), " rows")
 } else {
@@ -1540,15 +1548,18 @@ if (exists("national_combined_results") && is.data.frame(national_combined_resul
     year = integer(),
     indicator_common_id = character(),
     denominator_best_or_survey = character(),
-    denominator_label = character(),
-    value = double()
+    value = double(),
+    stringsAsFactors = FALSE
   )
   write.csv(dummy, "M4_combined_results_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No combined_results_national results - saved empty file")
 }
 
-# Admin2
+# ---------------- ADMIN2 ----------------
 if (exists("admin2_combined_results") && is.data.frame(admin2_combined_results) && nrow(admin2_combined_results) > 0) {
+  if ("denominator_label" %in% names(admin2_combined_results)) {
+    admin2_combined_results <- admin2_combined_results %>% select(-denominator_label)
+  }
   write.csv(admin2_combined_results, "M4_combined_results_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_admin2: ", nrow(admin2_combined_results), " rows")
 } else {
@@ -1558,19 +1569,22 @@ if (exists("admin2_combined_results") && is.data.frame(admin2_combined_results) 
     year = integer(),
     indicator_common_id = character(),
     denominator_best_or_survey = character(),
-    denominator_label = character(),
-    value = double()
+    value = double(),
+    stringsAsFactors = FALSE
   )
   write.csv(dummy, "M4_combined_results_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No combined_results_admin2 results - saved empty file")
 }
 
-# Admin3
+# ---------------- ADMIN3 ----------------
 if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) && nrow(admin3_combined_results) > 0) {
-  # Ensure proper column naming for admin3
+  # Rename admin_area_2 → admin_area_3 if needed
   if ("admin_area_2" %in% names(admin3_combined_results)) {
     admin3_combined_results <- admin3_combined_results %>%
       rename(admin_area_3 = admin_area_2)
+  }
+  if ("denominator_label" %in% names(admin3_combined_results)) {
+    admin3_combined_results <- admin3_combined_results %>% select(-denominator_label)
   }
   write.csv(admin3_combined_results, "M4_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_admin3: ", nrow(admin3_combined_results), " rows")
@@ -1581,19 +1595,17 @@ if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) 
     year = integer(),
     indicator_common_id = character(),
     denominator_best_or_survey = character(),
-    denominator_label = character(),
-    value = double()
+    value = double(),
+    stringsAsFactors = FALSE
   )
   write.csv(dummy, "M4_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No combined_results_admin3 results - saved empty file")
 }
-
 
 message("✓ Step 6/7 completed: All results saved successfully!")
 message("================================================================================")
 
 message("✓ Step 7/7: COVERAGE ESTIMATION ANALYSIS COMPLETE!")
 message("================================================================================")
-message("All output files have been generated and saved to the working directory.")
-message("Check the M4_*.csv files for your coverage analysis results.")
+message("All output files have been generated and saved.")
 message("================================================================================")
