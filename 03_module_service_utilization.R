@@ -1,10 +1,12 @@
+COUNTRY_ISO3 <- "SOM"
+
 SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
 VISUALIZATIONCOUNT <- "count_final_outliers" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
 
-THRESHOLD <- 1.5                       # Threshold (in MAD units) for detecting sharp deviations in robust control chart.
+MADS_THRESHOLD <- 1.5                 # Threshold (in MAD units) for detecting sharp deviations in robust control chart.
                                        # If residual/MAD > THRESHOLD, the month is flagged as a sharp disruption.
 
 DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged if actual count falls below
@@ -21,10 +23,10 @@ RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysi
                                        # Warning: This can be very slow for large datasets
 
 
-PROJECT_DATA_HMIS <- "hmis_NG.csv"
+PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 2
+# Last edit: 2025 Oct 9
 # Module: SERVICE UTILIZATION
 
 
@@ -172,6 +174,15 @@ robust_control_chart <- function(panel_data, selected_count) {
       warning(paste("Full model failed, fallback to trend-only. Error:", e$message))
       NULL
     })
+
+    # Check convergence
+    if (!is.null(mod) && !mod$converged) {
+      panel_id <- unique(panel_data[[CONTROL_CHART_LEVEL]])
+      indicator_id <- unique(panel_data$indicator_common_id)
+      print(paste("WARNING: Full model failed to converge for", CONTROL_CHART_LEVEL, "=", panel_id,
+                  "| Indicator =", indicator_id))
+    }
+
   } else if (n_obs >= 12) {
     # Use simpler model (trend only)
     mod <- tryCatch({
@@ -181,6 +192,15 @@ robust_control_chart <- function(panel_data, selected_count) {
       warning(paste("Trend-only model failed. Error:", e$message))
       NULL
     })
+
+    # Check convergence
+    if (!is.null(mod) && !mod$converged) {
+      panel_id <- unique(panel_data[[CONTROL_CHART_LEVEL]])
+      indicator_id <- unique(panel_data$indicator_common_id)
+      print(paste("WARNING: Trend-only model failed to converge for", CONTROL_CHART_LEVEL, "=", panel_id,
+                  "| Indicator =", indicator_id))
+    }
+
   } else {
     mod <- NULL
   }
@@ -206,8 +226,8 @@ robust_control_chart <- function(panel_data, selected_count) {
     mutate(
       residual = count_original - count_smooth,
       robust_control = residual / (mad(residual, constant = 1, na.rm = TRUE) + 1e-6),
-      tag_sharp = ifelse(!is.na(robust_control) & abs(robust_control) >= THRESHOLD, 1, 0),
-      mild_flag = ifelse(!is.na(robust_control) & abs(robust_control) >= 1 & abs(robust_control) < THRESHOLD, 1, 0),
+      tag_sharp = ifelse(!is.na(robust_control) & abs(robust_control) >= MADS_THRESHOLD, 1, 0),
+      mild_flag = ifelse(!is.na(robust_control) & abs(robust_control) >= 1 & abs(robust_control) < MADS_THRESHOLD, 1, 0),
       mild_cumulative = zoo::rollapply(mild_flag, width = 3, align = "right", fill = NA, FUN = sum, na.rm = TRUE),
       tag_sustained = ifelse(mild_cumulative >= 3 & abs(robust_control) >= 1.5, 1, 0),
       dip_flag = ifelse(is.na(count_original) | count_original < DIP_THRESHOLD * count_smooth, 1, 0)
@@ -305,12 +325,21 @@ for (indicator in indicators) {
   indicator_data <- data_disruption %>%
     filter(indicator_common_id == indicator) %>%
     drop_na(!!sym(SELECTEDCOUNT))
-  
+
   if (nrow(indicator_data) == 0) { next }
-  
+
+  # Determine whether clustering is valid
+  n_clusters <- indicator_data %>% pull(admin_area_3) %>% n_distinct(na.rm = TRUE)
+
+  # Fit model: clustered if >1 cluster, unclustered otherwise
   model <- tryCatch(
-    feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")),
-          data = indicator_data, cluster = ~admin_area_3),
+    if (n_clusters > 1) {
+      feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")),
+            data = indicator_data, cluster = ~admin_area_3)
+    } else {
+      feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")),
+            data = indicator_data)
+    },
     error = function(e) { NULL }
   )
   
@@ -375,12 +404,22 @@ for (indicator in indicators) {
     province_data <- data_disruption %>%
       filter(indicator_common_id == indicator, admin_area_2 == province) %>%
       drop_na(!!sym(SELECTEDCOUNT))
-    
+
     if (nrow(province_data) < 1) { next }
-    
+
+    # Determine whether clustering is valid
+    n_clusters <- province_data %>% pull(admin_area_3) %>% n_distinct(na.rm = TRUE)
+
+    # Build regression formula
+    reg_formula <- as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged"))
+
+    # Fit model: clustered if >1 cluster, unclustered otherwise
     model_province <- tryCatch(
-      feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")),
-            data = province_data, cluster = ~admin_area_3),
+      if (n_clusters > 1) {
+        feols(reg_formula, data = province_data, cluster = ~admin_area_3)
+      } else {
+        feols(reg_formula, data = province_data)
+      },
       error = function(e) { NULL }
     )
     
