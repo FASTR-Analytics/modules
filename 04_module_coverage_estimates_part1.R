@@ -37,16 +37,59 @@ message("✓ Step 1/7: Loading input datasets...")
 
 # Input Datasets
 message("  → Loading adjusted HMIS data (national)...")
-adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8")
+adjusted_volume_data <- read.csv("M2_adjusted_data_national.csv", fileEncoding = "UTF-8") %>%
+  mutate(iso3_code = COUNTRY_ISO3)
 
 message("  → Loading adjusted HMIS data (subnational)...")
-adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8")
+adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8") %>%
+  mutate(iso3_code = COUNTRY_ISO3)
 
 message("  → Loading survey data from GitHub...")
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 
+# Filter by ISO3 code
+if ("iso3_code" %in% names(survey_data_unified)) {
+  survey_data_unified <- survey_data_unified %>% filter(iso3_code == COUNTRY_ISO3)
+  message("    Filtered survey data for ISO3: ", COUNTRY_ISO3)
+
+  # Check if data exists for this country
+  if (nrow(survey_data_unified) == 0) {
+    warning("WARNING: No survey data found for country ISO3 code '", COUNTRY_ISO3, "'. Analysis will proceed with UNWPP data only where available.")
+    # Create empty survey data structure to prevent crashes
+    survey_data_unified <- data.frame(
+      iso3_code = character(),
+      admin_area_1 = character(),
+      admin_area_2 = character(),
+      year = integer(),
+      indicator_common_id = character(),
+      survey_value = numeric(),
+      source = character(),
+      source_detail = character(),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    message("    ✓ Found ", nrow(survey_data_unified), " survey records for ", COUNTRY_ISO3)
+  }
+} else {
+  warning("iso3_code column not found in survey data - cannot filter by country")
+}
+
 message("  → Loading population estimates from GitHub...")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
+
+# Filter by ISO3 code
+if ("iso3_code" %in% names(population_estimates_only)) {
+  population_estimates_only <- population_estimates_only %>% filter(iso3_code == COUNTRY_ISO3)
+  message("    Filtered population data for ISO3: ", COUNTRY_ISO3)
+
+  # Check if data exists for this country
+  if (nrow(population_estimates_only) == 0) {
+    stop("ERROR: No population data found for country ISO3 code '", COUNTRY_ISO3, "'. Please check the ISO3 code and data availability.")
+  }
+  message("    ✓ Found ", nrow(population_estimates_only), " population records for ", COUNTRY_ISO3)
+} else {
+  warning("iso3_code column not found in population data - cannot filter by country")
+}
 
 message("✓ Step 1/7 completed: All datasets loaded successfully!")
 
@@ -57,8 +100,8 @@ message("✓ Step 2/7: Preparing data for analysis...")
 # A flag to track if pnc1 was renamed to pnc1_mother
 pnc1_renamed_to_mother <- FALSE
 
-# Dynamically detect the country from the HMIS data and filter other datasets
-message("  → Detecting country and filtering datasets...")
+# Extract country name from HMIS data (used for joins and display)
+message("  → Extracting country name from HMIS data...")
 COUNTRY_NAME <- unique(adjusted_volume_data$admin_area_1)
 
 if (length(COUNTRY_NAME) > 1) {
@@ -66,15 +109,17 @@ if (length(COUNTRY_NAME) > 1) {
   COUNTRY_NAME <- COUNTRY_NAME[1]
 }
 
-message("Analyzing data for country: ", COUNTRY_NAME)
-
-survey_data_unified <- survey_data_unified %>% filter(admin_area_1 == COUNTRY_NAME)
-population_estimates_only <- population_estimates_only %>% filter(admin_area_1 == COUNTRY_NAME)
+message("Analyzing data for country: ", COUNTRY_NAME, " (ISO3: ", COUNTRY_ISO3, ")")
 
 message("Analysis mode: ", ANALYSIS_LEVEL)
 
 # Always run national analysis
 survey_data_national <- survey_data_unified %>% filter(admin_area_2 == "NATIONAL")
+
+# Check if we have any national survey data
+if (nrow(survey_data_national) == 0) {
+  warning("No national-level survey data available for ", COUNTRY_ISO3, ". Analysis will use UNWPP population data only.")
+}
 
 # Initialize subnational variables
 hmis_data_subnational <- NULL
@@ -84,17 +129,18 @@ combined_admin3_export <- NULL
 
 # Validate and prepare subnational data based on ANALYSIS_LEVEL
 if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
-  
+
   # First check: Do we have any subnational survey data?
   survey_data_subnational <- survey_data_unified %>% filter(admin_area_2 != "NATIONAL")
-  
+
   if (nrow(survey_data_subnational) == 0) {
-    warning("SAFEGUARD: No subnational survey data found. Falling back to: NATIONAL_ONLY")
+    message("SAFEGUARD: No subnational survey data found. Falling back to: NATIONAL_ONLY")
     original_level <- ANALYSIS_LEVEL
     ANALYSIS_LEVEL <- "NATIONAL_ONLY"
     hmis_data_subnational <- NULL
     survey_data_subnational <- NULL
   } else {
+    message("  ✓ Found ", nrow(survey_data_subnational), " subnational survey records")
     
     # Check if admin_area_3 data can be used for NATIONAL_PLUS_AA2_AA3
     if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3") {
@@ -119,7 +165,7 @@ if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
       }
       
       if (!has_usable_admin3) {
-        warning("SAFEGUARD: admin_area_3 data not usable. Falling back to: NATIONAL_PLUS_AA2")
+        message("SAFEGUARD: admin_area_3 data not usable. Falling back to: NATIONAL_PLUS_AA2")
         original_level <- ANALYSIS_LEVEL
         ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"
       }
@@ -256,23 +302,41 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     left_join(nummonth_data, by = group_vars) %>%
     arrange(across(all_of(group_vars)))
   
+  # Extract ISO3 code if available
+  hmis_iso3 <- if ("iso3_code" %in% names(adjusted_volume_data)) {
+    unique(adjusted_volume_data$iso3_code)
+  } else {
+    NULL
+  }
+
   list(
     annual_hmis = annual_hmis,
-    hmis_countries = hmis_countries
+    hmis_countries = hmis_countries,
+    hmis_iso3 = hmis_iso3
   )
 }
 
 # Part 2 - prepare survey data (DHS-preferred, preserves source_detail, robust to missing columns)
-process_survey_data <- function(survey_data, hmis_countries,
+process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
                                 min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
-  
+
   # --- Harmonize, scope, coerce ---
-  survey_data <- survey_data %>%
-    filter(admin_area_1 %in% hmis_countries) %>%
-    mutate(
-      source = tolower(source),
-      year   = as.integer(year)
-    )
+  # For national data, filter by ISO3 if available; otherwise use admin_area_1
+  if (!is.null(hmis_iso3) && "iso3_code" %in% names(survey_data)) {
+    survey_data <- survey_data %>%
+      filter(iso3_code %in% hmis_iso3) %>%
+      mutate(
+        source = tolower(source),
+        year   = as.integer(year)
+      )
+  } else {
+    survey_data <- survey_data %>%
+      filter(admin_area_1 %in% hmis_countries) %>%
+      mutate(
+        source = tolower(source),
+        year   = as.integer(year)
+      )
+  }
 
   # Intelligent PNC1 matching based on what exists in survey data
   survey_pnc_indicators <- unique(survey_data$indicator_common_id)
@@ -537,16 +601,27 @@ process_survey_data <- function(survey_data, hmis_countries,
 }
 
 # Part 2b - prepare unwpp data
-process_national_population_data <- function(population_data, hmis_countries,
+process_national_population_data <- function(population_data, hmis_countries, hmis_iso3 = NULL,
                                              min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
-  
-  base <- population_data %>%
-    filter(admin_area_2 == "NATIONAL",
-                  admin_area_1 %in% hmis_countries) %>%
-    mutate(
-      source = tolower(source),
-      year   = as.integer(year)
-    )
+
+  # For national data, filter by ISO3 if available; otherwise use admin_area_1
+  if (!is.null(hmis_iso3) && "iso3_code" %in% names(population_data)) {
+    base <- population_data %>%
+      filter(admin_area_2 == "NATIONAL",
+                    iso3_code %in% hmis_iso3) %>%
+      mutate(
+        source = tolower(source),
+        year   = as.integer(year)
+      )
+  } else {
+    base <- population_data %>%
+      filter(admin_area_2 == "NATIONAL",
+                    admin_area_1 %in% hmis_countries) %>%
+      mutate(
+        source = tolower(source),
+        year   = as.integer(year)
+      )
+  }
   
   #original wide
   wide <- base %>%
@@ -1176,13 +1251,15 @@ hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 message("  → Processing survey data...")
 survey_processed_national <- process_survey_data(
   survey_data    = survey_data_national,
-  hmis_countries = hmis_processed$hmis_countries
+  hmis_countries = hmis_processed$hmis_countries,
+  hmis_iso3      = hmis_processed$hmis_iso3
 )
 
 message("  → Processing population data...")
 national_population_processed <- process_national_population_data(
   population_data = population_estimates_only,
-  hmis_countries  = hmis_processed$hmis_countries
+  hmis_countries  = hmis_processed$hmis_countries,
+  hmis_iso3       = hmis_processed$hmis_iso3
 )
 
 message("  → Calculating denominators...")
