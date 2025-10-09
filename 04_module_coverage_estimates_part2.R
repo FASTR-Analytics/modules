@@ -61,6 +61,8 @@ RUN_ADMIN3 <- FALSE   # Will be set based on data availability
 #------------------------------- Load the Data ---------------------------------------------------------------
 # Load combined results from Part 1 (contains coverage estimates for all denominators)
 combined_results_national <- read.csv("M4_combined_results_national.csv", fileEncoding = "UTF-8")
+# recreate admin_area_2 for national-level data
+combined_results_national$admin_area_2 <- "NATIONAL"
 combined_results_admin2 <- read.csv("M4_combined_results_admin2.csv", fileEncoding = "UTF-8")
 combined_results_admin3 <- read.csv("M4_combined_results_admin3.csv", fileEncoding = "UTF-8")
 
@@ -277,8 +279,8 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     group_by(across(all_of(survey_group_keys))) %>%
     summarise(
       coverage_original_estimate = mean(survey_value, na.rm = TRUE),
-      survey_raw_source = first(source, na_rm = TRUE),
-      survey_raw_source_detail = first(source_detail, na_rm = TRUE),
+      survey_raw_source = if("source" %in% names(cur_data())) first(source[!is.na(source)]) else NA_character_,
+      survey_raw_source_detail = if("source_detail" %in% names(cur_data())) first(source_detail[!is.na(source_detail)]) else NA_character_,
       .groups = "drop"
     )
   
@@ -503,9 +505,13 @@ admin3_required_cols <- c(
 # ---------------- NATIONAL (no admin_area_2) ----------------
 if (exists("final_national") && is.data.frame(final_national) && nrow(final_national) > 0) {
   # drop admin_area_2 if it exists
-  if ("admin_area_2" %in% names(final_national)) final_national$admin_area_2 <- NULL
+  if ("admin_area_2" %in% names(final_national)) {
+    final_national <- final_national %>% select(-admin_area_2)
+  }
   # drop admin_area_3 if it exists (shouldn't be in national)
-  if ("admin_area_3" %in% names(final_national)) final_national$admin_area_3 <- NULL
+  if ("admin_area_3" %in% names(final_national)) {
+    final_national <- final_national %>% select(-admin_area_3)
+  }
   # add any missing cols as NA, and order
   for (cn in setdiff(nat_required_cols, names(final_national))) final_national[[cn]] <- NA
   final_national <- final_national[, nat_required_cols]
