@@ -1330,30 +1330,66 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     message("  → Processing admin area 2 data...")
     
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
-    
+
     hmis_processed_admin2   <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
-    survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
 
-    # SAFEGUARD: Validate admin_area_2 matching between HMIS and survey data
-    hmis_admin2_regions <- hmis_processed_admin2$annual_hmis %>%
-      distinct(admin_area_2) %>%
-      pull(admin_area_2)
+    # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+    survey_processed_admin2 <- tryCatch({
+      process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
+    }, error = function(e) {
+      message("================================================================================")
+      warning("⚠️  MISMATCH DETECTED: admin_area_2 names differ between HMIS and survey data")
+      warning("   Error: ", e$message)
+      message("   → Skipping admin_area_2 analysis. Continuing with national only.")
+      message("   → Please verify ISO3 code matches your HMIS data")
+      message("================================================================================")
+      NULL
+    })
 
-    survey_admin2_regions <- survey_processed_admin2$carried %>%
-      distinct(admin_area_2) %>%
-      pull(admin_area_2)
-
-    matching_regions_admin2 <- intersect(hmis_admin2_regions, survey_admin2_regions)
-
-    if (length(matching_regions_admin2) == 0) {
-      warning("SAFEGUARD: No matching admin_area_2 values found between HMIS and survey data.")
-      warning("  HMIS regions (", length(hmis_admin2_regions), "): ", paste(head(hmis_admin2_regions, 5), collapse = ", "),
-              if(length(hmis_admin2_regions) > 5) "..." else "")
-      warning("  Survey regions (", length(survey_admin2_regions), "): ", paste(head(survey_admin2_regions, 5), collapse = ", "),
-              if(length(survey_admin2_regions) > 5) "..." else "")
-      message("SAFEGUARD: Skipping admin_area_2 analysis due to region name mismatch. Continuing with national only.")
+    # SAFEGUARD: Check if survey data is usable
+    if (is.null(survey_processed_admin2) ||
+        is.null(survey_processed_admin2$carried) ||
+        nrow(survey_processed_admin2$carried) == 0 ||
+        !"admin_area_2" %in% names(survey_processed_admin2$carried)) {
+      if (!is.null(survey_processed_admin2)) {
+        warning("SAFEGUARD: Survey data for admin_area_2 is empty or malformed.")
+      }
+      message("SAFEGUARD: Skipping admin_area_2 analysis. Continuing with national only.")
       ANALYSIS_LEVEL <- "NATIONAL_ONLY"
+      matching_regions_admin2 <- character(0)
+      # Ensure admin2 results are NULL
+      denominators_admin2_results <- NULL
+      admin2_combined_results <- NULL
     } else {
+      # SAFEGUARD: Validate admin_area_2 matching between HMIS and survey data
+      hmis_admin2_regions <- hmis_processed_admin2$annual_hmis %>%
+        distinct(admin_area_2) %>%
+        pull(admin_area_2)
+
+      survey_admin2_regions <- survey_processed_admin2$carried %>%
+        distinct(admin_area_2) %>%
+        pull(admin_area_2)
+
+      matching_regions_admin2 <- intersect(hmis_admin2_regions, survey_admin2_regions)
+    }
+
+    if (length(matching_regions_admin2) == 0 && ANALYSIS_LEVEL != "NATIONAL_ONLY") {
+      message("================================================================================")
+      warning("⚠️  MISMATCH DETECTED: No matching admin_area_2 names between HMIS and survey data")
+      if (exists("hmis_admin2_regions") && exists("survey_admin2_regions")) {
+        message("   HMIS regions (", length(hmis_admin2_regions), "): ", paste(head(hmis_admin2_regions, 5), collapse = ", "),
+                if(length(hmis_admin2_regions) > 5) "..." else "")
+        message("   Survey regions (", length(survey_admin2_regions), "): ", paste(head(survey_admin2_regions, 5), collapse = ", "),
+                if(length(survey_admin2_regions) > 5) "..." else "")
+      }
+      message("   → Skipping admin_area_2 analysis. Continuing with national only.")
+      message("   → Please verify ISO3 code matches your HMIS data")
+      message("================================================================================")
+      ANALYSIS_LEVEL <- "NATIONAL_ONLY"
+      # Ensure admin2 results are NULL
+      denominators_admin2_results <- NULL
+      admin2_combined_results <- NULL
+    } else if (length(matching_regions_admin2) > 0) {
       message("✓ admin_area_2 validation passed: ", length(matching_regions_admin2), "/", length(hmis_admin2_regions), " regions match")
 
       # ONLY proceed if validation passed
@@ -1419,28 +1455,63 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
     if (nrow(hmis_admin3) > 0) {
       hmis_processed_admin3   <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
-      survey_processed_admin3 <- process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
 
-      # SAFEGUARD: Validate admin_area_3 matching between HMIS and survey data
-      # Note: HMIS admin_area_3 is renamed to admin_area_2 for processing
-      hmis_admin3_regions <- hmis_processed_admin3$annual_hmis %>%
-        distinct(admin_area_2) %>%
-        pull(admin_area_2)
+      # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+      survey_processed_admin3 <- tryCatch({
+        process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
+      }, error = function(e) {
+        message("================================================================================")
+        warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
+        warning("   Error: ", e$message)
+        message("   → Skipping admin_area_3 analysis.")
+        message("   → Please verify ISO3 code matches your HMIS data")
+        message("================================================================================")
+        NULL
+      })
 
-      survey_admin3_regions <- survey_processed_admin3$carried %>%
-        distinct(admin_area_2) %>%
-        pull(admin_area_2)
+      # SAFEGUARD: Check if survey data is usable
+      if (is.null(survey_processed_admin3) ||
+          is.null(survey_processed_admin3$carried) ||
+          nrow(survey_processed_admin3$carried) == 0 ||
+          !"admin_area_2" %in% names(survey_processed_admin3$carried)) {
+        if (!is.null(survey_processed_admin3)) {
+          warning("SAFEGUARD: Survey data for admin_area_3 is empty or malformed.")
+        }
+        message("SAFEGUARD: Skipping admin_area_3 analysis.")
+        matching_regions_admin3 <- character(0)
+        # Ensure admin3 results are NULL
+        denominators_admin3_results <- NULL
+        admin3_combined_results <- NULL
+      } else {
+        # SAFEGUARD: Validate admin_area_3 matching between HMIS and survey data
+        # Note: HMIS admin_area_3 is renamed to admin_area_2 for processing
+        hmis_admin3_regions <- hmis_processed_admin3$annual_hmis %>%
+          distinct(admin_area_2) %>%
+          pull(admin_area_2)
 
-      matching_regions_admin3 <- intersect(hmis_admin3_regions, survey_admin3_regions)
+        survey_admin3_regions <- survey_processed_admin3$carried %>%
+          distinct(admin_area_2) %>%
+          pull(admin_area_2)
+
+        matching_regions_admin3 <- intersect(hmis_admin3_regions, survey_admin3_regions)
+      }
 
       if (length(matching_regions_admin3) == 0) {
-        warning("SAFEGUARD: No matching admin_area_3 values found between HMIS and survey data.")
-        warning("  HMIS admin3 regions (", length(hmis_admin3_regions), "): ", paste(head(hmis_admin3_regions, 5), collapse = ", "),
-                if(length(hmis_admin3_regions) > 5) "..." else "")
-        warning("  Survey regions (", length(survey_admin3_regions), "): ", paste(head(survey_admin3_regions, 5), collapse = ", "),
-                if(length(survey_admin3_regions) > 5) "..." else "")
-        message("SAFEGUARD: Skipping admin_area_3 analysis due to region name mismatch.")
-      } else {
+        message("================================================================================")
+        warning("⚠️  MISMATCH DETECTED: No matching admin_area_3 names between HMIS and survey data")
+        if (exists("hmis_admin3_regions") && exists("survey_admin3_regions")) {
+          message("   HMIS admin3 regions (", length(hmis_admin3_regions), "): ", paste(head(hmis_admin3_regions, 5), collapse = ", "),
+                  if(length(hmis_admin3_regions) > 5) "..." else "")
+          message("   Survey regions (", length(survey_admin3_regions), "): ", paste(head(survey_admin3_regions, 5), collapse = ", "),
+                  if(length(survey_admin3_regions) > 5) "..." else "")
+        }
+        message("   → Skipping admin_area_3 analysis.")
+        message("   → Please verify ISO3 code matches your HMIS data")
+        message("================================================================================")
+        # Ensure admin3 results are NULL
+        denominators_admin3_results <- NULL
+        admin3_combined_results <- NULL
+      } else if (length(matching_regions_admin3) > 0) {
         message("✓ admin_area_3 validation passed: ", length(matching_regions_admin3), "/", length(hmis_admin3_regions), " regions match")
 
         # ONLY proceed if validation passed
@@ -1496,7 +1567,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     }
   }
 
-  
+
   message("✓ Step 4/7 completed: Subnational analysis finished!")
 
 } else {
