@@ -826,33 +826,33 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
   df %>%
     mutate(
       .den = .data[[denom_col]],
-      den_source_key = str_replace(.den, "^d([^_]+)_.*$", "\\1"),
-      den_target_key = str_replace(.den, "^d[^_]+_(.*)$", "\\1"),
-      den_target_key = recode(den_target_key,
+      source_indicator = str_replace(.den, "^d([^_]+)_.*$", "\\1"),
+      target_population = str_replace(.den, "^d[^_]+_(.*)$", "\\1"),
+      target_population = recode(target_population,
                               "livebirths" = "livebirth",
-                              .default = den_target_key),
+                              .default = target_population),
       source_phrase = case_when(
-        den_source_key == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
-        den_source_key == "delivery"   ~ "derived from HMIS data on institutional deliveries",
-        den_source_key == "bcg"        ~ "derived from HMIS data on BCG doses",
-        den_source_key == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
-        den_source_key == "wpp"        ~ "based on UN WPP estimates",
-        den_source_key == "livebirths" ~ "derived from HMIS data on live births",
+        source_indicator == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
+        source_indicator == "delivery"   ~ "derived from HMIS data on institutional deliveries",
+        source_indicator == "bcg"        ~ "derived from HMIS data on BCG doses",
+        source_indicator == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
+        source_indicator == "wpp"        ~ "based on UN WPP estimates",
+        source_indicator == "livebirths" ~ "derived from HMIS data on live births",
         TRUE ~ "from other sources"
       ),
       target_phrase = case_when(
-        den_target_key == "pregnancy" ~ "Estimated number of pregnancies",
-        den_target_key == "delivery"  ~ "Estimated number of deliveries",
-        den_target_key == "birth"     ~ "Estimated number of total births (live + stillbirths)",
-        den_target_key == "livebirth" ~ "Estimated number of live births",
-        den_target_key == "dpt"       ~ "Estimated number of infants eligible for DPT1",
-        den_target_key == "measles1"  ~ "Estimated number of children eligible for measles dose 1 (MCV1)",
-        den_target_key == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
-        TRUE ~ paste("Estimated population for target", den_target_key)
+        target_population == "pregnancy" ~ "Estimated number of pregnancies",
+        target_population == "delivery"  ~ "Estimated number of deliveries",
+        target_population == "birth"     ~ "Estimated number of total births (live + stillbirths)",
+        target_population == "livebirth" ~ "Estimated number of live births",
+        target_population == "dpt"       ~ "Estimated number of infants eligible for DPT1",
+        target_population == "measles1"  ~ "Estimated number of children eligible for measles dose 1 (MCV1)",
+        target_population == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
+        TRUE ~ paste("Estimated population for target", target_population)
       ),
       denominator_label = paste0(target_phrase, " ", source_phrase, ".")
     ) %>%
-    select(-.den, -den_source_key, -den_target_key, -source_phrase, -target_phrase)
+    select(-.den, -source_phrase, -target_phrase)
 }
 
 # Helper function: Classify denominator source type (used by multiple functions)
@@ -889,7 +889,7 @@ calculate_coverage <- function(denominators_data, numerators_data) {
 
   # Map denominator targets to indicators
   target_indicator_map <- tibble::tribble(
-    ~den_target, ~indicators,
+    ~target_population, ~indicators,
     "pregnancy", c("anc1", "anc4"),
     "livebirth", c("delivery", "bcg", "pnc1_mother", "pnc1"),
     "dpt",       c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
@@ -900,12 +900,12 @@ calculate_coverage <- function(denominators_data, numerators_data) {
 
   # Expand denominators to match indicators
   denominator_expanded <- denominators_data %>%
-    left_join(target_indicator_map, by = "den_target") %>%
+    left_join(target_indicator_map, by = "target_population") %>%
     unnest_longer(indicators) %>%
     filter(!is.na(indicators)) %>%
     rename(indicator_common_id = indicators,
            denominator_value = value) %>%
-    select(all_of(geo_keys), denominator, den_source, den_target,
+    select(all_of(geo_keys), denominator, source_indicator, target_population,
            indicator_common_id, denominator_value)
 
   # Join numerators with denominators and calculate coverage
@@ -1163,12 +1163,12 @@ make_denominators_results <- function(summary_df) {
   
   df %>%
     mutate(
-      den_source = str_replace(denominator_type, "^d([^_]+).*", "\\1"),
-      den_target = str_replace(denominator_type, ".*_([^_]+)$", "\\1")
+      source_indicator = str_replace(denominator_type, "^d([^_]+).*", "\\1"),
+      target_population = str_replace(denominator_type, ".*_([^_]+)$", "\\1")
     ) %>%
     select(
       admin_area_1, admin_area_2, year,
-      denominator = denominator_type, den_source, den_target, value
+      denominator = denominator_type, source_indicator, target_population, value
     )
 }
 
@@ -1583,17 +1583,17 @@ message("✓ Step 6/7: Saving coverage analysis results")
 message("  → Saving denominators results...")
 # National
 if (exists("denominators_national_results") && is.data.frame(denominators_national_results) && nrow(denominators_national_results) > 0) {
-  denominators_national_results <- add_denominator_labels(denominators_national_results, "denominator")
-  # Remove admin_area_2 for national results and remove label columns
-  denominators_national_results <- denominators_national_results %>%
-    select(-admin_area_2, -denominator_label, -den_source, -den_target)
-  write.csv(denominators_national_results, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  # Remove admin_area_2, denominator, and denominator_label for national results
+  denominators_national_results %>%
+    select(-admin_area_2, -denominator, -denominator_label) %>%
+    write.csv("M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_national: ", nrow(denominators_national_results), " rows")
 } else {
   dummy <- data.frame(
     admin_area_1      = character(),
     year              = integer(),
-    denominator       = character(),
+    source_indicator  = character(),
+    target_population = character(),
     value             = double()
   )
   write.csv(dummy, "M4_denominators_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
@@ -1602,18 +1602,18 @@ if (exists("denominators_national_results") && is.data.frame(denominators_nation
 
 # Admin2
 if (exists("denominators_admin2_results") && is.data.frame(denominators_admin2_results) && nrow(denominators_admin2_results) > 0) {
-  denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
-  # Remove label columns
-  denominators_admin2_results <- denominators_admin2_results %>%
-    select(-denominator_label, -den_source, -den_target)
-  write.csv(denominators_admin2_results, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  # Remove denominator and denominator_label columns
+  denominators_admin2_results %>%
+    select(-denominator, -denominator_label) %>%
+    write.csv("M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved denominators_admin2: ", nrow(denominators_admin2_results), " rows")
 } else {
   dummy <- data.frame(
     admin_area_1      = character(),
     admin_area_2      = character(),
     year              = integer(),
-    denominator       = character(),
+    source_indicator  = character(),
+    target_population = character(),
     value             = double()
   )
   write.csv(dummy, "M4_denominators_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
@@ -1626,9 +1626,7 @@ if (exists("denominators_admin3_results") &&
     nrow(denominators_admin3_results) > 0) {
 
   df <- normalize_admin3_for_output(denominators_admin3_results) %>%
-    add_denominator_labels("denominator") %>%
-    # Remove label columns
-    select(admin_area_1, admin_area_3, year, denominator, value)
+    select(-denominator, -denominator_label)
 
   write.csv(df, "M4_denominators_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
@@ -1639,7 +1637,8 @@ if (exists("denominators_admin3_results") &&
     admin_area_1      = character(),
     admin_area_3      = character(),
     year              = integer(),
-    denominator       = character(),
+    source_indicator  = character(),
+    target_population = character(),
     value             = double()
   )
   write.csv(dummy, "M4_denominators_admin3.csv",
