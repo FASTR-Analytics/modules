@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "SEN"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -1097,43 +1097,79 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     
     # Run pipeline up to coverage evaluation
     hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
-    survey_processed_admin2 <- process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
-    denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
-    coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
-    
-    # SKIP PROJECTION - just use the best coverage estimates directly
-    combined_admin2_export <- coverage_eval_admin2$best_only %>%
-      select(admin_area_2, indicator_common_id, year, coverage) %>%
-      rename(coverage_cov = coverage)
-    
-    message("  → Admin area 2 analysis completed: ", nrow(combined_admin2_export), " result rows")
+
+    # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+    survey_processed_admin2 <- tryCatch({
+      process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
+    }, error = function(e) {
+      message("================================================================================")
+      warning("⚠️  MISMATCH DETECTED: admin_area_2 names differ between HMIS and survey data")
+      warning("   Error: ", e$message)
+      message("   → Skipping admin_area_2 analysis. Continuing with national only.")
+      message("   → Please verify ISO3 code matches your HMIS data")
+      message("================================================================================")
+      NULL
+    })
+
+    # SAFEGUARD: Check if survey processing succeeded
+    if (is.null(survey_processed_admin2)) {
+      combined_admin2_export <- NULL
+    } else {
+      denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
+      coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
+
+      # SKIP PROJECTION - just use the best coverage estimates directly
+      combined_admin2_export <- coverage_eval_admin2$best_only %>%
+        select(admin_area_2, indicator_common_id, year, coverage) %>%
+        rename(coverage_cov = coverage)
+
+      message("  → Admin area 2 analysis completed: ", nrow(combined_admin2_export), " result rows")
+    }
   }
 
   # === ADMIN_AREA_3 ANALYSIS ===
   if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2_AA3") {
     message("  → Processing admin area 3 data...")
-    
+
     # Check if admin_area_3 data is actually usable
     if ("admin_area_3" %in% names(hmis_data_subnational)) {
       # Prepare HMIS admin_area_3 data (rename admin_area_3 to admin_area_2 for pipeline)
-      hmis_admin3 <- hmis_data_subnational %>% 
+      hmis_admin3 <- hmis_data_subnational %>%
         filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
-        select(-admin_area_2) %>% 
+        select(-admin_area_2) %>%
         rename(admin_area_2 = admin_area_3)
-      
+
       if (nrow(hmis_admin3) > 0) {
         # Run pipeline up to coverage evaluation (skip projection)
         hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
-        survey_processed_admin3 <- process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
-        denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
-        coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
-        
-        # SKIP PROJECTION - just use the best coverage estimates directly (rename back to admin_area_3)
-        combined_admin3_export <- coverage_eval_admin3$best_only %>%
-          select(admin_area_2, indicator_common_id, year, coverage) %>%
-          rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
-        
-        message("  → Admin area 3 analysis completed: ", nrow(combined_admin3_export), " result rows")
+
+        # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+        survey_processed_admin3 <- tryCatch({
+          process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
+        }, error = function(e) {
+          message("================================================================================")
+          warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
+          warning("   Error: ", e$message)
+          message("   → Skipping admin_area_3 analysis.")
+          message("   → Please verify ISO3 code matches your HMIS data")
+          message("================================================================================")
+          NULL
+        })
+
+        # SAFEGUARD: Check if survey processing succeeded
+        if (is.null(survey_processed_admin3)) {
+          combined_admin3_export <- NULL
+        } else {
+          denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
+          coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
+
+          # SKIP PROJECTION - just use the best coverage estimates directly (rename back to admin_area_3)
+          combined_admin3_export <- coverage_eval_admin3$best_only %>%
+            select(admin_area_2, indicator_common_id, year, coverage) %>%
+            rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
+
+          message("  → Admin area 3 analysis completed: ", nrow(combined_admin3_export), " result rows")
+        }
       } else {
         message("  → No usable admin_area_3 data found")
       }
