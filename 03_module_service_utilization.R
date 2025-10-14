@@ -478,11 +478,19 @@ if (RUN_DISTRICT_MODEL) {
       district_data <- data_disruption %>%
         filter(indicator_common_id == indicator, admin_area_3 == district) %>%
         drop_na(!!sym(SELECTEDCOUNT), tagged, date)
-      
+
       if (nrow(district_data) < 10) { next }
-      
+
+      # Determine whether clustering is valid
+      n_clusters <- district_data %>% pull(admin_area_4) %>% n_distinct(na.rm = TRUE)
+
+      # Fit model: clustered if >1 cluster, unclustered otherwise
       model_district <- tryCatch(
-        feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")), data = district_data, cluster = ~admin_area_4),
+        if (n_clusters > 1) {
+          feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")), data = district_data, cluster = ~admin_area_4)
+        } else {
+          feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")), data = district_data)
+        },
         error = function(e) { NULL }
       )
       
