@@ -1,7 +1,7 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "GIN"
 
 SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_outliers" 
+VISUALIZATIONCOUNT <- "count_final_both" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -16,14 +16,14 @@ DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged 
 DIFFPERCENT <- 10                      # Difference threshold (in percent): if the actual volume differs from the predicted
                                        # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
 RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
                                        # Warning: This can be very slow for large datasets
 
 
-PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
+PROJECT_DATA_HMIS <- "hmis_guinea.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Last edit: 2025 Oct 9
@@ -206,9 +206,10 @@ robust_control_chart <- function(panel_data, selected_count) {
   }
   
   # Predict or fallback to median
+  # Use pmax to ensure predictions are never negative (count data cannot be negative)
   panel_data <- panel_data %>%
     mutate(count_predict = if (!is.null(mod)) {
-      predict(mod, newdata = panel_data)
+      pmax(0, predict(mod, newdata = panel_data))
     } else {
       median(panel_data[[selected_count]], na.rm = TRUE)
     })
@@ -481,7 +482,7 @@ if (RUN_DISTRICT_MODEL) {
       if (nrow(district_data) < 10) { next }
       
       model_district <- tryCatch(
-        feols(as.formula(paste(SELECTEDCOUNT, "~ date + tagged")), data = district_data, cluster = ~admin_area_4),
+        feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")), data = district_data, cluster = ~admin_area_4),
         error = function(e) { NULL }
       )
       
@@ -541,7 +542,7 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
       if (nrow(admin_unit_data) < 8) { next }
       
       model_admin_area_4 <- tryCatch(
-        feols(as.formula(paste(SELECTEDCOUNT, "~ date + tagged")), data = admin_unit_data),
+        feols(as.formula(paste(SELECTEDCOUNT, "~ date + factor(month) + tagged")), data = admin_unit_data),
         error = function(e) { NULL }
       )
       
