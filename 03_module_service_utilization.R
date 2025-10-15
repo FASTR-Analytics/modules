@@ -1,7 +1,7 @@
 COUNTRY_ISO3 <- "GIN"
 
 SELECTEDCOUNT <- "count_final_both"  #use count_final_none or count_final_completeness
-VISUALIZATIONCOUNT <- "count_final_both" 
+VISUALIZATIONCOUNT <- "count_final_outliers" 
 
 SMOOTH_K <- 7                          # Window size (in months) for rolling median smoothing of predicted counts.
                                        # Used in the control chart to reduce noise in trend estimation. MUST BE ODD
@@ -692,7 +692,7 @@ if (RUN_DISTRICT_MODEL & "expect_admin_area_3" %in% names(data_disruption)) {
     print("Creating summary disruptions at admin_area_3 level...")
 
     summary_disruption_admin3 <- data_disruption %>%
-      group_by(admin_area_3, period_id, indicator_common_id) %>%
+      group_by(admin_area_2, admin_area_3, period_id, indicator_common_id) %>%
       summarise(
         count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
         count_expect       = mean(expect_admin_area_3, na.rm = TRUE),
@@ -722,7 +722,7 @@ if (RUN_DISTRICT_MODEL & "expect_admin_area_3" %in% names(data_disruption)) {
 if ("expect_admin_area_4" %in% names(data_disruption)) {
     print("Creating summary disruptions at admin_area_4 level...")
     summary_disruption_admin4 <- data_disruption %>%
-      group_by(admin_area_4, period_id, indicator_common_id) %>%
+      group_by(admin_area_2, admin_area_3, admin_area_4, period_id, indicator_common_id) %>%
       summarise(
         count_original     = mean(!!sym(VISUALIZATIONCOUNT), na.rm = TRUE),
         count_expect       = mean(expect_admin_area_4, na.rm = TRUE),
@@ -804,17 +804,18 @@ if (RUN_DISTRICT_MODEL && exists("summary_disruption_admin3") && nrow(summary_di
       surplus_percent = ifelse(count_expect_sum > 0,
                                (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
     ) %>%
-    select(admin_area_3, indicator_common_id, period_id,
-           count_sum, count_expect_sum, 
+    select(admin_area_2, admin_area_3, indicator_common_id, period_id,
+           count_sum, count_expect_sum,
            shortfall_absolute, shortfall_percent,
            surplus_absolute, surplus_percent) %>%
     arrange(indicator_common_id, period_id)
-  
+
   write.csv(key_messages_dataset_admin3, "M3_all_indicators_shortfalls_admin_area_3.csv", row.names = FALSE)
   
 } else {
   print("No admin_area_3 data available or RUN_DISTRICT_MODEL=FALSE - creating empty key messages file for compatibility...")
   dummy_key_messages_admin3 <- data.frame(
+    admin_area_2 = character(0),
     admin_area_3 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
@@ -844,17 +845,19 @@ if (RUN_ADMIN_AREA_4_ANALYSIS && exists("summary_disruption_admin4") && nrow(sum
       surplus_percent = ifelse(count_expect_sum > 0,
                                (count_sum - count_expect_sum) / count_expect_sum * 100, 0)
     ) %>%
-    select(admin_area_4, indicator_common_id, period_id,
-           count_sum, count_expect_sum, 
+    select(admin_area_2, admin_area_3, admin_area_4, indicator_common_id, period_id,
+           count_sum, count_expect_sum,
            shortfall_absolute, shortfall_percent,
            surplus_absolute, surplus_percent) %>%
     arrange(indicator_common_id, period_id)
-  
+
   write.csv(key_messages_dataset_admin4, "M3_all_indicators_shortfalls_admin_area_4.csv", row.names = FALSE)
   
 } else {
   print("No admin_area_4 data available or RUN_ADMIN_AREA_4_ANALYSIS=FALSE - creating empty key messages file for compatibility...")
   dummy_key_messages_admin4 <- data.frame(
+    admin_area_2 = character(0),
+    admin_area_3 = character(0),
     admin_area_4 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
@@ -957,6 +960,7 @@ if (RUN_DISTRICT_MODEL & exists("summary_disruption_admin3")) {
   print("Saving state level disruption analysis...")
   summary_disruption_admin3_export <- summary_disruption_admin3 %>%
     select(
+      admin_area_2,
       admin_area_3,
       indicator_common_id,
       period_id,
@@ -968,6 +972,7 @@ if (RUN_DISTRICT_MODEL & exists("summary_disruption_admin3")) {
 } else {
   print("Creating empty admin_area_3 file for compatibility...")
   dummy_disruption_admin3 <- data.frame(
+    admin_area_2 = character(0),
     admin_area_3 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
@@ -983,6 +988,8 @@ if (RUN_ADMIN_AREA_4_ANALYSIS & exists("summary_disruption_admin4")) {
   print("Saving district level disruption analysis...")
   summary_disruption_admin4_export <- summary_disruption_admin4 %>%
     select(
+      admin_area_2,
+      admin_area_3,
       admin_area_4,
       indicator_common_id,
       period_id,
@@ -994,6 +1001,8 @@ if (RUN_ADMIN_AREA_4_ANALYSIS & exists("summary_disruption_admin4")) {
 } else {
   print("Creating empty admin_area_4 file for compatibility...")
   dummy_disruption_admin4 <- data.frame(
+    admin_area_2 = character(0),
+    admin_area_3 = character(0),
     admin_area_4 = character(0),
     indicator_common_id = character(0),
     period_id = integer(0),
