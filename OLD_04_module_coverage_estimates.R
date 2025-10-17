@@ -163,7 +163,7 @@ message("Final analysis level: ", ANALYSIS_LEVEL)
 coverage_params <- list(
   indicators = c(
     # Core
-    "anc1", "anc4", "delivery", "bcg",
+    "anc1", "anc4", "delivery", "sba", "bcg",
     "penta1", "penta3",
     "measles1", "measles2",
     "rota1", "rota2",
@@ -175,7 +175,7 @@ coverage_params <- list(
 
 # List of survey variables to carry forward (for forward-fill and projections)
 survey_vars <- c(
-  "avgsurvey_anc1", "avgsurvey_anc4", "avgsurvey_delivery",
+  "avgsurvey_anc1", "avgsurvey_anc4", "avgsurvey_delivery", "avgsurvey_sba",
   "avgsurvey_bcg",
   "avgsurvey_penta1", "avgsurvey_penta3",
   "avgsurvey_measles1", "avgsurvey_measles2",
@@ -191,7 +191,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   
   expected_indicators <- c(
     # Core RMNCH indicators
-    "anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "nmr", "imr",
+    "anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "nmr", "imr",
     "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother"
   )
   
@@ -268,7 +268,8 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 }
 
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
-process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
+process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR,
+                                national_reference = NULL) {
 
   # Filter by ISO3 if available, otherwise use admin_area_1
   if (!is.null(hmis_iso3) && "iso3_code" %in% names(survey_data)) {
@@ -288,7 +289,7 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
   
-  indicators <- c("anc1", "anc4", "delivery", "bcg", "penta1", "penta3", "measles1", "measles2",
+  indicators <- c("anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "measles1", "measles2",
                   "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr")
   
   survey_filtered <- if (is_national) {
@@ -408,15 +409,40 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
       survey_carried[[carry_col]] <- survey_carried[[avg_col]]
     }
   }
-  
-  if (!is_national) {
+
+  # If sba reference doesn't exist, use delivery reference as fallback
+  if (!"sbacarry" %in% names(survey_carried) && "deliverycarry" %in% names(survey_carried)) {
+    survey_carried$sbacarry <- survey_carried$deliverycarry
+  }
+
+  # defaults for subnational when missing - use national coverage estimate
+  # If no national reference is available, leave as NA (no coverage calculation)
+  if (!is_national && !is.null(national_reference)) {
+    # Extract national coverage values by year for vaccination indicators
     for (ind in c("bcg", "penta1", "penta3")) {
       carry_col <- paste0(ind, "carry")
-      if (!(carry_col %in% names(survey_carried))) {
-        survey_carried[[carry_col]] <- 0.70
-      } else {
-        survey_carried[[carry_col]] <- ifelse(is.na(survey_carried[[carry_col]]), 0.70,
-                                              survey_carried[[carry_col]])
+      nat_col <- paste0("avgsurvey_", ind)
+
+      # If national reference data is provided, join and use national values as defaults
+      if (nat_col %in% names(national_reference)) {
+        national_vals <- national_reference %>%
+          select(year, national_value = all_of(nat_col)) %>%
+          distinct()
+
+        survey_carried <- survey_carried %>%
+          left_join(national_vals, by = "year")
+
+        # Only fill missing values with national estimates; if national is also NA, leave as NA
+        if (!(carry_col %in% names(survey_carried))) {
+          survey_carried[[carry_col]] <- survey_carried$national_value
+        } else {
+          survey_carried[[carry_col]] <- ifelse(is.na(survey_carried[[carry_col]]),
+                                                survey_carried$national_value,
+                                                survey_carried[[carry_col]])
+        }
+
+        # Clean up temporary column
+        survey_carried <- survey_carried %>% select(-national_value)
       }
     }
   }
@@ -480,6 +506,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     anc1      = c("countanc1", "anc1carry"),
     anc4      = c("countanc4", "anc4carry"),
     delivery  = c("countdelivery", "deliverycarry"),
+    sba       = c("countsba", "sbacarry"),
     penta1    = c("countpenta1", "penta1carry"),
     penta2    = c("countpenta2", "penta2carry"),
     penta3    = c("countpenta3", "penta3carry"),
@@ -539,7 +566,18 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
       ddelivery_measles2      = safe_calc(ddelivery_dpt * (1 - 2 * P2_PNMR))
     )
   }
-  
+
+  if (all(indicator_vars$sba %in% available_vars)) {
+    data <- data %>% mutate(
+      dsba_livebirth     = safe_mutate("sba", countsba / sbacarry),
+      dsba_birth         = safe_calc(dsba_livebirth / (1 - STILLBIRTH_RATE)),
+      dsba_pregnancy     = safe_calc(dsba_birth * (1 - 0.5 * TWIN_RATE) / (1 - PREGNANCY_LOSS_RATE)),
+      dsba_dpt           = safe_calc(dsba_livebirth * (1 - P1_NMR)),
+      dsba_measles1      = safe_calc(dsba_dpt * (1 - P2_PNMR)),
+      dsba_measles2      = safe_calc(dsba_dpt * (1 - 2 * P2_PNMR))
+    )
+  }
+
   if (all(indicator_vars$penta1 %in% available_vars)) {
     data <- data %>% mutate(
       dpenta1_dpt             = safe_mutate("penta1", countpenta1 / penta1carry),
@@ -615,20 +653,20 @@ evaluate_coverage_by_denominator <- function(data) {
   # Denominator-to-indicator map (based on suffix only)
   suffix_indicator_map <- tribble(
     ~suffix,       ~indicators,
-    
+
     # Used for indicators related to pregnancy services and ANC
     "pregnancy",   c("anc1", "anc4"),
-    
+
     # Used for indicators that apply to newborns or children under 5
-    "livebirth",   c("delivery", "bcg", "pnc1_mother"),
-    
+    "livebirth",   c("delivery", "sba", "bcg", "pnc1_mother"),
+
     # Used for infant immunization indicators (0–1 year)
     "dpt",         c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                      "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
-    
+
     # Used for coverage of first measles dose
     "measles1",    c("measles1"),
-    
+
     # Used for coverage of second measles dose
     "measles2",    c("measles2")
   )
@@ -691,6 +729,7 @@ evaluate_coverage_by_denominator <- function(data) {
       source_type = case_when(
         str_starts(denominator, "danc1_")      & indicator_common_id == "anc1"     ~ "reference_based",
         str_starts(denominator, "ddelivery_")  & indicator_common_id == "delivery" ~ "reference_based",
+        str_starts(denominator, "dsba_")       & indicator_common_id == "sba"      ~ "reference_based",
         str_starts(denominator, "dpenta1_")    & indicator_common_id == "penta1"   ~ "reference_based",
         str_starts(denominator, "dbcg_")       & indicator_common_id == "bcg"      ~ "reference_based",
         str_starts(denominator, "dwpp_")                                       ~ "unwpp_based",
@@ -789,7 +828,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
     pregnancy  = c("anc1", "anc4"),
-    livebirth  = c("bcg", "delivery", "pnc1_mother"),
+    livebirth  = c("bcg", "delivery", "sba", "pnc1_mother"),
     dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     measles1   = c("measles1"),
@@ -1100,7 +1139,8 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
     survey_processed_admin2 <- tryCatch({
-      process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries)
+      process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
+                          national_reference = survey_processed_national$carried)
     }, error = function(e) {
       message("================================================================================")
       warning("⚠️  MISMATCH DETECTED: admin_area_2 names differ between HMIS and survey data")
@@ -1145,7 +1185,8 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
         # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
         survey_processed_admin3 <- tryCatch({
-          process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries)
+          process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries,
+                              national_reference = survey_processed_national$carried)
         }, error = function(e) {
           message("================================================================================")
           warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
