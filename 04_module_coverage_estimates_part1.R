@@ -970,25 +970,25 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
          " (admin_area_2 and admin_area_3 optional; defaults to 'NATIONAL').")
   }
 
-  # Ensure admin_area_2 exists on both sides
-  if (!"admin_area_2" %in% names(coverage_data))     coverage_data     <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
-  if (!"admin_area_2" %in% names(survey_expanded_df)) survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
-
-  # Handle admin_area_3 - ensure both datasets have same admin level structure
+  # Determine which admin columns exist
+  has_admin2_cov <- "admin_area_2" %in% names(coverage_data)
+  has_admin2_sur <- "admin_area_2" %in% names(survey_expanded_df)
   has_admin3_cov <- "admin_area_3" %in% names(coverage_data)
   has_admin3_sur <- "admin_area_3" %in% names(survey_expanded_df)
 
-  if (has_admin3_cov && !has_admin3_sur) {
-    survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_3 = "NATIONAL")
-  } else if (!has_admin3_cov && has_admin3_sur) {
-    coverage_data <- coverage_data %>% mutate(admin_area_3 = "NATIONAL")
-  }
+  # Add missing admin_area_2 only if neither dataset has admin_area_3
+  if (!has_admin2_cov && !has_admin3_cov) coverage_data <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
+  if (!has_admin2_sur && !has_admin3_sur) survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
 
-  # Determine geo_keys based on available columns after standardization
-  geo_keys <- c("admin_area_1", "admin_area_2", "year")
-  if ("admin_area_3" %in% names(coverage_data) && "admin_area_3" %in% names(survey_expanded_df)) {
-    geo_keys <- c(geo_keys, "admin_area_3")
-  }
+  # Refresh flags
+  has_admin2_cov <- "admin_area_2" %in% names(coverage_data)
+  has_admin2_sur <- "admin_area_2" %in% names(survey_expanded_df)
+
+  # Build geo_keys dynamically
+  geo_keys <- c("admin_area_1")
+  if (has_admin2_cov && has_admin2_sur) geo_keys <- c(geo_keys, "admin_area_2")
+  if (has_admin3_cov && has_admin3_sur) geo_keys <- c(geo_keys, "admin_area_3")
+  geo_keys <- c(geo_keys, "year")
 
   # Geographic grouping keys (exclude year for consistent denominator selection)
   geo_only_keys <- geo_keys[geo_keys != "year"]
@@ -1534,10 +1534,17 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
     message("  → Processing admin area 3 data...")
 
+    # Extract admin_area_2/3 mapping from HMIS before transformation
+    admin23_mapping <- hmis_data_subnational %>%
+      filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+      select(admin_area_2, admin_area_3) %>%
+      distinct()
+
     hmis_admin3 <- hmis_data_subnational %>%
       filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+      rename(admin_area_3_temp = admin_area_3) %>%
       select(-admin_area_2) %>%
-      rename(admin_area_2 = admin_area_3)
+      rename(admin_area_2 = admin_area_3_temp)
 
     if (nrow(hmis_admin3) > 0) {
       hmis_processed_admin3   <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
@@ -1610,28 +1617,39 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         admin3_summary <- create_denominator_summary(denominators_admin3, "ADMIN3")
 
         # --- ADMIN3 RESULTS BUILDERS ---
-        numerators_admin3_long <- make_numerators_long(hmis_processed_admin3$annual_hmis)
-        numerators_admin3_long <- normalize_admin3_for_output(numerators_admin3_long)
+        numerators_admin3_long <- make_numerators_long(hmis_processed_admin3$annual_hmis) %>%
+          rename(admin_area_3 = admin_area_2)
 
         denominators_admin3_results <- if (exists("admin3_summary")) make_denominators_results(admin3_summary) else NULL
         if (!is.null(denominators_admin3_results)) {
-          denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
-          denominators_admin3_results <- normalize_admin3_for_output(denominators_admin3_results)
+          denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator") %>%
+            rename(admin_area_3 = admin_area_2)
         }
 
         survey_raw_admin3_long <- make_survey_raw_long(
           dhs_mics_raw_long = survey_processed_admin3$raw_long,
           unwpp_raw_long    = NULL
         )
-        survey_raw_admin3_long <- normalize_admin3_for_output(survey_raw_admin3_long)
 
         survey_reference_admin3 <- if (exists("survey_processed_admin3") &&
                                        is.list(survey_processed_admin3) &&
                                        "carried" %in% names(survey_processed_admin3) &&
                                        is.data.frame(survey_processed_admin3$carried) &&
                                        nrow(survey_processed_admin3$carried) > 0) {
-          make_survey_reference_long(survey_processed_admin3$carried) %>% normalize_admin3_for_output()
+          make_survey_reference_long(survey_processed_admin3$carried)
         } else NULL
+
+        # Apply admin_area_2/3 mapping (from HMIS) to results
+        if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
+          if (!is.null(numerators_admin3_long)) {
+            numerators_admin3_long <- numerators_admin3_long %>%
+              left_join(admin23_mapping, by = "admin_area_3")
+          }
+          if (!is.null(denominators_admin3_results)) {
+            denominators_admin3_results <- denominators_admin3_results %>%
+              left_join(admin23_mapping, by = "admin_area_3")
+          }
+        }
 
         # --- ADMIN3 COVERAGE / COMPARISON / COMBINED ---
         if (!is.null(denominators_admin3_results) &&
@@ -1724,12 +1742,12 @@ if (exists("denominators_admin3_results") &&
     is.data.frame(denominators_admin3_results) &&
     nrow(denominators_admin3_results) > 0) {
 
-  df <- normalize_admin3_for_output(denominators_admin3_results) %>%
+  df <- denominators_admin3_results %>%
     mutate(
       source_indicator = paste0("source_", source_indicator),
       target_population = paste0("target_", target_population)
     ) %>%
-    select(-denominator_label)
+    select(-any_of(c("denominator_label", "admin_area_2")))
 
   write.csv(df, "M4_denominators_admin3.csv",
             row.names = FALSE, fileEncoding = "UTF-8")
@@ -1801,14 +1819,12 @@ if (exists("admin2_combined_results") && is.data.frame(admin2_combined_results) 
 
 # ---------------- ADMIN3 ----------------
 if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) && nrow(admin3_combined_results) > 0) {
-  # Rename admin_area_2 → admin_area_3 if needed
-  if ("admin_area_2" %in% names(admin3_combined_results) && !"admin_area_3" %in% names(admin3_combined_results)) {
+  if ("admin_area_3" %in% names(admin3_combined_results)) {
     admin3_combined_results <- admin3_combined_results %>%
-      rename(admin_area_3 = admin_area_2)
+      filter(admin_area_3 != "NATIONAL")
   }
-  if ("denominator_label" %in% names(admin3_combined_results)) {
-    admin3_combined_results <- admin3_combined_results %>% select(-denominator_label)
-  }
+  admin3_combined_results <- admin3_combined_results %>%
+    select(-any_of(c("denominator_label", "admin_area_2")))
   write.csv(admin3_combined_results, "M4_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_admin3: ", nrow(admin3_combined_results), " rows")
 } else {
