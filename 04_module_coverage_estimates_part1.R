@@ -5,8 +5,8 @@ SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "c
 PREGNANCY_LOSS_RATE <- 0.03
 TWIN_RATE <- 0.015
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.041     #Default = 0.03
-P2_PNMR <- 0.022
+P1_NMR <- 0.039     #Default = 0.03
+P2_PNMR <- 0.028
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
@@ -207,6 +207,7 @@ coverage_params <- list(
     "opv1",
     "opv2",
     "opv3",
+    "pnc1",
     "pnc1_mother",
     "nmr",
     "imr"
@@ -229,6 +230,7 @@ survey_vars <- c(
   "avgsurvey_opv1",
   "avgsurvey_opv2",
   "avgsurvey_opv3",
+  "avgsurvey_pnc1",
   "avgsurvey_pnc1_mother",
   "avgsurvey_nmr",
   "avgsurvey_imr",
@@ -242,21 +244,11 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "nmr", "imr",
-    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother"
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1", "pnc1_mother"
   )
-  
-  # Check if both pnc1_mother and pnc1 exist in the data
-  has_pnc1_mother <- "pnc1_mother" %in% adjusted_volume_data$indicator_common_id
-  has_pnc1 <- "pnc1" %in% adjusted_volume_data$indicator_common_id
-  
-  if (!has_pnc1_mother && has_pnc1) {
-    # If pnc1_mother doesn't exist but pnc1 does, rename pnc1 to pnc1_mother
-    adjusted_volume_data$indicator_common_id[adjusted_volume_data$indicator_common_id == "pnc1"] <- "pnc1_mother"
-    pnc1_renamed_to_mother <<- TRUE # Set flag to TRUE
-  } else if (has_pnc1_mother && has_pnc1) {
-    adjusted_volume_data <- adjusted_volume_data %>% filter(indicator_common_id != "pnc1")
-    message("Note: Both 'pnc1_mother' and 'pnc1' found. Keeping only 'pnc1_mother'.")
-  }
+
+  # Keep pnc1 and pnc1_mother as-is in HMIS data
+  # Survey duplication logic will ensure both indicators exist in survey reference data
   
   
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
@@ -338,11 +330,6 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
       )
   }
 
-  # Intelligent PNC1 matching based on what exists in survey data
-  survey_pnc_indicators <- unique(survey_data$indicator_common_id)
-  has_survey_pnc1 <- "pnc1" %in% survey_pnc_indicators
-  has_survey_pnc1_mother <- "pnc1_mother" %in% survey_pnc_indicators
-
   # Apply recoding logic
   survey_data <- survey_data %>%
     mutate(
@@ -353,33 +340,7 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
       )
     )
 
-  # Handle PNC1 mapping intelligently
-  if (has_survey_pnc1 && has_survey_pnc1_mother) {
-    # Both exist: keep as-is (pnc1 stays pnc1, pnc1_mother stays pnc1_mother)
-    message("Survey data has both pnc1 and pnc1_mother - keeping both")
-  } else if (has_survey_pnc1 && !has_survey_pnc1_mother) {
-    # Only pnc1 exists: decide based on HMIS data
-    if (isTRUE(pnc1_renamed_to_mother)) {
-      # HMIS originally had pnc1 (renamed to pnc1_mother) -> keep survey pnc1 as pnc1
-      message("Survey has pnc1, HMIS originally had pnc1 - keeping survey pnc1 as pnc1")
-    } else {
-      # HMIS has pnc1_mother -> rename survey pnc1 to pnc1_mother
-      survey_data <- survey_data %>%
-        mutate(indicator_common_id = recode(indicator_common_id, "pnc1" = "pnc1_mother"))
-      message("Survey has pnc1, HMIS has pnc1_mother - renaming survey pnc1 to pnc1_mother")
-    }
-  } else if (!has_survey_pnc1 && has_survey_pnc1_mother) {
-    # Only pnc1_mother exists: decide based on HMIS data
-    if (isTRUE(pnc1_renamed_to_mother)) {
-      # HMIS originally had pnc1 -> rename survey pnc1_mother to pnc1
-      survey_data <- survey_data %>%
-        mutate(indicator_common_id = recode(indicator_common_id, "pnc1_mother" = "pnc1"))
-      message("Survey has pnc1_mother, HMIS originally had pnc1 - renaming survey pnc1_mother to pnc1")
-    } else {
-      # HMIS has pnc1_mother -> keep survey pnc1_mother as pnc1_mother
-      message("Survey has pnc1_mother, HMIS has pnc1_mother - keeping survey pnc1_mother as pnc1_mother")
-    }
-  }
+  # Keep pnc1 and pnc1_mother as-is - duplication logic will handle creating both versions
   
   # national vs subnational
   is_national <- all(survey_data$admin_area_2 == "NATIONAL", na.rm = TRUE)
@@ -387,7 +348,7 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
   indicators <- c(
     "anc1","anc4","delivery","sba","bcg","penta1","penta3",
     "measles1","measles2","rota1","rota2","opv1","opv2","opv3",
-    "pnc1_mother","nmr","imr"
+    "pnc1","pnc1_mother","nmr","imr"
   )
   
   survey_filtered <- if (is_national) {
@@ -616,7 +577,12 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
     raw_survey_values <- raw_survey_values %>% mutate(admin_area_2 = "NATIONAL")
     raw_pick_long     <- raw_pick_long     %>% mutate(admin_area_2 = "NATIONAL")
   }
-  
+
+  # Always duplicate pnc1carry → pnc1_mothercarry (survey only has pnc1)
+  if ("pnc1carry" %in% names(survey_carried)) {
+    survey_carried$pnc1_mothercarry <- survey_carried$pnc1carry
+  }
+
   list(
     carried  = survey_carried %>% arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
     raw      = raw_survey_values,   # wide: rawsurvey_* + rawsource_* + rawdetail_* per indicator
@@ -668,11 +634,6 @@ process_national_population_data <- function(population_data, hmis_countries, hm
   
   # ensure source_detail exists if absent
   if (!"source_detail" %in% names(raw_long)) raw_long$source_detail <- NA_character_
-  
-  # optional: revert pnc1_mother -> pnc1
-  if (exists("rename_back_pnc1")) {
-    raw_long$indicator_common_id <- rename_back_pnc1(raw_long$indicator_common_id)
-  }
   
   raw_long <- raw_long %>%
     select(admin_area_1, admin_area_2, year,
@@ -1185,7 +1146,6 @@ make_numerators_long <- function(annual_hmis_df) {
       values_to = "count",
       names_pattern = "^count(.*)$"
     ) %>%
-    mutate(indicator_common_id = rename_back_pnc1(indicator_common_id)) %>%
     select(admin_area_1, admin_area_2, year, indicator_common_id, count) %>%
     arrange(admin_area_1, admin_area_2, year, indicator_common_id)
 }
@@ -1225,9 +1185,7 @@ make_survey_raw_long <- function(dhs_mics_raw_long, unwpp_raw_long = NULL) {
     df %>%
       mutate(
         admin_area_2 = if_else(is.na(admin_area_2) | admin_area_2 == "", "NATIONAL", admin_area_2),
-        year = as.integer(year),
-        indicator_common_id = if (exists("rename_back_pnc1"))
-          rename_back_pnc1(indicator_common_id) else indicator_common_id
+        year = as.integer(year)
       ) %>%
       select(admin_area_1, admin_area_2, year,
              indicator_common_id, source, source_detail, survey_value) %>%
@@ -1237,9 +1195,16 @@ make_survey_raw_long <- function(dhs_mics_raw_long, unwpp_raw_long = NULL) {
   parts <- list(norm(dhs_mics_raw_long), norm(unwpp_raw_long))
   parts <- Filter(function(x) !is.null(x) && nrow(x) > 0, parts)
   if (length(parts) == 0) return(NULL)
-  
-  bind_rows(parts) %>%
-    arrange(admin_area_1, admin_area_2, year, indicator_common_id)
+
+  result <- bind_rows(parts)
+
+  # Always duplicate pnc1 → pnc1_mother (survey only has pnc1)
+  if ("pnc1" %in% result$indicator_common_id) {
+    pnc_rows <- result %>% filter(indicator_common_id == "pnc1") %>% mutate(indicator_common_id = "pnc1_mother")
+    result <- bind_rows(result, pnc_rows)
+  }
+
+  result %>% arrange(admin_area_1, admin_area_2, year, indicator_common_id)
 }
 
 # Results 4: Survey REFERENCE (from carried values)
@@ -1274,7 +1239,10 @@ make_survey_reference_long <- function(survey_expanded_df) {
       names_pattern = "(.*)carry$",
       values_to     = "reference_value"
     ) |>
-    filter(!is.na(reference_value))
+    filter(!is.na(reference_value)) |>
+    mutate(
+      year = as.integer(year)
+    )
 
   # If delivery exists but sba doesn't, duplicate delivery rows as sba
   has_delivery <- "delivery" %in% unique(result$indicator_common_id)
@@ -1290,12 +1258,11 @@ make_survey_reference_long <- function(survey_expanded_df) {
     result <- bind_rows(result, sba_refs)
   }
 
-  # If pnc1 exists but pnc1_mother doesn't, duplicate pnc1 rows as pnc1_mother
-  if (has_pnc1 && !has_pnc1_mother) {
+  # Always duplicate pnc1 → pnc1_mother (survey only has pnc1)
+  if (has_pnc1) {
     pnc_refs <- result |>
       filter(indicator_common_id == "pnc1") |>
       mutate(indicator_common_id = "pnc1_mother")
-
     result <- bind_rows(result, pnc_refs)
   }
 

@@ -317,64 +317,43 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       .pivot_year = suppressWarnings(min(year[!is.na(coverage_cov)], na.rm = TRUE)),
       .pivot_year = ifelse(is.infinite(.pivot_year), NA_real_, .pivot_year),
 
-      # Get last survey value before pivot year (the baseline)
-      .last_survey = if_else(
-        !is.na(.pivot_year),
-        {
-          # Get the last non-NA survey value before pivot year
-          last_val <- coverage_original_estimate[!is.na(coverage_original_estimate) & year < .pivot_year]
-          if (length(last_val) > 0) last(last_val) else NA_real_
-        },
+      # Find last survey year (max year with non-NA coverage_original_estimate)
+      .last_survey_year = suppressWarnings(max(year[!is.na(coverage_original_estimate)], na.rm = TRUE)),
+      .last_survey_year = ifelse(is.infinite(.last_survey_year), NA_real_, .last_survey_year),
+
+      # Get last survey value
+      .last_survey_value = if_else(
+        !is.na(.last_survey_year),
+        coverage_original_estimate[year == .last_survey_year][1],
         NA_real_
       ),
 
-      # Get coverage_cov at pivot year (for delta calculation)
-      .pivot_cov = if_else(
-        !is.na(.pivot_year),
-        coverage_cov[year == .pivot_year][1],
+      # Get coverage_cov at last survey year (for delta calculation)
+      .baseline_cov = if_else(
+        !is.na(.last_survey_year),
+        coverage_cov[year == .last_survey_year][1],
         NA_real_
       ),
 
-      # Forward-fill survey up to and including pivot year
-      coverage_original_estimate = case_when(
-        # If no pivot year, forward-fill to end
-        is.na(.pivot_year) ~ zoo::na.locf(coverage_original_estimate, na.rm = FALSE),
-        # Before pivot: forward-fill
-        year < .pivot_year ~ zoo::na.locf(coverage_original_estimate, na.rm = FALSE),
-        # At pivot: use last_survey
-        year == .pivot_year ~ .last_survey,
-        # After pivot: NA
-        TRUE ~ NA_real_
-      ),
+      # Keep coverage_original_estimate as-is - preserve all actual survey values
 
-      # Forward-fill source info similarly
-      survey_raw_source = case_when(
-        is.na(.pivot_year) ~ zoo::na.locf(survey_raw_source, na.rm = FALSE),
-        year <= .pivot_year ~ zoo::na.locf(survey_raw_source, na.rm = FALSE),
-        TRUE ~ NA_character_
-      ),
-      survey_raw_source_detail = case_when(
-        is.na(.pivot_year) ~ zoo::na.locf(survey_raw_source_detail, na.rm = FALSE),
-        year <= .pivot_year ~ zoo::na.locf(survey_raw_source_detail, na.rm = FALSE),
-        TRUE ~ NA_character_
-      ),
-
-      # Calculate projections starting FROM pivot year
-      # Formula: proj[t] = last_survey + (coverage_cov[t] - coverage_cov[pivot_year])
+      # Calculate projections starting FROM last survey year
+      # At last survey year: copy survey value
+      # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
       coverage_avgsurveyprojection = case_when(
-        # No projection if no pivot year or no baseline
-        is.na(.pivot_year) | is.na(.last_survey) ~ NA_real_,
-        # At pivot year: use baseline (last_survey)
-        year == .pivot_year ~ .last_survey,
-        # After pivot: additive projection
-        year > .pivot_year & !is.na(coverage_cov) ~
-          .last_survey + (coverage_cov - .pivot_cov),
+        # No projection if no baseline
+        is.na(.last_survey_value) | is.na(.last_survey_year) | is.na(.baseline_cov) ~ NA_real_,
+        # At last survey year: copy survey value
+        year == .last_survey_year ~ .last_survey_value,
+        # After last survey year: additive projection
+        year > .last_survey_year & !is.na(coverage_cov) ~
+          .last_survey_value + (coverage_cov - .baseline_cov),
         # Otherwise NA
         TRUE ~ NA_real_
       )
     ) %>%
     ungroup() %>%
-    select(-.pivot_year, -.last_survey, -.pivot_cov)
+    select(-.pivot_year, -.last_survey_year, -.last_survey_value, -.baseline_cov)
   
   final
 }
