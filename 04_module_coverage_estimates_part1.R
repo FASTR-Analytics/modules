@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SEN"
+COUNTRY_ISO3 <- "NGA"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -10,7 +10,7 @@ P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -1246,15 +1246,28 @@ make_survey_raw_long <- function(dhs_mics_raw_long, unwpp_raw_long = NULL) {
 make_survey_reference_long <- function(survey_expanded_df) {
   if (is.null(survey_expanded_df) || nrow(survey_expanded_df) == 0) return(NULL)
 
-  if (!"admin_area_2" %in% names(survey_expanded_df)) {
+  # Determine which admin columns exist
+  has_admin2 <- "admin_area_2" %in% names(survey_expanded_df)
+  has_admin3 <- "admin_area_3" %in% names(survey_expanded_df)
+
+  # Build the list of admin columns to select
+  admin_cols <- c("admin_area_1")
+  if (has_admin2) {
+    admin_cols <- c(admin_cols, "admin_area_2")
+  } else if (!has_admin2 && !has_admin3) {
+    # Only add default admin_area_2 if neither admin2 nor admin3 exist
     survey_expanded_df$admin_area_2 <- "NATIONAL"
+    admin_cols <- c(admin_cols, "admin_area_2")
+  }
+  if (has_admin3) {
+    admin_cols <- c(admin_cols, "admin_area_3")
   }
 
   carry_cols <- grep("carry$", names(survey_expanded_df), value = TRUE)
   if (length(carry_cols) == 0) return(NULL)
 
   result <- survey_expanded_df |>
-    select(admin_area_1, admin_area_2, year, all_of(carry_cols)) |>
+    select(all_of(admin_cols), year, all_of(carry_cols)) |>
     pivot_longer(
       cols          = all_of(carry_cols),
       names_to      = "indicator_common_id",
@@ -1286,8 +1299,14 @@ make_survey_reference_long <- function(survey_expanded_df) {
     result <- bind_rows(result, pnc_refs)
   }
 
+  # Build arrange expression based on available columns
+  arrange_cols <- c("admin_area_1")
+  if ("admin_area_2" %in% names(result)) arrange_cols <- c(arrange_cols, "admin_area_2")
+  if ("admin_area_3" %in% names(result)) arrange_cols <- c(arrange_cols, "admin_area_3")
+  arrange_cols <- c(arrange_cols, "year", "indicator_common_id")
+
   result |>
-    arrange(admin_area_1, admin_area_2, year, indicator_common_id)
+    arrange(across(all_of(arrange_cols)))
 }
 
 # Helper: ensure admin3 outputs have the right column name
@@ -1592,10 +1611,12 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
         # --- ADMIN3 RESULTS BUILDERS ---
         numerators_admin3_long <- make_numerators_long(hmis_processed_admin3$annual_hmis)
+        numerators_admin3_long <- normalize_admin3_for_output(numerators_admin3_long)
 
         denominators_admin3_results <- if (exists("admin3_summary")) make_denominators_results(admin3_summary) else NULL
         if (!is.null(denominators_admin3_results)) {
           denominators_admin3_results <- add_denominator_labels(denominators_admin3_results, "denominator")
+          denominators_admin3_results <- normalize_admin3_for_output(denominators_admin3_results)
         }
 
         survey_raw_admin3_long <- make_survey_raw_long(
@@ -1781,7 +1802,7 @@ if (exists("admin2_combined_results") && is.data.frame(admin2_combined_results) 
 # ---------------- ADMIN3 ----------------
 if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) && nrow(admin3_combined_results) > 0) {
   # Rename admin_area_2 → admin_area_3 if needed
-  if ("admin_area_2" %in% names(admin3_combined_results)) {
+  if ("admin_area_2" %in% names(admin3_combined_results) && !"admin_area_3" %in% names(admin3_combined_results)) {
     admin3_combined_results <- admin3_combined_results %>%
       rename(admin_area_3 = admin_area_2)
   }
