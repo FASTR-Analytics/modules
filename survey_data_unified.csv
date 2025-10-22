@@ -10309,164 +10309,165 @@ ng Federal Government,la Lagos State,2023,ml_iptp_w_2sp,iptp2,percent,0.774,DHS 
 ng Federal Government,la Lagos State,2023,ml_iptp_w_3sp,iptp3,percent,0.259,DHS Sub-national,NG2023NDHS,household,Nigeria,NG,NGA
 ng Federal Government,la Lagos State,2023,rh_ancc_w_irn,iron_anc,percent,0.921,DHS Sub-national,NG2023NDHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,1990,rh_ancp_w_skp,anc1,percent,0.587,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,rh_ancn_w_n4p,anc4,percent,0.508,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_bcg,bcg,percent,0.467,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,fe_frtr_w_cbr,crudebr,rate,38.1,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,rh_delp_c_dhf,delivery,percent,0.323,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,fp_srcm_w_tot,fp,percent,1,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,cm_ecmt_c_imr,imr,rate,87,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_msl,measles1,percent,0.173,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,cm_ecmr_c_nnr,nmr,rate,42,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_dp1,penta1,percent,0.473,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_dp3,penta3,percent,0.282,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_op1,polio1,percent,0.472,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_op2,polio2,percent,0.394,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,ch_vac1_c_op3,polio3,percent,0.282,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,fe_frtr_w_tfr,tfr,rate,6,DHS National,NG1990DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,1990,fe_frty_w_npg,womenrepage,survey_count,8781,DHS National,NG1990DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2003,rh_ancp_w_skp,anc1,percent,0.583,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,rh_ancn_w_n4p,anc4,percent,0.468,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_bcg,bcg,percent,0.48,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,fe_frtr_w_cbr,crudebr,rate,41.7,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,rh_delp_c_dhf,delivery,percent,0.341,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,fp_srcm_w_tot,fp,percent,1,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,cm_ecmt_c_imr,imr,rate,100,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ml_iptp_w_spf,iptp1,percent,0.013,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ml_iptp_w_2sp,iptp2,percent,0.011,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ml_iptp_w_3sp,iptp3,percent,0.005,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,rh_ancc_w_irn,iron_anc,percent,0.583,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_msl,measles1,percent,0.178,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,cm_ecmr_c_nnr,nmr,rate,48,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_dp1,penta1,percent,0.396,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_dp3,penta3,percent,0.216,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_op1,polio1,percent,0.687,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_op2,polio2,percent,0.585,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,ch_vac1_c_op3,polio3,percent,0.353,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,fe_frtr_w_tfr,tfr,rate,5.7,DHS National,NG2003DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2003,fe_frty_w_npg,womenrepage,survey_count,7620,DHS National,NG2003DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2008,rh_ancp_w_skp,anc1,percent,0.574,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,rh_ancn_w_n01,anc1_old,percent,0.018,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,rh_ancn_w_n4p,anc4,percent,0.441,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_bcg,bcg,percent,0.483,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,fe_frtr_w_cbr,crudebr,rate,40.6,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,rh_delp_c_dhf,delivery,percent,0.357,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,cn_miac_c_dwm,deworming,percent,0.213,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,fp_srcm_w_tot,fp,percent,1,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,cm_ecmt_c_imr,imr,rate,75,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ml_iptp_w_spf,iptp1,percent,0.109,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ml_iptp_w_2sp,iptp2,percent,0.065,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ml_iptp_w_3sp,iptp3,percent,0.032,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,rh_ancc_w_irn,iron_anc,percent,0.545,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_msl,measles1,percent,0.192,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,cm_ecmr_c_nnr,nmr,rate,40,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_diat_c_orz,ors_zinc,percent,0.003,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_dp1,penta1,percent,0.478,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_dp3,penta3,percent,0.334,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_op1,polio1,percent,0.638,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_op2,polio2,percent,0.555,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,ch_vac1_c_op3,polio3,percent,0.375,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,cm_pnmr_c_nsb,still,number,228,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,fe_frtr_w_tfr,tfr,rate,5.7,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,cn_miac_c_vas,vitamina,percent,0.258,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,fe_frty_w_npg,womenrepage,survey_count,33385,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,rh_ancp_w_skp,anc1,percent,0.548,DHS National,NG2010MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2010,IM_BCG,bcg,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,rh_ancp_w_skp,anc1,percent,0.613,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,rh_ancp_w_skp,anc1,percent,0.643,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,rh_ancp_w_skp,anc1,percent,0.67,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,rh_ancp_w_skp,anc1,percent,0.63,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,rh_ancp_w_skp,anc1,percent,0.625,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,rh_ancn_w_n01,anc1_old,percent,0.018,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,rh_ancn_w_n01,anc1_old,percent,0.02,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,rh_ancn_w_n01,anc1_old,percent,0.039,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,rh_ancn_w_n01,anc1_old,percent,NA,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,rh_ancn_w_n4p,anc4,percent,0.508,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,rh_ancn_w_n4p,anc4,percent,0.468,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,rh_ancn_w_n4p,anc4,percent,0.441,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,rh_ancn_w_n4p,anc4,percent,0.511,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,rh_ancn_w_n4p,anc4,percent,0.562,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,rh_ancn_w_n4p,anc4,percent,0.515,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,rh_ancn_w_n4p,anc4,percent,0.524,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_bcg,bcg,percent,0.467,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_bcg,bcg,percent,0.48,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_bcg,bcg,percent,0.483,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_bcg,bcg,percent,0.491,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_vac1_c_bcg,bcg,percent,0.647,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_bcg,bcg,percent,0.67,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,fe_frtr_w_cbr,crudebr,rate,38.1,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,fe_frtr_w_cbr,crudebr,rate,41.7,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,fe_frtr_w_cbr,crudebr,rate,40.6,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,fe_frtr_w_cbr,crudebr,rate,41.9,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,fe_frtr_w_cbr,crudebr,rate,39.4,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,fe_frtr_w_cbr,crudebr,rate,35.6,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,fe_frtr_w_cbr,crudebr,rate,38.3,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,fe_frtr_w_cbr,crudebr,rate,32.4,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,rh_delp_c_dhf,delivery,percent,0.323,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,rh_delp_c_dhf,delivery,percent,0.341,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,rh_delp_c_dhf,delivery,percent,0.357,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,rh_delp_c_dhf,delivery,percent,0.377,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,rh_delp_c_dhf,delivery,percent,0.41,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,rh_delp_c_dhf,delivery,percent,0.43,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,cn_miac_c_dwm,deworming,percent,0.213,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,cn_miac_c_dwm,deworming,percent,0.199,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,cn_miac_c_dwm,deworming,percent,0.253,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,cn_miac_c_dwm,deworming,percent,0.26,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,fp_srcm_w_tot,fp,percent,1,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,fp_srcm_w_tot,fp,percent,1,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,fp_srcm_w_tot,fp,percent,1,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,fp_srcm_w_tot,fp,percent,1,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,fp_srcm_w_tot,fp,percent,1,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,fp_srcm_w_tot,fp,percent,0.15,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,cm_ecmt_c_imr,imr,rate,87,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,cm_ecmt_c_imr,imr,rate,100,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,cm_ecmt_c_imr,imr,rate,75,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,cm_ecmt_c_imr,imr,rate,78,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,cm_ecmt_c_imr,imr,rate,69,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,cm_ecmt_c_imr,imr,rate,67,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ml_iptp_w_spf,iptp1,percent,0.013,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ml_iptp_w_spf,iptp1,percent,0.109,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,ml_iptp_w_spf,iptp1,percent,0.202,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ml_iptp_w_spf,iptp1,percent,0.273,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,ml_iptp_w_spf,iptp1,percent,0.514,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ml_iptp_w_spf,iptp1,percent,0.636,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2010,IM_BCG,bcg,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,ml_iptp_w_spf,iptp1,percent,0.589,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ml_iptp_w_spf,iptp1,percent,0.635,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ml_iptp_w_2sp,iptp2,percent,0.011,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ml_iptp_w_2sp,iptp2,percent,0.065,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,ml_iptp_w_2sp,iptp2,percent,0.146,DHS National,NG2010MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2010,ml_iptp_w_3sp,iptp3,percent,0.057,DHS National,NG2010MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2010,cm_ecmr_c_nnr,nmr,rate,42,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ml_iptp_w_2sp,iptp2,percent,0.174,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,IM_DTP1,penta1,percent,0.6,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2010,IM_DTP3,penta3,percent,0.56,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2010,fe_frtr_w_tfr,tfr,rate,6.1,DHS National,NG2010MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2010,fe_frty_w_npg,womenrepage,survey_count,6344,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,ml_iptp_w_2sp,iptp2,percent,0.409,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ml_iptp_w_2sp,iptp2,percent,0.404,DHS National,NG2018DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2011,IM_BCG,bcg,percent,0.59,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2011,IM_DTP1,penta1,percent,0.53,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2011,IM_DTP3,penta3,percent,0.53,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2012,IM_BCG,bcg,percent,0.57,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2012,IM_DTP1,penta1,percent,0.39,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2012,IM_DTP3,penta3,percent,0.36,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,rh_ancp_w_skp,anc1,percent,0.613,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,rh_ancn_w_n01,anc1_old,percent,0.02,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,rh_ancn_w_n4p,anc4,percent,0.511,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_bcg,bcg,percent,0.491,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,ml_iptp_w_2sp,iptp2,percent,0.459,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ml_iptp_w_2sp,iptp2,percent,0.495,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ml_iptp_w_3sp,iptp3,percent,0.005,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ml_iptp_w_3sp,iptp3,percent,0.032,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2013,IM_BCG,bcg,percent,0.54,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,fe_frtr_w_cbr,crudebr,rate,39.4,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,rh_delp_c_dhf,delivery,percent,0.377,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,cn_miac_c_dwm,deworming,percent,0.199,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,fp_srcm_w_tot,fp,percent,1,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,cm_ecmt_c_imr,imr,rate,69,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ml_iptp_w_spf,iptp1,percent,0.273,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ml_iptp_w_2sp,iptp2,percent,0.174,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2010,ml_iptp_w_3sp,iptp3,percent,0.057,DHS National,NG2010MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2013,ml_iptp_w_3sp,iptp3,percent,0.071,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,ml_iptp_w_3sp,iptp3,percent,0.214,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ml_iptp_w_3sp,iptp3,percent,0.166,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,ml_iptp_w_3sp,iptp3,percent,0.31,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ml_iptp_w_3sp,iptp3,percent,0.261,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,rh_ancc_w_irn,iron_anc,percent,0.583,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,rh_ancc_w_irn,iron_anc,percent,0.545,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2013,rh_ancc_w_irn,iron_anc,percent,0.64,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_msl,measles1,percent,0.198,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,cm_ecmr_c_nnr,nmr,rate,37,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_diat_c_orz,ors_zinc,percent,0.014,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_dp1,penta1,percent,0.479,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,rh_ancc_w_irn,iron_anc,percent,0.702,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,rh_ancc_w_irn,iron_anc,percent,0.667,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_msl,measles1,percent,0.173,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_msl,measles1,percent,0.178,DHS National,NG2003DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2013,IM_DTP1,penta1,percent,0.41,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_dp3,penta3,percent,0.37,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_msl,measles1,percent,0.192,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2013,IM_DTP3,penta3,percent,0.39,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_op1,polio1,percent,0.727,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_op2,polio2,percent,0.661,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,ch_vac1_c_op3,polio3,percent,0.501,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,cm_pnmr_c_nsb,still,number,396,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,fe_frtr_w_tfr,tfr,rate,5.5,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,cn_miac_c_vas,vitamina,percent,0.413,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,fe_frty_w_npg,womenrepage,survey_count,38948,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_msl,measles1,percent,0.198,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_vac1_c_msl,measles1,percent,0.49,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_msl,measles1,percent,0.514,DHS National,NG2023DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,cm_ecmr_c_nnr,nmr,rate,42,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,cm_ecmr_c_nnr,nmr,rate,48,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,cm_ecmr_c_nnr,nmr,rate,40,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2010,cm_ecmr_c_nnr,nmr,rate,42,DHS National,NG2010MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2014,IM_BCG,bcg,percent,0.51,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2014,IM_DTP1,penta1,percent,0.46,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2014,IM_DTP3,penta3,percent,0.43,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,rh_ancp_w_skp,anc1,percent,0.643,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,cm_ecmr_c_nnr,nmr,rate,37,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2015,IM_BCG,bcg,percent,0.53,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,fe_frtr_w_cbr,crudebr,rate,35.6,DHS National,NG2015MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,ml_iptp_w_spf,iptp1,percent,0.514,DHS National,NG2015MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,ml_iptp_w_2sp,iptp2,percent,0.409,DHS National,NG2015MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,ml_iptp_w_3sp,iptp3,percent,0.214,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,cm_ecmr_c_nnr,nmr,rate,39,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,cm_ecmr_c_nnr,nmr,rate,41,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_diat_c_orz,ors_zinc,percent,0.003,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_diat_c_orz,ors_zinc,percent,0.014,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2015,IM_DTP1,penta1,percent,0.49,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2015,IM_DTP3,penta3,percent,0.42,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,fe_frtr_w_tfr,tfr,rate,5,DHS National,NG2015MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2015,fe_frty_w_npg,womenrepage,survey_count,8034,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_diat_c_orz,ors_zinc,percent,0.228,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_diat_c_orz,ors_zinc,percent,0.236,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2016,IM_BCG,bcg,percent,0.64,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2016,IM_DTP1,penta1,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2016,IM_DTP3,penta3,percent,0.53,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2017,IM_BCG,bcg,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2017,IM_DTP1,penta1,percent,0.65,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2017,IM_DTP3,penta3,percent,0.55,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,rh_ancp_w_skp,anc1,percent,0.67,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,rh_ancn_w_n01,anc1_old,percent,0.03,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,rh_ancn_w_n4p,anc4,percent,0.562,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_vac1_c_bcg,bcg,percent,0.647,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_dp1,penta1,percent,0.473,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_dp1,penta1,percent,0.396,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_dp1,penta1,percent,0.478,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_dp1,penta1,percent,0.479,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2018,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,fe_frtr_w_cbr,crudebr,rate,38.3,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,rh_delp_c_dhf,delivery,percent,0.41,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,cn_miac_c_dwm,deworming,percent,0.253,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,fp_srcm_w_tot,fp,percent,1,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,cm_ecmt_c_imr,imr,rate,67,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ml_iptp_w_spf,iptp1,percent,0.636,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ml_iptp_w_2sp,iptp2,percent,0.404,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ml_iptp_w_3sp,iptp3,percent,0.166,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,rh_ancc_w_irn,iron_anc,percent,0.702,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_vac1_c_msl,measles1,percent,0.49,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,cm_ecmr_c_nnr,nmr,rate,39,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_diat_c_orz,ors_zinc,percent,0.228,DHS National,NG2018DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2018,ch_vac1_c_dp1,penta1,percent,0.625,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_dp1,penta1,percent,0.629,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_dp3,penta3,percent,0.282,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_dp3,penta3,percent,0.216,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_dp3,penta3,percent,0.334,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_dp3,penta3,percent,0.37,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2018,ch_vac1_c_dp3,penta3,percent,0.469,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op1,polio1,percent,0.736,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op2,polio2,percent,0.667,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_dp3,penta3,percent,0.534,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,NA,pnc1,percent,0.3,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,NA,pnc1,percent,0.4,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,NA,pnc1,percent,0.42,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,NA,pnc1,percent,0.429,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_op1,polio1,percent,0.472,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_op1,polio1,percent,0.687,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_op1,polio1,percent,0.638,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_op1,polio1,percent,0.727,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2018,IM_DTP1,penta1,percent,0.69,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,ch_vac1_c_op3,polio3,percent,0.472,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op1,polio1,percent,0.736,DHS National,NG2018DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2018,IM_DTP3,penta3,percent,0.61,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,cm_pnmr_c_nsb,still,number,605,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,fe_frtr_w_tfr,tfr,rate,5.3,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,cn_miac_c_vas,vitamina,percent,0.453,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,fe_frty_w_npg,womenrepage,survey_count,41821,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,rh_ancp_w_skp,anc1,percent,0.63,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,rh_ancn_w_n01,anc1_old,percent,0.039,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,rh_ancn_w_n4p,anc4,percent,0.515,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op1,polio1,percent,0.648,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_op2,polio2,percent,0.394,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_op2,polio2,percent,0.585,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_op2,polio2,percent,0.555,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_op2,polio2,percent,0.661,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op2,polio2,percent,0.667,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op2,polio2,percent,0.579,DHS National,NG2023MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2019,IM_BCG,bcg,percent,0.75,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2019,IM_DTP1,penta1,percent,0.72,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2019,IM_DTP3,penta3,percent,0.66,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
@@ -10475,48 +10476,49 @@ ng Federal Government,NATIONAL,2020,"Crude birth rate (births per 1,000 populati
 ng Federal Government,NATIONAL,2020,Infant mortality rate (IMR),imr,rate,74.69896,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2020,IM_DTP1,penta1,percent,0.7,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2020,IM_DTP3,penta3,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,fe_frtr_w_cbr,crudebr,rate,32.4,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,ml_iptp_w_spf,iptp1,percent,0.589,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,ml_iptp_w_2sp,iptp2,percent,0.459,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,ml_iptp_w_3sp,iptp3,percent,0.31,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,ch_vac1_c_op3,polio3,percent,0.282,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,ch_vac1_c_op3,polio3,percent,0.353,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,ch_vac1_c_op3,polio3,percent,0.375,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,ch_vac1_c_op3,polio3,percent,0.501,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2023,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2023,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.954,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2021MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2021,fe_frty_w_npg,womenrepage,survey_count,14476,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,ch_vac1_c_op3,polio3,percent,0.472,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,ch_vac1_c_op3,polio3,percent,0.456,DHS National,NG2023MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2023,Infant mortality rate (IMR),imr,rate,69.46855,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,rh_ancp_w_skp,anc1,percent,0.625,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,rh_ancn_w_n01,anc1_old,percent,NA,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,rh_ancn_w_n4p,anc4,percent,0.524,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_bcg,bcg,percent,0.67,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,rh_delp_c_dhf,delivery,percent,0.43,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,cm_pnmr_c_nsb,still,number,228,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,cm_pnmr_c_nsb,still,number,396,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,cm_pnmr_c_nsb,still,number,605,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,cm_pnmr_c_nsb,still,number,230,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,fe_frtr_w_tfr,tfr,rate,6,DHS National,NG1990DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2022,IM_BCG,bcg,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2022,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.192,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2022,Infant mortality rate (IMR),imr,rate,71.23166,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2022,IM_DTP1,penta1,percent,0.63,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2022,IM_DTP3,penta3,percent,0.59,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,fp_srcm_w_tot,fp,percent,0.15,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ml_iptp_w_spf,iptp1,percent,0.635,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ml_iptp_w_2sp,iptp2,percent,0.495,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,fe_frtr_w_tfr,tfr,rate,5.7,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,fe_frtr_w_tfr,tfr,rate,5.7,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2010,fe_frtr_w_tfr,tfr,rate,6.1,DHS National,NG2010MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2023,IM_DTP1,penta1,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ml_iptp_w_3sp,iptp3,percent,0.261,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,fe_frtr_w_tfr,tfr,rate,5.5,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2023,IM_DTP3,penta3,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,rh_ancc_w_irn,iron_anc,percent,0.667,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_msl,measles1,percent,0.514,DHS National,NG2023DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,cm_ecmr_c_nnr,nmr,rate,41,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_diat_c_orz,ors_zinc,percent,0.236,DHS National,NG2023NDHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_dp1,penta1,percent,0.629,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_dp3,penta3,percent,0.534,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,fe_frtr_w_tfr,tfr,rate,5,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,fe_frtr_w_tfr,tfr,rate,5.3,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,cn_miac_c_vas,vitamina,percent,0.258,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,cn_miac_c_vas,vitamina,percent,0.413,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2021,IM_BCG,bcg,percent,0.71,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op1,polio1,percent,0.648,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,cn_miac_c_vas,vitamina,percent,0.453,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,cn_miac_c_vas,vitamina,percent,0.37,DHS National,NG2023MIS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2021,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.546,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2021,Infant mortality rate (IMR),imr,rate,73.0155,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op2,polio2,percent,0.579,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,ch_vac1_c_op3,polio3,percent,0.456,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,cm_pnmr_c_nsb,still,number,230,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,1990,fe_frty_w_npg,womenrepage,survey_count,8781,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,fe_frty_w_npg,womenrepage,survey_count,7620,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,fe_frty_w_npg,womenrepage,survey_count,33385,DHS National,NG2008DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2021,IM_DTP1,penta1,percent,0.67,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2021,IM_DTP3,penta3,percent,0.61,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,fe_frtr_w_tfr,tfr,rate,4.8,DHS National,NG2023MIS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,fe_frty_w_npg,womenrepage,survey_count,39050,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2010,fe_frty_w_npg,womenrepage,survey_count,6344,DHS National,NG2010MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,fe_frty_w_npg,womenrepage,survey_count,38948,DHS National,NG2013DHS,household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2024,IM_BCG,bcg,percent,0.69,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2024,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.493,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
 ng Federal Government,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,68.46108,UNWPP,UNWPP,modeled,Nigeria,NG,NGA
@@ -13183,10 +13185,10 @@ ng Federal Government,cr Cross River State,2018,CH_VACC_C_MSL,measles1,percent,0
 ng Federal Government,de Delta State,2018,CH_VACC_C_MSL,measles1,percent,0.733,DHS Sub-national,NG2018DHS,household,Nigeria,NG,NGA
 ng Federal Government,ed Edo State,2018,CH_VACC_C_MSL,measles1,percent,0.806,DHS Sub-national,NG2018DHS,household,Nigeria,NG,NGA
 ng Federal Government,ri Rivers State,2018,CH_VACC_C_MSL,measles1,percent,0.728,DHS Sub-national,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2008,NA,pnc1,percent,0.3,DHS National,NG2008DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2013,NA,pnc1,percent,0.4,DHS National,NG2013DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2018,NA,pnc1,percent,0.42,DHS National,NG2018DHS,household,Nigeria,NG,NGA
-ng Federal Government,NATIONAL,2023,NA,pnc1,percent,0.43,DHS National,NG2023MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2015,fe_frty_w_npg,womenrepage,survey_count,8034,DHS National,NG2015MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,fe_frty_w_npg,womenrepage,survey_count,41821,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2021,fe_frty_w_npg,womenrepage,survey_count,14476,DHS National,NG2021MIS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2023,fe_frty_w_npg,womenrepage,survey_count,39050,DHS National,NG2023MIS,household,Nigeria,NG,NGA
 Nepal,NATIONAL,2010,IM_BCG,bcg,percent,0.94,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nepal,NP,NPL
 Nepal,NATIONAL,2010,IM_DTP1,penta1,percent,0.93,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nepal,NP,NPL
 Nepal,NATIONAL,2010,IM_DTP3,penta3,percent,0.93,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Nepal,NP,NPL
