@@ -55,8 +55,8 @@ DENOMINATOR_SELECTION <- list(
 # These parameters control the administrative levels (national, admin2, admin3)
 # for which the analysis will be performed.
 RUN_NATIONAL <- TRUE  # Always run national
-RUN_ADMIN2 <- FALSE   # Will be set based on data availability
-RUN_ADMIN3 <- FALSE   # Will be set based on data availability
+RUN_ADMIN2 <- TRUE   # Will be set based on data availability
+RUN_ADMIN3 <- TRUE   # Will be set based on data availability
 
 #------------------------------- Load the Data ---------------------------------------------------------------
 # Load combined results from Part 1 (contains coverage estimates for all denominators)
@@ -75,10 +75,17 @@ if (!RUN_ADMIN3) message("No data in admin3 combined results - admin3 analysis w
 # Load raw survey data (needed for projection baseline)
 # Extract survey data from combined results
 extract_survey_from_combined <- function(combined_df) {
-  combined_df %>%
+  result <- combined_df %>%
     filter(denominator_best_or_survey == "survey") %>%
-    mutate(survey_value = value) %>%
-    select(admin_area_1, admin_area_2, year, indicator_common_id, survey_value)
+    mutate(survey_value = value)
+
+  # Select columns dynamically based on what exists
+  cols <- c("admin_area_1")
+  if ("admin_area_2" %in% names(result)) cols <- c(cols, "admin_area_2")
+  if ("admin_area_3" %in% names(result)) cols <- c(cols, "admin_area_3")
+  cols <- c(cols, "year", "indicator_common_id", "survey_value")
+
+  result %>% select(all_of(cols))
 }
 
 survey_raw_national <- extract_survey_from_combined(combined_results_national)

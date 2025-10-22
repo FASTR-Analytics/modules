@@ -1631,6 +1631,15 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           unwpp_raw_long    = NULL
         )
 
+        # Expand survey raw data to admin_area_3 level using mapping
+        # Each admin_area_2 (zone) survey value applies to all admin_area_3 (districts) within it
+        if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
+          if (!is.null(survey_raw_admin3_long) && "admin_area_2" %in% names(survey_raw_admin3_long)) {
+            survey_raw_admin3_long <- survey_raw_admin3_long %>%
+              left_join(admin23_mapping, by = "admin_area_2", relationship = "many-to-many")
+          }
+        }
+
         survey_reference_admin3 <- if (exists("survey_processed_admin3") &&
                                        is.list(survey_processed_admin3) &&
                                        "carried" %in% names(survey_processed_admin3) &&
@@ -1638,6 +1647,15 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
                                        nrow(survey_processed_admin3$carried) > 0) {
           make_survey_reference_long(survey_processed_admin3$carried)
         } else NULL
+
+        # Expand survey reference to admin_area_3 level using mapping
+        # Each admin_area_2 (zone) survey value applies to all admin_area_3 (districts) within it
+        if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
+          if (!is.null(survey_reference_admin3) && "admin_area_2" %in% names(survey_reference_admin3)) {
+            survey_reference_admin3 <- survey_reference_admin3 %>%
+              left_join(admin23_mapping, by = "admin_area_2", relationship = "many-to-many")
+          }
+        }
 
         # Apply admin_area_2/3 mapping (from HMIS) to results
         if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
