@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SEN"
+COUNTRY_ISO3 <- "NGA"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -11,11 +11,11 @@ P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 9
+# Last edit: 2025 Oct 22
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -1040,42 +1040,64 @@ combined_national_export_fixed <- combined_national_export %>%
   group_modify(~ {
     df <- .x
     df <- df %>% arrange(year)
-    
-    # Anchor year: latest year with a non-missing original estimate
-    anchor_year <- max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE)
-    anchor_idx <- which(df$year == anchor_year)[1]
-    
-    # Fill forward coverage_cov from anchor year to next available non-NA
-    if (is.na(df$coverage_cov[anchor_idx])) {
-      next_cov_idx <- which(!is.na(df$coverage_cov) & df$year > anchor_year)
-      if (length(next_cov_idx) > 0) {
-        fill_value <- df$coverage_cov[next_cov_idx[1]]
-        df$coverage_cov[anchor_idx:next_cov_idx[1]] <- fill_value
+
+    # Find pivot year (first year with coverage_cov)
+    pivot_year <- suppressWarnings(min(df$year[!is.na(df$coverage_cov)], na.rm = TRUE))
+    if (is.infinite(pivot_year)) pivot_year <- NA
+
+    # Get last survey value BEFORE pivot year (the baseline)
+    last_survey <- NA_real_
+    if (!is.na(pivot_year)) {
+      survey_vals <- df$coverage_original_estimate[!is.na(df$coverage_original_estimate) & df$year < pivot_year]
+      if (length(survey_vals) > 0) {
+        last_survey <- tail(survey_vals, 1)
       }
     }
-    
-    # Recalculate delta
-    df <- df %>%
-      mutate(
-        cov_lag = lag(coverage_cov),
-        delta = coverage_cov - cov_lag
+
+    # Get coverage_cov at pivot year (for delta calculation)
+    pivot_cov <- NA_real_
+    if (!is.na(pivot_year)) {
+      pivot_idx <- which(df$year == pivot_year)[1]
+      if (length(pivot_idx) > 0) {
+        pivot_cov <- df$coverage_cov[pivot_idx]
+      }
+    }
+
+    # Forward-fill coverage_original_estimate up to and including pivot year
+    if (is.na(pivot_year)) {
+      # No pivot: forward-fill to end
+      df$coverage_original_estimate <- zoo::na.locf(df$coverage_original_estimate, na.rm = FALSE)
+    } else {
+      # Forward-fill up to pivot
+      df$coverage_original_estimate <- zoo::na.locf(df$coverage_original_estimate, na.rm = FALSE)
+      # At pivot year: set to last_survey
+      df$coverage_original_estimate[df$year == pivot_year] <- last_survey
+      # After pivot: clear
+      df$coverage_original_estimate[df$year > pivot_year] <- NA_real_
+    }
+
+    # Calculate projections using additive formula:
+    # proj[t] = last_survey + (coverage_cov[t] - coverage_cov[pivot_year])
+    df$avgsurveyprojection <- NA_real_
+
+    if (!is.na(pivot_year) && !is.na(last_survey) && !is.na(pivot_cov)) {
+      # At pivot year: use baseline
+      df$avgsurveyprojection[df$year == pivot_year] <- last_survey
+
+      # After pivot year: additive projection
+      after_pivot <- df$year > pivot_year
+      df$avgsurveyprojection[after_pivot] <- ifelse(
+        !is.na(df$coverage_cov[after_pivot]),
+        last_survey + (df$coverage_cov[after_pivot] - pivot_cov),
+        NA_real_
       )
-    
-    # Initialize projection
-    df$avgsurveyprojection <- df$coverage_original_estimate
-    
-    if (is.na(df$avgsurveyprojection[anchor_idx]) && !is.na(df$coverage_cov[anchor_idx])) {
-      df$avgsurveyprojection[anchor_idx] <- df$coverage_cov[anchor_idx]
     }
-    
-    # Project forward
-    if (!is.na(df$avgsurveyprojection[anchor_idx])) {
-      for (i in (anchor_idx + 1):nrow(df)) {
-        prev <- i - 1
-        if (!is.na(df$avgsurveyprojection[prev]) && !is.na(df$delta[i])) {
-          df$avgsurveyprojection[i] <- df$avgsurveyprojection[prev] + df$delta[i]
-        }
-      }
+
+    # Store last actual survey year for cleanup later
+    df$last_actual_survey_year <- if (!is.na(pivot_year) && !is.na(last_survey)) {
+      max(df$year[!is.na(df$coverage_original_estimate) & df$year < pivot_year], na.rm = TRUE)
+    } else {
+      -Inf
     }
     
     return(df)
@@ -1089,22 +1111,9 @@ combined_national_export_fixed <- combined_national_export %>%
     coverage_cov
   )
 
-# Clean projections - keep only years >= last survey
+# Cleanup temporary columns
 combined_national_export_fixed <- combined_national_export_fixed %>%
-  group_by(indicator_common_id) %>%
-  mutate(
-    max_survey_year = ifelse(any(!is.na(coverage_original_estimate)),
-                             max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
-                             -Inf),
-    
-    coverage_avgsurveyprojection = ifelse(
-      year < max_survey_year,
-      NA_real_,
-      coverage_avgsurveyprojection
-    )
-  ) %>%
-  select(-max_survey_year) %>%
-  ungroup() 
+  select(-last_actual_survey_year) 
 
 best_denom_summary <- best_denom_per_indicator %>%
   distinct(indicator_common_id, denominator) %>%
