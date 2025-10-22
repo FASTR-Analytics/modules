@@ -64,6 +64,12 @@ library(tidyr)
 # Ensure dplyr::select is used (MASS::select masks it)
 select <- dplyr::select
 
+# Memory tracking helper
+mem_usage <- function(msg) {
+  mem_mb <- sum(gc()[,2])
+  cat(sprintf("[MEM] %s: %.0f MB\n", msg, mem_mb))
+}
+
 #-------------------------------------------------------------------------------------------------------------
 # SAFETY: Clean up any temporary files from previous runs
 #-------------------------------------------------------------------------------------------------------------
@@ -108,6 +114,7 @@ admin_area_1_lookup <- raw_data %>%
   distinct(facility_id, admin_area_1)
 rm(raw_data)
 gc()
+mem_usage("After loading data")
 
 print("Preparing data for the control chart analysis...")
 
@@ -167,6 +174,8 @@ province_data <- province_data %>%
     count = zoo::na.approx(count, na.rm = FALSE, maxgap = Inf, rule = 2)
   ) %>%
   ungroup()
+
+mem_usage("After data preparation")
 
 print("Running robust control chart analysis for each panel...")
 
@@ -348,6 +357,7 @@ if (length(cc_files) > 0) {
 rm(cc_files)
 gc()
 print("Control chart analysis complete")
+mem_usage("After control chart analysis")
 
 #-------------------------------------------------------------------------------------------------------------
 # STEP 2: DISRUPTION REGRESSION ANALYSIS (MEMORY-OPTIMIZED)
@@ -363,6 +373,8 @@ data_disruption <- data %>%
   mutate(tagged = replace_na(tagged, 0)) %>%
   left_join(admin_area_1_lookup, by = "facility_id") %>%
   mutate(period_id = as.integer(format(as.Date(date), "%Y%m")))
+
+mem_usage("After disruption data prep")
 
 # Step 2: Run Panel Regressions (Your original code, unchanged)
 print("Running panel regressions...")
@@ -826,6 +838,7 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
 }
 
 print("All regression results loaded and joined successfully!")
+mem_usage("After all regressions complete")
 
 #-------------------------------------------------------------------------------
 # STEP 3: PREPARE RESULTS FOR VISUALIZATION
@@ -1284,4 +1297,5 @@ if (length(adm4_temp_files) > 0) {
 }
 
 print("Temporary files cleanup complete")
+mem_usage("Final cleanup complete")
 print("=== MODULE 3 COMPLETE ===")
