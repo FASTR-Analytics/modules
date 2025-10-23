@@ -16,7 +16,7 @@ DIP_THRESHOLD <- 0.90                  # Threshold for dips: a month is flagged 
 DIFFPERCENT <- 10                      # Difference threshold (in percent): if the actual volume differs from the predicted
                                        # volume by more than ±10%, use the predicted value in plotting disruptions.
 
-RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
+RUN_DISTRICT_MODEL <- FALSE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
 RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
@@ -53,6 +53,7 @@ PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # Load required libraries
+library(data.table)  # For memory-efficient data operations
 library(lubridate)
 library(zoo)
 library(MASS)    # For the rlm() function >> robust regression
@@ -64,16 +65,52 @@ library(tidyr)
 # Ensure dplyr::select is used (MASS::select masks it)
 select <- dplyr::select
 
-# Memory tracking helper
+# Memory tracking helper - logs to console AND file
 mem_usage <- function(msg) {
-  mem_mb <- sum(gc()[,2])
-  cat(sprintf("[MEM] %s: %.0f MB\n", msg, mem_mb))
+  # R memory usage
+  gc_result <- gc()
+  mem_mb <- sum(gc_result[,2])
+
+  # System memory (if available)
+  sys_mem <- tryCatch({
+    if (Sys.info()["sysname"] == "Linux") {
+      meminfo <- readLines("/proc/meminfo")
+      total <- as.numeric(gsub("[^0-9]", "", grep("MemTotal", meminfo, value = TRUE)))
+      available <- as.numeric(gsub("[^0-9]", "", grep("MemAvailable", meminfo, value = TRUE)))
+      used_pct <- round((1 - available/total) * 100, 1)
+      sprintf("System: %s%%", used_pct)
+    } else {
+      "N/A"
+    }
+  }, error = function(e) "N/A")
+
+  # Log message
+  log_msg <- sprintf("[MEM] %s: R=%.0f MB | %s | %s\n",
+                     msg, mem_mb, sys_mem, format(Sys.time(), "%H:%M:%S"))
+
+  # Print to console
+  cat(log_msg)
+
+  # Append to log file (survives crashes)
+  cat(log_msg, file = "M3_memory_log.txt", append = TRUE)
+
+  # Flush to ensure it's written immediately
+  flush(stdout())
+
+  invisible(mem_mb)
 }
 
 #-------------------------------------------------------------------------------------------------------------
 # SAFETY: Clean up any temporary files from previous runs
 #-------------------------------------------------------------------------------------------------------------
 print("Checking for temporary files from previous runs...")
+
+# Clear old memory log
+if (file.exists("M3_memory_log.txt")) {
+  file.remove("M3_memory_log.txt")
+}
+cat(sprintf("=== Memory Log Started: %s ===\n", Sys.time()), file = "M3_memory_log.txt")
+
 old_temp_files <- list.files(pattern = "^M3_temp_.*\\.csv$")
 if (length(old_temp_files) > 0) {
   print(paste("  WARNING: Found", length(old_temp_files), "old temporary files"))
@@ -105,41 +142,39 @@ RISE_THRESHOLD <- 1 / DIP_THRESHOLD  # Threshold for rises: a month is flagged i
 
 
 print("Loading data for control chart analysis...")
-raw_data <- read.csv(PROJECT_DATA_HMIS)
-outlier_data <- read.csv("M1_output_outliers.csv")
-data <- read.csv("M2_adjusted_data.csv")
+raw_data <- fread(PROJECT_DATA_HMIS)
+outlier_data <- fread("M1_output_outliers.csv")
+data <- fread("M2_adjusted_data.csv")
 
-
-admin_area_1_lookup <- raw_data %>%
-  distinct(facility_id, admin_area_1)
+admin_area_1_lookup <- unique(raw_data[, .(facility_id, admin_area_1)])
 rm(raw_data)
 gc()
 mem_usage("After loading data")
 
 print("Preparing data for the control chart analysis...")
 
-data <- data %>%
-  left_join(
-    outlier_data[, c("facility_id", "indicator_common_id", "period_id", "outlier_flag")],
-    by = c("facility_id", "indicator_common_id", "period_id")
-  ) %>%
-  mutate(
-    outlier_flag = coalesce(outlier_flag, 0L),
-    year = as.integer(substr(period_id, 1, 4)),
-    month = as.integer(substr(period_id, 5, 6)),
-    date = as.Date(sprintf("%04d-%02d-01", year, month)),
-    is_missing = is.na(count_final_none),
-    count_model = .data[[SELECTEDCOUNT]]
-  ) %>%
-  filter(outlier_flag != 1)
-rm(outlier_data)
+# Join outlier data
+outlier_cols <- outlier_data[, .(facility_id, indicator_common_id, period_id, outlier_flag)]
+data <- outlier_cols[data, on = .(facility_id, indicator_common_id, period_id)]
+
+# Add calculated columns
+data[, `:=`(
+  outlier_flag = fifelse(is.na(outlier_flag), 0L, outlier_flag),
+  year = as.integer(substr(period_id, 1, 4)),
+  month = as.integer(substr(period_id, 5, 6))
+)]
+data[, date := as.Date(sprintf("%04d-%02d-01", year, month))]
+data[, is_missing := is.na(count_final_none)]
+data[, count_model := get(SELECTEDCOUNT)]
+
+# Filter outliers
+data <- data[outlier_flag != 1]
+rm(outlier_data, outlier_cols)
 gc()
 
 print("Assigning panel IDs...")
-data <- data %>%
-  group_by(indicator_common_id, !!sym(CONTROL_CHART_LEVEL)) %>%
-  mutate(panelvar = cur_group_id()) %>%
-  ungroup()
+# Create panel IDs
+data[, panelvar := .GRP, by = .(indicator_common_id, get(CONTROL_CHART_LEVEL))]
 
 print(paste("Aggregating data to", CONTROL_CHART_LEVEL, "level..."))
 province_data <- data %>%
@@ -322,8 +357,8 @@ for(panel in panel_list) {
   # Save batch to disk and clear memory
   if (batch_counter_cc >= BATCH_SIZE_CC) {
     temp_filename <- sprintf("M3_temp_controlchart_batch_%03d.csv", batch_num_cc)
-    temp_batch <- bind_rows(results_list)
-    write.csv(temp_batch, temp_filename, row.names = FALSE)
+    temp_batch <- rbindlist(results_list)
+    fwrite(temp_batch, temp_filename)
     print(paste0("  [Saved control chart batch ", batch_num_cc, ": ", batch_counter_cc, " panels written to ", temp_filename, "]"))
     rm(temp_batch)
     results_list <- list()
@@ -336,21 +371,27 @@ for(panel in panel_list) {
 # Save final batch if any remaining
 if (length(results_list) > 0) {
   temp_filename <- sprintf("M3_temp_controlchart_batch_%03d.csv", batch_num_cc)
-  temp_batch <- bind_rows(results_list)
-  write.csv(temp_batch, temp_filename, row.names = FALSE)
+  temp_batch <- rbindlist(results_list)
+  fwrite(temp_batch, temp_filename)
   print(paste0("  [Saved final control chart batch ", batch_num_cc, ": ", length(results_list), " panels]"))
   rm(temp_batch)
 }
 rm(results_list)
 gc()
 
+# Free memory: province_data no longer needed (control chart complete)
+rm(province_data)
+gc()
+mem_usage("After removing province_data")
+
 # Load all control chart batches from disk
-print("Loading control chart results from disk...")
+print("Loading control chart results from disk with data.table...")
 cc_files <- list.files(pattern = "^M3_temp_controlchart_batch_.*\\.csv$")
 if (length(cc_files) > 0) {
-  M3_chartout <- do.call(rbind, lapply(cc_files, read.csv, stringsAsFactors = FALSE))
+  # Use fread and rbindlist for faster loading
+  M3_chartout <- rbindlist(lapply(cc_files, fread))
   # Convert date column back to Date type
-  M3_chartout$date <- as.Date(M3_chartout$date)
+  M3_chartout[, date := as.Date(date)]
 } else {
   stop("No control chart batch files found!")
 }
@@ -362,19 +403,36 @@ mem_usage("After control chart analysis")
 #-------------------------------------------------------------------------------------------------------------
 # STEP 2: DISRUPTION REGRESSION ANALYSIS (MEMORY-OPTIMIZED)
 #-------------------------------------------------------------------------------------------------------------
-# Step 1: Load and Prepare Data (Your original code, unchanged)
+# Step 1: Load and Prepare Data (CONVERTED TO DATA.TABLE)
 print("Loading and preparing data for disruption analysis...")
-M3_chartout_selected <- M3_chartout %>%
-  select(date, indicator_common_id, !!sym(CONTROL_CHART_LEVEL), tagged)
+# Select columns from M3_chartout
+M3_chartout_selected <- M3_chartout[, .(date, indicator_common_id, get(CONTROL_CHART_LEVEL), tagged)]
+setnames(M3_chartout_selected, "V3", CONTROL_CHART_LEVEL)
 
 rm(M3_chartout)
-data_disruption <- data %>%
-  left_join(M3_chartout_selected, by = c("date", "indicator_common_id", CONTROL_CHART_LEVEL)) %>%
-  mutate(tagged = replace_na(tagged, 0)) %>%
-  left_join(admin_area_1_lookup, by = "facility_id") %>%
-  mutate(period_id = as.integer(format(as.Date(date), "%Y%m")))
 
-mem_usage("After disruption data prep")
+# Ensure data is data.table
+if (!is.data.table(data)) setDT(data)
+
+# Join control chart results
+data_disruption <- merge(data, M3_chartout_selected,
+                        by = c("date", "indicator_common_id", CONTROL_CHART_LEVEL),
+                        all.x = TRUE)
+
+# Replace NA in tagged with 0
+data_disruption[is.na(tagged), tagged := 0]
+
+# Join admin area lookup
+data_disruption <- merge(data_disruption, admin_area_1_lookup,
+                        by = "facility_id", all.x = TRUE)
+
+# Add period_id
+data_disruption[, period_id := as.integer(format(as.Date(date), "%Y%m"))]
+
+# Free memory: data no longer needed (data_disruption created)
+rm(data)
+gc()
+mem_usage("After disruption data prep and removing original data")
 
 # Step 2: Run Panel Regressions (Your original code, unchanged)
 print("Running panel regressions...")
@@ -393,9 +451,11 @@ batch_num_ind <- 1
 
 for (indicator in indicators) {
   print(paste("Processing:", indicator))
-  indicator_data <- data_disruption %>%
-    filter(indicator_common_id == indicator) %>%
-    drop_na(!!sym(SELECTEDCOUNT))
+  # Use data.table subsetting (no copy, reference-based)
+  indicator_data <- data_disruption[
+    indicator_common_id == indicator &
+    !is.na(get(SELECTEDCOUNT))
+  ]
 
   if (nrow(indicator_data) == 0) { next }
 
@@ -460,8 +520,8 @@ for (indicator in indicators) {
     # Save batch to disk and clear memory
     if (batch_counter_ind >= BATCH_SIZE_IND) {
       temp_filename <- sprintf("M3_temp_indicator_batch_%03d.csv", batch_num_ind)
-      temp_batch <- bind_rows(indicator_results_list)
-      write.csv(temp_batch, temp_filename, row.names = FALSE)
+      temp_batch <- rbindlist(indicator_results_list)
+      fwrite(temp_batch, temp_filename)
       print(paste0("  [Saved indicator batch ", batch_num_ind, ": ", batch_counter_ind, " indicators written to ", temp_filename, "]"))
       rm(temp_batch)
       indicator_results_list <- list()
@@ -475,8 +535,8 @@ for (indicator in indicators) {
 # Save final batch if any remaining
 if (length(indicator_results_list) > 0) {
   temp_filename <- sprintf("M3_temp_indicator_batch_%03d.csv", batch_num_ind)
-  temp_batch <- bind_rows(indicator_results_list)
-  write.csv(temp_batch, temp_filename, row.names = FALSE)
+  temp_batch <- rbindlist(indicator_results_list)
+  fwrite(temp_batch, temp_filename)
   print(paste0("  [Saved final indicator batch ", batch_num_ind, ": ", length(indicator_results_list), " indicators]"))
   rm(temp_batch)
 }
@@ -494,9 +554,12 @@ batch_num_prov <- 1
 for (indicator in indicators) {
   for (province in provinces) {
     print(paste("Processing:", indicator, "in region:", province))
-    province_data <- data_disruption %>%
-      filter(indicator_common_id == indicator, admin_area_2 == province) %>%
-      drop_na(!!sym(SELECTEDCOUNT))
+    # Use data.table subsetting (no copy, reference-based)
+    province_data <- data_disruption[
+      indicator_common_id == indicator &
+      admin_area_2 == province &
+      !is.na(get(SELECTEDCOUNT))
+    ]
 
     if (nrow(province_data) < 1) { next }
 
@@ -541,7 +604,7 @@ for (indicator in indicators) {
       } else { province_data$p_admin_area_2 <- NA_real_ }
 
       province_results_list[[paste(indicator, province, sep = "_")]] <- province_data %>%
-        select(facility_id, date, indicator_common_id,
+        select(facility_id, date, indicator_common_id, admin_area_2,
                expect_admin_area_2, b_admin_area_2,
                p_admin_area_2, b_trend_admin_area_2)
 
@@ -550,8 +613,8 @@ for (indicator in indicators) {
       # Save batch to disk and clear memory
       if (batch_counter_prov >= BATCH_SIZE_PROV) {
         temp_filename <- sprintf("M3_temp_province_batch_%03d.csv", batch_num_prov)
-        temp_batch <- bind_rows(province_results_list)
-        write.csv(temp_batch, temp_filename, row.names = FALSE)
+        temp_batch <- rbindlist(province_results_list)
+        fwrite(temp_batch, temp_filename)
         print(paste0("  [Saved province batch ", batch_num_prov, ": ", batch_counter_prov, " results written to ", temp_filename, "]"))
         rm(temp_batch)
         province_results_list <- list()
@@ -566,8 +629,8 @@ for (indicator in indicators) {
 # Save final batch if any remaining
 if (length(province_results_list) > 0) {
   temp_filename <- sprintf("M3_temp_province_batch_%03d.csv", batch_num_prov)
-  temp_batch <- bind_rows(province_results_list)
-  write.csv(temp_batch, temp_filename, row.names = FALSE)
+  temp_batch <- rbindlist(province_results_list)
+  fwrite(temp_batch, temp_filename)
   print(paste0("  [Saved final province batch ", batch_num_prov, ": ", length(province_results_list), " results]"))
   rm(temp_batch)
 }
@@ -584,12 +647,28 @@ if (RUN_DISTRICT_MODEL) {
   BATCH_SIZE_DIST <- 15  # Save every 15 results
   batch_num_dist <- 1
 
+  # Memory tracking for loops
+  loop_counter_dist <- 0
+  mem_usage("Before district loop starts")
+
   for (indicator in indicators) {
     for (district in districts) {
+      loop_counter_dist <- loop_counter_dist + 1
+
+      # Log memory every 10 iterations to track trends
+      if (loop_counter_dist %% 10 == 0) {
+        mem_usage(sprintf("District loop iteration %d", loop_counter_dist))
+      }
+
       print(paste("Processing:", indicator, "in region:", district))
-      district_data <- data_disruption %>%
-        filter(indicator_common_id == indicator, admin_area_3 == district) %>%
-        drop_na(!!sym(SELECTEDCOUNT), tagged, date)
+      # Use data.table subsetting (no copy, reference-based)
+      district_data <- data_disruption[
+        indicator_common_id == indicator &
+        admin_area_3 == district &
+        !is.na(get(SELECTEDCOUNT)) &
+        !is.na(tagged) &
+        !is.na(date)
+      ]
 
       if (nrow(district_data) < 10) { next }
 
@@ -638,8 +717,8 @@ if (RUN_DISTRICT_MODEL) {
         # Save batch to disk and clear memory
         if (batch_counter_dist >= BATCH_SIZE_DIST) {
           temp_filename <- sprintf("M3_temp_district_batch_%03d.csv", batch_num_dist)
-          temp_batch <- bind_rows(district_results_list)
-          write.csv(temp_batch, temp_filename, row.names = FALSE)
+          temp_batch <- rbindlist(district_results_list)
+          fwrite(temp_batch, temp_filename)
           print(paste0("  [Saved district batch ", batch_num_dist, ": ", batch_counter_dist, " results written to ", temp_filename, "]"))
           rm(temp_batch)
           district_results_list <- list()
@@ -654,8 +733,8 @@ if (RUN_DISTRICT_MODEL) {
   # Save final batch if any remaining
   if (length(district_results_list) > 0) {
     temp_filename <- sprintf("M3_temp_district_batch_%03d.csv", batch_num_dist)
-    temp_batch <- bind_rows(district_results_list)
-    write.csv(temp_batch, temp_filename, row.names = FALSE)
+    temp_batch <- rbindlist(district_results_list)
+    fwrite(temp_batch, temp_filename)
     print(paste0("  [Saved final district batch ", batch_num_dist, ": ", length(district_results_list), " results]"))
     rm(temp_batch)
   }
@@ -675,9 +754,14 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
   for (indicator in indicators) {
     for (admin_unit in admin_area_4_units) {
       print(paste("Processing:", indicator, "in admin_area_4:", admin_unit))
-      admin_unit_data <- data_disruption %>%
-        filter(indicator_common_id == indicator, admin_area_4 == admin_unit) %>%
-        drop_na(!!sym(SELECTEDCOUNT), tagged, date)
+      # Use data.table subsetting (no copy, reference-based)
+      admin_unit_data <- data_disruption[
+        indicator_common_id == indicator &
+        admin_area_4 == admin_unit &
+        !is.na(get(SELECTEDCOUNT)) &
+        !is.na(tagged) &
+        !is.na(date)
+      ]
 
       if (nrow(admin_unit_data) < 8) { next }
 
@@ -719,8 +803,8 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
         # Save batch to disk and clear memory
         if (batch_counter_adm4 >= BATCH_SIZE_ADM4) {
           temp_filename <- sprintf("M3_temp_admin4_batch_%03d.csv", batch_num_adm4)
-          temp_batch <- bind_rows(admin_area_4_results_list)
-          write.csv(temp_batch, temp_filename, row.names = FALSE)
+          temp_batch <- rbindlist(admin_area_4_results_list)
+          fwrite(temp_batch, temp_filename)
           print(paste0("  [Saved admin4 batch ", batch_num_adm4, ": ", batch_counter_adm4, " results written to ", temp_filename, "]"))
           rm(temp_batch)
           admin_area_4_results_list <- list()
@@ -735,8 +819,8 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
   # Save final batch if any remaining
   if (length(admin_area_4_results_list) > 0) {
     temp_filename <- sprintf("M3_temp_admin4_batch_%03d.csv", batch_num_adm4)
-    temp_batch <- bind_rows(admin_area_4_results_list)
-    write.csv(temp_batch, temp_filename, row.names = FALSE)
+    temp_batch <- rbindlist(admin_area_4_results_list)
+    fwrite(temp_batch, temp_filename)
     print(paste0("  [Saved final admin4 batch ", batch_num_adm4, ": ", length(admin_area_4_results_list), " results]"))
     rm(temp_batch)
   }
@@ -749,88 +833,147 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
 #-------------------------------------------------------------------------------
 print("Loading all regression results from disk and joining to main dataset...")
 
-# Load indicator-level results (in chunks to manage memory)
+# Load indicator-level results (MEMORY-EFFICIENT with data.table)
 print("  Loading indicator-level results...")
 ind_files <- list.files(pattern = "^M3_temp_indicator_batch_.*\\.csv$")
 if (length(ind_files) > 0) {
-  CHUNK_SIZE <- 10
-  for (i in seq(1, length(ind_files), by = CHUNK_SIZE)) {
-    chunk_end <- min(i + CHUNK_SIZE - 1, length(ind_files))
-    chunk_files <- ind_files[i:chunk_end]
-    print(paste("    Loading indicator chunk", ceiling(i/CHUNK_SIZE), "of", ceiling(length(ind_files)/CHUNK_SIZE)))
+  print(paste("  Reading all", length(ind_files), "indicator files with data.table..."))
 
-    indicator_chunk <- do.call(rbind, lapply(chunk_files, read.csv, stringsAsFactors = FALSE))
-    indicator_chunk$date <- as.Date(indicator_chunk$date)
-    data_disruption <- data_disruption %>%
-      left_join(indicator_chunk, by = c("facility_id", "date", "indicator_common_id"))
-    rm(indicator_chunk); gc()
+  # Read all files using fread (faster than read.csv)
+  all_indicator_chunks <- lapply(ind_files, function(f) {
+    chunk <- fread(f)
+    chunk[, date := as.Date(date)]
+    return(chunk)
+  })
+
+  print("  Combining indicator chunks...")
+  indicator_combined <- rbindlist(all_indicator_chunks)
+  rm(all_indicator_chunks); gc()
+
+  print(paste("  Joining", nrow(indicator_combined), "indicator rows (single join)..."))
+  # Ensure data_disruption is data.table
+  if (!is.data.table(data_disruption)) {
+    setDT(data_disruption)
   }
+
+  # Single merge operation
+  data_disruption <- merge(data_disruption, indicator_combined,
+                          by = c("facility_id", "date", "indicator_common_id"),
+                          all.x = TRUE)
+
+  rm(indicator_combined); gc()
   print("  Indicator-level results joined successfully")
 } else {
   print("  WARNING: No indicator batch files found!")
 }
 
-# Load province-level results (in chunks to manage memory)
+# Load province-level results (MEMORY-EFFICIENT with data.table)
 print("  Loading province-level results...")
 prov_files <- list.files(pattern = "^M3_temp_province_batch_.*\\.csv$")
 if (length(prov_files) > 0) {
-  CHUNK_SIZE <- 10
-  for (i in seq(1, length(prov_files), by = CHUNK_SIZE)) {
-    chunk_end <- min(i + CHUNK_SIZE - 1, length(prov_files))
-    chunk_files <- prov_files[i:chunk_end]
-    print(paste("    Loading province chunk", ceiling(i/CHUNK_SIZE), "of", ceiling(length(prov_files)/CHUNK_SIZE)))
+  print(paste("  Reading all", length(prov_files), "province files with data.table..."))
 
-    province_chunk <- do.call(rbind, lapply(chunk_files, read.csv, stringsAsFactors = FALSE))
-    province_chunk$date <- as.Date(province_chunk$date)
-    data_disruption <- data_disruption %>%
-      left_join(province_chunk, by = c("facility_id", "date", "indicator_common_id"))
-    rm(province_chunk); gc()
+  # Read all files using fread
+  all_province_chunks <- lapply(prov_files, function(f) {
+    chunk <- fread(f)
+    chunk[, date := as.Date(date)]
+    return(chunk)
+  })
+
+  print("  Combining province chunks...")
+  province_combined <- rbindlist(all_province_chunks)
+  rm(all_province_chunks); gc()
+
+  print(paste("  Joining", nrow(province_combined), "province rows (single join)..."))
+  # Ensure data_disruption is data.table
+  if (!is.data.table(data_disruption)) {
+    setDT(data_disruption)
   }
+
+  # Single merge operation
+  data_disruption <- merge(data_disruption, province_combined,
+                          by = c("facility_id", "date", "indicator_common_id", "admin_area_2"),
+                          all.x = TRUE)
+
+  rm(province_combined); gc()
   print("  Province-level results joined successfully")
 } else {
   print("  WARNING: No province batch files found!")
 }
 
-# Load district-level results (conditional, ONE FILE AT A TIME to manage memory)
+# Load district-level results (MEMORY-EFFICIENT: combine all first, then ONE join)
 if (RUN_DISTRICT_MODEL) {
   print("  Loading district-level results...")
+  mem_usage("Before loading district batches")
+
   dist_files <- list.files(pattern = "^M3_temp_district_batch_.*\\.csv$")
   if (length(dist_files) > 0) {
-    print(paste("  Processing", length(dist_files), "district batch files (one at a time)..."))
-    for (i in seq_along(dist_files)) {
-      if (i %% 5 == 1 || i == length(dist_files)) {  # Progress every 5 files
-        print(paste("    Loading district file", i, "of", length(dist_files)))
-      }
+    print(paste("  Reading all", length(dist_files), "district files with data.table..."))
 
-      district_chunk <- read.csv(dist_files[i], stringsAsFactors = FALSE)
-      district_chunk$date <- as.Date(district_chunk$date)
-      data_disruption <- data_disruption %>%
-        left_join(district_chunk, by = c("facility_id", "date", "indicator_common_id", "admin_area_3"))
-      rm(district_chunk); gc()
+    # Read all files at once using fread (much faster than read.csv)
+    all_district_chunks <- lapply(dist_files, function(f) {
+      chunk <- fread(f)
+      chunk[, date := as.Date(date)]
+      return(chunk)
+    })
+
+    mem_usage("After reading all district files")
+
+    print("  Combining district chunks...")
+    district_combined <- rbindlist(all_district_chunks)
+    rm(all_district_chunks); gc()
+
+    mem_usage("After combining district chunks")
+
+    print(paste("  Joining", nrow(district_combined), "district rows (single join)..."))
+    # Convert to data.table if not already
+    if (!is.data.table(data_disruption)) {
+      setDT(data_disruption)
     }
+
+    # Single merge operation instead of 99 sequential joins
+    data_disruption <- merge(data_disruption, district_combined,
+                            by = c("facility_id", "date", "indicator_common_id", "admin_area_3"),
+                            all.x = TRUE)
+
+    rm(district_combined); gc()
+    mem_usage("After district join complete")
     print("  District-level results joined successfully")
   } else {
     print("  WARNING: No district batch files found!")
   }
 }
 
-# Load admin4-level results (conditional, ONE FILE AT A TIME to manage memory)
+# Load admin4-level results (MEMORY-EFFICIENT: combine all first, then ONE join)
 if (RUN_ADMIN_AREA_4_ANALYSIS) {
   print("  Loading admin4-level results...")
   adm4_files <- list.files(pattern = "^M3_temp_admin4_batch_.*\\.csv$")
   if (length(adm4_files) > 0) {
-    print(paste("  Processing", length(adm4_files), "admin4 batch files (one at a time)..."))
-    for (i in seq_along(adm4_files)) {
-      if (i %% 10 == 1 || i == length(adm4_files)) {  # Progress every 10 files
-        print(paste("    Loading admin4 file", i, "of", length(adm4_files)))
-      }
+    print(paste("  Reading all", length(adm4_files), "admin4 files with data.table..."))
 
-      admin4_chunk <- read.csv(adm4_files[i], stringsAsFactors = FALSE)
-      admin4_chunk$date <- as.Date(admin4_chunk$date)
-      data_disruption <- data_disruption %>%
-        left_join(admin4_chunk, by = c("facility_id", "date", "indicator_common_id", "admin_area_4"))
-      rm(admin4_chunk); gc()
+    # Read all files at once using fread
+    all_admin4_chunks <- lapply(adm4_files, function(f) {
+      chunk <- fread(f)
+      chunk[, date := as.Date(date)]
+      return(chunk)
+    })
+
+    print("  Combining admin4 chunks...")
+    admin4_combined <- rbindlist(all_admin4_chunks)
+    rm(all_admin4_chunks); gc()
+
+    print(paste("  Joining", nrow(admin4_combined), "admin4 rows (single join)..."))
+    # Ensure data_disruption is data.table
+    if (!is.data.table(data_disruption)) {
+      setDT(data_disruption)
     }
+
+    # Single merge operation
+    data_disruption <- merge(data_disruption, admin4_combined,
+                            by = c("facility_id", "date", "indicator_common_id", "admin_area_4"),
+                            all.x = TRUE)
+
+    rm(admin4_combined); gc()
     print("  Admin4-level results joined successfully")
   } else {
     print("  WARNING: No admin4 batch files found!")
