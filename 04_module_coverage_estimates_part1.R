@@ -98,9 +98,6 @@ message("=======================================================================
 
 message("\n✓ Step 2/7: Preparing data for analysis...")
 
-# A flag to track if pnc1 was renamed to pnc1_mother
-pnc1_renamed_to_mother <- FALSE
-
 # Extract country name from HMIS data (used for joins and display)
 message("  → Extracting country name from HMIS data...")
 COUNTRY_NAME <- unique(adjusted_volume_data$admin_area_1)
@@ -181,13 +178,6 @@ message("Final analysis level: ", ANALYSIS_LEVEL)
 
 message("✓ Step 2/7 completed: Data preparation finished!")
 message("================================================================================")
-
-# ------------------------------ Rename for Test Instance ----------------------------------------------------
-adjusted_volume_data <- adjusted_volume_data %>%
-  mutate(admin_area_1 = case_when(
-    admin_area_1 %in% c("Pays 001", "Country 001") ~ "Federal Govt of Somalia",
-    TRUE ~ admin_area_1
-  ))
 
 # ------------------------------ Define Parameters -----------------------------------------------------------
 # Coverage Estimation Parameters
@@ -407,7 +397,23 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
     select(admin_area_1, admin_area_2, year, indicator_common_id,
                   source, source_detail, survey_value) %>%
     drop_na(survey_value)
-  
+
+  # Add fallback rows for SBA (from delivery) if missing
+  if (!"sba" %in% raw_pick_long$indicator_common_id && "delivery" %in% raw_pick_long$indicator_common_id) {
+    sba_fallback <- raw_pick_long %>%
+      filter(indicator_common_id == "delivery") %>%
+      mutate(indicator_common_id = "sba")
+    raw_pick_long <- bind_rows(raw_pick_long, sba_fallback)
+  }
+
+  # Add fallback rows for pnc1_mother (from pnc1) if missing
+  if (!"pnc1_mother" %in% raw_pick_long$indicator_common_id && "pnc1" %in% raw_pick_long$indicator_common_id) {
+    pnc1_mother_fallback <- raw_pick_long %>%
+      filter(indicator_common_id == "pnc1") %>%
+      mutate(indicator_common_id = "pnc1_mother")
+    raw_pick_long <- bind_rows(raw_pick_long, pnc1_mother_fallback)
+  }
+
   # wide values + sources + details (for convenience)
   raw_vals_wide <- raw_pick_long %>%
     select(admin_area_1, admin_area_2, year, indicator_common_id, survey_value) %>%
@@ -436,8 +442,30 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
   raw_survey_values <- raw_vals_wide %>%
     left_join(raw_srcs_wide,   by = c("admin_area_1","admin_area_2","year")) %>%
     left_join(raw_detail_wide, by = c("admin_area_1","admin_area_2","year"))
-  
-  
+
+  # Fallback for SBA raw values (from delivery)
+  if (!"rawsurvey_sba" %in% names(raw_survey_values) && "rawsurvey_delivery" %in% names(raw_survey_values)) {
+    raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery
+    if ("rawsource_delivery" %in% names(raw_survey_values)) {
+      raw_survey_values$rawsource_sba <- raw_survey_values$rawsource_delivery
+    }
+    if ("rawdetail_delivery" %in% names(raw_survey_values)) {
+      raw_survey_values$rawdetail_sba <- raw_survey_values$rawdetail_delivery
+    }
+  }
+
+  # Fallback for pnc1_mother raw values (from pnc1)
+  if (!"rawsurvey_pnc1_mother" %in% names(raw_survey_values) && "rawsurvey_pnc1" %in% names(raw_survey_values)) {
+    raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
+    if ("rawsource_pnc1" %in% names(raw_survey_values)) {
+      raw_survey_values$rawsource_pnc1_mother <- raw_survey_values$rawsource_pnc1
+    }
+    if ("rawdetail_pnc1" %in% names(raw_survey_values)) {
+      raw_survey_values$rawdetail_pnc1_mother <- raw_survey_values$rawdetail_pnc1
+    }
+  }
+
+
   full_years <- seq(min_year, max_year)
   group_keys <- if (is_national)
     c("admin_area_1","indicator_common_id","source")
@@ -1130,11 +1158,6 @@ create_combined_results_table <- function(coverage_comparison, survey_raw_df, al
 
 # ---- Helpers needed EARLY (moved up from the write-out section) ----
 
-# Consistent rename back to pnc1 if original data had pnc1
-rename_back_pnc1 <- function(x) {
-  if (isTRUE(pnc1_renamed_to_mother)) recode(x, "pnc1_mother" = "pnc1", .default = x) else x
-}
-
 # Results 1: Numerators (HMIS annual counts)
 make_numerators_long <- function(annual_hmis_df) {
   if (is.null(annual_hmis_df) || nrow(annual_hmis_df) == 0) return(NULL)
@@ -1276,17 +1299,6 @@ make_survey_reference_long <- function(survey_expanded_df) {
     arrange(across(all_of(arrange_cols)))
 }
 
-# Helper: ensure admin3 outputs have the right column name
-normalize_admin3_for_output <- function(df) {
-  if (!is.data.frame(df) || nrow(df) == 0) return(df)
-  if (!"admin_area_3" %in% names(df) && "admin_area_2" %in% names(df)) {
-    df <- rename(df, admin_area_3 = admin_area_2)
-  }
-  df
-}
-
-
-
 
 # ============================== EXECUTION FLOW   ==============================
 
@@ -1380,7 +1392,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
   if (ANALYSIS_LEVEL %in% c("NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3")) {
 
     message("  → Processing admin area 2 data...")
-    
+
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
 
     hmis_processed_admin2   <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
@@ -1459,6 +1471,9 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       denominators_admin2_results <- if (exists("admin2_summary")) make_denominators_results(admin2_summary) else NULL
       if (!is.null(denominators_admin2_results)) {
         denominators_admin2_results <- add_denominator_labels(denominators_admin2_results, "denominator")
+        # Filter to only include actual province-level rows (exclude district names)
+        denominators_admin2_results <- denominators_admin2_results %>%
+          filter(admin_area_2 %in% hmis_admin2_regions)
       }
 
       survey_raw_admin2_long <- make_survey_raw_long(
@@ -1492,6 +1507,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           survey_raw_df       = survey_raw_admin2_long,
           all_coverage_data   = admin2_coverage
         )
+
+        # Filter to only include actual province-level rows (exclude district names)
+        admin2_combined_results <- admin2_combined_results %>%
+          filter(admin_area_2 %in% hmis_admin2_regions)
       }
     }
   }

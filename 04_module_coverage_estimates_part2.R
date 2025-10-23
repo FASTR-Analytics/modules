@@ -4,6 +4,7 @@ DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"
 DENOM_DELIVERY <- "best"
 DENOM_BCG <- "best"
+DENOM_SBA <- "best"
 DENOM_PNC1_MOTHER <- "best"
 DENOM_PNC1 <- "best"
 DENOM_PENTA1 <- "best"
@@ -35,6 +36,7 @@ DENOMINATOR_SELECTION <- list(
   # LIVE BIRTH-RELATED INDICATORS
   delivery = DENOM_DELIVERY,            # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   bcg = DENOM_BCG,                      # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
+  sba = DENOM_SBA,                      # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   pnc1_mother = DENOM_PNC1_MOTHER,      # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   pnc1 = DENOM_PNC1,                    # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
   
