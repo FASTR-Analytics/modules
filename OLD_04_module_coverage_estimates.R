@@ -1041,64 +1041,50 @@ combined_national_export_fixed <- combined_national_export %>%
     df <- .x
     df <- df %>% arrange(year)
 
-    # Find pivot year (first year with coverage_cov)
-    pivot_year <- suppressWarnings(min(df$year[!is.na(df$coverage_cov)], na.rm = TRUE))
-    if (is.infinite(pivot_year)) pivot_year <- NA
+    # Find last survey year (max year with non-NA coverage_original_estimate)
+    last_survey_year <- suppressWarnings(max(df$year[!is.na(df$coverage_original_estimate)], na.rm = TRUE))
+    if (is.infinite(last_survey_year)) last_survey_year <- NA
 
-    # Get last survey value BEFORE pivot year (the baseline)
-    last_survey <- NA_real_
-    if (!is.na(pivot_year)) {
-      survey_vals <- df$coverage_original_estimate[!is.na(df$coverage_original_estimate) & df$year < pivot_year]
-      if (length(survey_vals) > 0) {
-        last_survey <- tail(survey_vals, 1)
+    # Get last survey value
+    last_survey_value <- NA_real_
+    if (!is.na(last_survey_year)) {
+      last_survey_idx <- which(df$year == last_survey_year)[1]
+      if (length(last_survey_idx) > 0) {
+        last_survey_value <- df$coverage_original_estimate[last_survey_idx]
       }
     }
 
-    # Get coverage_cov at pivot year (for delta calculation)
-    pivot_cov <- NA_real_
-    if (!is.na(pivot_year)) {
-      pivot_idx <- which(df$year == pivot_year)[1]
-      if (length(pivot_idx) > 0) {
-        pivot_cov <- df$coverage_cov[pivot_idx]
+    # Get coverage_cov at last survey year (for delta calculation)
+    baseline_cov <- NA_real_
+    if (!is.na(last_survey_year)) {
+      last_survey_idx <- which(df$year == last_survey_year)[1]
+      if (length(last_survey_idx) > 0) {
+        baseline_cov <- df$coverage_cov[last_survey_idx]
       }
     }
 
-    # Forward-fill coverage_original_estimate up to and including pivot year
-    if (is.na(pivot_year)) {
-      # No pivot: forward-fill to end
-      df$coverage_original_estimate <- zoo::na.locf(df$coverage_original_estimate, na.rm = FALSE)
-    } else {
-      # Forward-fill up to pivot
-      df$coverage_original_estimate <- zoo::na.locf(df$coverage_original_estimate, na.rm = FALSE)
-      # At pivot year: set to last_survey
-      df$coverage_original_estimate[df$year == pivot_year] <- last_survey
-      # After pivot: clear
-      df$coverage_original_estimate[df$year > pivot_year] <- NA_real_
-    }
+    # Keep coverage_original_estimate as-is - preserve all actual survey values
 
-    # Calculate projections using additive formula:
-    # proj[t] = last_survey + (coverage_cov[t] - coverage_cov[pivot_year])
+    # Calculate projections starting FROM last survey year
+    # At last survey year: copy survey value
+    # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
     df$avgsurveyprojection <- NA_real_
 
-    if (!is.na(pivot_year) && !is.na(last_survey) && !is.na(pivot_cov)) {
-      # At pivot year: use baseline
-      df$avgsurveyprojection[df$year == pivot_year] <- last_survey
+    if (!is.na(last_survey_value) && !is.na(last_survey_year) && !is.na(baseline_cov)) {
+      # At last survey year: copy survey value
+      df$avgsurveyprojection[df$year == last_survey_year] <- last_survey_value
 
-      # After pivot year: additive projection
-      after_pivot <- df$year > pivot_year
-      df$avgsurveyprojection[after_pivot] <- ifelse(
-        !is.na(df$coverage_cov[after_pivot]),
-        last_survey + (df$coverage_cov[after_pivot] - pivot_cov),
+      # After last survey year: additive projection
+      after_survey <- df$year > last_survey_year
+      df$avgsurveyprojection[after_survey] <- ifelse(
+        !is.na(df$coverage_cov[after_survey]),
+        last_survey_value + (df$coverage_cov[after_survey] - baseline_cov),
         NA_real_
       )
     }
 
     # Store last actual survey year for cleanup later
-    df$last_actual_survey_year <- if (!is.na(pivot_year) && !is.na(last_survey)) {
-      max(df$year[!is.na(df$coverage_original_estimate) & df$year < pivot_year], na.rm = TRUE)
-    } else {
-      -Inf
-    }
+    df$last_actual_survey_year <- if (!is.na(last_survey_year)) last_survey_year else -Inf
     
     return(df)
   }) %>%
