@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "SEN"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -11,7 +11,7 @@ P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -223,7 +223,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   
   adjusted_volume <- adjusted_volume_data %>%
     mutate(count = .data[[count_col]]) %>%
-    select(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
+    dplyr::select(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
     arrange(across(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id"))))
   
   missing <- setdiff(expected_indicators, unique(adjusted_volume$indicator_common_id))
@@ -1096,10 +1096,6 @@ combined_national_export_fixed <- combined_national_export %>%
     coverage_avgsurveyprojection = avgsurveyprojection,
     coverage_cov
   )
-
-# Cleanup temporary columns
-combined_national_export_fixed <- combined_national_export_fixed %>%
-  select(-last_actual_survey_year) 
 
 best_denom_summary <- best_denom_per_indicator %>%
   distinct(indicator_common_id, denominator) %>%
