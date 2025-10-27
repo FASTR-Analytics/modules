@@ -18877,3 +18877,9 @@ Guinée,IRS Kindia,2021,ML_IPTP_W_3SP,iptp3,percent,0.535,DHS Sub-national,GN202
 Guinée,IRS Labé,2021,ML_IPTP_W_3SP,iptp3,percent,0.466,DHS Sub-national,GN2021MIS,household,Guinea,GN,GIN
 Guinée,IRS Mamou,2021,ML_IPTP_W_3SP,iptp3,percent,0.445,DHS Sub-national,GN2021MIS,household,Guinea,GN,GIN
 Guinée,IRS Nzérékoré,2021,ML_IPTP_W_3SP,iptp3,percent,0.651,DHS Sub-national,GN2021MIS,household,Guinea,GN,GIN
+ng Federal Government,NATIONAL,1990,CH_VACC_C_BAS,fully_immunized,other,29,DHS National,NG1990DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2003,CH_VACC_C_BAS,fully_immunized,other,12.9,DHS National,NG2003DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2008,CH_VACC_C_BAS,fully_immunized,other,22.7,DHS National,NG2008DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2013,CH_VACC_C_BAS,fully_immunized,other,25.3,DHS National,NG2013DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2018,CH_VACC_C_BAS,fully_immunized,other,31.3,DHS National,NG2018DHS,household,Nigeria,NG,NGA
+ng Federal Government,NATIONAL,2024,CH_VACC_C_BAS,fully_immunized,other,39.4,DHS National,NG2024DHS,household,Nigeria,NG,NGA
