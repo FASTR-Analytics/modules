@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SEN"
+COUNTRY_ISO3 <- "NGA"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -10,6 +10,7 @@ P1_NMR <- 0.041      #Default = 0.03
 P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
+UNDER5_MORTALITY_RATE <- 0.103
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
@@ -169,7 +170,9 @@ coverage_params <- list(
     "rota1", "rota2",
     "opv1", "opv2", "opv3",
     "pnc1_mother",
-    "nmr", "imr"
+    "nmr", "imr",
+    "vitaminA",
+    "fully_immunized"
   )
 )
 
@@ -182,7 +185,9 @@ survey_vars <- c(
   "avgsurvey_rota1", "avgsurvey_rota2",
   "avgsurvey_opv1", "avgsurvey_opv2", "avgsurvey_opv3",
   "avgsurvey_pnc1_mother",
-  "avgsurvey_nmr", "avgsurvey_imr", "postnmr"
+  "avgsurvey_nmr", "avgsurvey_imr", "postnmr",
+  "avgsurvey_vitaminA",
+  "avgsurvey_fully_immunized"
 )
 
 # ------------------------------ Define Functions --------------------------------
@@ -192,7 +197,8 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "nmr", "imr",
-    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother"
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother",
+    "vitaminA", "fully_immunized"
   )
   
   message("Loading and mapping adjusted HMIS volume...")
@@ -284,13 +290,15 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
                                         "polio1" = "opv1",
                                         "polio2" = "opv2",
                                         "polio3" = "opv3",
-                                        "pnc1" = "pnc1_mother"
+                                        "pnc1" = "pnc1_mother",
+                                        "vitamina" = "vitaminA"
     ))
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
-  
+
   indicators <- c("anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "measles1", "measles2",
-                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr")
+                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
+                  "vitaminA","fully_immunized")
   
   survey_filtered <- if (is_national) {
     survey_data %>% filter(admin_area_2 == "NATIONAL")
@@ -518,7 +526,9 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     bcg       = c("countbcg", "bcgcarry"),
     livebirth = c("countlivebirth", "livebirthcarry"),
     pnc1_mother = c("countpnc1_mother", "pnc1_mothercarry"),
-    nmr       = c("countnmr", "nmrcarry")
+    nmr       = c("countnmr", "nmrcarry"),
+    vitaminA = c("countvitaminA", "vitaminAcarry"),
+    fully_immunized = c("countfully_immunized", "fully_immunizedcarry")
   )
   
   available_vars <- names(data)
@@ -618,7 +628,28 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
         dwpp_measles2  = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
       )
   }
-  
+
+  # STEP 3: Calculate vitaminA and fully_immunized denominators FROM all existing livebirth denominators
+  # This happens AFTER all initial denominators are calculated
+  # We loop through all d*_livebirth columns and create corresponding vitaminA and fully_immunized columns
+
+  livebirth_cols <- grep("_livebirth$", names(data), value = TRUE)
+
+  if (length(livebirth_cols) > 0) {
+    for (lb_col in livebirth_cols) {
+      # Extract the prefix (e.g., "danc1", "ddelivery", "dbcg", "dwpp")
+      prefix <- sub("_livebirth$", "", lb_col)
+
+      # Create new column names
+      vitamin_col <- paste0(prefix, "_vitaminA")
+      fic_col <- paste0(prefix, "_fully_immunized")
+
+      # Calculate the new denominators
+      data[[vitamin_col]] <- safe_calc(data[[lb_col]] * (1 - UNDER5_MORTALITY_RATE) * 4.5)
+      data[[fic_col]] <- safe_calc(data[[lb_col]] * (1 - INFANT_MORTALITY_RATE))
+    }
+  }
+
   return(data)
 }
 
@@ -648,7 +679,7 @@ evaluate_coverage_by_denominator <- function(data) {
     distinct()
   
   # Denominator pattern: match all relevant *_suffix style names
-  denom_pattern <- "^(d.*)_(pregnancy|livebirth|dpt|measles1|measles2)$"
+  denom_pattern <- "^(d.*)_(pregnancy|livebirth|dpt|measles1|measles2|vitaminA|fully_immunized)$"
   
   # Denominator-to-indicator map (based on suffix only)
   suffix_indicator_map <- tribble(
@@ -668,7 +699,13 @@ evaluate_coverage_by_denominator <- function(data) {
     "measles1",    c("measles1"),
 
     # Used for coverage of second measles dose
-    "measles2",    c("measles2")
+    "measles2",    c("measles2"),
+
+    # Used for vitamin A supplementation (children 6-59 months)
+    "vitaminA",    c("vitaminA"),
+
+    # Used for fully immunized children
+    "fully_immunized", c("fully_immunized")
   )
   
   #Denominators
@@ -680,7 +717,7 @@ evaluate_coverage_by_denominator <- function(data) {
       values_to = "denominator_value"
     ) %>%
     mutate(
-      denominator_type = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2)"),
+      denominator_type = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2|vitaminA|fully_immunized)"),
       indicator_common_id = purrr::map(denominator_type, ~ {
         matched <- suffix_indicator_map %>% filter(suffix == .x)
         if (nrow(matched) == 0) NA_character_ else matched$indicators[[1]]
@@ -832,7 +869,9 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     measles1   = c("measles1"),
-    measles2   = c("measles2")
+    measles2   = c("measles2"),
+    vitaminA   = c("vitaminA"),
+    fully_immunized = c("fully_immunized")
   )
   
   # Filter projected_data to only keep valid denominator-indicator pairs
@@ -845,7 +884,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     ) %>%
     distinct() %>%
     mutate(
-      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2)")
+      suffix = str_extract(denominator, "(pregnancy|livebirth|dpt|measles1|measles2|vitaminA|fully_immunized)")
     ) %>%
     filter(map2_lgl(indicator_common_id, suffix, ~ .x %in% valid_suffix_map[[.y]])) %>%
     select(-suffix)

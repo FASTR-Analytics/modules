@@ -15,6 +15,10 @@ DENOM_OPV2 <- "best"
 DENOM_OPV3 <- "best"
 DENOM_MEASLES1 <- "best"
 DENOM_MEASLES2 <- "best"
+
+DENOM_VITA <- "best"
+DENOM_FULLIMM <- "best"
+
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Last edit: 2025 Oct 23
@@ -50,7 +54,11 @@ DENOMINATOR_SELECTION <- list(
   
   # MEASLES-ELIGIBLE AGE GROUP INDICATORS
   measles1 = DENOM_MEASLES1,            # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
-  measles2 = DENOM_MEASLES2             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
+  measles2 = DENOM_MEASLES2,             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
+
+  # NEW
+  vitaminA = DENOM_VITA,            # Options: "best", 
+  fully_immunized = DENOM_FULLIMM             # Options: "best",  
 )
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------

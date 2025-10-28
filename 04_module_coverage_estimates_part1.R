@@ -7,10 +7,12 @@ TWIN_RATE <- 0.015
 STILLBIRTH_RATE <- 0.02
 P1_NMR <- 0.039     #Default = 0.03
 P2_PNMR <- 0.028
-INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
+INFANT_MORTALITY_RATE <- 0.063  
+
+UNDER5_MORTALITY_RATE <- 0.103  
 
 
-ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
+ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -200,7 +202,9 @@ coverage_params <- list(
     "pnc1",
     "pnc1_mother",
     "nmr",
-    "imr"
+    "imr",
+    "vitaminA",
+    "fully_immunized"
   )
 )
 
@@ -224,17 +228,20 @@ survey_vars <- c(
   "avgsurvey_pnc1_mother",
   "avgsurvey_nmr",
   "avgsurvey_imr",
-  "postnmr"
+  "postnmr",
+  "avgsurvey_vitaminA",
+  "avgsurvey_fully_immunized"
 )
 
 # ------------------------------ Define Functions ------------------------------------------------------------
 # Part 1 - prepare hmis data
 process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE) {
-  
+
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "nmr", "imr",
-    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1", "pnc1_mother"
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1", "pnc1_mother",
+    "vitaminA", "fully_immunized"
   )
 
   # Keep pnc1 and pnc1_mother as-is in HMIS data
@@ -326,6 +333,7 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
       indicator_common_id = recode(
         indicator_common_id,
         "polio1" = "opv1", "polio2" = "opv2", "polio3" = "opv3",
+        "vitamina" = "vitaminA",
         .default = indicator_common_id
       )
     )
@@ -334,11 +342,12 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
   
   # national vs subnational
   is_national <- all(survey_data$admin_area_2 == "NATIONAL", na.rm = TRUE)
-  
+
   indicators <- c(
     "anc1","anc4","delivery","sba","bcg","penta1","penta3",
     "measles1","measles2","rota1","rota2","opv1","opv2","opv3",
-    "pnc1","pnc1_mother","nmr","imr"
+    "pnc1","pnc1_mother","nmr","imr",
+    "vitaminA","fully_immunized"
   )
   
   survey_filtered <- if (is_national) {
@@ -704,7 +713,9 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     livebirth = c("countlivebirth", "livebirthcarry"),
     pnc1_mother = c("countpnc1_mother", "pnc1_mothercarry"),
     pnc1 = c("countpnc1", "pnc1carry"),
-    nmr = c("countnmr", "nmrcarry")
+    nmr = c("countnmr", "nmrcarry"),
+    vitaminA = c("countvitaminA", "vitaminAcarry"),
+    fully_immunized = c("countfully_immunized", "fully_immunizedcarry")
   )
   
   available_vars <- names(data)
@@ -812,13 +823,34 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
         dwpp_measles2 = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
       )
   }
-  
+
+  # STEP 3: Calculate vitaminA and fully_immunized denominators FROM all existing livebirth denominators
+  # This happens AFTER all initial denominators are calculated
+  # We loop through all d*_livebirth columns and create corresponding vitaminA and fully_immunized columns
+
+  livebirth_cols <- grep("_livebirth$", names(data), value = TRUE)
+
+  if (length(livebirth_cols) > 0) {
+    for (lb_col in livebirth_cols) {
+      # Extract the prefix (e.g., "danc1", "ddelivery", "dbcg", "dwpp")
+      prefix <- sub("_livebirth$", "", lb_col)
+
+      # Create new column names
+      vitamin_col <- paste0(prefix, "_vitaminA")
+      fic_col <- paste0(prefix, "_fully_immunized")
+
+      # Calculate the new denominators
+      data[[vitamin_col]] <- safe_calc(data[[lb_col]] * (1 - UNDER5_MORTALITY_RATE) * 4.5)
+      data[[fic_col]] <- safe_calc(data[[lb_col]] * (1 - INFANT_MORTALITY_RATE))
+    }
+  }
+
   return(data)
 }
 
 #Part 4 - prepare summary results
 create_denominator_summary <- function(denominators_data, analysis_type = "NATIONAL") {
-  denominator_cols <- names(denominators_data)[grepl("^d(livebirth|anc1|delivery|sba|penta1|bcg|wpp)_", names(denominators_data))]
+  denominator_cols <- names(denominators_data)[grepl("^d(livebirths|anc1|delivery|sba|penta1|bcg|wpp)_", names(denominators_data))]
   if (length(denominator_cols) == 0) {
     warning("No denominator columns found"); return(NULL)
   }
@@ -877,6 +909,8 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
         target_population == "dpt"       ~ "Estimated number of infants eligible for DPT1",
         target_population == "measles1"  ~ "Estimated number of children eligible for measles dose 1 (MCV1)",
         target_population == "measles2"  ~ "Estimated number of children eligible for measles dose 2 (MCV2)",
+        target_population == "vitaminA" ~ "Estimated number of children aged 6-59 months eligible for Vitamin A",
+        target_population == "fully_immunized" ~ "Estimated number of children eligible for full immunization",
         TRUE ~ paste("Estimated population for target", target_population)
       ),
       denominator_label = paste0(target_phrase, " ", source_phrase, ".")
@@ -925,7 +959,9 @@ calculate_coverage <- function(denominators_data, numerators_data) {
     "dpt",       c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     "measles1",  c("measles1"),
-    "measles2",  c("measles2")
+    "measles2",  c("measles2"),
+    "vitaminA", c("vitaminA"),
+    "fully_immunized", c("fully_immunized")
   )
 
   # Expand denominators to match indicators
