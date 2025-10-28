@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "AFG"
 
 DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"
@@ -57,8 +57,8 @@ DENOMINATOR_SELECTION <- list(
   measles2 = DENOM_MEASLES2,             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
 
   # NEW
-  vitaminA = DENOM_VITA,            # Options: "best", 
-  fully_immunized = DENOM_FULLIMM             # Options: "best",  
+  vitaminA = DENOM_VITA,            # Options: "best",
+  fully_immunized = DENOM_FULLIMM             # Options: "best",
 )
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------

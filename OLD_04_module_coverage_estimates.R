@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "AFG"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -95,8 +95,7 @@ if ("iso3_code" %in% names(population_estimates_only)) {
 message("✓ Step 1/6 completed: All datasets loaded successfully!")
 
 # ------------------------------ Prepare Data for Analysis -------------------------
-# A flag to track if pnc1 was renamed to pnc1_mother
-pnc1_renamed_to_mother <- FALSE
+# Removed: pnc1 renaming flag (no longer needed)
 
 message("Analysis mode: ", ANALYSIS_LEVEL)
 
@@ -169,7 +168,7 @@ coverage_params <- list(
     "measles1", "measles2",
     "rota1", "rota2",
     "opv1", "opv2", "opv3",
-    "pnc1_mother",
+    "pnc1", "pnc1_mother",
     "nmr", "imr",
     "vitaminA",
     "fully_immunized"
@@ -184,7 +183,7 @@ survey_vars <- c(
   "avgsurvey_measles1", "avgsurvey_measles2",
   "avgsurvey_rota1", "avgsurvey_rota2",
   "avgsurvey_opv1", "avgsurvey_opv2", "avgsurvey_opv3",
-  "avgsurvey_pnc1_mother",
+  "avgsurvey_pnc1", "avgsurvey_pnc1_mother",
   "avgsurvey_nmr", "avgsurvey_imr", "postnmr",
   "avgsurvey_vitaminA",
   "avgsurvey_fully_immunized"
@@ -197,23 +196,14 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   expected_indicators <- c(
     # Core RMNCH indicators
     "anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "nmr", "imr",
-    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother",
+    "measles1", "measles2", "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1", "pnc1_mother",
     "vitaminA", "fully_immunized"
   )
   
   message("Loading and mapping adjusted HMIS volume...")
   
-  # Check if both pnc1_mother and pnc1 exist in the data
-  has_pnc1_mother <- "pnc1_mother" %in% adjusted_volume_data$indicator_common_id
-  has_pnc1 <- "pnc1" %in% adjusted_volume_data$indicator_common_id
-  
-  if (!has_pnc1_mother && has_pnc1) {
-    # If pnc1_mother doesn't exist but pnc1 does, rename pnc1 to pnc1_mother
-    adjusted_volume_data$indicator_common_id[adjusted_volume_data$indicator_common_id == "pnc1"] <- "pnc1_mother"
-    pnc1_renamed_to_mother <<- TRUE # Set flag to TRUE
-  }
-  
-  
+  # Removed: pnc1 renaming in HMIS (handled via survey duplication instead)
+
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
   
   # Ensure year and month exist
@@ -275,7 +265,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
 process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR,
-                                national_reference = NULL) {
+                                national_reference = NULL, hmis_indicators = NULL) {
 
   # Filter by ISO3 if available, otherwise use admin_area_1
   if (!is.null(hmis_iso3) && "iso3_code" %in% names(survey_data)) {
@@ -290,14 +280,13 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
                                         "polio1" = "opv1",
                                         "polio2" = "opv2",
                                         "polio3" = "opv3",
-                                        "pnc1" = "pnc1_mother",
                                         "vitamina" = "vitaminA"
     ))
   
   is_national <- all(unique(survey_data$admin_area_2) == "NATIONAL")
 
   indicators <- c("anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3", "measles1", "measles2",
-                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1_mother", "nmr", "imr",
+                  "rota1", "rota2", "opv1", "opv2", "opv3", "pnc1", "pnc1_mother", "nmr", "imr",
                   "vitaminA","fully_immunized")
   
   survey_filtered <- if (is_national) {
@@ -459,7 +448,34 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     survey_carried <- survey_carried %>% mutate(admin_area_2 = "NATIONAL")
     raw_survey_values <- raw_survey_values %>% mutate(admin_area_2 = "NATIONAL")
   }
-  
+
+  # Efficient fallback: duplicate survey columns if HMIS has indicators not in survey
+  if (!is.null(hmis_indicators)) {
+    # pnc1_mother fallback from pnc1
+    if ("pnc1_mother" %in% hmis_indicators) {
+      for (col in names(survey_carried)) {
+        if (grepl("\\bpnc1\\b", col) && !grepl("pnc1_mother", col)) {
+          survey_carried[[gsub("\\bpnc1\\b", "pnc1_mother", col)]] <- survey_carried[[col]]
+        }
+      }
+      if ("rawsurvey_pnc1" %in% names(raw_survey_values)) {
+        raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
+      }
+    }
+
+    # sba fallback from delivery
+    if ("sba" %in% hmis_indicators) {
+      for (col in names(survey_carried)) {
+        if (grepl("\\bdelivery\\b", col) && !grepl("sba", col)) {
+          survey_carried[[gsub("\\bdelivery\\b", "sba", col)]] <- survey_carried[[col]]
+        }
+      }
+      if ("rawsurvey_delivery" %in% names(raw_survey_values)) {
+        raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery
+      }
+    }
+  }
+
   return(list(
     carried = survey_carried %>% arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
     raw = raw_survey_values
@@ -525,6 +541,7 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     measles2  = c("countmeasles2", "measles2carry"),
     bcg       = c("countbcg", "bcgcarry"),
     livebirth = c("countlivebirth", "livebirthcarry"),
+    pnc1      = c("countpnc1", "pnc1carry"),
     pnc1_mother = c("countpnc1_mother", "pnc1_mothercarry"),
     nmr       = c("countnmr", "nmrcarry"),
     vitaminA = c("countvitaminA", "vitaminAcarry"),
@@ -689,7 +706,7 @@ evaluate_coverage_by_denominator <- function(data) {
     "pregnancy",   c("anc1", "anc4"),
 
     # Used for indicators that apply to newborns or children under 5
-    "livebirth",   c("delivery", "sba", "bcg", "pnc1_mother"),
+    "livebirth",   c("delivery", "sba", "bcg", "pnc1", "pnc1_mother"),
 
     # Used for infant immunization indicators (0–1 year)
     "dpt",         c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
@@ -865,7 +882,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
     pregnancy  = c("anc1", "anc4"),
-    livebirth  = c("bcg", "delivery", "sba", "pnc1_mother"),
+    livebirth  = c("bcg", "delivery", "sba", "pnc1", "pnc1_mother"),
     dpt        = c("penta1", "penta2", "penta3", "opv1", "opv2", "opv3",
                    "pcv1", "pcv2", "pcv3", "rota1", "rota2", "ipv1", "ipv2"),
     measles1   = c("measles1"),
@@ -976,10 +993,12 @@ hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
 # 2 - prepare the survey data
 message("  → Preparing survey data...")
+hmis_indicators_national <- sub("^count", "", grep("^count", names(hmis_processed$annual_hmis), value = TRUE))
 survey_processed_national <- process_survey_data(
   survey_data = survey_data_national,
   hmis_countries = hmis_processed$hmis_countries,
-  hmis_iso3 = hmis_processed$hmis_iso3
+  hmis_iso3 = hmis_processed$hmis_iso3,
+  hmis_indicators = hmis_indicators_national
 )
 
 message("  → Preparing population data...")
@@ -1168,18 +1187,49 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
 
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+    hmis_indicators_admin2 <- sub("^count", "", grep("^count", names(hmis_processed_admin2$annual_hmis), value = TRUE))
     survey_processed_admin2 <- tryCatch({
       process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
-                          national_reference = survey_processed_national$carried)
+                          national_reference = survey_processed_national$carried,
+                          hmis_indicators = hmis_indicators_admin2)
     }, error = function(e) {
       message("================================================================================")
-      warning("⚠️  MISMATCH DETECTED: admin_area_2 names differ between HMIS and survey data")
-      warning("   Error: ", e$message)
-      message("   → Skipping admin_area_2 analysis. Continuing with national only.")
-      message("   → Please verify ISO3 code matches your HMIS data")
-      message("================================================================================")
+      warning("⚠️  MISMATCH: HMIS admin_area_2 does not match survey admin_area_2")
       NULL
     })
+
+    # EDGE CASE DETECTION: Check if HMIS admin_area_3 matches survey admin_area_2
+    USE_ADMIN3_AS_ADMIN2 <- FALSE
+    if (is.null(survey_processed_admin2) && "admin_area_3" %in% names(hmis_data_subnational)) {
+      survey_admin2_regions <- survey_data_subnational %>% distinct(admin_area_2) %>% pull(admin_area_2)
+      hmis_admin3_values <- hmis_data_subnational %>%
+        filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+        distinct(admin_area_3) %>%
+        pull(admin_area_3)
+
+      if (length(hmis_admin3_values) > 0 && length(survey_admin2_regions) > 0) {
+        matching_admin3_to_admin2 <- intersect(hmis_admin3_values, survey_admin2_regions)
+
+        if (length(matching_admin3_to_admin2) > 0) {
+          message("   ✓ DETECTED: HMIS admin_area_3 matches survey admin_area_2 (",
+                  length(matching_admin3_to_admin2), "/", length(hmis_admin3_values), " regions)")
+          message("   → Skipping admin_area_2 analysis")
+          message("   → Will analyze at admin_area_3 level instead")
+          USE_ADMIN3_AS_ADMIN2 <- TRUE
+
+          # Force admin_area_3 processing
+          if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2") {
+            ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"
+          }
+        }
+      }
+
+      if (!USE_ADMIN3_AS_ADMIN2) {
+        message("   → Falling back to NATIONAL_ONLY analysis")
+        message("   → Please verify ISO3 code and admin area names")
+      }
+      message("================================================================================")
+    }
 
     # SAFEGUARD: Check if survey processing succeeded
     if (is.null(survey_processed_admin2)) {
@@ -1194,6 +1244,30 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         rename(coverage_cov = coverage)
 
       message("  → Admin area 2 analysis completed: ", nrow(combined_admin2_export), " result rows")
+
+      # FALLBACK: If admin2 produced 0 results, check for admin3 edge case
+      if (nrow(combined_admin2_export) == 0 && "admin_area_3" %in% names(hmis_data_subnational)) {
+        message("   → Admin area 2 produced 0 results - checking for admin3 fallback...")
+
+        survey_admin2_regions <- survey_data_subnational %>% distinct(admin_area_2) %>% pull(admin_area_2)
+        hmis_admin3_values <- hmis_data_subnational %>%
+          filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+          distinct(admin_area_3) %>%
+          pull(admin_area_3)
+
+        if (length(hmis_admin3_values) > 0 && length(survey_admin2_regions) > 0) {
+          matching_admin3_to_admin2 <- intersect(hmis_admin3_values, survey_admin2_regions)
+
+          if (length(matching_admin3_to_admin2) > 0) {
+            message("   ✓ DETECTED: HMIS admin_area_3 matches survey admin_area_2 (",
+                    length(matching_admin3_to_admin2), "/", length(hmis_admin3_values), " regions)")
+            message("   → Switching to admin_area_3 analysis")
+            USE_ADMIN3_AS_ADMIN2 <- TRUE
+            ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"
+            combined_admin2_export <- NULL  # Clear empty results
+          }
+        }
+      }
     }
   }
 
@@ -1213,10 +1287,20 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         # Run pipeline up to coverage evaluation (skip projection)
         hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
 
+        # VALIDATION: Check if survey and HMIS regions match
+        if (exists("USE_ADMIN3_AS_ADMIN2") && USE_ADMIN3_AS_ADMIN2) {
+          hmis_regions <- hmis_processed_admin3$annual_hmis %>% distinct(admin_area_2) %>% pull()
+          survey_regions <- survey_data_subnational %>% distinct(admin_area_2) %>% pull()
+          matching <- intersect(hmis_regions, survey_regions)
+          message("   → Admin3 validation: ", length(matching), "/", length(hmis_regions), " HMIS districts match survey regions")
+        }
+
         # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
+        hmis_indicators_admin3 <- sub("^count", "", grep("^count", names(hmis_processed_admin3$annual_hmis), value = TRUE))
         survey_processed_admin3 <- tryCatch({
           process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries,
-                              national_reference = survey_processed_national$carried)
+                              national_reference = survey_processed_national$carried,
+                              hmis_indicators = hmis_indicators_admin3)
         }, error = function(e) {
           message("================================================================================")
           warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
@@ -1261,29 +1345,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 message("✓ Step 5/6: Finalizing results and preparing outputs")
 
 # ------------------------------ Write Output Files -------------------------
-# Conditionally rename pnc1_mother back to pnc1 if the original data was pnc1
-if (pnc1_renamed_to_mother) {
-  if (exists("combined_national_export_fixed")) {
-    combined_national_export_fixed$indicator_common_id[combined_national_export_fixed$indicator_common_id == "pnc1_mother"] <- "pnc1"
-    message("✓ Renamed 'pnc1_mother' to 'pnc1' in national output")
-  }
-  
-  if (exists("combined_admin2_export")) {
-    combined_admin2_export$indicator_common_id[combined_admin2_export$indicator_common_id == "pnc1_mother"] <- "pnc1"
-    message("✓ Renamed 'pnc1_mother' to 'pnc1' in admin_area_2 output")
-  }
-  
-  if (exists("combined_admin3_export")) {
-    combined_admin3_export$indicator_common_id[combined_admin3_export$indicator_common_id == "pnc1_mother"] <- "pnc1"
-    message("✓ Renamed 'pnc1_mother' to 'pnc1' in admin_area_3 output")
-  }
-  
-  if (exists("best_denom_summary")) {
-    best_denom_summary$indicator_common_id[best_denom_summary$indicator_common_id == "pnc1_mother"] <- "pnc1"
-    message("✓ Renamed 'pnc1_mother' to 'pnc1' in best_denom_summary output")
-  }
-}
-
+# Removed: pnc1_mother back-renaming (no longer needed)
 
 message("✓ Step 5/6 completed: Results finalized!")
 

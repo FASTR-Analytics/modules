@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "AFG"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -1476,20 +1476,50 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
     if (length(matching_regions_admin2) == 0 && ANALYSIS_LEVEL != "NATIONAL_ONLY") {
       message("================================================================================")
-      warning("⚠️  MISMATCH DETECTED: No matching admin_area_2 names between HMIS and survey data")
-      if (exists("hmis_admin2_regions") && exists("survey_admin2_regions")) {
-        message("   HMIS regions (", length(hmis_admin2_regions), "): ", paste(head(hmis_admin2_regions, 5), collapse = ", "),
-                if(length(hmis_admin2_regions) > 5) "..." else "")
-        message("   Survey regions (", length(survey_admin2_regions), "): ", paste(head(survey_admin2_regions, 5), collapse = ", "),
-                if(length(survey_admin2_regions) > 5) "..." else "")
+      warning("⚠️  MISMATCH: HMIS admin_area_2 does not match survey admin_area_2")
+
+      # EDGE CASE DETECTION: Check if HMIS admin_area_3 matches survey admin_area_2
+      USE_ADMIN3_AS_ADMIN2 <- FALSE
+      if ("admin_area_3" %in% names(hmis_data_subnational)) {
+        hmis_admin3_values <- hmis_data_subnational %>%
+          filter(!is.na(admin_area_3) & admin_area_3 != "" & admin_area_3 != "ZONE") %>%
+          distinct(admin_area_3) %>%
+          pull(admin_area_3)
+
+        if (length(hmis_admin3_values) > 0 && exists("survey_admin2_regions")) {
+          matching_admin3_to_admin2 <- intersect(hmis_admin3_values, survey_admin2_regions)
+
+          if (length(matching_admin3_to_admin2) > 0) {
+            message("   ✓ DETECTED: HMIS admin_area_3 matches survey admin_area_2 (",
+                    length(matching_admin3_to_admin2), "/", length(hmis_admin3_values), " regions)")
+            message("   → Skipping admin_area_2 analysis")
+            message("   → Will analyze at admin_area_3 level instead")
+            USE_ADMIN3_AS_ADMIN2 <- TRUE
+          }
+        }
       }
-      message("   → Skipping admin_area_2 analysis. Continuing with national only.")
-      message("   → Please verify ISO3 code matches your HMIS data")
+
+      if (!USE_ADMIN3_AS_ADMIN2) {
+        if (exists("hmis_admin2_regions") && exists("survey_admin2_regions")) {
+          message("   HMIS regions (", length(hmis_admin2_regions), "): ", paste(head(hmis_admin2_regions, 5), collapse = ", "),
+                  if(length(hmis_admin2_regions) > 5) "..." else "")
+          message("   Survey regions (", length(survey_admin2_regions), "): ", paste(head(survey_admin2_regions, 5), collapse = ", "),
+                  if(length(survey_admin2_regions) > 5) "..." else "")
+        }
+        message("   → Falling back to NATIONAL_ONLY analysis")
+        message("   → Please verify ISO3 code and admin area names")
+        ANALYSIS_LEVEL <- "NATIONAL_ONLY"
+        denominators_admin2_results <- NULL
+        admin2_combined_results <- NULL
+      } else {
+        # Ensure we proceed to admin_area_3 section
+        if (ANALYSIS_LEVEL == "NATIONAL_PLUS_AA2") {
+          ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2_AA3"
+        }
+        denominators_admin2_results <- NULL
+        admin2_combined_results <- NULL
+      }
       message("================================================================================")
-      ANALYSIS_LEVEL <- "NATIONAL_ONLY"
-      # Ensure admin2 results are NULL
-      denominators_admin2_results <- NULL
-      admin2_combined_results <- NULL
     } else if (length(matching_regions_admin2) > 0) {
       message("✓ admin_area_2 validation passed: ", length(matching_regions_admin2), "/", length(hmis_admin2_regions), " regions match")
 
@@ -1653,10 +1683,16 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           unwpp_raw_long    = NULL
         )
 
-        # Expand survey raw data to admin_area_3 level using mapping
-        # Each admin_area_2 (zone) survey value applies to all admin_area_3 (districts) within it
-        if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
-          if (!is.null(survey_raw_admin3_long) && "admin_area_2" %in% names(survey_raw_admin3_long)) {
+        # Expand survey raw data to admin_area_3 level
+        # EDGE CASE: If USE_ADMIN3_AS_ADMIN2 is TRUE, survey is already at district level - just rename
+        # NORMAL: Use mapping to expand zone-level survey to districts
+        if (!is.null(survey_raw_admin3_long) && "admin_area_2" %in% names(survey_raw_admin3_long)) {
+          if (exists("USE_ADMIN3_AS_ADMIN2") && USE_ADMIN3_AS_ADMIN2) {
+            # Afghanistan edge case: survey already processed at district level
+            survey_raw_admin3_long <- survey_raw_admin3_long %>%
+              rename(admin_area_3 = admin_area_2)
+          } else if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
+            # Normal case: expand zone survey to districts
             survey_raw_admin3_long <- survey_raw_admin3_long %>%
               left_join(admin23_mapping, by = "admin_area_2", relationship = "many-to-many")
           }
@@ -1670,10 +1706,16 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           make_survey_reference_long(survey_processed_admin3$carried)
         } else NULL
 
-        # Expand survey reference to admin_area_3 level using mapping
-        # Each admin_area_2 (zone) survey value applies to all admin_area_3 (districts) within it
-        if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
-          if (!is.null(survey_reference_admin3) && "admin_area_2" %in% names(survey_reference_admin3)) {
+        # Expand survey reference to admin_area_3 level
+        # EDGE CASE: If USE_ADMIN3_AS_ADMIN2 is TRUE, survey is already at district level - just rename
+        # NORMAL: Use mapping to expand zone-level survey to districts
+        if (!is.null(survey_reference_admin3) && "admin_area_2" %in% names(survey_reference_admin3)) {
+          if (exists("USE_ADMIN3_AS_ADMIN2") && USE_ADMIN3_AS_ADMIN2) {
+            # Afghanistan edge case: survey already processed at district level
+            survey_reference_admin3 <- survey_reference_admin3 %>%
+              rename(admin_area_3 = admin_area_2)
+          } else if (exists("admin23_mapping") && !is.null(admin23_mapping) && nrow(admin23_mapping) > 0) {
+            # Normal case: expand zone survey to districts
             survey_reference_admin3 <- survey_reference_admin3 %>%
               left_join(admin23_mapping, by = "admin_area_2", relationship = "many-to-many")
           }
