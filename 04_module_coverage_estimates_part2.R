@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "AFG"
+COUNTRY_ISO3 <- "NGA"
 
 DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"
@@ -15,13 +15,12 @@ DENOM_OPV2 <- "best"
 DENOM_OPV3 <- "best"
 DENOM_MEASLES1 <- "best"
 DENOM_MEASLES2 <- "best"
-
 DENOM_VITA <- "best"
 DENOM_FULLIMM <- "best"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 23
+# Last edit: 2025 Oct 29
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -57,8 +56,8 @@ DENOMINATOR_SELECTION <- list(
   measles2 = DENOM_MEASLES2,             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
 
   # NEW
-  vitaminA = DENOM_VITA,            # Options: "best",
-  fully_immunized = DENOM_FULLIMM             # Options: "best",
+  vitaminA = DENOM_VITA,                      # Options: "best", "danc1_vitaminA"     "dbcg_vitaminA"      "ddelivery_vitaminA" "dwpp_vitaminA"  
+  fully_immunized = DENOM_FULLIMM             # Options: "best", "danc1_fully_immunized"     "dbcg_fully_immunized"      "ddelivery_fully_immunized" "dwpp_fully_immunized"
 )
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------
