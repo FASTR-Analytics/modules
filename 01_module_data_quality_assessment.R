@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "AFG"
 OUTLIER_PROPORTION_THRESHOLD <- 0.8  # Proportion threshold for outlier detection
 MINIMUM_COUNT_THRESHOLD <- 100       # Minimum count threshold for consideration
 MADS <- 10                           # Number of MADs
@@ -7,11 +7,11 @@ DQA_INDICATORS <- c("penta1", "anc1")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc", "delivery")  # current options: "penta", "anc", "delivery", "malaria"
 
 
-PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
+PROJECT_DATA_HMIS <- "hmis_AFG.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 9
+# Last edit: 2025 Nov 4
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -443,23 +443,34 @@ dqa_with_consistency <- function(
     left_join(
       consistency_expanded %>% select(facility_id, period_id, starts_with("pair_")),
       by = c("facility_id","period_id")
-    ) %>%
-    mutate(across(starts_with("pair_"), ~replace_na(.x, 0L)))
+    )
+    # Don't replace NA with 0 - NA means indicator doesn't exist and should be excluded from scoring
   
   if ("pair_delivery" %in% colnames(dqa_data)) {
     dqa_data <- dqa_data %>% select(-pair_delivery)
   }
   
   consistency_cols <- grep("^pair_", names(dqa_data), value = TRUE)
-  
+
   dqa_data <- dqa_data %>%
     mutate(
+      # Count how many consistency pairs are actually scoreable (not NA - meaning indicator exists)
+      pairs_available = if (length(consistency_cols) > 0)
+        rowSums(!is.na(across(all_of(consistency_cols)))) else 0L,
+
+      # Count passing scores (only from available pairs)
       total_consistency_pass = if (length(consistency_cols) > 0)
         rowSums(across(all_of(consistency_cols)) == 1L, na.rm = TRUE) else 0L,
-      max_consistency_checks = length(consistency_cols),
-      consistency_score      = ifelse(max_consistency_checks > 0, total_consistency_pass / max_consistency_checks, NA_real_),
-      all_pairs_pass         = ifelse(total_consistency_pass == max_consistency_checks, 1L, 0L),
-      dqa_mean               = (completeness_outlier_score + consistency_score) / 2
+
+      # Divide by AVAILABLE pairs, not total pairs (excludes missing indicators from denominator)
+      consistency_score = ifelse(pairs_available > 0,
+                                  total_consistency_pass / pairs_available,
+                                  NA_real_),
+
+      # Pass only if ALL available pairs pass
+      all_pairs_pass = ifelse(pairs_available > 0 & total_consistency_pass == pairs_available, 1L, 0L),
+
+      dqa_mean = (completeness_outlier_score + consistency_score) / 2
     ) %>%
     select(all_of(geo_cols), facility_id, period_id,
            completeness_outlier_score, consistency_score, dqa_mean, dqa_score = all_pairs_pass)
@@ -597,9 +608,9 @@ if (length(consistency_params$consistency_pairs) > 0) {
           id_cols = c(facility_id, period_id, any_of(geo_cols)),
           names_from = ratio_type,
           values_from = sconsistency,
-          values_fill = list(sconsistency = 0)
+          values_fill = list(sconsistency = NA_integer_)  # Keep NA for missing indicators
         ) %>%
-        mutate(across(where(is.numeric), ~ replace_na(.x, 0))) %>%
+        # Don't replace NA with 0 - NA means indicator doesn't exist, should be excluded from scoring
         distinct(facility_id, period_id, .keep_all = TRUE)
     } else {
       consistency_expanded <- NULL
