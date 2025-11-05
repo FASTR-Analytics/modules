@@ -1,17 +1,17 @@
-COUNTRY_ISO3 <- "AFG"
+COUNTRY_ISO3 <- "GIN"
 OUTLIER_PROPORTION_THRESHOLD <- 0.8  # Proportion threshold for outlier detection
 MINIMUM_COUNT_THRESHOLD <- 100       # Minimum count threshold for consideration
 MADS <- 10                           # Number of MADs
-GEOLEVEL <- "admin_area_4"           # Admin level used to join facilities to corresponding geo-consistency
-DQA_INDICATORS <- c("penta1", "anc1")
-CONSISTENCY_PAIRS_USED <- c("penta", "anc", "delivery")  # current options: "penta", "anc", "delivery", "malaria"
+GEOLEVEL <- "admin_area_3"           # Admin level used to join facilities to corresponding geo-consistency
+DQA_INDICATORS <- c("penta1", "anc1", "opd")
+CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
 
-PROJECT_DATA_HMIS <- "hmis_AFG.csv"
+PROJECT_DATA_HMIS <- "hmis_GIN.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 4
+# Last edit: 2025 Nov 5
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
