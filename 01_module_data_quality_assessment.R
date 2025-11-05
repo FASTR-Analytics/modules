@@ -463,9 +463,10 @@ dqa_with_consistency <- function(
         rowSums(across(all_of(consistency_cols)) == 1L, na.rm = TRUE) else 0L,
 
       # Divide by AVAILABLE pairs, not total pairs (excludes missing indicators from denominator)
+      # If no pairs available (all denominators = 0), score as 0 (fail - can't verify consistency)
       consistency_score = ifelse(pairs_available > 0,
                                   total_consistency_pass / pairs_available,
-                                  NA_real_),
+                                  0),
 
       # Pass only if ALL available pairs pass
       all_pairs_pass = ifelse(pairs_available > 0 & total_consistency_pass == pairs_available, 1L, 0L),
