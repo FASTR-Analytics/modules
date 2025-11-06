@@ -11,7 +11,7 @@ PROJECT_DATA_HMIS <- "hmis_GIN.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 5
+# Last edit: 2025 Nov 6
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -254,6 +254,11 @@ geo_consistency_analysis <- function(data, geo_cols, geo_level, consistency_para
           ratio_type = pair_name,
           consistency_ratio = if_else(.data[[col2]] > 0, .data[[col1]] / .data[[col2]], NA_real_),
           sconsistency = case_when(
+            # When denominator = 0, handle special cases
+            .data[[col2]] == 0 & .data[[col1]] == 0 ~ NA_integer_,  # Both 0: no data to assess
+            .data[[col2]] == 0 & .data[[col1]] > 0 & is.infinite(upper_bound) ~ 1L,  # One-sided check (penta, anc): numerator > 0 satisfies
+            .data[[col2]] == 0 & .data[[col1]] > 0 ~ 0L,  # Bounded check (delivery, malaria): can't satisfy range
+            # Normal ratio checks
             !is.na(consistency_ratio) & consistency_ratio >= lower_bound & consistency_ratio <= upper_bound ~ 1L,
             !is.na(consistency_ratio) ~ 0L,
             TRUE ~ NA_integer_
