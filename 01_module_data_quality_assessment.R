@@ -11,7 +11,7 @@ PROJECT_DATA_HMIS <- "hmis_GIN.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 5
+# Last edit: 2025 Nov 08
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -227,7 +227,7 @@ geo_consistency_analysis <- function(data, geo_cols, geo_level, consistency_para
       id_cols = c(all_of(relevant_geo_cols), period_id),
       names_from = "indicator_common_id",
       values_from = "count",
-      values_fill = list(count = 0)
+      values_fill = list(count = NA_real_)
     )
   
   print("Checking available indicators in dataset...")
