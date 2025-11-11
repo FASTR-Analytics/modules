@@ -19028,20 +19028,20 @@ ng Federal Government,cr Cross River State,2024,CH_VACC_C_BAS,fully_immunized,ot
 ng Federal Government,de Delta State,2024,CH_VACC_C_BAS,fully_immunized,other,0.681,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
 ng Federal Government,ed Edo State,2024,CH_VACC_C_BAS,fully_immunized,other,0.584,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
 ng Federal Government,ri Rivers State,2024,CH_VACC_C_BAS,fully_immunized,other,0.557,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
-Afghanistan,NATIONAL,2010,MNCH_ANC1,anc1,percent,0.596,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2011,MNCH_ANC1,anc1,percent,0.479,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2012,MNCH_ANC1,anc1,percent,0.512,UNICEF Other,National Risk and Vulnerability Assessment 2011-12,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2014,MNCH_ANC1,anc1,percent,0.632,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2017,MNCH_ANC1,anc1,percent,0.702,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2018,MNCH_ANC1,anc1,percent,0.652,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2023,MNCH_ANC1,anc1,percent,0.764,MICS,Multiple Indicator Cluster Survey 2022-2023,household,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2010,MNCH_ANC4,anc4,percent,0.161,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2011,MNCH_ANC4,anc4,percent,0.146,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2014,MNCH_ANC4,anc4,percent,0.227,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2017,MNCH_ANC4,anc4,percent,0.163,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2018,MNCH_ANC4,anc4,percent,0.209,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2020,MNCH_ANC4,anc4,percent,0.276,UNICEF Other,Afghanistan 2019-2020 Income; Expenditure & Labour Force Survey; National Statistics and Information Authority,other,Afghanistan,AFG,NA
-Afghanistan,NATIONAL,2023,MNCH_ANC4,anc4,percent,0.334,MICS,Multiple Indicators Survey 2022-23,household,Afghanistan,AFG,NA
+Afghanistan,NATIONAL,2010,MNCH_ANC1,anc1,percent,0.596,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2011,MNCH_ANC1,anc1,percent,0.479,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2012,MNCH_ANC1,anc1,percent,0.512,UNICEF Other,National Risk and Vulnerability Assessment 2011-12,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2014,MNCH_ANC1,anc1,percent,0.632,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2017,MNCH_ANC1,anc1,percent,0.702,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2018,MNCH_ANC1,anc1,percent,0.652,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2023,MNCH_ANC1,anc1,percent,0.764,MICS,Multiple Indicator Cluster Survey 2022-2023,household,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2010,MNCH_ANC4,anc4,percent,0.161,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2011,MNCH_ANC4,anc4,percent,0.146,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2014,MNCH_ANC4,anc4,percent,0.227,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2017,MNCH_ANC4,anc4,percent,0.163,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2018,MNCH_ANC4,anc4,percent,0.209,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2020,MNCH_ANC4,anc4,percent,0.276,UNICEF Other,Afghanistan 2019-2020 Income; Expenditure & Labour Force Survey; National Statistics and Information Authority,other,Afghanistan,AF,AFG
+Afghanistan,NATIONAL,2023,MNCH_ANC4,anc4,percent,0.334,MICS,Multiple Indicators Survey 2022-23,household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2010,MNCH_INSTDEL,delivery,percent,0.324,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AFG,NA
 Afghanistan,NATIONAL,2011,MNCH_INSTDEL,delivery,percent,0.329,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AFG,NA
 Afghanistan,NATIONAL,2012,MNCH_INSTDEL,delivery,percent,0.358,UNICEF Other,National Risk and Vulnerability Assessment ( Living Condition Survey) CSO 2011-12 ( ) 2014,other,Afghanistan,AFG,NA
