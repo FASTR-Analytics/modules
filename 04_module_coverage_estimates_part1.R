@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "AFG"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 29
+# Last edit: 2025 Nov 11
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -579,8 +579,10 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
   # defaults for subnational when missing - use national coverage estimate
   # If no national reference is available, leave as NA (no coverage calculation)
   if (!is_national && !is.null(national_reference)) {
-    # Extract national coverage values by year for vaccination indicators
-    for (ind in c("bcg","penta1","penta3")) {
+    # Extract national coverage values by year for all indicators (from survey file)
+    for (ind in c("anc1", "anc4", "delivery", "sba", "bcg", "penta1", "penta3",
+                  "measles1", "measles2", "opv1", "opv2", "opv3", "rota1", "rota2",
+                  "pnc1", "vitaminA", "fully_immunized")) {
       carry_col <- paste0(ind, "carry")
       nat_col <- paste0("avgsurvey_", ind)
 
@@ -1018,6 +1020,9 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   # Geographic grouping keys (exclude year for consistent denominator selection)
   geo_only_keys <- geo_keys[geo_keys != "year"]
 
+  # Country-level grouping keys (for denominator selection - SAME denominator across all regions)
+  country_only_keys <- "admin_area_1"
+
   # Types & keys
   coverage_data$year        <- as.integer(coverage_data$year)
   survey_expanded_df$year   <- as.integer(survey_expanded_df$year)
@@ -1035,58 +1040,85 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     )
     # NOTE: Don't filter out NAs here - we need all denominators for ranking
 
-  # Step 1: Select best denominator for each geo × indicator
+  # Step 1: Select best denominator for each indicator (SAME across all regions within country)
   # Logic: 1) Prefer independent (non-reference, non-UNWPP) with lowest error
   #        2) Fallback to reference-based only if no independent options exist
   #        3) UNWPP denominators are EXCLUDED from "best" selection
   #        4) Exception: UNWPP used as last resort if no other denominators exist
+  # NOTE: Group by country + indicator ONLY (not by region) to ensure consistency
 
   # Try to select best denominators excluding UNWPP
   best_denominators_no_unwpp <- coverage_with_reference %>%
     filter(!is.na(squared_error)) %>%  # Only consider denominators with survey comparisons
     filter(source_type != "unwpp_based") %>%  # EXCLUDE UNWPP from best selection
-    group_by(across(all_of(geo_only_keys)), indicator_common_id) %>%
+    group_by(across(all_of(country_only_keys)), indicator_common_id, denominator) %>%
+    summarise(total_error = sum(squared_error, na.rm = TRUE),
+              source_type = first(source_type),
+              .groups = "drop") %>%
+    group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
     mutate(is_reference_based = source_type == "reference_based") %>%
     arrange(
       is_reference_based,    # FALSE (independent) comes first, TRUE (reference) comes last
-      squared_error,         # Among each type, pick lowest error
+      total_error,           # Among each type, pick lowest error
       .by_group = TRUE
     ) %>%
     slice_head(n = 1) %>%  # Take the top one from each group
     ungroup() %>%
-    select(all_of(geo_only_keys), indicator_common_id, best_denominator = denominator)
+    select(all_of(country_only_keys), indicator_common_id, best_denominator = denominator)
 
   # Fallback: if no non-UNWPP denominators exist for some indicators, include UNWPP as last resort
   missing_indicators <- coverage_with_reference %>%
     filter(!is.na(squared_error)) %>%
-    distinct(across(all_of(geo_only_keys)), indicator_common_id) %>%
-    anti_join(best_denominators_no_unwpp, by = c(geo_only_keys, "indicator_common_id"))
+    distinct(across(all_of(country_only_keys)), indicator_common_id) %>%
+    anti_join(best_denominators_no_unwpp, by = c(country_only_keys, "indicator_common_id"))
 
   if (nrow(missing_indicators) > 0) {
     warning("Some indicators only have UNWPP denominators available. Including UNWPP as fallback for these cases.")
 
     unwpp_fallbacks <- coverage_with_reference %>%
       filter(!is.na(squared_error)) %>%
-      semi_join(missing_indicators, by = c(geo_only_keys, "indicator_common_id")) %>%
+      semi_join(missing_indicators, by = c(country_only_keys, "indicator_common_id")) %>%
       filter(source_type == "unwpp_based") %>%
-      group_by(across(all_of(geo_only_keys)), indicator_common_id) %>%
-      arrange(squared_error, .by_group = TRUE) %>%
+      group_by(across(all_of(country_only_keys)), indicator_common_id, denominator) %>%
+      summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+      group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
+      arrange(total_error, .by_group = TRUE) %>%
       slice_head(n = 1) %>%
       ungroup() %>%
-      select(all_of(geo_only_keys), indicator_common_id, best_denominator = denominator)
+      select(all_of(country_only_keys), indicator_common_id, best_denominator = denominator)
 
     best_denominators <- bind_rows(best_denominators_no_unwpp, unwpp_fallbacks)
   } else {
     best_denominators <- best_denominators_no_unwpp
   }
 
-  # Step 2: Filter coverage data to use only the best denominator for each geo × indicator
+  # Print selected denominators
+  level_name <- if ("admin_area_3" %in% geo_keys) {
+    "admin_area_3"
+  } else if ("admin_area_2" %in% geo_keys) {
+    if ("admin_area_2" %in% names(coverage_data) && all(coverage_data$admin_area_2 == "NATIONAL", na.rm = TRUE)) {
+      "national"
+    } else {
+      "admin_area_2"
+    }
+  } else {
+    "national"
+  }
+
+  message(sprintf("  → Selected denominators for %s:", level_name))
+  best_denominators %>%
+    arrange(indicator_common_id) %>%
+    mutate(msg = sprintf("     - %s → %s", indicator_common_id, best_denominator)) %>%
+    pull(msg) %>%
+    walk(message)
+
+  # Step 2: Filter coverage data to use only the best denominator for each indicator (applied to all regions)
   # and apply ranking within years for the selected denominators
   final_result <- coverage_with_reference %>%
-    left_join(best_denominators, by = c(geo_only_keys, "indicator_common_id")) %>%
+    left_join(best_denominators, by = c(country_only_keys, "indicator_common_id")) %>%
     filter(denominator == best_denominator) %>%
     select(-best_denominator) %>%
-    # Now rank within geo × indicator × year (should be rank 1 for each since we have only one denominator per geo × indicator)
+    # Now rank within geo × indicator × year (should be rank 1 for each since we have only one denominator per indicator)
     # But only rank where we have survey reference values
     group_by(across(all_of(geo_keys)), indicator_common_id) %>%
     arrange(squared_error, .by_group = TRUE) %>%

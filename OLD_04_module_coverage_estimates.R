@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 24
+# Last edit: 2025 Nov 11
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -1032,12 +1032,16 @@ combined_national <- prepare_combined_coverage_from_projected(
 )
 
 # 7 - detect the best single denominator per indicator
+# Logic: Prefer independent denominators, but allow reference_based as fallback if no independent options exist
 best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
-  filter(source_type == "independent") %>%
   group_by(admin_area_1, indicator_common_id, denominator) %>%
-  summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+  summarise(total_error = sum(squared_error, na.rm = TRUE),
+            source_type = first(source_type),
+            .groups = "drop") %>%
   group_by(admin_area_1, indicator_common_id) %>%
-  slice_min(order_by = total_error, n = 1) %>%
+  mutate(is_reference_based = source_type == "reference_based") %>%
+  arrange(is_reference_based, total_error, .by_group = TRUE) %>%
+  slice_head(n = 1) %>%
   ungroup()
 
 # Clean print to console
@@ -1238,8 +1242,31 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
       coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
 
-      # SKIP PROJECTION - just use the best coverage estimates directly
-      combined_admin2_export <- coverage_eval_admin2$best_only %>%
+      # Select best denominator per indicator (SAME denominator for ALL regions)
+      # Calculate total error across ALL regions combined
+      best_denom_admin2 <- coverage_eval_admin2$full_ranking %>%
+        group_by(indicator_common_id, denominator) %>%
+        summarise(total_error = sum(squared_error, na.rm = TRUE),
+                  source_type = first(source_type),
+                  .groups = "drop") %>%
+        group_by(indicator_common_id) %>%
+        mutate(is_reference_based = source_type == "reference_based") %>%
+        arrange(is_reference_based, total_error, .by_group = TRUE) %>%
+        slice_head(n = 1) %>%
+        ungroup()
+
+      # Print selected denominators for admin_area_2
+      message("  → Selected denominators for admin_area_2:")
+      best_denom_admin2 %>%
+        arrange(indicator_common_id) %>%
+        mutate(msg = sprintf("     - %s → %s", indicator_common_id, denominator)) %>%
+        pull(msg) %>%
+        walk(message)
+
+      # Join back to get year-level coverage (apply same denominator to all regions)
+      combined_admin2_export <- coverage_eval_admin2$full_ranking %>%
+        inner_join(best_denom_admin2 %>% select(indicator_common_id, denominator),
+                   by = c("indicator_common_id", "denominator")) %>%
         select(admin_area_2, indicator_common_id, year, coverage) %>%
         rename(coverage_cov = coverage)
 
@@ -1318,8 +1345,31 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
           coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
 
-          # SKIP PROJECTION - just use the best coverage estimates directly (rename back to admin_area_3)
-          combined_admin3_export <- coverage_eval_admin3$best_only %>%
+          # Select best denominator per indicator (SAME denominator for ALL regions)
+          # Calculate total error across ALL regions combined
+          best_denom_admin3 <- coverage_eval_admin3$full_ranking %>%
+            group_by(indicator_common_id, denominator) %>%
+            summarise(total_error = sum(squared_error, na.rm = TRUE),
+                      source_type = first(source_type),
+                      .groups = "drop") %>%
+            group_by(indicator_common_id) %>%
+            mutate(is_reference_based = source_type == "reference_based") %>%
+            arrange(is_reference_based, total_error, .by_group = TRUE) %>%
+            slice_head(n = 1) %>%
+            ungroup()
+
+          # Print selected denominators for admin_area_3
+          message("  → Selected denominators for admin_area_3:")
+          best_denom_admin3 %>%
+            arrange(indicator_common_id) %>%
+            mutate(msg = sprintf("     - %s → %s", indicator_common_id, denominator)) %>%
+            pull(msg) %>%
+            walk(message)
+
+          # Join back to get year-level coverage (apply same denominator to all regions, rename back to admin_area_3)
+          combined_admin3_export <- coverage_eval_admin3$full_ranking %>%
+            inner_join(best_denom_admin3 %>% select(indicator_common_id, denominator),
+                       by = c("indicator_common_id", "denominator")) %>%
             select(admin_area_2, indicator_common_id, year, coverage) %>%
             rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
 
