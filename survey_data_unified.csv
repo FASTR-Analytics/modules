@@ -1,86 +1,65 @@
 admin_area_1,admin_area_2,year,indicator_id,indicator_common_id,indicator_type,survey_value,source,source_detail,survey_type,country_name,iso2_code,iso3_code
 Afghanistan,Badakhshan,2015,rh_ancp_w_skp,anc1,percent,0.392,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Badakhshan,2015,rh_ancn_w_n01,anc1_old,percent,0.048,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Badakhshan,2015,rh_ancn_w_n4p,anc4,percent,0.141,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Badakhshan,2015,rh_delp_c_dhf,delivery,percent,0.271,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Badghis,2015,rh_ancp_w_skp,anc1,percent,0.23,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Badghis,2015,rh_ancn_w_n01,anc1_old,percent,0.076,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Badghis,2015,rh_ancn_w_n4p,anc4,percent,0.019,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Badghis,2015,rh_delp_c_dhf,delivery,percent,0.079,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Baghlan,2015,rh_ancp_w_skp,anc1,percent,0.503,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Baghlan,2015,rh_ancn_w_n01,anc1_old,percent,0.166,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Baghlan,2015,rh_ancn_w_n4p,anc4,percent,0.096,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Baghlan,2015,rh_delp_c_dhf,delivery,percent,0.303,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Balkh,2015,rh_ancp_w_skp,anc1,percent,0.858,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Balkh,2015,rh_ancn_w_n01,anc1_old,percent,0.178,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Balkh,2015,rh_ancn_w_n4p,anc4,percent,0.355,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Balkh,2015,rh_delp_c_dhf,delivery,percent,0.547,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Bamyan,2015,rh_ancp_w_skp,anc1,percent,0.759,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Bamyan,2015,rh_ancn_w_n01,anc1_old,percent,0.068,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Bamyan,2015,rh_ancn_w_n4p,anc4,percent,0.315,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Bamyan,2015,rh_delp_c_dhf,delivery,percent,0.508,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Dykundi,2015,rh_ancp_w_skp,anc1,percent,0.462,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Dykundi,2015,rh_ancn_w_n01,anc1_old,percent,0.101,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Dykundi,2015,rh_ancn_w_n4p,anc4,percent,0.11,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Dykundi,2015,rh_delp_c_dhf,delivery,percent,0.287,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Farah,2015,rh_ancp_w_skp,anc1,percent,0.371,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Farah,2015,rh_ancn_w_n01,anc1_old,percent,0.161,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Farah,2015,rh_ancn_w_n4p,anc4,percent,0.033,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Farah,2015,rh_delp_c_dhf,delivery,percent,0.441,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Faryab,2015,rh_ancp_w_skp,anc1,percent,0.781,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Faryab,2015,rh_ancn_w_n01,anc1_old,percent,0.179,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Faryab,2015,rh_ancn_w_n4p,anc4,percent,0.099,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Faryab,2015,rh_delp_c_dhf,delivery,percent,0.65,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghazni,2015,rh_ancp_w_skp,anc1,percent,0.444,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Ghazni,2015,rh_ancn_w_n01,anc1_old,percent,0.084,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghazni,2015,rh_ancn_w_n4p,anc4,percent,0.136,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghazni,2015,rh_delp_c_dhf,delivery,percent,0.68,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghor,2015,rh_ancp_w_skp,anc1,percent,0.648,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Ghor,2015,rh_ancn_w_n01,anc1_old,percent,0.123,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghor,2015,rh_ancn_w_n4p,anc4,percent,0.094,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Ghor,2015,rh_delp_c_dhf,delivery,percent,0.221,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Helmand,2015,rh_ancp_w_skp,anc1,percent,0.327,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Helmand,2015,rh_ancn_w_n01,anc1_old,percent,0.005,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Helmand,2015,rh_ancn_w_n4p,anc4,percent,0.055,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Helmand,2015,rh_delp_c_dhf,delivery,percent,0.303,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Hirat,2015,rh_ancp_w_skp,anc1,percent,0.727,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Hirat,2015,rh_ancn_w_n01,anc1_old,percent,0.106,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Hirat,2015,rh_ancn_w_n4p,anc4,percent,0.289,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Hirat,2015,rh_delp_c_dhf,delivery,percent,0.453,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Jawzjan,2015,rh_ancp_w_skp,anc1,percent,0.671,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Jawzjan,2015,rh_ancn_w_n01,anc1_old,percent,0.131,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Jawzjan,2015,rh_ancn_w_n4p,anc4,percent,0.29,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Jawzjan,2015,rh_delp_c_dhf,delivery,percent,0.85,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kabul,2015,rh_ancp_w_skp,anc1,percent,0.671,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Kabul,2015,rh_ancn_w_n01,anc1_old,percent,0.078,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kabul,2015,rh_ancn_w_n4p,anc4,percent,0.381,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kabul,2015,rh_delp_c_dhf,delivery,percent,0.835,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kandahar,2015,rh_ancp_w_skp,anc1,percent,0.478,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Kandahar,2015,rh_ancn_w_n01,anc1_old,percent,0.174,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kandahar,2015,rh_ancn_w_n4p,anc4,percent,0.053,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kandahar,2015,rh_delp_c_dhf,delivery,percent,0.45,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kapisa,2015,rh_ancp_w_skp,anc1,percent,0.765,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Kapisa,2015,rh_ancn_w_n01,anc1_old,percent,0.118,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kapisa,2015,rh_ancn_w_n4p,anc4,percent,0.269,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kapisa,2015,rh_delp_c_dhf,delivery,percent,0.579,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Khost,2015,rh_ancp_w_skp,anc1,percent,0.73,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Khost,2015,rh_ancn_w_n01,anc1_old,percent,0.086,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Khost,2015,rh_ancn_w_n4p,anc4,percent,0.143,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Khost,2015,rh_delp_c_dhf,delivery,percent,0.555,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunar,2015,rh_ancp_w_skp,anc1,percent,0.187,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Kunar,2015,rh_ancn_w_n01,anc1_old,percent,0.038,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunar,2015,rh_ancn_w_n4p,anc4,percent,0.011,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunar,2015,rh_delp_c_dhf,delivery,percent,0.493,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunduz,2015,rh_ancp_w_skp,anc1,percent,0.733,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Kunduz,2015,rh_ancn_w_n01,anc1_old,percent,0.143,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunduz,2015,rh_ancn_w_n4p,anc4,percent,0.171,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Kunduz,2015,rh_delp_c_dhf,delivery,percent,0.656,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Laghman,2015,rh_ancp_w_skp,anc1,percent,0.762,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Laghman,2015,rh_ancn_w_n01,anc1_old,percent,0.171,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Laghman,2015,rh_ancn_w_n4p,anc4,percent,0.143,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Laghman,2015,rh_delp_c_dhf,delivery,percent,0.652,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Logar,2015,rh_ancp_w_skp,anc1,percent,0.737,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Logar,2015,rh_ancn_w_n01,anc1_old,percent,0.159,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Logar,2015,rh_ancn_w_n4p,anc4,percent,0.142,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Logar,2015,rh_delp_c_dhf,delivery,percent,0.702,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2010,IM_BCG,bcg,percent,0.68,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Afghanistan,AF,AFG
@@ -99,7 +78,6 @@ Afghanistan,NATIONAL,2014,IM_BCG,bcg,percent,0.74,MICS,"WHO/UNICEF estimates of 
 Afghanistan,NATIONAL,2014,IM_DTP1,penta1,percent,0.73,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2014,IM_DTP3,penta3,percent,0.62,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2015,rh_ancp_w_skp,anc1,percent,0.61,DHS National,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2015,rh_ancn_w_n01,anc1_old,percent,0.12,DHS National,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2015,rh_ancn_w_n4p,anc4,percent,0.188,DHS National,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2015,ch_vac1_c_bcg,bcg,percent,0.557,DHS National,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2015,IM_BCG,bcg,percent,0.76,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Afghanistan,AF,AFG
@@ -159,55 +137,42 @@ Afghanistan,NATIONAL,2024,IM_DTP3,penta3,percent,0.59,MICS,"WHO/UNICEF estimates
 Afghanistan,NATIONAL,2025,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.391,UNWPP,UNWPP,modeled,Afghanistan,AF,AFG
 Afghanistan,NATIONAL,2025,Infant mortality rate (IMR),imr,rate,41.37963,UNWPP,UNWPP,modeled,Afghanistan,AF,AFG
 Afghanistan,Nangarhar,2015,rh_ancp_w_skp,anc1,percent,0.787,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Nangarhar,2015,rh_ancn_w_n01,anc1_old,percent,0.142,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nangarhar,2015,rh_ancn_w_n4p,anc4,percent,0.25,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nangarhar,2015,rh_delp_c_dhf,delivery,percent,0.679,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nimroz,2015,rh_ancp_w_skp,anc1,percent,0.425,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Nimroz,2015,rh_ancn_w_n01,anc1_old,percent,0.029,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nimroz,2015,rh_ancn_w_n4p,anc4,percent,0.163,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nimroz,2015,rh_delp_c_dhf,delivery,percent,0.738,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nooristan,2015,rh_ancp_w_skp,anc1,percent,0.107,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Nooristan,2015,rh_ancn_w_n01,anc1_old,percent,0.068,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nooristan,2015,rh_ancn_w_n4p,anc4,percent,0,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Nooristan,2015,rh_delp_c_dhf,delivery,percent,0.013,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktika,2015,rh_ancp_w_skp,anc1,percent,0.451,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Paktika,2015,rh_ancn_w_n01,anc1_old,percent,0.154,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktika,2015,rh_ancn_w_n4p,anc4,percent,0.019,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktika,2015,rh_delp_c_dhf,delivery,percent,0.477,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktya,2015,rh_ancp_w_skp,anc1,percent,0.578,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Paktya,2015,rh_ancn_w_n01,anc1_old,percent,0.177,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktya,2015,rh_ancn_w_n4p,anc4,percent,0.034,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Paktya,2015,rh_delp_c_dhf,delivery,percent,0.699,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Panjsher,2015,rh_ancp_w_skp,anc1,percent,0.681,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Panjsher,2015,rh_ancn_w_n01,anc1_old,percent,0.01,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Panjsher,2015,rh_ancn_w_n4p,anc4,percent,0.257,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Panjsher,2015,rh_delp_c_dhf,delivery,percent,0.674,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Parwan,2015,rh_ancp_w_skp,anc1,percent,0.896,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Parwan,2015,rh_ancn_w_n01,anc1_old,percent,0.081,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Parwan,2015,rh_ancn_w_n4p,anc4,percent,0.443,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Parwan,2015,rh_delp_c_dhf,delivery,percent,0.555,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Samangan,2015,rh_ancp_w_skp,anc1,percent,0.493,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Samangan,2015,rh_ancn_w_n01,anc1_old,percent,0.112,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Samangan,2015,rh_ancn_w_n4p,anc4,percent,0.107,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Samangan,2015,rh_delp_c_dhf,delivery,percent,0.374,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Sar-e-Pul,2015,rh_ancp_w_skp,anc1,percent,0.646,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Sar-e-Pul,2015,rh_ancn_w_n01,anc1_old,percent,0.026,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Sar-e-Pul,2015,rh_ancn_w_n4p,anc4,percent,0.32,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Sar-e-Pul,2015,rh_delp_c_dhf,delivery,percent,0.568,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Takhar,2015,rh_ancp_w_skp,anc1,percent,0.634,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Takhar,2015,rh_ancn_w_n01,anc1_old,percent,0.159,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Takhar,2015,rh_ancn_w_n4p,anc4,percent,0.227,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Takhar,2015,rh_delp_c_dhf,delivery,percent,0.557,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Urozgan,2015,rh_ancp_w_skp,anc1,percent,0.18,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Urozgan,2015,rh_ancn_w_n01,anc1_old,percent,0.102,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Urozgan,2015,rh_ancn_w_n4p,anc4,percent,0.004,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Urozgan,2015,rh_delp_c_dhf,delivery,percent,0.168,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Wardak,2015,rh_ancp_w_skp,anc1,percent,0.7,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Wardak,2015,rh_ancn_w_n01,anc1_old,percent,0.074,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Wardak,2015,rh_ancn_w_n4p,anc4,percent,0.303,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Wardak,2015,rh_delp_c_dhf,delivery,percent,0.584,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Zabul,2015,rh_ancp_w_skp,anc1,percent,0.346,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
-Afghanistan,Zabul,2015,rh_ancn_w_n01,anc1_old,percent,0.005,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Zabul,2015,rh_ancn_w_n4p,anc4,percent,0.046,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Afghanistan,Zabul,2015,rh_delp_c_dhf,delivery,percent,0.394,DHS Sub-national,AF2015DHS,household,Afghanistan,AF,AFG
 Albania,NATIONAL,2010,IM_BCG,bcg,percent,0.99,MICS,"WHO/UNICEF estimates of national immunization coverage, 2024 revision",household,Albania,AL,ALB
@@ -19028,29 +18993,3 @@ ng Federal Government,cr Cross River State,2024,CH_VACC_C_BAS,fully_immunized,ot
 ng Federal Government,de Delta State,2024,CH_VACC_C_BAS,fully_immunized,other,0.681,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
 ng Federal Government,ed Edo State,2024,CH_VACC_C_BAS,fully_immunized,other,0.584,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
 ng Federal Government,ri Rivers State,2024,CH_VACC_C_BAS,fully_immunized,other,0.557,DHS Sub-national,NG2024DHS,household,Nigeria,NG,NGA
-Afghanistan,NATIONAL,2010,MNCH_ANC1,anc1,percent,0.596,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2011,MNCH_ANC1,anc1,percent,0.479,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2012,MNCH_ANC1,anc1,percent,0.512,UNICEF Other,National Risk and Vulnerability Assessment 2011-12,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2014,MNCH_ANC1,anc1,percent,0.632,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2017,MNCH_ANC1,anc1,percent,0.702,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2018,MNCH_ANC1,anc1,percent,0.652,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2023,MNCH_ANC1,anc1,percent,0.764,MICS,Multiple Indicator Cluster Survey 2022-2023,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2010,MNCH_ANC4,anc4,percent,0.161,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2011,MNCH_ANC4,anc4,percent,0.146,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2014,MNCH_ANC4,anc4,percent,0.227,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2017,MNCH_ANC4,anc4,percent,0.163,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2018,MNCH_ANC4,anc4,percent,0.209,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2020,MNCH_ANC4,anc4,percent,0.276,UNICEF Other,Afghanistan 2019-2020 Income; Expenditure & Labour Force Survey; National Statistics and Information Authority,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2023,MNCH_ANC4,anc4,percent,0.334,MICS,Multiple Indicators Survey 2022-23,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2010,MNCH_INSTDEL,delivery,percent,0.324,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2011,MNCH_INSTDEL,delivery,percent,0.329,MICS,Multiple Indicator Cluster Survey 2010-2011,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2012,MNCH_INSTDEL,delivery,percent,0.358,UNICEF Other,National Risk and Vulnerability Assessment ( Living Condition Survey) CSO 2011-12 ( ) 2014,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2014,MNCH_INSTDEL,delivery,percent,0.428,UNICEF Other,Living Conditions Survey 2013-2014,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2017,MNCH_INSTDEL,delivery,percent,0.505,UNICEF Other,Afghanistan Living Conditions Survey 2016-17. Kabul: Central Statistics Organization (CSO); 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2018,MNCH_INSTDEL,delivery,percent,0.563,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2020,MNCH_INSTDEL,delivery,percent,0.625,UNICEF Other,Afghanistan 2019-2020 Income; Expenditure & Labour Force Survey; National Statistics and Information Authority,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2023,MNCH_INSTDEL,delivery,percent,0.663,MICS,Multiple Indicator Cluster Survey 2022-2023,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2010,MNCH_PNCMOM,pnc1,percent,0.234,UNICEF Other,Afghanistan Mortality Survey 2010,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2015,MNCH_PNCMOM,pnc1,percent,0.399,DHS,Demographic and Health Survey 2015,household,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2018,MNCH_PNCMOM,pnc1,percent,0.374,UNICEF Other,Afghanistan Health Survey 2018. Amsterdam: KIT Royal Tropical Institute; 2018.,other,Afghanistan,AF,AFG
-Afghanistan,NATIONAL,2023,MNCH_PNCMOM,pnc1,percent,0.363,MICS,Multiple Indicators Survey 2022-23,household,Afghanistan,AF,AFG
