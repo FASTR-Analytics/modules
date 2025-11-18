@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "NGA"
+COUNTRY_ISO3 <- "AFG"
 
 DENOM_ANC1 <- "best"
 DENOM_ANC4 <- "best"
@@ -20,7 +20,7 @@ DENOM_FULLIMM <- "best"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 29
+# Last edit: 2025 Nov 18
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -212,7 +212,7 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
       all_of(group_keys), year, indicator_common_id, denominator,
       baseline_year, projected
     )
-  
+
   # also include an explicit baseline row for traceability (optional)
   baseline_rows <- seeds %>%
     transmute(
@@ -221,8 +221,31 @@ project_survey_from_deltas <- function(deltas_df, survey_raw_long) {
       indicator_common_id, denominator,
       baseline_year, projected = baseline_value
     )
-  
-  bind_rows(proj, baseline_rows) %>%
+
+  # NEW: Carry forward baseline value to fill gap between last survey and first HMIS year
+  # For each geo×indicator×denominator, find the gap years and fill with baseline_value
+  carry_forward_rows <- seeds %>%
+    # Join with the first projection year to find the gap
+    left_join(
+      proj %>%
+        filter(year > baseline_year) %>%
+        group_by(across(all_of(delta_group_keys))) %>%
+        summarise(first_proj_year = min(year, na.rm = TRUE), .groups = "drop"),
+      by = delta_group_keys
+    ) %>%
+    # Only create carry-forward rows if there's a gap (first_proj_year > baseline_year + 1)
+    filter(!is.na(first_proj_year), first_proj_year > baseline_year + 1) %>%
+    # Create rows for all gap years using map2 to handle vectorized seq()
+    mutate(gap_years = map2(baseline_year, first_proj_year, ~seq(.x + 1, .y - 1))) %>%
+    unnest(gap_years) %>%
+    transmute(
+      across(all_of(group_keys)),
+      year = as.integer(gap_years),
+      indicator_common_id, denominator,
+      baseline_year, projected = baseline_value
+    )
+
+  bind_rows(proj, baseline_rows, carry_forward_rows) %>%
     distinct() %>%
     arrange(across(all_of(c(group_keys, "indicator_common_id", "denominator", "year"))))
 }
@@ -258,9 +281,9 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       coverage_cov = coverage
     )
   
-  # 2) Projections
+  # 2) Projections - use full_join to include carry-forward years (e.g., 2016-2018)
   cov_proj <- cov_base %>%
-    left_join(
+    full_join(
       proj_df %>%
         select(
           all_of(base_keys), year,
@@ -347,17 +370,19 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       # Keep coverage_original_estimate as-is - preserve all actual survey values
 
       # Calculate projections starting FROM last survey year
-      # At last survey year: copy survey value
+      # At last survey year: copy survey value (anchor point)
       # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
       coverage_avgsurveyprojection = case_when(
+        # Preserve values from proj_df ONLY if at or after last survey year
+        !is.na(coverage_avgsurveyprojection) & year >= .last_survey_year ~ coverage_avgsurveyprojection,
         # No projection if no baseline
         is.na(.last_survey_value) | is.na(.last_survey_year) | is.na(.baseline_cov) ~ NA_real_,
-        # At last survey year: copy survey value
+        # At last survey year: copy survey value (anchor point)
         year == .last_survey_year ~ .last_survey_value,
         # After last survey year: additive projection
         year > .last_survey_year & !is.na(coverage_cov) ~
           .last_survey_value + (coverage_cov - .baseline_cov),
-        # Otherwise NA
+        # Otherwise NA (including years before last survey)
         TRUE ~ NA_real_
       )
     ) %>%

@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 11
+# Last edit: 2025 Nov 18
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -670,6 +670,12 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   return(data)
 }
 
+# Helper function: Identify national-only denominators (UNWPP only)
+# BCG-derived can be used at subnational level
+identify_national_only_denominators <- function(denominator_name) {
+  str_starts(denominator_name, "dwpp_")
+}
+
 #Part 4 - calculate coverage and compare all denominators
 evaluate_coverage_by_denominator <- function(data) {
   # Determine if this is national-level data
@@ -1031,9 +1037,10 @@ combined_national <- prepare_combined_coverage_from_projected(
   raw_survey_wide = survey_processed_national$raw
 )
 
-# 7 - detect the best single denominator per indicator
+# 7 - detect the best and second_best denominators per indicator
 # Logic: Prefer independent denominators, but allow reference_based as fallback if no independent options exist
-best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
+# NEW: Also store second_best for subnational fallback when best is national-only
+ranked_denom_per_indicator <- national_coverage_eval$full_ranking %>%
   group_by(admin_area_1, indicator_common_id, denominator) %>%
   summarise(total_error = sum(squared_error, na.rm = TRUE),
             source_type = first(source_type),
@@ -1041,23 +1048,38 @@ best_denom_per_indicator <- national_coverage_eval$full_ranking %>%
   group_by(admin_area_1, indicator_common_id) %>%
   mutate(is_reference_based = source_type == "reference_based") %>%
   arrange(is_reference_based, total_error, .by_group = TRUE) %>%
-  slice_head(n = 1) %>%
+  mutate(rank = row_number()) %>%
   ungroup()
+
+# Extract best and second_best denominators
+national_denominator_mapping <- ranked_denom_per_indicator %>%
+  filter(rank <= 2) %>%
+  group_by(admin_area_1, indicator_common_id) %>%
+  summarise(
+    best_denom = first(denominator),
+    second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
+    best_is_national_only = identify_national_only_denominators(first(denominator)),
+    second_is_national_only = if(n() >= 2) identify_national_only_denominators(nth(denominator, 2)) else NA,
+    .groups = "drop"
+  )
 
 # Clean print to console
 message("Selected denominator per indicator:")
-best_denom_per_indicator %>%
+national_denominator_mapping %>%
   arrange(indicator_common_id) %>%
-  distinct(indicator_common_id, denominator) %>%
-  mutate(msg = sprintf("  - %s → %s", indicator_common_id, denominator)) %>%
+  mutate(msg = sprintf("  - %s → %s (second_best: %s)",
+                       indicator_common_id,
+                       best_denom,
+                       ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
   pull(msg) %>%
   walk(message)
 
 main_export <- combined_national %>%
   inner_join(
-    best_denom_per_indicator,
-    by = c("admin_area_1", "indicator_common_id", "denominator")
+    national_denominator_mapping %>% select(admin_area_1, indicator_common_id, best_denom),
+    by = c("admin_area_1", "indicator_common_id")
   ) %>%
+  filter(denominator == best_denom) %>%
   select(admin_area_1, indicator_common_id, year, denominator,
          coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
 
@@ -1159,8 +1181,9 @@ combined_national_export_fixed <- combined_national_export %>%
     coverage_cov
   )
 
-best_denom_summary <- best_denom_per_indicator %>%
-  distinct(indicator_common_id, denominator) %>%
+best_denom_summary <- national_denominator_mapping %>%
+  select(indicator_common_id, denominator = best_denom, second_best_denom,
+         best_is_national_only, second_is_national_only) %>%
   arrange(indicator_common_id)
 
 
@@ -1242,33 +1265,59 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       denominators_admin2 <- calculate_denominators(hmis_processed_admin2$annual_hmis, survey_processed_admin2$carried)
       coverage_eval_admin2 <- evaluate_coverage_by_denominator(denominators_admin2)
 
-      # Select best denominator per indicator (SAME denominator for ALL regions)
-      # Calculate total error across ALL regions combined
-      best_denom_admin2 <- coverage_eval_admin2$full_ranking %>%
-        group_by(indicator_common_id, denominator) %>%
-        summarise(total_error = sum(squared_error, na.rm = TRUE),
-                  source_type = first(source_type),
-                  .groups = "drop") %>%
-        group_by(indicator_common_id) %>%
-        mutate(is_reference_based = source_type == "reference_based") %>%
-        arrange(is_reference_based, total_error, .by_group = TRUE) %>%
-        slice_head(n = 1) %>%
-        ungroup()
+      # Apply national denominator mapping with fallback logic for national-only denominators
+      message("  → Applying national denominator selection to admin_area_2...")
 
-      # Print selected denominators for admin_area_2
-      message("  → Selected denominators for admin_area_2:")
-      best_denom_admin2 %>%
+      # Apply national mapping with fallback logic
+      combined_admin2_export <- coverage_eval_admin2$full_ranking %>%
+        left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
+                                                           best_is_national_only, second_is_national_only),
+                  by = "indicator_common_id") %>%
+        mutate(
+          selected_denom = case_when(
+            # Best is subnational-capable → use it
+            !best_is_national_only ~ best_denom,
+            # Best is national-only, second exists and is subnational-capable → use second
+            best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+            # Both are national-only or no second_best → skip (return NA)
+            TRUE ~ NA_character_
+          )
+        ) %>%
+        filter(!is.na(selected_denom)) %>%
+        filter(denominator == selected_denom) %>%
+        select(admin_area_2, indicator_common_id, year, coverage) %>%
+        rename(coverage_cov = coverage)
+
+      # Print selected denominators for admin_area_2 (from national mapping)
+      message("  → Denominators used for admin_area_2 (from national selection):")
+      national_denominator_mapping %>%
         arrange(indicator_common_id) %>%
-        mutate(msg = sprintf("     - %s → %s", indicator_common_id, denominator)) %>%
+        mutate(
+          used_denom = case_when(
+            !best_is_national_only ~ best_denom,
+            best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+            TRUE ~ NA_character_
+          ),
+          # Only show fallback label when we're actually using second_best
+          msg = if_else(
+            best_is_national_only & !is.na(second_best_denom) & !second_is_national_only,
+            sprintf("     - %s → %s (fallback: best was %s, national-only)", indicator_common_id, used_denom, best_denom),
+            sprintf("     - %s → %s", indicator_common_id, used_denom)
+          )
+        ) %>%
+        filter(!is.na(used_denom)) %>%
         pull(msg) %>%
         walk(message)
 
-      # Join back to get year-level coverage (apply same denominator to all regions)
-      combined_admin2_export <- coverage_eval_admin2$full_ranking %>%
-        inner_join(best_denom_admin2 %>% select(indicator_common_id, denominator),
-                   by = c("indicator_common_id", "denominator")) %>%
-        select(admin_area_2, indicator_common_id, year, coverage) %>%
-        rename(coverage_cov = coverage)
+      # Log skipped indicators
+      skipped_indicators <- national_denominator_mapping %>%
+        filter(best_is_national_only & (is.na(second_best_denom) | second_is_national_only)) %>%
+        pull(indicator_common_id)
+
+      if (length(skipped_indicators) > 0) {
+        message("   ⚠️  SKIPPED for admin_area_2 (no subnational-capable denominator): ",
+                paste(skipped_indicators, collapse = ", "))
+      }
 
       message("  → Admin area 2 analysis completed: ", nrow(combined_admin2_export), " result rows")
 
@@ -1345,33 +1394,59 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           denominators_admin3 <- calculate_denominators(hmis_processed_admin3$annual_hmis, survey_processed_admin3$carried)
           coverage_eval_admin3 <- evaluate_coverage_by_denominator(denominators_admin3)
 
-          # Select best denominator per indicator (SAME denominator for ALL regions)
-          # Calculate total error across ALL regions combined
-          best_denom_admin3 <- coverage_eval_admin3$full_ranking %>%
-            group_by(indicator_common_id, denominator) %>%
-            summarise(total_error = sum(squared_error, na.rm = TRUE),
-                      source_type = first(source_type),
-                      .groups = "drop") %>%
-            group_by(indicator_common_id) %>%
-            mutate(is_reference_based = source_type == "reference_based") %>%
-            arrange(is_reference_based, total_error, .by_group = TRUE) %>%
-            slice_head(n = 1) %>%
-            ungroup()
+          # Apply national denominator mapping with fallback logic for national-only denominators
+          message("  → Applying national denominator selection to admin_area_3...")
 
-          # Print selected denominators for admin_area_3
-          message("  → Selected denominators for admin_area_3:")
-          best_denom_admin3 %>%
+          # Apply national mapping with fallback logic
+          combined_admin3_export <- coverage_eval_admin3$full_ranking %>%
+            left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
+                                                               best_is_national_only, second_is_national_only),
+                      by = "indicator_common_id") %>%
+            mutate(
+              selected_denom = case_when(
+                # Best is subnational-capable → use it
+                !best_is_national_only ~ best_denom,
+                # Best is national-only, second exists and is subnational-capable → use second
+                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+                # Both are national-only or no second_best → skip (return NA)
+                TRUE ~ NA_character_
+              )
+            ) %>%
+            filter(!is.na(selected_denom)) %>%
+            filter(denominator == selected_denom) %>%
+            select(admin_area_2, indicator_common_id, year, coverage) %>%
+            rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
+
+          # Print selected denominators for admin_area_3 (from national mapping)
+          message("  → Denominators used for admin_area_3 (from national selection):")
+          national_denominator_mapping %>%
             arrange(indicator_common_id) %>%
-            mutate(msg = sprintf("     - %s → %s", indicator_common_id, denominator)) %>%
+            mutate(
+              used_denom = case_when(
+                !best_is_national_only ~ best_denom,
+                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+                TRUE ~ NA_character_
+              ),
+              # Only show fallback label when we're actually using second_best
+              msg = if_else(
+                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only,
+                sprintf("     - %s → %s (fallback: best was %s, national-only)", indicator_common_id, used_denom, best_denom),
+                sprintf("     - %s → %s", indicator_common_id, used_denom)
+              )
+            ) %>%
+            filter(!is.na(used_denom)) %>%
             pull(msg) %>%
             walk(message)
 
-          # Join back to get year-level coverage (apply same denominator to all regions, rename back to admin_area_3)
-          combined_admin3_export <- coverage_eval_admin3$full_ranking %>%
-            inner_join(best_denom_admin3 %>% select(indicator_common_id, denominator),
-                       by = c("indicator_common_id", "denominator")) %>%
-            select(admin_area_2, indicator_common_id, year, coverage) %>%
-            rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
+          # Log skipped indicators
+          skipped_indicators <- national_denominator_mapping %>%
+            filter(best_is_national_only & (is.na(second_best_denom) | second_is_national_only)) %>%
+            pull(indicator_common_id)
+
+          if (length(skipped_indicators) > 0) {
+            message("   ⚠️  SKIPPED for admin_area_3 (no subnational-capable denominator): ",
+                    paste(skipped_indicators, collapse = ", "))
+          }
 
           message("  → Admin area 3 analysis completed: ", nrow(combined_admin3_export), " result rows")
         }
