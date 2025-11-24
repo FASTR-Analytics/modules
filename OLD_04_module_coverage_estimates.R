@@ -1181,9 +1181,27 @@ combined_national_export_fixed <- combined_national_export %>%
     coverage_cov
   )
 
+# Create improved denominator summary with geographic levels
 best_denom_summary <- national_denominator_mapping %>%
-  select(indicator_common_id, denominator = best_denom, second_best_denom,
-         best_is_national_only, second_is_national_only) %>%
+  mutate(
+    # National always uses best_denom
+    denominator_national = best_denom,
+
+    # Admin2: Use best if subnational-capable, else second_best if available
+    denominator_admin2 = case_when(
+      !best_is_national_only ~ best_denom,
+      best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+      TRUE ~ NA_character_
+    ),
+
+    # Admin3: Same logic as admin2
+    denominator_admin3 = case_when(
+      !best_is_national_only ~ best_denom,
+      best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(indicator_common_id, denominator_national, denominator_admin2, denominator_admin3) %>%
   arrange(indicator_common_id)
 
 

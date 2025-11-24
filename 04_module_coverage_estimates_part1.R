@@ -1474,6 +1474,30 @@ if (!is.null(denominators_national_results) &&
     survey_raw_df       = survey_raw_national_long,
     all_coverage_data   = national_coverage
   )
+
+  # Create improved denominator summary with geographic levels
+  message("  → Creating denominator summary by geographic level...")
+  best_denom_summary <- national_denominator_mapping %>%
+    mutate(
+      # National always uses best_denom
+      denominator_national = best_denom,
+
+      # Admin2: Use best if subnational-capable, else second_best if available
+      denominator_admin2 = case_when(
+        !best_is_national_only ~ best_denom,
+        best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+        TRUE ~ NA_character_
+      ),
+
+      # Admin3: Same logic as admin2
+      denominator_admin3 = case_when(
+        !best_is_national_only ~ best_denom,
+        best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
+        TRUE ~ NA_character_
+      )
+    ) %>%
+    select(indicator_common_id, denominator_national, denominator_admin2, denominator_admin3) %>%
+    arrange(indicator_common_id)
 }
 
 
@@ -2102,6 +2126,22 @@ if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) 
   )
   write.csv(dummy, "M4_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No combined_results_admin3 results - saved empty file")
+}
+
+# Export denominator summary
+if (exists("best_denom_summary") && is.data.frame(best_denom_summary) && nrow(best_denom_summary) > 0) {
+  write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ Saved denominator summary: M4_selected_denominator_per_indicator.csv")
+} else {
+  dummy <- data.frame(
+    indicator_common_id = character(),
+    denominator_national = character(),
+    denominator_admin2 = character(),
+    denominator_admin3 = character(),
+    stringsAsFactors = FALSE
+  )
+  write.csv(dummy, "M4_selected_denominator_per_indicator.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  message("✓ No denominator summary - saved empty file")
 }
 
 message("✓ Step 6/7 completed: All results saved successfully!")
