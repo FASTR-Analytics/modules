@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 23
+# Last edit: 2025 Nov 24
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -931,10 +931,10 @@ classify_source_type <- function(denominator, ind) {
   "independent"
 }
 
-# Helper function: Identify national-only denominators (UNWPP only)
-# BCG-derived can be used at subnational level
+# Helper function: Identify national-only denominators (UNWPP and BCG-derived)
+# BCG-derived denominators are not calculated at subnational level
 identify_national_only_denominators <- function(denominator_name) {
-  startsWith(denominator_name, "dwpp_")
+  startsWith(denominator_name, "dwpp_") || startsWith(denominator_name, "dbcg_")
 }
 
 # Part 5 - Calculate coverage estimates (from Part 2)
