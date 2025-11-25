@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "AFG"
+COUNTRY_ISO3 <- "SLE"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 24
+# Last edit: 2025 Nov 26
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1486,14 +1486,14 @@ if (!is.null(denominators_national_results) &&
       denominator_admin2 = case_when(
         !best_is_national_only ~ best_denom,
         best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-        TRUE ~ NA_character_
+        TRUE ~ "NOT_AVAILABLE"
       ),
 
       # Admin3: Same logic as admin2
       denominator_admin3 = case_when(
         !best_is_national_only ~ best_denom,
         best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-        TRUE ~ NA_character_
+        TRUE ~ "NOT_AVAILABLE"
       )
     ) %>%
     select(indicator_common_id, denominator_national, denominator_admin2, denominator_admin3) %>%
