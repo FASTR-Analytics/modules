@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "AFG"
+COUNTRY_ISO3 <- "SLE"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 24
+# Last edit: 2025 Nov 25
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -458,6 +458,10 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
           survey_carried[[gsub("\\bpnc1\\b", "pnc1_mother", col)]] <- survey_carried[[col]]
         }
       }
+      # Also create the carry column for pnc1_mother
+      if ("pnc1carry" %in% names(survey_carried)) {
+        survey_carried$pnc1_mothercarry <- survey_carried$pnc1carry
+      }
       if ("rawsurvey_pnc1" %in% names(raw_survey_values)) {
         raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
       }
@@ -469,6 +473,10 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
         if (grepl("\\bdelivery\\b", col) && !grepl("sba", col)) {
           survey_carried[[gsub("\\bdelivery\\b", "sba", col)]] <- survey_carried[[col]]
         }
+      }
+      # Also create the carry column for sba
+      if ("deliverycarry" %in% names(survey_carried)) {
+        survey_carried$sbacarry <- survey_carried$deliverycarry
       }
       if ("rawsurvey_delivery" %in% names(raw_survey_values)) {
         raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery

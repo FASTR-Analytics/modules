@@ -20,7 +20,7 @@ DENOM_FULLIMM <- "best"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 18
+# Last edit: 2025 Nov 23
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
