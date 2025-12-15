@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SLE"
+COUNTRY_ISO3 <- "COD"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 26
+# Last edit: 2025 Dec 12
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -762,14 +762,14 @@ evaluate_coverage_by_denominator <- function(data) {
   denominator_long <- distinct(denominator_long)
   
   # Join numerator and denominator
+  # NOTE: Don't drop NA coverage yet - we need to preserve survey-only years
   coverage_data <- full_join(
     numerator_long,
     denominator_long,
     by = c(geo_keys, "indicator_common_id")
   ) %>%
-    mutate(coverage = numerator / denominator_value) %>%
-    drop_na(coverage)
-  
+    mutate(coverage = numerator / denominator_value)
+
   # Reference values
   carry_cols <- grep("carry$", names(data), value = TRUE)
   carry_values <- data %>%
@@ -783,15 +783,18 @@ evaluate_coverage_by_denominator <- function(data) {
     drop_na(reference_value) %>%
     group_by(across(all_of(c(geo_keys, "indicator_common_id")))) %>%
     summarise(reference_value = mean(reference_value, na.rm = TRUE), .groups = "drop")
-  
+
   print(unique(carry_values$indicator_common_id))
-  
+
   # Calculate error
-  coverage_with_error <- left_join(
+  # Join coverage data with reference values, keeping survey-only years
+  coverage_with_error <- full_join(
     coverage_data,
     carry_values,
     by = c(geo_keys, "indicator_common_id")
   ) %>%
+    # NOW filter to keep only rows with coverage OR reference_value (or both)
+    filter(!is.na(coverage) | !is.na(reference_value)) %>%
     mutate(
       squared_error = (coverage - reference_value)^2,
       source_type = case_when(
@@ -806,11 +809,11 @@ evaluate_coverage_by_denominator <- function(data) {
     )
   
   # Rank by error
+  # For survey-only years: squared_error is NA (no HMIS coverage to compare), but keep them unranked
   ranked <- coverage_with_error %>%
-    filter(!is.na(squared_error)) %>%
     group_by(across(all_of(geo_keys)), indicator_common_id) %>%
     arrange(squared_error) %>%
-    mutate(rank = row_number()) %>%
+    mutate(rank = if_else(is.na(squared_error), NA_integer_, as.integer(row_number()))) %>%
     ungroup()
   
   # Best-only output
@@ -828,9 +831,39 @@ evaluate_coverage_by_denominator <- function(data) {
 #Part 5 - run projections
 project_coverage_from_all <- function(ranked_coverage) {
   message("Projecting survey coverage forward using HMIS deltas...")
-  
+
   if (!"reference_value" %in% names(ranked_coverage)) {
     stop("ERROR!! 'reference_value' column not found in ranked_coverage.")
+  }
+
+  # DEBUG: Check input data
+  message("DEBUG INPUT: ranked_coverage has ", nrow(ranked_coverage), " rows")
+  if (nrow(ranked_coverage) > 0 && "year" %in% names(ranked_coverage)) {
+    message("DEBUG INPUT: Year range: ", min(ranked_coverage$year, na.rm=TRUE), " to ", max(ranked_coverage$year, na.rm=TRUE))
+    survey_only <- ranked_coverage %>% filter(!is.na(reference_value) & is.na(coverage))
+    hmis_only <- ranked_coverage %>% filter(!is.na(coverage) & is.na(reference_value))
+    both <- ranked_coverage %>% filter(!is.na(coverage) & !is.na(reference_value))
+    message("DEBUG INPUT: Survey-only rows (ref but no coverage): ", nrow(survey_only))
+    message("DEBUG INPUT: HMIS-only rows (coverage but no ref): ", nrow(hmis_only))
+    message("DEBUG INPUT: Both (coverage AND ref): ", nrow(both))
+    if (nrow(survey_only) > 0) {
+      message("DEBUG INPUT: Survey-only years: ", paste(sort(unique(survey_only$year)), collapse=", "))
+    }
+    if (nrow(hmis_only) > 0) {
+      message("DEBUG INPUT: HMIS-only years: ", paste(sort(unique(hmis_only$year)), collapse=", "))
+    }
+    if (nrow(both) > 0) {
+      message("DEBUG INPUT: Both years: ", paste(sort(unique(both$year)), collapse=", "))
+    }
+    # Check denominator values for survey-only rows
+    if (nrow(survey_only) > 0 && "denominator" %in% names(survey_only)) {
+      denom_sample <- survey_only %>%
+        filter(year %in% c(2007, 2013)) %>%
+        select(year, indicator_common_id, denominator, reference_value) %>%
+        head(10)
+      message("DEBUG INPUT: Sample survey-only rows:")
+      print(denom_sample)
+    }
   }
   
   has_admin_area_2 <- "admin_area_2" %in% names(ranked_coverage)
@@ -856,11 +889,74 @@ project_coverage_from_all <- function(ranked_coverage) {
     group_by(across(all_of(geo_keys))) %>%
     arrange(year) %>%
     mutate(
-      avgsurveyprojection = first(reference_value) + cumsum(coverage_delta),
+      # Find baseline: last survey value before HMIS starts
+      baseline_survey = last(reference_value[is.na(coverage)], default = first(reference_value)),
+      # Calculate cumulative HMIS deltas
+      cumulative_delta = cumsum(coverage_delta),
+      # For survey-only years: use reference_value; for HMIS years: project from baseline
+      avgsurveyprojection = if_else(
+        is.na(coverage),
+        reference_value,  # Survey years: use actual survey value
+        baseline_survey + cumulative_delta  # HMIS years: baseline + accumulated changes
+      ),
       projection_source = paste0("avgsurveyprojection_", denominator)
     ) %>%
+    select(-baseline_survey, -cumulative_delta) %>%
     ungroup()
-  
+
+  # NEW: Carry forward baseline value to fill gap between last survey and first HMIS year
+  # Look at INPUT data (ranked_coverage) to find the true baseline survey year
+  baseline_and_gaps <- tryCatch({
+    gap_summary <- ranked_coverage %>%
+      group_by(across(all_of(geo_keys))) %>%
+      arrange(year) %>%
+      summarise(
+        # Find LAST survey year (where reference_value exists but no coverage/HMIS)
+        baseline_year = last(year[!is.na(reference_value) & is.na(coverage)]),
+        baseline_value = last(reference_value[!is.na(reference_value) & is.na(coverage)]),
+        # Find FIRST HMIS year (where coverage exists)
+        first_hmis_year = first(year[!is.na(coverage)]),
+        .groups = "drop"
+      )
+
+    message("  → Gap analysis: ", nrow(gap_summary), " groups checked")
+    gaps_found <- gap_summary %>%
+      filter(!is.na(baseline_year), !is.na(first_hmis_year),
+             first_hmis_year > baseline_year + 1)
+    message("  → Gaps found: ", nrow(gaps_found), " groups have gaps")
+    message("  → Sample gaps: baseline_year=",
+            paste(head(gaps_found$baseline_year, 3), collapse=", "),
+            " first_hmis=",
+            paste(head(gaps_found$first_hmis_year, 3), collapse=", "))
+
+    # Only create gap rows if there's actually a gap
+    gaps_found %>%
+      # Create rows for all gap years
+      mutate(gap_years = purrr::map2(baseline_year, first_hmis_year,
+                                      ~seq(.x + 1, .y - 1))) %>%
+      tidyr::unnest(gap_years) %>%
+      transmute(
+        across(all_of(geo_keys)),
+        year = as.integer(gap_years),
+        reference_value = baseline_value,
+        coverage = NA_real_,
+        coverage_delta = 0,
+        avgsurveyprojection = baseline_value,
+        projection_source = paste0("gap_fill_", baseline_year)
+      )
+  }, error = function(e) {
+    message("Note: Gap filling skipped - ", e$message)
+    data.frame()  # Return empty dataframe if gap filling fails
+  })
+
+  # Combine original data with gap-filled rows (only if gap filling succeeded)
+  if (nrow(baseline_and_gaps) > 0) {
+    message("  → Added ", nrow(baseline_and_gaps), " gap-fill rows")
+    all_projected <- bind_rows(all_projected, baseline_and_gaps) %>%
+      arrange(across(all_of(c(geo_keys, "year")))) %>%
+      distinct()
+  }
+
   return(all_projected)
 }
 
@@ -892,7 +988,13 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     filter(!is.na(min_year) & is.finite(min_year))
   
   max_year <- max(projected_data$year, na.rm = TRUE)
-  
+
+  # Safety check: if max_year is not finite, return empty result
+  if (!is.finite(max_year)) {
+    warning("No valid projection data available - returning empty result")
+    return(data.frame())
+  }
+
   # Updated valid suffix-to-indicator map
   valid_suffix_map <- list(
     pregnancy  = c("anc1", "anc4"),
@@ -939,7 +1041,19 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     survey_expanded,
     by = c(join_keys, "denominator")
   )
-  
+
+  # DEBUG: Check if avgsurveyprojection survived the join
+  message("DEBUG AFTER full_join:")
+  message("  Combined has ", nrow(combined), " rows")
+  message("  Columns: ", paste(names(combined), collapse=", "))
+  if ("indicator_common_id" %in% names(combined)) {
+    anc1_all <- combined %>% filter(indicator_common_id == "anc1")
+    message("  anc1 rows: ", nrow(anc1_all))
+    if ("denominator" %in% names(combined)) {
+      message("  Unique denominators for anc1: ", paste(unique(anc1_all$denominator), collapse=", "))
+    }
+  }
+
   is_national <- all(is.na(combined$admin_area_2)) || all(combined$admin_area_2 == "NATIONAL")
   
   combined <- combined %>%
@@ -950,6 +1064,14 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   if (is_national) {
     if ("coverage_original_estimate" %in% names(combined)) {
+      # DEBUG: Check anc1 before transformation
+      anc1_before <- combined %>%
+        filter(indicator_common_id == "anc1", denominator == "dsba_pregnancy") %>%
+        arrange(year) %>%
+        select(year, coverage_original_estimate, avgsurveyprojection)
+      message("DEBUG BEFORE case_when - anc1 + dsba_pregnancy:")
+      message("  Years with avgsurveyproj: ", paste(anc1_before$year[!is.na(anc1_before$avgsurveyprojection)], collapse=", "))
+
       combined <- combined %>%
         group_by(across(all_of(c(setdiff(join_keys, "year"), "denominator")))) %>%
         mutate(
@@ -967,6 +1089,14 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
         ) %>%
         ungroup() %>%
         select(-last_survey_year)
+
+      # DEBUG: Check anc1 after transformation
+      anc1_after <- combined %>%
+        filter(indicator_common_id == "anc1", denominator == "dsba_pregnancy") %>%
+        arrange(year) %>%
+        select(year, coverage_original_estimate, avgsurveyprojection)
+      message("DEBUG AFTER case_when - anc1 + dsba_pregnancy:")
+      message("  Years with avgsurveyproj: ", paste(anc1_after$year[!is.na(anc1_after$avgsurveyprojection)], collapse=", "))
     }
   }
   
@@ -1038,8 +1168,32 @@ national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national
 message("  → Projecting coverage forward...")
 national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
 
+# DEBUG: Check projection output
+message("DEBUG: Projected data has ", nrow(national_coverage_projected), " rows")
+if (nrow(national_coverage_projected) > 0) {
+  message("DEBUG: Columns: ", paste(names(national_coverage_projected), collapse = ", "))
+  if ("year" %in% names(national_coverage_projected)) {
+    message("DEBUG: Year range: ", min(national_coverage_projected$year, na.rm = TRUE), " to ",
+            max(national_coverage_projected$year, na.rm = TRUE))
+  }
+}
+
 # 6 - prepare results and save
 message("  → Preparing combined coverage results...")
+
+# DEBUG: Check what's in projected data for anc1
+if ("indicator_common_id" %in% names(national_coverage_projected)) {
+  anc1_sample <- national_coverage_projected %>%
+    filter(indicator_common_id == "anc1", denominator == "dsba_pregnancy") %>%
+    arrange(year) %>%
+    select(year, reference_value, coverage, avgsurveyprojection)
+  message("DEBUG: anc1 + dsba_pregnancy projection data:")
+  message("Years: ", paste(anc1_sample$year, collapse=", "))
+  message("reference_value: ", paste(round(anc1_sample$reference_value, 3), collapse=", "))
+  message("coverage: ", paste(ifelse(is.na(anc1_sample$coverage), "NA", round(anc1_sample$coverage, 3)), collapse=", "))
+  message("avgsurveyprojection: ", paste(ifelse(is.na(anc1_sample$avgsurveyprojection), "NA", round(anc1_sample$avgsurveyprojection, 3)), collapse=", "))
+}
+
 combined_national <- prepare_combined_coverage_from_projected(
   projected_data = national_coverage_projected,
   raw_survey_wide = survey_processed_national$raw
@@ -1073,28 +1227,45 @@ national_denominator_mapping <- ranked_denom_per_indicator %>%
 
 # Clean print to console
 message("Selected denominator per indicator:")
-national_denominator_mapping %>%
-  arrange(indicator_common_id) %>%
-  mutate(msg = sprintf("  - %s → %s (second_best: %s)",
-                       indicator_common_id,
-                       best_denom,
-                       ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
-  pull(msg) %>%
-  walk(message)
+if (nrow(national_denominator_mapping) > 0 && "indicator_common_id" %in% names(national_denominator_mapping)) {
+  national_denominator_mapping %>%
+    arrange(indicator_common_id) %>%
+    mutate(msg = sprintf("  - %s → %s (second_best: %s)",
+                         indicator_common_id,
+                         best_denom,
+                         ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
+    pull(msg) %>%
+    walk(message)
+} else {
+  message("  (none - denominator mapping is empty)")
+}
 
-main_export <- combined_national %>%
-  inner_join(
-    national_denominator_mapping %>% select(admin_area_1, indicator_common_id, best_denom),
-    by = c("admin_area_1", "indicator_common_id")
-  ) %>%
-  filter(denominator == best_denom) %>%
-  select(admin_area_1, indicator_common_id, year, denominator,
-         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+# Safety check: if combined_national is empty, skip exports
+if (nrow(combined_national) == 0 || !all(c("admin_area_1", "indicator_common_id") %in% names(combined_national))) {
+  warning("Combined national data is empty or malformed - skipping main export")
+  main_export <- data.frame()
+} else if (nrow(national_denominator_mapping) == 0 || !all(c("admin_area_1", "indicator_common_id", "best_denom") %in% names(national_denominator_mapping))) {
+  warning("Denominator mapping is empty or malformed - skipping main export")
+  main_export <- data.frame()
+} else {
+  main_export <- combined_national %>%
+    inner_join(
+      national_denominator_mapping %>% select(admin_area_1, indicator_common_id, best_denom),
+      by = c("admin_area_1", "indicator_common_id")
+    ) %>%
+    filter(denominator == best_denom) %>%
+    select(admin_area_1, indicator_common_id, year, denominator,
+           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+}
 
-early_survey <- combined_national %>%
-  filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
-  select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
-  distinct() %>%
+early_survey <- if (nrow(combined_national) > 0) {
+  combined_national %>%
+    filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
+    select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
+    distinct()
+} else {
+  data.frame()
+} %>%
   mutate(
     denominator = NA_character_,
     coverage_avgsurveyprojection = NA_real_,
@@ -1104,15 +1275,23 @@ early_survey <- combined_national %>%
          coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
 
 combined_national_export <- bind_rows(
-  main_export %>%
-    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
-    select(indicator_common_id,
-           year,
-           coverage_original_estimate, 
-           coverage_avgsurveyprojection, 
-           coverage_cov),
-  early_survey %>%
-    mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
+  if (nrow(main_export) > 0 && "coverage_cov" %in% names(main_export)) {
+    main_export %>%
+      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov)) %>%
+      select(indicator_common_id,
+             year,
+             coverage_original_estimate,
+             coverage_avgsurveyprojection,
+             coverage_cov)
+  } else {
+    data.frame()
+  },
+  if (nrow(early_survey) > 0 && "coverage_cov" %in% names(early_survey)) {
+    early_survey %>%
+      mutate(coverage_cov = if_else(abs(coverage_cov) < 1e-8, NA_real_, coverage_cov))
+  } else {
+    data.frame()
+  }
 )
 
 
@@ -1125,6 +1304,7 @@ combined_national_export_fixed <- combined_national_export %>%
   group_by(indicator_common_id, year) %>%
   summarise(
     coverage_original_estimate = first(coverage_original_estimate),
+    coverage_avgsurveyprojection = first(coverage_avgsurveyprojection),
     coverage_cov = first(coverage_cov),
     .groups = "drop"
   ) %>%
@@ -1157,22 +1337,29 @@ combined_national_export_fixed <- combined_national_export %>%
 
     # Keep coverage_original_estimate as-is - preserve all actual survey values
 
-    # Calculate projections starting FROM last survey year
-    # At last survey year: copy survey value
-    # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
-    df$avgsurveyprojection <- NA_real_
-
-    if (!is.na(last_survey_value) && !is.na(last_survey_year) && !is.na(baseline_cov)) {
+    # Use coverage_avgsurveyprojection if it already exists (from project_coverage_from_all)
+    # Otherwise calculate it here
+    if ("coverage_avgsurveyprojection" %in% names(df) && any(!is.na(df$coverage_avgsurveyprojection))) {
+      # Already calculated - just rename for consistency
+      df$avgsurveyprojection <- df$coverage_avgsurveyprojection
+    } else {
+      # Calculate projections starting FROM last survey year
       # At last survey year: copy survey value
-      df$avgsurveyprojection[df$year == last_survey_year] <- last_survey_value
+      # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
+      df$avgsurveyprojection <- NA_real_
 
-      # After last survey year: additive projection
-      after_survey <- df$year > last_survey_year
-      df$avgsurveyprojection[after_survey] <- ifelse(
-        !is.na(df$coverage_cov[after_survey]),
-        last_survey_value + (df$coverage_cov[after_survey] - baseline_cov),
-        NA_real_
-      )
+      if (!is.na(last_survey_value) && !is.na(last_survey_year) && !is.na(baseline_cov)) {
+        # At last survey year: copy survey value
+        df$avgsurveyprojection[df$year == last_survey_year] <- last_survey_value
+
+        # After last survey year: additive projection
+        after_survey <- df$year > last_survey_year
+        df$avgsurveyprojection[after_survey] <- ifelse(
+          !is.na(df$coverage_cov[after_survey]),
+          last_survey_value + (df$coverage_cov[after_survey] - baseline_cov),
+          NA_real_
+        )
+      }
     }
 
     # Store last actual survey year for cleanup later
