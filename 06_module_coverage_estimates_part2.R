@@ -53,7 +53,7 @@ DENOMINATOR_SELECTION <- list(
   
   # MEASLES-ELIGIBLE AGE GROUP INDICATORS
   measles1 = DENOM_MEASLES1,            # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
-  measles2 = DENOM_MEASLES2,             # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
+  measles2 = DENOM_MEASLES2,            # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
 
   # NEW
   vitaminA = DENOM_VITA,                      # Options: "best", "danc1_vitaminA"     "dbcg_vitaminA"      "ddelivery_vitaminA" "dwpp_vitaminA"  
@@ -632,25 +632,6 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
   message("✓ No ADMIN2 final results - saved empty file (or ADMIN2 skipped)")
 }
 
-# ---------------- ADMIN2 SIMPLIFIED (admin_area_2, indicator_common_id, year, coverage_cov) ----------------
-if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) > 0) {
-  admin2_simplified <- final_admin2 %>%
-    select(admin_area_2, indicator_common_id, year, coverage_cov) %>%
-    distinct()
-  write.csv(admin2_simplified, "M5_coverage_estimation_admin2_simplified.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved M5_coverage_estimation_admin2_simplified.csv: ", nrow(admin2_simplified), " rows")
-} else {
-  dummy_a2_simplified <- data.frame(
-    admin_area_2 = character(),
-    indicator_common_id = character(),
-    year = integer(),
-    coverage_cov = double(),
-    stringsAsFactors = FALSE
-  )
-  write.csv(dummy_a2_simplified, "M5_coverage_estimation_admin2_simplified.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ No ADMIN2 simplified results - saved empty file (or ADMIN2 skipped)")
-}
-
 # ---------------- ADMIN3 (keeps admin_area_3, removes admin_area_2) ----------------
 if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) > 0) {
   # Remove admin_area_2 if it exists (it was added by our functions but shouldn't be in final output)
@@ -677,25 +658,6 @@ if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) 
   )
   write.csv(dummy_a3, "M5_coverage_estimation_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ No ADMIN3 final results - saved empty file (or ADMIN3 skipped)")
-}
-
-# ---------------- ADMIN3 SIMPLIFIED (admin_area_3, indicator_common_id, year, coverage_cov) ----------------
-if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) > 0) {
-  admin3_simplified <- final_admin3 %>%
-    select(admin_area_3, indicator_common_id, year, coverage_cov) %>%
-    distinct()
-  write.csv(admin3_simplified, "M5_coverage_estimation_admin3_simplified.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ Saved M5_coverage_estimation_admin3_simplified.csv: ", nrow(admin3_simplified), " rows")
-} else {
-  dummy_a3_simplified <- data.frame(
-    admin_area_3 = character(),
-    indicator_common_id = character(),
-    year = integer(),
-    coverage_cov = double(),
-    stringsAsFactors = FALSE
-  )
-  write.csv(dummy_a3_simplified, "M5_coverage_estimation_admin3_simplified.csv", row.names = FALSE, fileEncoding = "UTF-8")
-  message("✓ No ADMIN3 simplified results - saved empty file (or ADMIN3 skipped)")
 }
 
 message("✓ All done.")
