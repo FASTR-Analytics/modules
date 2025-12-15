@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SLE"
+COUNTRY_ISO3 <- "COD"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 26
+# Last edit: 2025 Dec 11
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -941,7 +941,16 @@ identify_national_only_denominators <- function(denominator_name) {
 calculate_coverage <- function(denominators_data, numerators_data) {
 
   # Dynamically determine geographic keys based on available columns
-  base_geo_keys <- c("admin_area_1", "year")
+  # For national data, prefer iso3_code over admin_area_1 (more robust to name variations)
+  has_iso_denom <- "iso3_code" %in% names(denominators_data)
+  has_iso_numer <- "iso3_code" %in% names(numerators_data)
+  use_iso <- has_iso_denom && has_iso_numer
+
+  if (use_iso) {
+    base_geo_keys <- c("iso3_code", "year")
+  } else {
+    base_geo_keys <- c("admin_area_1", "year")
+  }
 
   # Add admin_area_2 if it exists, otherwise add a default
   if ("admin_area_2" %in% names(denominators_data)) {
@@ -1009,6 +1018,11 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   has_admin3_cov <- "admin_area_3" %in% names(coverage_data)
   has_admin3_sur <- "admin_area_3" %in% names(survey_expanded_df)
 
+  # Check if ISO code is available in both datasets (prefer for national comparisons)
+  has_iso_cov <- "iso3_code" %in% names(coverage_data)
+  has_iso_sur <- "iso3_code" %in% names(survey_expanded_df)
+  use_iso <- has_iso_cov && has_iso_sur && !has_admin2_cov && !has_admin3_cov
+
   # Add missing admin_area_2 only if neither dataset has admin_area_3
   if (!has_admin2_cov && !has_admin3_cov) coverage_data <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
   if (!has_admin2_sur && !has_admin3_sur) survey_expanded_df <- survey_expanded_df %>% mutate(admin_area_2 = "NATIONAL")
@@ -1017,8 +1031,12 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   has_admin2_cov <- "admin_area_2" %in% names(coverage_data)
   has_admin2_sur <- "admin_area_2" %in% names(survey_expanded_df)
 
-  # Build geo_keys dynamically
-  geo_keys <- c("admin_area_1")
+  # Build geo_keys dynamically - use ISO for national data when available
+  if (use_iso) {
+    geo_keys <- c("iso3_code")
+  } else {
+    geo_keys <- c("admin_area_1")
+  }
   if (has_admin2_cov && has_admin2_sur) geo_keys <- c(geo_keys, "admin_area_2")
   if (has_admin3_cov && has_admin3_sur) geo_keys <- c(geo_keys, "admin_area_3")
   geo_keys <- c(geo_keys, "year")
@@ -1027,7 +1045,7 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   geo_only_keys <- geo_keys[geo_keys != "year"]
 
   # Country-level grouping keys (for denominator selection - SAME denominator across all regions)
-  country_only_keys <- "admin_area_1"
+  country_only_keys <- if (use_iso) "iso3_code" else "admin_area_1"
 
   # Types & keys
   coverage_data$year        <- as.integer(coverage_data$year)
@@ -1042,7 +1060,7 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     ) %>%
     mutate(
       squared_error = (coverage - reference_value)^2,
-      source_type   = mapply(classify_source_type, denominator, indicator_common_id)
+      source_type   = as.character(mapply(classify_source_type, denominator, indicator_common_id, USE.NAMES = FALSE))
     )
     # NOTE: Don't filter out NAs here - we need all denominators for ranking
 
@@ -1338,9 +1356,14 @@ make_survey_reference_long <- function(survey_expanded_df) {
   # Determine which admin columns exist
   has_admin2 <- "admin_area_2" %in% names(survey_expanded_df)
   has_admin3 <- "admin_area_3" %in% names(survey_expanded_df)
+  has_iso <- "iso3_code" %in% names(survey_expanded_df)
 
   # Build the list of admin columns to select
+  # Include iso3_code if available (for robust national comparisons)
   admin_cols <- c("admin_area_1")
+  if (has_iso) {
+    admin_cols <- c(admin_cols, "iso3_code")
+  }
   if (has_admin2) {
     admin_cols <- c(admin_cols, "admin_area_2")
   } else if (!has_admin2 && !has_admin3) {
@@ -1657,10 +1680,21 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
         message("  → Applying national denominator selection to admin area 2...")
         # Apply national mapping with fallback logic for national-only denominators
-        admin2_coverage_filtered <- admin2_coverage %>%
-          left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
-                                                             best_is_national_only, second_is_national_only),
-                    by = "indicator_common_id") %>%
+        # MEMORY OPTIMIZATION: Break pipeline into steps to reduce memory usage
+
+        # Step 1: Join with denominator mapping (adds columns only)
+        denom_mapping_subset <- national_denominator_mapping %>%
+          select(indicator_common_id, best_denom, second_best_denom,
+                 best_is_national_only, second_is_national_only)
+
+        admin2_coverage_temp <- admin2_coverage %>%
+          left_join(denom_mapping_subset, by = "indicator_common_id")
+
+        rm(denom_mapping_subset)
+        gc(verbose = FALSE)
+
+        # Step 2: Calculate selected denominator and filter (reduces data dramatically)
+        admin2_coverage_temp <- admin2_coverage_temp %>%
           mutate(
             selected_denom = case_when(
               # Best is subnational-capable → use it
@@ -1671,18 +1705,24 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
               TRUE ~ NA_character_
             )
           ) %>%
-          filter(!is.na(selected_denom)) %>%
-          filter(denominator == selected_denom) %>%
-          select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom) %>%
-          # Add survey reference values for projection purposes
-          left_join(
-            survey_reference_admin2 %>% select(admin_area_1, admin_area_2, year, indicator_common_id, reference_value),
-            by = c("admin_area_1", "admin_area_2", "year", "indicator_common_id")
-          ) %>%
+          filter(!is.na(selected_denom), denominator == selected_denom) %>%
+          select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom)
+
+        gc(verbose = FALSE)
+
+        # Step 3: Join with survey reference (now on much smaller dataset)
+        survey_ref_subset <- survey_reference_admin2 %>%
+          select(admin_area_1, admin_area_2, year, indicator_common_id, reference_value)
+
+        admin2_coverage_filtered <- admin2_coverage_temp %>%
+          left_join(survey_ref_subset, by = c("admin_area_1", "admin_area_2", "year", "indicator_common_id")) %>%
           mutate(
             squared_error = if_else(!is.na(reference_value), (coverage - reference_value)^2, NA_real_),
             rank = 1  # Add rank column for create_combined_results_table
           )
+
+        rm(admin2_coverage_temp, survey_ref_subset)
+        gc(verbose = FALSE)
 
         # Print selected denominators for admin_area_2 (from national mapping)
         message("  → Denominators used for admin_area_2 (from national selection):")
@@ -1892,10 +1932,21 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
           message("  → Applying national denominator selection to admin area 3...")
           # Apply national mapping with fallback logic for national-only denominators
-          admin3_coverage_filtered <- admin3_coverage %>%
-            left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
-                                                               best_is_national_only, second_is_national_only),
-                      by = "indicator_common_id") %>%
+          # MEMORY OPTIMIZATION: Break pipeline into steps to reduce memory usage
+
+          # Step 1: Join with denominator mapping (adds columns only)
+          denom_mapping_subset <- national_denominator_mapping %>%
+            select(indicator_common_id, best_denom, second_best_denom,
+                   best_is_national_only, second_is_national_only)
+
+          admin3_coverage_temp <- admin3_coverage %>%
+            left_join(denom_mapping_subset, by = "indicator_common_id")
+
+          rm(denom_mapping_subset)
+          gc(verbose = FALSE)
+
+          # Step 2: Calculate selected denominator and filter (reduces data dramatically)
+          admin3_coverage_temp <- admin3_coverage_temp %>%
             mutate(
               selected_denom = case_when(
                 # Best is subnational-capable → use it
@@ -1906,18 +1957,24 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
                 TRUE ~ NA_character_
               )
             ) %>%
-            filter(!is.na(selected_denom)) %>%
-            filter(denominator == selected_denom) %>%
-            select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom) %>%
-            # Add survey reference values for projection purposes
-            left_join(
-              survey_reference_admin3 %>% select(admin_area_1, admin_area_3, year, indicator_common_id, reference_value),
-              by = c("admin_area_1", "admin_area_3", "year", "indicator_common_id")
-            ) %>%
+            filter(!is.na(selected_denom), denominator == selected_denom) %>%
+            select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom)
+
+          gc(verbose = FALSE)
+
+          # Step 3: Join with survey reference (now on much smaller dataset)
+          survey_ref_subset <- survey_reference_admin3 %>%
+            select(admin_area_1, admin_area_3, year, indicator_common_id, reference_value)
+
+          admin3_coverage_filtered <- admin3_coverage_temp %>%
+            left_join(survey_ref_subset, by = c("admin_area_1", "admin_area_3", "year", "indicator_common_id")) %>%
             mutate(
               squared_error = if_else(!is.na(reference_value), (coverage - reference_value)^2, NA_real_),
               rank = 1  # Add rank column for create_combined_results_table
             )
+
+          rm(admin3_coverage_temp, survey_ref_subset)
+          gc(verbose = FALSE)
 
           # Print selected denominators for admin_area_3 (from national mapping)
           message("  → Denominators used for admin_area_3 (from national selection):")
