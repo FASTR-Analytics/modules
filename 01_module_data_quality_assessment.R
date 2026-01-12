@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "GIN"
+COUNTRY_ISO3 <- "SOM"
 OUTLIER_PROPORTION_THRESHOLD <- 0.8  # Proportion threshold for outlier detection
 MINIMUM_COUNT_THRESHOLD <- 100       # Minimum count threshold for consideration
 MADS <- 10                           # Number of MADs
@@ -7,11 +7,11 @@ DQA_INDICATORS <- c("penta1", "anc1", "opd")
 CONSISTENCY_PAIRS_USED <- c("penta", "anc")  # current options: "penta", "anc", "delivery", "malaria"
 
 
-PROJECT_DATA_HMIS <- "hmis_GIN.csv"
+PROJECT_DATA_HMIS <- "hmis_SOM.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Nov 08
+# Last edit: 2026 Jan 06
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -471,10 +471,13 @@ dqa_with_consistency <- function(
       # Pass only if ALL available pairs pass
       all_pairs_pass = ifelse(pairs_available > 0 & total_consistency_pass == pairs_available, 1L, 0L),
 
-      dqa_mean = (completeness_outlier_score + consistency_score) / 2
+      dqa_mean = (completeness_outlier_score + consistency_score) / 2,
+
+      # DQA score = 1 only when ALL conditions pass: completeness, outliers, AND consistency
+      dqa_score = ifelse(completeness_outlier_score == 1 & all_pairs_pass == 1, 1L, 0L)
     ) %>%
     select(all_of(geo_cols), facility_id, period_id,
-           completeness_outlier_score, consistency_score, dqa_mean, dqa_score = all_pairs_pass)
+           completeness_outlier_score, consistency_score, dqa_mean, dqa_score)
   
   return(dqa_data)
 }

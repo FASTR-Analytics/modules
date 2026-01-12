@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Dec 11
+# Last edit: 2026 Jan 12
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1502,8 +1502,8 @@ if (!is.null(denominators_national_results) &&
   message("  → Creating denominator summary by geographic level...")
   best_denom_summary <- national_denominator_mapping %>%
     mutate(
-      # National always uses best_denom
-      denominator_national = best_denom,
+      # National always uses best_denom (fallback to NOT_AVAILABLE if NA)
+      denominator_national = if_else(is.na(best_denom), "NOT_AVAILABLE", best_denom),
 
       # Admin2: Use best if subnational-capable, else second_best if available
       denominator_admin2 = case_when(
@@ -1518,6 +1518,12 @@ if (!is.null(denominators_national_results) &&
         best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
         TRUE ~ "NOT_AVAILABLE"
       )
+    ) %>%
+    # Ensure no NULL/NA values remain in any denominator column
+    mutate(
+      denominator_national = replace_na(denominator_national, "NOT_AVAILABLE"),
+      denominator_admin2 = replace_na(denominator_admin2, "NOT_AVAILABLE"),
+      denominator_admin3 = replace_na(denominator_admin3, "NOT_AVAILABLE")
     ) %>%
     select(indicator_common_id, denominator_national, denominator_admin2, denominator_admin3) %>%
     arrange(indicator_common_id)
