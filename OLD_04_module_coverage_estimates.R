@@ -28,10 +28,8 @@ library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------
 # Use local files for testing (comment out GitHub URLs when testing local changes)
-# PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
-# PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
-PROJECT_DATA_COVERAGE <- "survey_data_unified.csv"
-PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
+PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
+PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
 MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
