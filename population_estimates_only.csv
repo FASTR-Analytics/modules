@@ -1317,6 +1317,6 @@ Burkina Faso,NATIONAL,2022,Female population of reproductive age (15-49 years),w
 Burkina Faso,NATIONAL,2023,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5585651,UNWPP,UNWPP - Female reproductive age population,modeled,Burkina Faso,BF,BFA
 Burkina Faso,NATIONAL,2024,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5767162.5,UNWPP,UNWPP - Female reproductive age population,modeled,Burkina Faso,BF,BFA
 Burkina Faso,NATIONAL,2025,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5952078.5,UNWPP,UNWPP - Female reproductive age population,modeled,Burkina Faso,BF,BFA
-Somaliland,NATIONAL,2020,DM_POP_TOT,poptot,population_estimate,4300000,UNWPP,Somaliland CSD PESS 2014 projection,household,Somaliland,SO,SOMALILAND
-Somaliland,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,159100,UNWPP,Estimated from CBR 37/1000,household,Somaliland,SO,SOMALILAND
-Somaliland,NATIONAL,2020,Crude birth rate,crudebr,rate,37,UNWPP,Somaliland CSD SLHDS 2020,modeled,Somaliland,SO,SOMALILAND
+Somaliland,NATIONAL,2020,DM_POP_TOT,poptot,population_estimate,4300000,SLHDS,Somaliland CSD PESS 2014 projection,household,Somaliland,SO,SOMALILAND
+Somaliland,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,159100,SLHDS,Estimated from CBR 37/1000,household,Somaliland,SO,SOMALILAND
+Somaliland,NATIONAL,2020,Crude birth rate,crudebr,rate,37,SLHDS,Somaliland CSD SLHDS 2020,modeled,Somaliland,SO,SOMALILAND

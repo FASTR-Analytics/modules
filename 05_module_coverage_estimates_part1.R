@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "COD"
+COUNTRY_ISO3 <- "SOMALILAND"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 12
+# Last edit: 2026 Jan 14
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -28,9 +28,11 @@ library(stringr)
 library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------------------------------------
-# Direct read from GitHub
-PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
-PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
+# Use local files for testing (comment out GitHub URLs when testing local changes)
+# PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
+# PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
+PROJECT_DATA_COVERAGE <- "survey_data_unified.csv"
+PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
 MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
@@ -357,54 +359,46 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
   }
   
   # normalize source labels
+  # Standardize source names - DHS variants → "dhs", MICS → "mics", UNWPP → "unwpp", others keep lowercase
   survey_filtered <- survey_filtered %>%
     mutate(source = case_when(
-      str_detect(source, "dhs")   ~ "dhs",
-      str_detect(source, "mics")  ~ "mics",
-      str_detect(source, "unwpp") ~ "unwpp",
-      TRUE ~ source
+      str_detect(tolower(source), "dhs")   ~ "dhs",
+      str_detect(tolower(source), "mics")  ~ "mics",
+      str_detect(tolower(source), "unwpp") ~ "unwpp",
+      TRUE ~ tolower(source)
     ))
-  
-  
-  # aggregate within (geo,year,indicator,source), keep a representative source_detail
-  raw_by_source <- survey_filtered %>%
-    filter(source %in% c("dhs","mics"),
-                  year >= min_year, year <= max_year) %>%
+
+  # Get unique sources available (excluding unwpp which is for population data)
+  available_sources <- survey_filtered %>%
+    filter(source != "unwpp") %>%
+    distinct(source) %>%
+    pull(source)
+
+  # Priority order: DHS first, then any other source, MICS last (least preferred)
+  # This ensures DHS > other surveys > MICS when multiple exist for same year
+  source_priority <- c("dhs", setdiff(available_sources, c("dhs", "mics")), "mics")
+  source_priority <- source_priority[source_priority %in% available_sources]
+
+  if (length(source_priority) > 0) {
+    message("    Survey sources available: ", paste(source_priority, collapse = ", "),
+            " (priority: DHS > other > MICS)")
+  }
+
+  # Aggregate within (geo, year, indicator, source), pick best source per priority
+  raw_pick_long <- survey_filtered %>%
+    filter(source %in% source_priority,
+           year >= min_year, year <= max_year) %>%
     group_by(admin_area_1, admin_area_2, year, indicator_common_id, source) %>%
     summarise(
       survey_value   = mean(survey_value, na.rm = TRUE),
       source_detail  = first(source_detail[!is.na(source_detail)], default = NA_character_),
       .groups = "drop"
     ) %>%
-    pivot_wider(
-      names_from  = source,
-      values_from = c(survey_value, source_detail),
-      names_glue  = "{.value}_{source}"
-    )
-  
-  # ensure columns exist even if one source is entirely absent
-  raw_by_source <- {
-    df <- raw_by_source
-    if (!"survey_value_dhs"   %in% names(df)) df$survey_value_dhs   <- NA_real_
-    if (!"survey_value_mics"  %in% names(df)) df$survey_value_mics  <- NA_real_
-    if (!"source_detail_dhs"  %in% names(df)) df$source_detail_dhs  <- NA_character_
-    if (!"source_detail_mics" %in% names(df)) df$source_detail_mics <- NA_character_
-    df
-  }
-  
-  # pick DHS if present, else MICS
-  raw_pick_long <- raw_by_source %>%
-    mutate(
-      survey_value  = coalesce(.data$survey_value_dhs, .data$survey_value_mics),
-      source        = case_when(!is.na(.data$survey_value_dhs)  ~ "dhs",
-                                       !is.na(.data$survey_value_mics) ~ "mics",
-                                       TRUE ~ NA_character_),
-      source_detail = case_when(source == "dhs"  ~ .data$source_detail_dhs,
-                                       source == "mics" ~ .data$source_detail_mics,
-                                       TRUE ~ NA_character_)
-    ) %>%
-    select(admin_area_1, admin_area_2, year, indicator_common_id,
-                  source, source_detail, survey_value) %>%
+    # Pick best source based on priority order (DHS > other > MICS)
+    group_by(admin_area_1, admin_area_2, year, indicator_common_id) %>%
+    arrange(factor(source, levels = source_priority)) %>%
+    slice(1) %>%
+    ungroup() %>%
     drop_na(survey_value)
 
   # Add fallback rows for SBA (from delivery) if missing
@@ -533,21 +527,37 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
     left_join(dhs_last,  by = c(geo_keys, "year")) %>%
     left_join(mics_last, by = c(geo_keys, "year"))
   
-  # choose most-recent source per year (ties → DHS)
-  choose_most_recent <- function(df, ind) {
-    dhs_col  <- paste0(ind, "_dhs")
-    mics_col <- paste0(ind, "_mics")
-    avg_col  <- paste0("avgsurvey_", ind)
-    if (!(dhs_col %in% names(df)))  df[[dhs_col]]  <- NA_real_
-    if (!(mics_col %in% names(df))) df[[mics_col]] <- NA_real_
-    if (!("dhs_lastyear"  %in% names(df))) df$dhs_lastyear  <- NA_integer_
-    if (!("mics_lastyear" %in% names(df))) df$mics_lastyear <- NA_integer_
-    take_mics <- !is.na(df$mics_lastyear) &
-      (is.na(df$dhs_lastyear) | df$mics_lastyear > df$dhs_lastyear)
-    df[[avg_col]] <- as.numeric(ifelse(take_mics, df[[mics_col]], df[[dhs_col]]))
+  # Choose most-recent source per year - priority: DHS > other > MICS
+  # Updated to handle any source, not just DHS and MICS
+  choose_most_recent <- function(df, ind, all_sources) {
+    avg_col <- paste0("avgsurvey_", ind)
+
+    # Find all available columns for this indicator
+    ind_cols <- grep(paste0("^", ind, "_"), names(df), value = TRUE)
+
+    if (length(ind_cols) == 0) {
+      df[[avg_col]] <- NA_real_
+      return(df)
+    }
+
+    # Extract sources from column names
+    available_sources <- sub(paste0("^", ind, "_"), "", ind_cols)
+
+    # Priority: DHS first, then other sources (alphabetically), MICS last
+    other_sources <- setdiff(available_sources, c("dhs", "mics"))
+    source_order <- c("dhs", sort(other_sources), "mics")
+    source_order <- source_order[source_order %in% available_sources]
+
+    # Use first available source in priority order
+    if (length(source_order) == 0) {
+      df[[avg_col]] <- NA_real_
+    } else {
+      best_col <- paste0(ind, "_", source_order[1])
+      df[[avg_col]] <- as.numeric(df[[best_col]])
+    }
     df
   }
-  for (ind in indicators) survey_wide <- choose_most_recent(survey_wide, ind)
+  for (ind in indicators) survey_wide <- choose_most_recent(survey_wide, ind, available_sources)
   
   # postnmr
   survey_wide <- survey_wide %>%
@@ -801,29 +811,67 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     )
   }
   
-  # DENOMINATORS FROM UNWPP DATA (NATIONAL ANALYSIS ONLY)
+  # DENOMINATORS FROM POPULATION DATA (NATIONAL ANALYSIS ONLY)
+  # UNWPP-based denominators - ONLY use UNWPP source columns
   if (!has_admin_area_2) {
+    has_crudebr_unwpp <- "crudebr_unwpp" %in% names(data)
+    has_poptot_unwpp <- "poptot_unwpp" %in% names(data)
+    has_totu1pop_unwpp <- "totu1pop_unwpp" %in% names(data)
+
+    # Report what UNWPP data is available
+    unwpp_available <- c()
+    if (has_crudebr_unwpp) unwpp_available <- c(unwpp_available, "crudebr_unwpp")
+    if (has_poptot_unwpp) unwpp_available <- c(unwpp_available, "poptot_unwpp")
+    if (has_totu1pop_unwpp) unwpp_available <- c(unwpp_available, "totu1pop_unwpp")
+
+    if (length(unwpp_available) > 0) {
+      message("    UNWPP population data available: ", paste(unwpp_available, collapse = ", "))
+    }
+
+    # Report what's missing
+    missing_unwpp <- c()
+    if (!has_crudebr_unwpp) missing_unwpp <- c(missing_unwpp, "crudebr_unwpp")
+    if (!has_poptot_unwpp) missing_unwpp <- c(missing_unwpp, "poptot_unwpp")
+    if (!has_totu1pop_unwpp) missing_unwpp <- c(missing_unwpp, "totu1pop_unwpp")
+
+    if (length(missing_unwpp) > 0) {
+      message("    NOTE: UNWPP denominators limited - missing: ", paste(missing_unwpp, collapse = ", "))
+    }
+
     data <- data %>%
-      mutate(
-        nummonth = if_else(is.na(nummonth) | nummonth == 0, 12, nummonth),
-        
-        dwpp_pregnancy = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
-                                 (crudebr_unwpp / 1000) * poptot_unwpp / (1 + TWIN_RATE), NA_real_),
-        dwpp_livebirth = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
-                                 (crudebr_unwpp / 1000) * poptot_unwpp, NA_real_),
-        dwpp_dpt = if_else(!is.na(totu1pop_unwpp), totu1pop_unwpp, NA_real_),
-        dwpp_measles1 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry),
-                                totu1pop_unwpp * (1 - (nmrcarry / 100)), NA_real_),
-        dwpp_measles2 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry) & !is.na(postnmr),
-                                totu1pop_unwpp * (1 - (nmrcarry / 100)) * (1 - (2 * postnmr / 100)), NA_real_)
-      ) %>%
-      mutate(
-        dwpp_pregnancy = if_else(nummonth < 12, dwpp_pregnancy * (nummonth / 12), dwpp_pregnancy),
-        dwpp_livebirth = if_else(nummonth < 12, dwpp_livebirth * (nummonth / 12), dwpp_livebirth),
-        dwpp_dpt = if_else(nummonth < 12, dwpp_dpt * (nummonth / 12), dwpp_dpt),
-        dwpp_measles1 = if_else(nummonth < 12, dwpp_measles1 * (nummonth / 12), dwpp_measles1),
-        dwpp_measles2 = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
-      )
+      mutate(nummonth = if_else(is.na(nummonth) | nummonth == 0, 12, nummonth))
+
+    # Calculate pregnancy/livebirth denominators if crudebr_unwpp AND poptot_unwpp are available
+    if (has_crudebr_unwpp && has_poptot_unwpp) {
+      data <- data %>%
+        mutate(
+          dwpp_pregnancy = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
+                                   (crudebr_unwpp / 1000) * poptot_unwpp / (1 + TWIN_RATE), NA_real_),
+          dwpp_livebirth = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
+                                   (crudebr_unwpp / 1000) * poptot_unwpp, NA_real_)
+        ) %>%
+        mutate(
+          dwpp_pregnancy = if_else(nummonth < 12, dwpp_pregnancy * (nummonth / 12), dwpp_pregnancy),
+          dwpp_livebirth = if_else(nummonth < 12, dwpp_livebirth * (nummonth / 12), dwpp_livebirth)
+        )
+    }
+
+    # Calculate DPT/measles denominators if totu1pop_unwpp is available
+    if (has_totu1pop_unwpp) {
+      data <- data %>%
+        mutate(
+          dwpp_dpt = if_else(!is.na(totu1pop_unwpp), totu1pop_unwpp, NA_real_),
+          dwpp_measles1 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry),
+                                  totu1pop_unwpp * (1 - (nmrcarry / 100)), NA_real_),
+          dwpp_measles2 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry) & !is.na(postnmr),
+                                  totu1pop_unwpp * (1 - (nmrcarry / 100)) * (1 - (2 * postnmr / 100)), NA_real_)
+        ) %>%
+        mutate(
+          dwpp_dpt       = if_else(nummonth < 12, dwpp_dpt * (nummonth / 12), dwpp_dpt),
+          dwpp_measles1  = if_else(nummonth < 12, dwpp_measles1 * (nummonth / 12), dwpp_measles1),
+          dwpp_measles2  = if_else(nummonth < 12, dwpp_measles2 * (nummonth / 12), dwpp_measles2)
+        )
+    }
   }
 
   # STEP 3: Calculate vitaminA and fully_immunized denominators FROM all existing livebirth denominators
