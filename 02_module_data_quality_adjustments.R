@@ -1,10 +1,10 @@
 COUNTRY_ISO3 <- "SOM"
-PROJECT_DATA_HMIS <- "hmis_sierraleone.csv"
+PROJECT_DATA_HMIS <- "hmis_SOMALILAND.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2025 Oct 9
+# Last edit: 2026 Jan 19
 #-------------------------------------------------------------------------------------------------------------
 
 # -------------------------- KEY OUTPUT ----------------------------------------------------------------------
@@ -26,19 +26,13 @@ completeness_data<- fread("M1_output_completeness.csv")
 
 setDT(raw_data); setDT(outlier_data); setDT(completeness_data)
 
-# Quick check (unchanged)
-volume_check <- raw_data[, .(
-  above_100 = sum(count > 100, na.rm = TRUE),
-  total = .N
-), by = indicator_common_id]
+# Identify low-volume indicators (no observations with count >= 100) - excluded from all adjustments
+low_volume_check <- raw_data[, .(has_volume = any(count >= 100, na.rm = TRUE)), by = indicator_common_id]
+low_volume_check[, low_volume_exclude := !has_volume]
+LOW_VOLUME_INDICATORS <- low_volume_check[has_volume == FALSE, indicator_common_id]
 
-no_outlier_adj <- volume_check[above_100 == 0, indicator_common_id]
-
-message("Indicators not adjusted due to low volume (0 observations above outlier threshold):")
-if (length(no_outlier_adj) > 0) for (ind in no_outlier_adj) message("  ", ind) else message("  None")
-
-volume_check[, low_volume_exclude := above_100 == 0]
-detailed_exclusions <- volume_check[, .(indicator_common_id, low_volume_exclude)]
+message("Indicators excluded from adjustment (volume < 100): ",
+        if (length(LOW_VOLUME_INDICATORS) > 0) paste(LOW_VOLUME_INDICATORS, collapse = ", ") else "None")
 
 # Geo columns
 geo_cols <- grep("^admin_area_[0-9]+$", names(raw_data), value = TRUE)
@@ -158,7 +152,8 @@ apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_dat
     dat  <- apply_adjustments(raw_data, completeness_data, outlier_data,
                               adjust_outliers = opts$adjust_outliers,
                               adjust_completeness = opts$adjust_completeness)
-    dat[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT, count_working := count]
+    dat[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT |
+        indicator_common_id %in% LOW_VOLUME_INDICATORS, count_working := count]
     dat <- dat[, .(facility_id, indicator_common_id, period_id,
                    count_final = count_working)]
     setnames(dat, "count_final", paste0("count_final_", scn))
@@ -234,6 +229,6 @@ adjusted_data_export_clean <- adjusted_data_export[, !"admin_area_1"]
 fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv",            na = "NA")
 fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv", na = "NA")
 fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv",   na = "NA")
-fwrite(detailed_exclusions,            "M2_low_volume_exclusions.csv",    na = "NA")
+fwrite(low_volume_check[, .(indicator_common_id, low_volume_exclude)], "M2_low_volume_exclusions.csv", na = "NA")
 
 message("Adjustments completed and all outputs saved.")
