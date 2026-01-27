@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOMALILAND"
+COUNTRY_ISO3 <- "ZMB"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 21
+# Last edit: 2026 Jan 28
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -29,8 +29,8 @@ library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------------------------------------
 # Use local files for testing (comment out GitHub URLs when testing local changes)
-PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/survey_data_unified.csv"
-PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/refs/heads/main/population_estimates_only.csv"
+PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/survey_data_unified.csv"
+PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/population_estimates_only.csv"
 
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
