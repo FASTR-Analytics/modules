@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 28
+# Last edit: 2026 Jan 30
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1043,7 +1043,7 @@ calculate_coverage <- function(denominators_data, numerators_data) {
     rename(numerator = count) %>%
     left_join(denominator_expanded, by = c(geo_keys, "indicator_common_id")) %>%
     filter(!is.na(denominator_value), denominator_value > 0) %>%
-    mutate(coverage = numerator / denominator_value) %>%
+    mutate(coverage = if_else(numerator == 0, NA_real_, numerator / denominator_value)) %>%
     filter(!is.na(coverage), !is.infinite(coverage))
 
   return(coverage_data)
