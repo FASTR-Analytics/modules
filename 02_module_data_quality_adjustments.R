@@ -1,5 +1,5 @@
-COUNTRY_ISO3 <- "SOM"
-PROJECT_DATA_HMIS <- "hmis_SOMALILAND.csv"
+COUNTRY_ISO3 <- "ZMB"
+PROJECT_DATA_HMIS <- "hmis_ZMB.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
