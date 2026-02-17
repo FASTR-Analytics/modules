@@ -1,11 +1,12 @@
 # Scorecard Parameters
 SCORECARD_YEAR <- 2025
 SCORECARD_QUARTER <- 1
+COUNTRY_ISO3 <- "NGA"
 SELECTED_COUNT_VARIABLE <- "count_final_none" #adjusted for outliers and completeness
 
 # Population assumptions (quarterly rates)
 PREGNANT_WOMEN_PCT <- 0.05 * 0.25
-BIRTHS_PCT <- 0.04 * 0.25  
+BIRTHS_PCT <- 0.04 * 0.25
 WOMEN_15_49_PCT <- 0.22 * 0.25
 CHILDREN_U5_PCT <- 0.12 * 0.25
 INFANTS_0_6M_PCT <- 0.02
@@ -18,15 +19,14 @@ POPULATION_ASSET <- "total_population.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Module: RMNCAH SCORECARD CALCULATION
-# Last edit: 2025 Aug 8
+# Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
+# Last edit: 2026 Feb 17
 
-# This module calculates the 25 RMNCAH scorecard indicators (as per the Excel template)
+# This module calculates the NHSS scorecard indicators for quarterly performance dialogues
 
 # -------------------------- KEY OUTPUTS ----------------------------------------------------------------------
-# FILE: M5_scorecard_combined.csv        # Combined state + national scorecard (25 indicators) in long format
-# FILE: M5_scorecard_data_summary.csv # Q1 2025 summary with 2024 population
-# FILE: M5_sql_schema_output.txt         # SQL schemas for both output files
+# FILE: M7_scorecard_combined.csv        # Combined state + national scorecard in long format
+# FILE: M7_scorecard_summary_Q{Q}_{YEAR}.csv # Quarterly summary with population
 
 # Load Required Libraries -----------------------------------------------------------------------------------
 library(dplyr)
@@ -44,9 +44,18 @@ population <- read_csv(POPULATION_ASSET)
 aggregate_to_state_quarter <- function(data) {
   # Convert quarter to YYYYQQ format
   target_quarter_id <- as.numeric(paste0(SCORECARD_YEAR, sprintf("%02d", SCORECARD_QUARTER)))
-  
+
   message(sprintf("Looking for quarter_id: %d", target_quarter_id))
-  
+
+  # Derive year and quarter_id from period_id if not already present
+  if (!"year" %in% names(data)) {
+    data <- data %>% mutate(
+      year = as.integer(substr(as.character(period_id), 1, 4)),
+      month = as.integer(substr(as.character(period_id), 5, 6)),
+      quarter_id = as.integer(paste0(year, sprintf("%02d", ceiling(month / 3))))
+    )
+  }
+
   data %>%
     filter(year == SCORECARD_YEAR, quarter_id == target_quarter_id) %>%
     group_by(admin_area_3, indicator_common_id) %>%
@@ -245,18 +254,18 @@ calculate_scorecard <- function(data) {
       } else NA,
       
       # D: Skilled Birth Attendance
-      skilled_birth_attendance = if(has_col("deliveries") & has_col("sba")) {
-        ifelse(deliveries == 0, NA, (sba / deliveries) * 100)
+      skilled_birth_attendance = if(has_col("delivery") & has_col("sba")) {
+        ifelse(delivery == 0, NA, (sba / delivery) * 100)
       } else NA,
-      
+
       # E: Uterotonics Coverage
-      uterotonics_coverage = if(has_col("deliveries") & has_col("uterotonics")) {
-        ifelse(deliveries == 0, NA, (uterotonics / deliveries) * 100)
+      uterotonics_coverage = if(has_col("delivery") & has_col("uterotonics")) {
+        ifelse(delivery == 0, NA, (uterotonics / delivery) * 100)
       } else NA,
-      
-      # F: Fistula per 1000 Deliveries
-      fistula_per_1000_deliveries = if(has_col("deliveries") & has_col("obstetric_fistula")) {
-        ifelse(deliveries == 0, NA, (obstetric_fistula / (deliveries / 10000)))
+
+      # F: Fistula per 10000 Deliveries
+      fistula_per_1000_deliveries = if(has_col("delivery") & has_col("obstetric_fistula")) {
+        ifelse(delivery == 0, NA, (obstetric_fistula / (delivery / 10000)))
       } else NA,
       
       # G: Newborn Resuscitation
@@ -298,54 +307,54 @@ calculate_scorecard <- function(data) {
       iptp3_coverage = if(has_col("anc1") & has_col("iptp3")) {
         ifelse(anc1 == 0, NA, (iptp3 / anc1) * 100)
       } else NA,
-      
-      # O: Malaria ACT Treatment
-      malaria_act_treatment_rate = if(has_col("malaria") & has_col("act_treatment")) {
-        ifelse(malaria == 0, NA, (act_treatment / malaria) * 100)
-      } else NA,
-      
-      # P: Under-5 LLIN Coverage (reproducing Excel formula - uses fully_immunized as denominator)
+
+      # O: Under-5 LLIN Coverage (reproducing Excel formula - uses fully_immunized as denominator)
       # NOTE: Logically should be (llin / (total_population * CHILDREN_U5_PCT)) * 100 for actual coverage rate
       under5_llin_coverage = if(has_col("llin") && has_col("fully_immunized")) {
         (llin / fully_immunized) * 100
       } else NA,
       
-      # Q: BCG Coverage
+      # P: BCG Coverage
       bcg_coverage = if(has_col("bcg")) {
         (bcg / (total_population * BIRTHS_PCT)) * 100
       } else NA,
-      
-      # R: Penta3 Coverage
-      penta3_coverage = if(has_col("penta3")) {
-        (penta3 / (total_population * BIRTHS_PCT)) * 100
-      } else NA,
-      
-      # S: Fully Immunized Coverage
+
+      # Q: Fully Immunized Coverage
       fully_immunized_coverage = if(has_col("fully_immunized")) {
         (fully_immunized / (total_population * BIRTHS_PCT)) * 100
       } else NA,
       
-      # T: Vaccine Stockout (from assets)
+      # R: Vaccine Stockout (from assets)
       vaccine_stockout_percentage = if(has_col("vaccine_stockout_pct")) vaccine_stockout_pct else NA,
       
-      # U: Exclusive Breastfeeding
+      # S: Exclusive Breastfeeding
       exclusive_breastfeeding_rate = if(has_col("ebf")) {
         (ebf / (total_population * INFANTS_0_6M_PCT)) * 100
       } else NA,
       
-      # V: Growth Monitoring
+      # T: Growth Monitoring
       growth_monitoring_coverage = if(has_col("nutrition_screening")) {
         (nutrition_screening / (total_population * 0.20 * 0.25)) * 100
       } else NA,
       
-      # W: GBV Care Coverage
+      # U: GBV Care Coverage
       gbv_care_coverage = if(has_col("gbv_cases") & has_col("gbv_care")) {
         ifelse(gbv_cases == 0, NA, (gbv_care / gbv_cases) * 100)
       } else NA,
       
+      # V: Facility Utilisation (OPD per 100 person-years)
+      facility_utilisation_opd = if(has_col("opd")) {
+        (opd / (total_population * 0.25)) * 100
+      } else NA,
+
+      # W: Under-1 Fully Immunised (MCV1 proxy)
+      under1_fully_immunised_mcv1 = if(has_col("measles1")) {
+        (measles1 / (total_population * BIRTHS_PCT)) * 100
+      } else NA,
+
       # X: NHMIS Reporting Rate (from assets)
       nhmis_reporting_rate_final = if(has_col("nhmis_reporting_rate")) nhmis_reporting_rate else NA,
-      
+
       # Y: NHMIS Timeliness (from assets)
       nhmis_data_timeliness_final = if(has_col("nhmis_timeliness")) nhmis_timeliness else NA
     ) %>%
@@ -357,7 +366,7 @@ create_national <- function(state_data, merged_data) {
   # Aggregate raw counts nationally
   national_counts <- merged_data %>%
     summarise(across(where(is.numeric), \(x) sum(x, na.rm = TRUE))) %>%
-    mutate(admin_area_2 = "Nigeria")
+    mutate(admin_area_2 = COUNTRY_ISO3)
   
   # Calculate national indicators
   calculate_scorecard(national_counts) %>%
@@ -387,95 +396,108 @@ convert_scorecard_to_long <- function(scorecard_wide) {
     arrange(admin_area_2, indicator_common_id)
 }
 
-create_q1_summary_table <- function(adjusted_data, population) {
-  message("Creating Q1 2025 summary table...")
-  
-  # Define Q1 2025 periods (Jan, Feb, March)
-  q1_2025_periods <- c("202501", "202502", "202503")
-  q4_2024_periods <- c("202410", "202411", "202412")
-  
+create_summary_table <- function(adjusted_data, population) {
+  # Compute quarter and previous-quarter periods dynamically
+  quarter_months <- switch(as.character(SCORECARD_QUARTER),
+    "1" = c(1, 2, 3), "2" = c(4, 5, 6), "3" = c(7, 8, 9), "4" = c(10, 11, 12)
+  )
+  target_periods_num <- as.integer(sprintf("%04d%02d", SCORECARD_YEAR, quarter_months))
+  target_periods_chr <- sprintf("%04d%02d", SCORECARD_YEAR, quarter_months)
+
+  # Previous quarter for population fallback
+  prev_q <- if (SCORECARD_QUARTER == 1) 4 else SCORECARD_QUARTER - 1
+  prev_year <- if (SCORECARD_QUARTER == 1) SCORECARD_YEAR - 1 else SCORECARD_YEAR
+  prev_months <- switch(as.character(prev_q),
+    "1" = c(1, 2, 3), "2" = c(4, 5, 6), "3" = c(7, 8, 9), "4" = c(10, 11, 12)
+  )
+  prev_periods <- sprintf("%04d%02d", prev_year, prev_months)
+
+  quarter_label <- sprintf("Q%d %d", SCORECARD_QUARTER, SCORECARD_YEAR)
+  prev_quarter_label <- sprintf("Q%d %d", prev_q, prev_year)
+
+  message(sprintf("Creating %s summary table...", quarter_label))
   message("Available columns in adjusted_data: ", paste(names(adjusted_data), collapse = ", "))
-  
-  # Get Q1 2025 indicator data
-  q1_indicators <- adjusted_data %>%
-    filter(period_id %in% c(202501, 202502, 202503)) %>%
+
+  # Get indicator data for target quarter
+  q_indicators <- adjusted_data %>%
+    filter(period_id %in% target_periods_num) %>%
     group_by(admin_area_3, indicator_common_id) %>%
     summarise(
-      total_q1_2025 = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE),
+      total_quarter = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE),
       .groups = "drop"
     ) %>%
     rename(admin_area_2 = admin_area_3) %>%
     pivot_wider(
-      names_from = indicator_common_id, 
-      values_from = total_q1_2025, 
+      names_from = indicator_common_id,
+      values_from = total_quarter,
       values_fill = 0
     )
-  
-  message(sprintf("Found Q1 2025 data for %d states and %d indicators", 
-                  nrow(q1_indicators), ncol(q1_indicators) - 1))
-  
-  # Get Q4 2024 population average
-  q4_2024_pop_data <- list()
-  
-  for(period in q4_2024_periods) {
+
+  message(sprintf("Found %s data for %d states and %d indicators",
+                  quarter_label, nrow(q_indicators), ncol(q_indicators) - 1))
+
+  # Get previous quarter population average
+  prev_pop_data <- list()
+
+  for(period in prev_periods) {
     period_data <- population %>% filter(period_id == period)
     if(nrow(period_data) > 0) {
-      q4_2024_pop_data[[period]] <- period_data
-      message(sprintf("Found Q4 2024 population data for period: %s", period))
+      prev_pop_data[[period]] <- period_data
+      message(sprintf("Found %s population data for period: %s", prev_quarter_label, period))
     }
   }
-  
-  if(length(q4_2024_pop_data) == 0) {
-    warning("No Q4 2024 population data found! Using latest available.")
+
+  if(length(prev_pop_data) == 0) {
+    warning(sprintf("No %s population data found! Using latest available.", prev_quarter_label))
     latest_pop <- population %>%
       filter(!is.na(count)) %>%
       arrange(desc(period_id)) %>%
       slice_head(n = 1) %>%
       pull(period_id) %>%
       unique()
-    
+
     if(length(latest_pop) > 0) {
-      q4_2024_pop_data[[latest_pop[1]]] <- population %>% filter(period_id == latest_pop[1])
+      prev_pop_data[[latest_pop[1]]] <- population %>% filter(period_id == latest_pop[1])
       message(sprintf("Using fallback population data from: %s", latest_pop[1]))
     }
   }
-  
+
   # Calculate average population
-  if(length(q4_2024_pop_data) > 0) {
-    pop_avg_q4_2024 <- bind_rows(q4_2024_pop_data, .id = "period_source") %>%
+  if(length(prev_pop_data) > 0) {
+    pop_avg <- bind_rows(prev_pop_data, .id = "period_source") %>%
       group_by(admin_area_2) %>%
       summarise(
-        avg_population_q4_2024 = mean(count, na.rm = TRUE),
+        avg_population_prev_quarter = mean(count, na.rm = TRUE),
         .groups = "drop"
       )
-    
-    message(sprintf("Calculated Q4 2024 population average from %d months", 
-                    length(q4_2024_pop_data)))
+
+    message(sprintf("Calculated %s population average from %d months",
+                    prev_quarter_label, length(prev_pop_data)))
   } else {
-    stop("ERROR: No population data available for Q4 2024 or fallback!")
+    stop(sprintf("ERROR: No population data available for %s or fallback!", prev_quarter_label))
   }
-  
+
   # Merge indicators with population
-  summary_table <- q1_indicators %>%
-    left_join(pop_avg_q4_2024, by = "admin_area_2") %>%
-    select(admin_area_2, avg_population_q4_2024, everything())
-  
+  summary_table <- q_indicators %>%
+    left_join(pop_avg, by = "admin_area_2") %>%
+    select(admin_area_2, avg_population_prev_quarter, everything())
+
   # Create national totals
   national_totals <- summary_table %>%
     summarise(
       admin_area_2 = "__NATIONAL",
-      avg_population_q4_2024 = sum(avg_population_q4_2024, na.rm = TRUE),
-      across(where(is.numeric) & !matches("avg_population_q4_2024"), \(x) sum(x, na.rm = TRUE))
+      avg_population_prev_quarter = sum(avg_population_prev_quarter, na.rm = TRUE),
+      across(where(is.numeric) & !matches("avg_population_prev_quarter"), \(x) sum(x, na.rm = TRUE))
     )
-  
+
   # Combine state and national data
   final_summary_table <- bind_rows(summary_table, national_totals) %>%
     arrange(admin_area_2)
-  
-  message(sprintf("Summary table created with %d states + national and %d indicators", 
-                  nrow(summary_table), 
+
+  message(sprintf("Summary table created with %d states + national and %d indicators",
+                  nrow(summary_table),
                   ncol(summary_table) - 2))
-  
+
   return(final_summary_table)
 }
 
@@ -491,7 +513,7 @@ generate_sql_schema <- function(table_name, columns) {
 }
 
 # ------------------- Main Execution ------------------------------------------------------------------------
-message(sprintf("Calculating RMNCAH Scorecard for %d Q%d using %s...", 
+message(sprintf("Calculating NHSS Scorecard for %d Q%d using %s...",
                 SCORECARD_YEAR, SCORECARD_QUARTER, SELECTED_COUNT_VARIABLE))
 
 # Aggregate facility data to state-quarter
@@ -539,9 +561,9 @@ national_scorecard <- convert_scorecard_to_long(national_scorecard_wide) %>%
 combined_scorecard <- bind_rows(state_scorecard, national_scorecard) %>%
   arrange(admin_area_2, indicator_common_id)
 
-# Create Q1 summary table
-q1_summary <- create_q1_summary_table(adjusted_data, population)
+# Create quarterly summary table
+q_summary <- create_summary_table(adjusted_data, population)
 
 # Save output files
-write_csv(combined_scorecard, "M5_scorecard_combined.csv")
-write_csv(q1_summary, "M5_Q1_2025_summary_with_2024_population.csv")
+write_csv(combined_scorecard, "M7_scorecard_combined.csv")
+write_csv(q_summary, sprintf("M7_scorecard_summary_Q%d_%d.csv", SCORECARD_QUARTER, SCORECARD_YEAR))
