@@ -37,10 +37,9 @@ export const definition = {
   resultsObjects: [
     {
       id: "M1_output_outliers.csv",
-      description:
-        "Detailed facility-level data with identified outliers and adjusted volumes",
+      description: "Detailed facility-level data with identified outliers and adjusted volumes",
       createTableStatementPossibleColumns: {
-        facility_id: "TEXT NOT NULL",
+        facility_i: "TEXT NOT NULL",
         admin_area_4: "TEXT NOT NULL",
         admin_area_3: "TEXT NOT NULL",
         admin_area_2: "TEXT NOT NULL",
