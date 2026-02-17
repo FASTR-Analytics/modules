@@ -133,7 +133,7 @@ export const definition = {
       valueProps: [
         "facility_id",
       ],
-      valueFunc: "AVG",
+      valueFunc: "COUNT",
       formatAs: "number",
       requiredDisaggregationOptions: [],
       periodOptions: [
