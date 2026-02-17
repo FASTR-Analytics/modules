@@ -4,6 +4,21 @@ SCORECARD_QUARTER <- 1
 COUNTRY_ISO3 <- "NGA"
 SELECTED_COUNT_VARIABLE <- "count_final_none" #adjusted for outliers and completeness
 
+# Geographic level parameters
+# SCORECARD_GEO_LEVEL: which admin column becomes each scorecard row (the breakdown level)
+# SCORECARD_FILTER_COL / _VALUE: optional — restrict to areas within a parent area
+# Example: national scorecard broken down by state (default)
+#   SCORECARD_GEO_LEVEL <- "admin_area_3"
+#   SCORECARD_FILTER_COL <- NULL
+# Example: Kano state scorecard broken down by LGA
+#   SCORECARD_GEO_LEVEL <- "admin_area_4"
+#   SCORECARD_FILTER_COL <- "admin_area_3"
+#   SCORECARD_FILTER_VALUE <- "Kano"
+#   (requires asset files with admin_area_2 values matching LGA names)
+SCORECARD_GEO_LEVEL <- "admin_area_3"
+SCORECARD_FILTER_COL <- NULL
+SCORECARD_FILTER_VALUE <- NULL
+
 # Population assumptions (quarterly rates)
 PREGNANT_WOMEN_PCT <- 0.05 * 0.25
 BIRTHS_PCT <- 0.04 * 0.25
@@ -20,7 +35,7 @@ POPULATION_ASSET <- "total_population.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
-# Last edit: 2026 Feb 17
+# Last edit: 2026 Feb 17 (multi-level geo support)
 
 # This module calculates the NHSS scorecard indicators for quarterly performance dialogues
 
@@ -46,6 +61,28 @@ aggregate_to_state_quarter <- function(data) {
   target_quarter_id <- as.numeric(paste0(SCORECARD_YEAR, sprintf("%02d", SCORECARD_QUARTER)))
 
   message(sprintf("Looking for quarter_id: %d", target_quarter_id))
+  message(sprintf("Scorecard geo level: %s", SCORECARD_GEO_LEVEL))
+
+  # Validate geo level column exists
+  if (!SCORECARD_GEO_LEVEL %in% names(data)) {
+    stop(sprintf("ERROR: Column '%s' not found in data. Available: %s",
+                 SCORECARD_GEO_LEVEL, paste(grep("admin_area", names(data), value = TRUE), collapse = ", ")))
+  }
+
+  # Apply parent area filter if set
+  if (!is.null(SCORECARD_FILTER_COL) && !is.null(SCORECARD_FILTER_VALUE)) {
+    if (!SCORECARD_FILTER_COL %in% names(data)) {
+      stop(sprintf("ERROR: Filter column '%s' not found in data.", SCORECARD_FILTER_COL))
+    }
+    n_before <- nrow(data)
+    data <- data %>% filter(.data[[SCORECARD_FILTER_COL]] == SCORECARD_FILTER_VALUE)
+    message(sprintf("Filtered to %s = '%s': %d -> %d rows",
+                    SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE, n_before, nrow(data)))
+    if (nrow(data) == 0) {
+      stop(sprintf("ERROR: No data after filtering %s = '%s'. Check spelling / available values.",
+                   SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE))
+    }
+  }
 
   # Derive year and quarter_id from period_id if not already present
   if (!"year" %in% names(data)) {
@@ -58,10 +95,10 @@ aggregate_to_state_quarter <- function(data) {
 
   data %>%
     filter(year == SCORECARD_YEAR, quarter_id == target_quarter_id) %>%
-    group_by(admin_area_3, indicator_common_id) %>%
+    group_by(.data[[SCORECARD_GEO_LEVEL]], indicator_common_id) %>%
     summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
     pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0) %>%
-    rename(admin_area_2 = admin_area_3)
+    rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL))
 }
 
 merge_assets <- function(state_data) {
@@ -362,16 +399,19 @@ calculate_scorecard <- function(data) {
     mutate(across(where(is.numeric), ~round(.x, 2)))
 }
 
-create_national <- function(state_data, merged_data) {
-  # Aggregate raw counts nationally
-  national_counts <- merged_data %>%
+create_total_row <- function(state_data, merged_data) {
+  # Label: parent area value if filtered, otherwise country ISO3
+  total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) SCORECARD_FILTER_VALUE else COUNTRY_ISO3
+
+  # Aggregate raw counts across all areas
+  total_counts <- merged_data %>%
     summarise(across(where(is.numeric), \(x) sum(x, na.rm = TRUE))) %>%
-    mutate(admin_area_2 = COUNTRY_ISO3)
-  
-  # Calculate national indicators
-  calculate_scorecard(national_counts) %>%
+    mutate(admin_area_2 = total_label)
+
+  # Calculate indicators from totals
+  calculate_scorecard(total_counts) %>%
     mutate(
-      # Override asset indicators with means
+      # Override asset indicators with means (can't sum percentages)
       vaccine_stockout_percentage = mean(state_data$vaccine_stockout_percentage, na.rm = TRUE),
       nhmis_reporting_rate_final = mean(state_data$nhmis_reporting_rate_final, na.rm = TRUE),
       nhmis_data_timeliness_final = mean(state_data$nhmis_data_timeliness_final, na.rm = TRUE)
@@ -418,15 +458,20 @@ create_summary_table <- function(adjusted_data, population) {
   message(sprintf("Creating %s summary table...", quarter_label))
   message("Available columns in adjusted_data: ", paste(names(adjusted_data), collapse = ", "))
 
+  # Apply parent area filter if set
+  if (!is.null(SCORECARD_FILTER_COL) && !is.null(SCORECARD_FILTER_VALUE)) {
+    adjusted_data <- adjusted_data %>% filter(.data[[SCORECARD_FILTER_COL]] == SCORECARD_FILTER_VALUE)
+  }
+
   # Get indicator data for target quarter
   q_indicators <- adjusted_data %>%
     filter(period_id %in% target_periods_num) %>%
-    group_by(admin_area_3, indicator_common_id) %>%
+    group_by(.data[[SCORECARD_GEO_LEVEL]], indicator_common_id) %>%
     summarise(
       total_quarter = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    rename(admin_area_2 = admin_area_3) %>%
+    rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL)) %>%
     pivot_wider(
       names_from = indicator_common_id,
       values_from = total_quarter,
@@ -482,16 +527,17 @@ create_summary_table <- function(adjusted_data, population) {
     left_join(pop_avg, by = "admin_area_2") %>%
     select(admin_area_2, avg_population_prev_quarter, everything())
 
-  # Create national totals
-  national_totals <- summary_table %>%
+  # Create total row (national if unfiltered, parent area if filtered)
+  total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) paste0("__TOTAL_", SCORECARD_FILTER_VALUE) else "__NATIONAL"
+  total_row <- summary_table %>%
     summarise(
-      admin_area_2 = "__NATIONAL",
+      admin_area_2 = total_label,
       avg_population_prev_quarter = sum(avg_population_prev_quarter, na.rm = TRUE),
       across(where(is.numeric) & !matches("avg_population_prev_quarter"), \(x) sum(x, na.rm = TRUE))
     )
 
   # Combine state and national data
-  final_summary_table <- bind_rows(summary_table, national_totals) %>%
+  final_summary_table <- bind_rows(summary_table, total_row) %>%
     arrange(admin_area_2)
 
   message(sprintf("Summary table created with %d states + national and %d indicators",
@@ -513,8 +559,13 @@ generate_sql_schema <- function(table_name, columns) {
 }
 
 # ------------------- Main Execution ------------------------------------------------------------------------
-message(sprintf("Calculating NHSS Scorecard for %d Q%d using %s...",
-                SCORECARD_YEAR, SCORECARD_QUARTER, SELECTED_COUNT_VARIABLE))
+geo_desc <- if (!is.null(SCORECARD_FILTER_VALUE)) {
+  sprintf("%s within %s = '%s'", SCORECARD_GEO_LEVEL, SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE)
+} else {
+  sprintf("%s (national)", SCORECARD_GEO_LEVEL)
+}
+message(sprintf("Calculating NHSS Scorecard for %d Q%d at %s using %s...",
+                SCORECARD_YEAR, SCORECARD_QUARTER, geo_desc, SELECTED_COUNT_VARIABLE))
 
 # Aggregate facility data to state-quarter
 state_aggregated <- aggregate_to_state_quarter(adjusted_data)
@@ -527,8 +578,8 @@ if(ncol(state_aggregated) <= 1) {
   stop(sprintf("ERROR: No indicators found in facility data for %d Q%d!", SCORECARD_YEAR, SCORECARD_QUARTER))
 }
 
-message(sprintf("Aggregated %d indicators across %d states", 
-                ncol(state_aggregated) - 1, nrow(state_aggregated)))
+message(sprintf("Aggregated %d indicators across %d areas (%s)",
+                ncol(state_aggregated) - 1, nrow(state_aggregated), SCORECARD_GEO_LEVEL))
 
 # Merge with assets
 merged_data <- merge_assets(state_aggregated)
@@ -550,20 +601,22 @@ if(nrow(state_scorecard_wide) == 0) {
 }
 message("State scorecard calculated")
 
-national_scorecard_wide <- create_national(state_scorecard_wide, merged_data)
-message("National scorecard calculated")
+total_scorecard_wide <- create_total_row(state_scorecard_wide, merged_data)
+message("Total row scorecard calculated")
 
 # Convert to long format and combine
 state_scorecard <- convert_scorecard_to_long(state_scorecard_wide)
-national_scorecard <- convert_scorecard_to_long(national_scorecard_wide) %>%
-  mutate(admin_area_2 = "__NATIONAL")
+total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) paste0("__TOTAL_", SCORECARD_FILTER_VALUE) else "__NATIONAL"
+total_scorecard <- convert_scorecard_to_long(total_scorecard_wide) %>%
+  mutate(admin_area_2 = total_label)
 
-combined_scorecard <- bind_rows(state_scorecard, national_scorecard) %>%
+combined_scorecard <- bind_rows(state_scorecard, total_scorecard) %>%
   arrange(admin_area_2, indicator_common_id)
 
 # Create quarterly summary table
 q_summary <- create_summary_table(adjusted_data, population)
 
-# Save output files
-write_csv(combined_scorecard, "M7_scorecard_combined.csv")
-write_csv(q_summary, sprintf("M7_scorecard_summary_Q%d_%d.csv", SCORECARD_QUARTER, SCORECARD_YEAR))
+# Save output files — append filter value to filename if running sub-national
+file_suffix <- if (!is.null(SCORECARD_FILTER_VALUE)) paste0("_", gsub(" ", "_", SCORECARD_FILTER_VALUE)) else ""
+write_csv(combined_scorecard, sprintf("M7_scorecard_combined%s.csv", file_suffix))
+write_csv(q_summary, sprintf("M7_scorecard_summary_Q%d_%d%s.csv", SCORECARD_QUARTER, SCORECARD_YEAR, file_suffix))
