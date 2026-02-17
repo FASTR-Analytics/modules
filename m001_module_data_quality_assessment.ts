@@ -48,7 +48,6 @@ export const definition = {
         year: "INTEGER NOT NULL",
         indicator_common_id: "TEXT NOT NULL",
         outlier_flag: "INTEGER NOT NULL",
-        new_column_9: "TEXT",
       },
     },
     {
