@@ -183,37 +183,6 @@ export const definition = {
         },
       },
       vizPresets: [
-        {
-          id: "new-preset",
-          label: {
-            en: "New Preset",
-            fr: "delte this later this is just for a test",
-          },
-          description: {
-            en: "this is to test if adding a new preset works ",
-            fr: "ya",
-          },
-          config: {
-            d: {
-              type: "table",
-              periodOpt: "period_id",
-              valuesDisDisplayOpt: "col",
-              disaggregateBy: [],
-              filterBy: [],
-            },
-            s: {
-              conditionalFormatting: "fmt-10-20",
-            },
-          },
-          allowedFilters: [
-            "indicator_common_id",
-            "ratio_type",
-            "time_point",
-          ],
-          defaultPeriodFilterForDefaultVisualizations: {
-            nMonths: 2,
-          },
-        },
       ],
     },
     {
