@@ -37,8 +37,7 @@ export const definition = {
   resultsObjects: [
     {
       id: "M1_output_outliers.csv",
-      description:
-        "Detailed facility-level data with identified outliers and adjusted volumes",
+      description: "Detailed facility-level data with identified outliers and adjusted volumes",
       createTableStatementPossibleColumns: {
         facility_id: "TEXT NOT NULL",
         admin_area_4: "TEXT NOT NULL",
@@ -126,16 +125,24 @@ export const definition = {
   metrics: [
     {
       id: "m1-01-00",
-      hide: true,
       resultsObjectId: "M1_output_outliers.csv",
-
-      valueProps: ["facility_id"],
+      label: {
+        en: "Number of records",
+        fr: "Nombre d'enregistrements",
+      },
+      valueProps: [
+        "facility_id",
+      ],
       valueFunc: "COUNT",
-      valueLabelReplacements: {},
-      label: { en: "Number of records", fr: "Nombre d'enregistrements" },
-      requiredDisaggregationOptions: [],
       formatAs: "number",
-      periodOptions: ["period_id", "quarter_id", "year"],
+      requiredDisaggregationOptions: [],
+      periodOptions: [
+        "period_id",
+        "quarter_id",
+        "year",
+      ],
+      valueLabelReplacements: {},
+      hide: true,
       aiDescription: {
         summary: {
           en: "Count of facility-month-indicator records in the dataset.",
@@ -167,12 +174,16 @@ export const definition = {
             fr: "Identifier les lacunes de données",
           },
         ],
-        relatedMetrics: ["m1-02-02"],
+        relatedMetrics: [
+          "m1-02-02",
+        ],
         disaggregationGuidance: {
           en: "Disaggregate by admin_area to compare regional completeness. Use indicator_common_id to see which services have better reporting.",
           fr: "Désagréger par zone administrative pour comparer la complétude régionale.",
         },
       },
+      vizPresets: [
+      ],
     },
     {
       id: "m1-01-01",
@@ -901,4 +912,4 @@ export const definition = {
   },
 };
 
-// hi this is a test
+// monaco test
