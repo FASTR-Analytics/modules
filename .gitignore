@@ -1,8 +1,80 @@
+# R session files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-survey_data_fetcher
+.Renviron
+
+# OS files
+.DS_Store
+
+# Office temp/lock files
+~$*
+
+# Local documentation (not for repo)
 CLAUDE.md
 NHSS_scorecard_TWG_changes_2026Feb.md
 NHSS_scorecard_TWG_changes_2026Feb.docx
+
+# Pipeline output CSVs
+M1_*.csv
+M2_*.csv
+M3_*.csv
+M4_*.csv
+M5_*.csv
+M6_*.csv
+M7_*.csv
+M7_*.xlsx
+
+# Data files
+*.xlsx
+*.docx
+*.png
+hmis_*.csv
+backbones_*.csv
+indicators_raw_*.csv
+scorecard_*.csv
+total_population.csv
+vaccine_stockout_pct.csv
+nhmis_2019_reporting_rate.csv
+nhmis_data_timeliness.csv
+DataDictionary_All.csv
+
+# Local data folders
+00_survey_backups/
+01_hmis_data/
+02_results_pipeline_local/
+03_assets_custom_analysis/
+04_debug_results/
+05_create_viz/
+cleaned_data_downloads/
+custom_analysis_priority_comparison/
+debug_zambia/
+plots_coverage_test/
+plots_zero_dose/
+plots_zero_dose_python/
+backup - hmis/
+disruption_mapping/
+
+# Local/admin scripts
+03_module_service_utilization_zero_dose_LOCAL.R
+03_viz_disruptions_zero_dose_LOCAL.R
+Admin_*.R
+draft_problem.R
+plot_test.py
+custom_module_*.R
+reshape_survey_with_zones.R
+scorecard_module_prepare_assets.R
+admin_review_changes_in_MICS.R
+
+# DHIS2 reference builder (has its own credentials)
+dhis2_reference_builder/
+
+# Research modules
+Research_Disruption/
+
+# Fetcher tools
+survey_data_fetcher
+
+# Nigeria-specific data
+nigeria_disruption_database_template.*
