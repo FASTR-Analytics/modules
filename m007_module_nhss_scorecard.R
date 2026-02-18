@@ -1,13 +1,37 @@
-# Scorecard Parameters
-SCORECARD_YEAR <- 2025
-SCORECARD_QUARTER <- 4
 COUNTRY_ISO3 <- "NGA"
 SELECTED_COUNT_VARIABLE <- "count_final_none"
 
 
-SCORECARD_GEO_LEVEL <- "admin_area_3"
-SCORECARD_FILTER_COL <- NULL
-SCORECARD_FILTER_VALUE <- NULL
+
+#-------------------------------------------------------------------------------------------------------------
+# CB - R code FASTR PROJECT
+# Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
+# Last edit: 2026 Feb 18
+#
+# Calculates NHSS scorecard indicators at multiple geographic levels.
+# All indicator data comes from the M2 adjusted data pipeline.
+# Population is the only separate asset file (LGA-level denominator from DHIS2).
+#
+# OUTPUTS (one per geo level):
+#   M7_output_scorecard_{level}.csv         — Scorecard indicators (long format, areas + national)
+#   M7_output_scorecard_summary_{level}.csv — Raw quarterly counts by area (debug)
+#
+# Load Required Libraries -----------------------------------------------------------------------------------
+library(dplyr)
+library(readr)
+library(tidyr)
+
+# Load Data ------------------------------------------------------------------------------------------------
+ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
+POPULATION_FILE <- "total_population.csv"
+adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
+population <- read_csv(POPULATION_FILE, show_col_types = FALSE)
+
+# Scorecard Parameters
+SCORECARD_YEAR <- 2025
+SCORECARD_QUARTER <- 4
+
+
 
 # Population assumptions (quarterly rates)
 PREGNANT_WOMEN_PCT <- 0.05 * 0.25
@@ -16,76 +40,29 @@ WOMEN_15_49_PCT <- 0.22 * 0.25
 CHILDREN_U5_PCT <- 0.12 * 0.25
 INFANTS_0_6M_PCT <- 0.02
 
-# Input files
-ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
-POPULATION_FILE <- "total_population.csv"
-
-#-------------------------------------------------------------------------------------------------------------
-# CB - R code FASTR PROJECT
-# Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
-# Last edit: 2026 Feb 18
-#
-# Calculates NHSS scorecard indicators.
-# All indicator data comes from the M2 adjusted data pipeline.
-# Population is the only separate asset file (LGA-level denominator from DHIS2).
-#
-# OUTPUTS:
-#   M7_output_scorecard.csv         — Scorecard indicators (long format, state + national)
-#   M7_output_scorecard_summary.csv — Raw quarterly counts by state (debug)
-
-# Notes...
-# Geographic level parameters
-# SCORECARD_GEO_LEVEL: which admin column becomes each scorecard row (the breakdown level)
-# SCORECARD_FILTER_COL / _VALUE: optional — restrict to areas within a parent area
-# Example: national scorecard broken down by state (default)
-#   SCORECARD_GEO_LEVEL <- "admin_area_3"
-#   SCORECARD_FILTER_COL <- NULL
-# Example: Kano state scorecard broken down by LGA
-#   SCORECARD_GEO_LEVEL <- "admin_area_4"
-#   SCORECARD_FILTER_COL <- "admin_area_3"
-#   SCORECARD_FILTER_VALUE <- "Kano"
-#
-# Load Required Libraries -----------------------------------------------------------------------------------
-library(dplyr)
-library(readr)
-library(tidyr)
-
-# Load Data ------------------------------------------------------------------------------------------------
-adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
-population <- read_csv(POPULATION_FILE, show_col_types = FALSE)
-
 # Helper: quarter months from quarter number
 quarter_months <- function(q) {
   switch(as.character(q), "1" = 1:3, "2" = 4:6, "3" = 7:9, "4" = 10:12)
 }
 
 # Define Functions ------------------------------------------------------------------------------------------
-aggregate_to_state_quarter <- function(data) {
+
+# Helper: get all admin_area columns for a given level (includes parents)
+# e.g., "admin_area_4" -> c("admin_area_2", "admin_area_3", "admin_area_4")
+geo_columns <- function(geo_level) {
+  level_num <- as.integer(sub("admin_area_", "", geo_level))
+  paste0("admin_area_", 2:level_num)
+}
+
+aggregate_to_quarter <- function(data, geo_level) {
+  geo_cols <- geo_columns(geo_level)
   target_quarter_id <- as.numeric(paste0(SCORECARD_YEAR, sprintf("%02d", SCORECARD_QUARTER)))
 
-  message(sprintf("Looking for quarter_id: %d", target_quarter_id))
-  message(sprintf("Scorecard geo level: %s", SCORECARD_GEO_LEVEL))
-
-  if (!SCORECARD_GEO_LEVEL %in% names(data)) {
+  if (!geo_level %in% names(data)) {
     stop(sprintf("ERROR: Column '%s' not found in data. Available: %s",
-                 SCORECARD_GEO_LEVEL, paste(grep("admin_area", names(data), value = TRUE), collapse = ", ")))
+                 geo_level, paste(grep("admin_area", names(data), value = TRUE), collapse = ", ")))
   }
 
-  # Apply parent area filter if set
-  if (!is.null(SCORECARD_FILTER_COL) && !is.null(SCORECARD_FILTER_VALUE)) {
-    if (!SCORECARD_FILTER_COL %in% names(data)) {
-      stop(sprintf("ERROR: Filter column '%s' not found in data.", SCORECARD_FILTER_COL))
-    }
-    n_before <- nrow(data)
-    data <- data %>% filter(.data[[SCORECARD_FILTER_COL]] == SCORECARD_FILTER_VALUE)
-    message(sprintf("Filtered to %s = '%s': %d -> %d rows",
-                    SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE, n_before, nrow(data)))
-    if (nrow(data) == 0) {
-      stop(sprintf("ERROR: No data after filtering %s = '%s'.", SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE))
-    }
-  }
-
-  # Derive year and quarter_id from period_id
   if (!"year" %in% names(data)) {
     data <- data %>% mutate(
       year = as.integer(substr(as.character(period_id), 1, 4)),
@@ -96,77 +73,66 @@ aggregate_to_state_quarter <- function(data) {
 
   data %>%
     filter(year == SCORECARD_YEAR, quarter_id == target_quarter_id) %>%
-    group_by(.data[[SCORECARD_GEO_LEVEL]], indicator_common_id) %>%
+    group_by(across(all_of(geo_cols)), indicator_common_id) %>%
     summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
-    pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0) %>%
-    rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL))
+    pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0)
 }
 
-merge_population <- function(state_data) {
-  q_months <- quarter_months(SCORECARD_QUARTER)
-  q_periods <- sprintf("%04d%02d", SCORECARD_YEAR, q_months)
-  adjusted_states <- unique(state_data$admin_area_2)
+merge_population <- function(area_data, geo_level) {
+  area_names <- unique(area_data[[geo_level]])
 
-  # Aggregate population to SCORECARD_GEO_LEVEL if needed
-  pop <- population
-  if (SCORECARD_GEO_LEVEL %in% names(pop) && "admin_area_2" != SCORECARD_GEO_LEVEL) {
-    pop <- pop %>%
-      group_by(.data[[SCORECARD_GEO_LEVEL]], period_id, indicator_common_id) %>%
-      summarise(count = sum(count, na.rm = TRUE), .groups = "drop") %>%
-      rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL))
-  } else if (!"admin_area_2" %in% names(pop) && SCORECARD_GEO_LEVEL %in% names(pop)) {
-    pop <- pop %>% rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL))
-  }
+  # Aggregate population to the target geo level
+  pop <- population %>%
+    group_by(.data[[geo_level]], period_id) %>%
+    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
 
   # Try current year (latest month first)
   current_year_periods <- sprintf("%04d%02d", SCORECARD_YEAR, 12:1)
   pop_data <- NULL
 
   for (period in current_year_periods) {
-    pop_data <- pop %>% filter(period_id == period, admin_area_2 %in% adjusted_states)
+    pop_data <- pop %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
     if (nrow(pop_data) > 0) {
-      message(sprintf("Using population data from period: %s", period))
+      message(sprintf("  Using population from period: %s", period))
       break
     }
   }
 
   # Fallback: average of last 3 months of previous year
   if (is.null(pop_data) || nrow(pop_data) == 0) {
-    message("No current year population. Trying Q4 of previous year...")
+    message("  No current year population. Trying Q4 of previous year...")
     prev_periods <- sprintf("%04d%02d", SCORECARD_YEAR - 1, 10:12)
     prev_data <- list()
-
     for (period in prev_periods) {
-      period_data <- pop %>% filter(period_id == period, admin_area_2 %in% adjusted_states)
+      period_data <- pop %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
       if (nrow(period_data) > 0) prev_data[[period]] <- period_data
     }
-
     if (length(prev_data) > 0) {
       pop_data <- bind_rows(prev_data) %>%
-        group_by(admin_area_2) %>%
+        group_by(.data[[geo_level]]) %>%
         summarise(count = mean(count, na.rm = TRUE), .groups = "drop")
-      message(sprintf("Using average population from %d months of previous year", length(prev_data)))
+      message(sprintf("  Using average population from %d months of previous year", length(prev_data)))
     } else {
       stop("ERROR: No population data found for current or previous year!")
     }
   }
 
   # Check coverage
-  missing_states <- setdiff(adjusted_states, unique(pop_data$admin_area_2))
-  if (length(missing_states) > 0) {
-    stop(sprintf("ERROR: Population missing for: %s", paste(missing_states, collapse = ", ")))
+  missing <- setdiff(area_names, unique(pop_data[[geo_level]]))
+  if (length(missing) > 0) {
+    warning(sprintf("Population missing for %d areas: %s", length(missing), paste(head(missing, 5), collapse = ", ")))
   }
 
   pop_summary <- pop_data %>%
-    group_by(admin_area_2) %>%
+    group_by(.data[[geo_level]]) %>%
     summarise(total_population = first(count), .groups = "drop")
 
-  result <- state_data %>% left_join(pop_summary, by = "admin_area_2")
-  message(sprintf("Population merged for %d/%d areas", sum(!is.na(result$total_population)), nrow(state_data)))
+  result <- area_data %>% left_join(pop_summary, by = geo_level)
+  message(sprintf("  Population merged for %d/%d areas", sum(!is.na(result$total_population)), nrow(area_data)))
   result
 }
 
-calculate_scorecard <- function(data) {
+calculate_scorecard <- function(data, geo_cols) {
   has_col <- function(col_name) col_name %in% names(data)
 
   # Pre-compute stockout sum (can't use across() with local vars inside mutate)
@@ -305,32 +271,31 @@ calculate_scorecard <- function(data) {
         ifelse(nhmis_expected_reports == 0, NA, (nhmis_actual_reports_ontime / nhmis_expected_reports) * 100)
       } else NA
     ) %>%
-    select(admin_area_2, anc_coverage_1_visit:nhmis_data_timeliness_final) %>%
+    select(all_of(geo_cols), anc_coverage_1_visit:nhmis_data_timeliness_final) %>%
     mutate(across(where(is.numeric), ~round(.x, 2)))
 }
 
-create_total_row <- function(state_data, merged_data) {
-  total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) SCORECARD_FILTER_VALUE else COUNTRY_ISO3
-
+create_total_row <- function(merged_data, geo_cols) {
   total_counts <- merged_data %>%
-    summarise(across(where(is.numeric), \(x) sum(x, na.rm = TRUE))) %>%
-    mutate(admin_area_2 = total_label)
+    summarise(across(where(is.numeric), \(x) sum(x, na.rm = TRUE)))
+  for (gc in geo_cols) total_counts[[gc]] <- paste0("__", COUNTRY_ISO3)
 
-  calculate_scorecard(total_counts) %>%
+  calculate_scorecard(total_counts, geo_cols) %>%
     mutate(across(where(is.numeric), ~round(.x, 2)))
 }
 
-convert_scorecard_to_long <- function(scorecard_wide) {
+convert_scorecard_to_long <- function(scorecard_wide, geo_cols) {
   quarter_id <- as.numeric(paste0(SCORECARD_YEAR, sprintf("%02d", SCORECARD_QUARTER)))
 
   scorecard_wide %>%
-    pivot_longer(cols = -admin_area_2, names_to = "indicator_common_id", values_to = "value") %>%
+    pivot_longer(cols = -all_of(geo_cols), names_to = "indicator_common_id", values_to = "value") %>%
     mutate(quarter_id = quarter_id, year = SCORECARD_YEAR) %>%
-    select(admin_area_2, quarter_id, year, indicator_common_id, value) %>%
-    arrange(admin_area_2, indicator_common_id)
+    select(all_of(geo_cols), quarter_id, year, indicator_common_id, value) %>%
+    arrange(.data[[tail(geo_cols, 1)]], indicator_common_id)
 }
 
-create_summary_table <- function(adjusted_data, population) {
+create_summary_table <- function(adjusted_data, population, geo_level) {
+  geo_cols <- geo_columns(geo_level)
   q_months <- quarter_months(SCORECARD_QUARTER)
   target_periods <- as.integer(sprintf("%04d%02d", SCORECARD_YEAR, q_months))
 
@@ -339,33 +304,17 @@ create_summary_table <- function(adjusted_data, population) {
   prev_year <- if (SCORECARD_QUARTER == 1) SCORECARD_YEAR - 1 else SCORECARD_YEAR
   prev_periods <- sprintf("%04d%02d", prev_year, quarter_months(prev_q))
 
-  quarter_label <- sprintf("Q%d %d", SCORECARD_QUARTER, SCORECARD_YEAR)
-  message(sprintf("Creating %s summary table...", quarter_label))
-
-  # Apply parent area filter if set
-  if (!is.null(SCORECARD_FILTER_COL) && !is.null(SCORECARD_FILTER_VALUE)) {
-    adjusted_data <- adjusted_data %>% filter(.data[[SCORECARD_FILTER_COL]] == SCORECARD_FILTER_VALUE)
-  }
-
-  # Aggregate population to SCORECARD_GEO_LEVEL if needed
-  pop <- population
-  if (SCORECARD_GEO_LEVEL %in% names(pop) && !"admin_area_2" %in% names(pop)) {
-    pop <- pop %>%
-      group_by(.data[[SCORECARD_GEO_LEVEL]], period_id) %>%
-      summarise(count = sum(count, na.rm = TRUE), .groups = "drop") %>%
-      rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL))
-  }
+  # Aggregate population to the target geo level
+  pop <- population %>%
+    group_by(.data[[geo_level]], period_id) %>%
+    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
 
   # Get indicator data for target quarter
   q_indicators <- adjusted_data %>%
     filter(period_id %in% target_periods) %>%
-    group_by(.data[[SCORECARD_GEO_LEVEL]], indicator_common_id) %>%
+    group_by(across(all_of(geo_cols)), indicator_common_id) %>%
     summarise(total_quarter = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
-    rename(admin_area_2 = !!sym(SCORECARD_GEO_LEVEL)) %>%
     pivot_wider(names_from = indicator_common_id, values_from = total_quarter, values_fill = 0)
-
-  message(sprintf("Found %s data for %d states and %d indicators",
-                  quarter_label, nrow(q_indicators), ncol(q_indicators) - 1))
 
   # Get previous quarter population average
   prev_pop_data <- list()
@@ -380,7 +329,6 @@ create_summary_table <- function(adjusted_data, population) {
       summarise(max_period = max(period_id)) %>% pull(max_period)
     if (!is.na(latest_period)) {
       prev_pop_data[[as.character(latest_period)]] <- pop %>% filter(period_id == latest_period)
-      message(sprintf("Using fallback population from: %s", latest_period))
     }
   }
 
@@ -389,13 +337,13 @@ create_summary_table <- function(adjusted_data, population) {
   }
 
   pop_avg <- bind_rows(prev_pop_data) %>%
-    group_by(admin_area_2) %>%
+    group_by(.data[[geo_level]]) %>%
     summarise(avg_population_prev_quarter = mean(count, na.rm = TRUE), .groups = "drop")
 
   # Merge indicators with population
   summary_table <- q_indicators %>%
-    left_join(pop_avg, by = "admin_area_2") %>%
-    select(admin_area_2, avg_population_prev_quarter, everything())
+    left_join(pop_avg, by = geo_level) %>%
+    select(all_of(geo_cols), avg_population_prev_quarter, everything())
 
   # Compute vaccine stockout percentage for debug
   stockout_cols <- c("stockout_bcg", "stockout_hepb", "stockout_opv", "stockout_penta",
@@ -410,74 +358,124 @@ create_summary_table <- function(adjusted_data, population) {
   }
 
   # Create total row
-  total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) paste0("__TOTAL_", SCORECARD_FILTER_VALUE) else "__NATIONAL"
   total_row <- summary_table %>%
     summarise(
-      admin_area_2 = total_label,
       avg_population_prev_quarter = sum(avg_population_prev_quarter, na.rm = TRUE),
       across(where(is.numeric) & !matches("avg_population_prev_quarter"), \(x) sum(x, na.rm = TRUE))
     )
+  for (gc in geo_cols) total_row[[gc]] <- "__NATIONAL"
 
-  final_summary_table <- bind_rows(summary_table, total_row) %>%
-    arrange(admin_area_2)
-
-  message(sprintf("Summary table: %d areas + national, %d indicators",
-                  nrow(summary_table), ncol(summary_table) - 2))
-  final_summary_table
+  bind_rows(summary_table, total_row) %>% arrange(.data[[tail(geo_cols, 1)]])
 }
 
 # ------------------- Main Execution ------------------------------------------------------------------------
-geo_desc <- if (!is.null(SCORECARD_FILTER_VALUE)) {
-  sprintf("%s within %s = '%s'", SCORECARD_GEO_LEVEL, SCORECARD_FILTER_COL, SCORECARD_FILTER_VALUE)
+message(sprintf("Calculating NHSS Scorecard for %d Q%d using %s...",
+                SCORECARD_YEAR, SCORECARD_QUARTER, SELECTED_COUNT_VARIABLE))
+
+# ===== ADMIN_AREA_2 =====
+message("\n========== Processing admin_area_2 ==========")
+if ("admin_area_2" %in% names(adjusted_data)) {
+  geo_cols_a2 <- geo_columns("admin_area_2")
+
+  agg_a2 <- aggregate_to_quarter(adjusted_data, "admin_area_2")
+  merged_a2 <- merge_population(agg_a2, "admin_area_2")
+
+  scorecard_wide_a2 <- calculate_scorecard(merged_a2, geo_cols_a2)
+  total_wide_a2 <- create_total_row(merged_a2, geo_cols_a2)
+
+  scorecard_a2 <- bind_rows(
+    convert_scorecard_to_long(scorecard_wide_a2, geo_cols_a2),
+    convert_scorecard_to_long(total_wide_a2, geo_cols_a2)
+  ) %>% arrange(admin_area_2, indicator_common_id)
+
+  summary_a2 <- create_summary_table(adjusted_data, population, "admin_area_2")
+
+  write_csv(scorecard_a2, "M7_output_scorecard_admin_area_2.csv")
+  write_csv(summary_a2, "M7_output_scorecard_summary_admin_area_2.csv")
+  message(sprintf("  Wrote M7_output_scorecard_admin_area_2.csv (%d rows)", nrow(scorecard_a2)))
 } else {
-  sprintf("%s (national)", SCORECARD_GEO_LEVEL)
-}
-message(sprintf("Calculating NHSS Scorecard for %d Q%d at %s using %s...",
-                SCORECARD_YEAR, SCORECARD_QUARTER, geo_desc, SELECTED_COUNT_VARIABLE))
-
-# Aggregate facility data to state-quarter
-state_aggregated <- aggregate_to_state_quarter(adjusted_data)
-
-if (nrow(state_aggregated) == 0) {
-  stop(sprintf("ERROR: No facility data found for %d Q%d!", SCORECARD_YEAR, SCORECARD_QUARTER))
-}
-if (ncol(state_aggregated) <= 1) {
-  stop(sprintf("ERROR: No indicators found for %d Q%d!", SCORECARD_YEAR, SCORECARD_QUARTER))
+  dummy_scorecard_a2 <- data.frame(
+    admin_area_2 = character(), quarter_id = integer(), year = integer(),
+    indicator_common_id = character(), value = numeric()
+  )
+  dummy_summary_a2 <- data.frame(
+    admin_area_2 = character(), avg_population_prev_quarter = numeric()
+  )
+  write_csv(dummy_scorecard_a2, "M7_output_scorecard_admin_area_2.csv")
+  write_csv(dummy_summary_a2, "M7_output_scorecard_summary_admin_area_2.csv")
+  message("  No admin_area_2 data — saved empty files")
 }
 
-message(sprintf("Aggregated %d indicators across %d areas (%s)",
-                ncol(state_aggregated) - 1, nrow(state_aggregated), SCORECARD_GEO_LEVEL))
+# ===== ADMIN_AREA_3 =====
+message("\n========== Processing admin_area_3 ==========")
+if ("admin_area_3" %in% names(adjusted_data)) {
+  geo_cols_a3 <- geo_columns("admin_area_3")
 
-# Merge with population
-merged_data <- merge_population(state_aggregated)
+  agg_a3 <- aggregate_to_quarter(adjusted_data, "admin_area_3")
+  merged_a3 <- merge_population(agg_a3, "admin_area_3")
 
-if (!"total_population" %in% names(merged_data) || sum(!is.na(merged_data$total_population)) == 0) {
-  stop("ERROR: Population data not found or all NA — check POPULATION_FILE")
+  scorecard_wide_a3 <- calculate_scorecard(merged_a3, geo_cols_a3)
+  total_wide_a3 <- create_total_row(merged_a3, geo_cols_a3)
+
+  scorecard_a3 <- bind_rows(
+    convert_scorecard_to_long(scorecard_wide_a3, geo_cols_a3),
+    convert_scorecard_to_long(total_wide_a3, geo_cols_a3)
+  ) %>% arrange(admin_area_3, indicator_common_id)
+
+  summary_a3 <- create_summary_table(adjusted_data, population, "admin_area_3")
+
+  write_csv(scorecard_a3, "M7_output_scorecard_admin_area_3.csv")
+  write_csv(summary_a3, "M7_output_scorecard_summary_admin_area_3.csv")
+  message(sprintf("  Wrote M7_output_scorecard_admin_area_3.csv (%d rows)", nrow(scorecard_a3)))
+} else {
+  dummy_scorecard_a3 <- data.frame(
+    admin_area_2 = character(), admin_area_3 = character(),
+    quarter_id = integer(), year = integer(),
+    indicator_common_id = character(), value = numeric()
+  )
+  dummy_summary_a3 <- data.frame(
+    admin_area_2 = character(), admin_area_3 = character(),
+    avg_population_prev_quarter = numeric()
+  )
+  write_csv(dummy_scorecard_a3, "M7_output_scorecard_admin_area_3.csv")
+  write_csv(dummy_summary_a3, "M7_output_scorecard_summary_admin_area_3.csv")
+  message("  No admin_area_3 data — saved empty files")
 }
-message("Population merged successfully")
 
-# Calculate scorecards
-state_scorecard_wide <- calculate_scorecard(merged_data)
-message("State scorecard calculated")
+# ===== ADMIN_AREA_4 =====
+message("\n========== Processing admin_area_4 ==========")
+if ("admin_area_4" %in% names(adjusted_data)) {
+  geo_cols_a4 <- geo_columns("admin_area_4")
 
-total_scorecard_wide <- create_total_row(state_scorecard_wide, merged_data)
-message("National scorecard calculated")
+  agg_a4 <- aggregate_to_quarter(adjusted_data, "admin_area_4")
+  merged_a4 <- merge_population(agg_a4, "admin_area_4")
 
-# Convert to long format and combine
-total_label <- if (!is.null(SCORECARD_FILTER_VALUE)) SCORECARD_FILTER_VALUE else paste0("__", COUNTRY_ISO3)
-state_scorecard <- convert_scorecard_to_long(state_scorecard_wide)
-total_scorecard <- convert_scorecard_to_long(total_scorecard_wide) %>%
-  mutate(admin_area_2 = total_label)
+  scorecard_wide_a4 <- calculate_scorecard(merged_a4, geo_cols_a4)
+  total_wide_a4 <- create_total_row(merged_a4, geo_cols_a4)
 
-combined_scorecard <- bind_rows(state_scorecard, total_scorecard) %>%
-  arrange(admin_area_2, indicator_common_id)
+  scorecard_a4 <- bind_rows(
+    convert_scorecard_to_long(scorecard_wide_a4, geo_cols_a4),
+    convert_scorecard_to_long(total_wide_a4, geo_cols_a4)
+  ) %>% arrange(admin_area_4, indicator_common_id)
 
-# Create debug summary table
-q_summary <- create_summary_table(adjusted_data, population)
+  summary_a4 <- create_summary_table(adjusted_data, population, "admin_area_4")
 
-# Save output files
-write_csv(combined_scorecard, "M7_output_scorecard.csv")
-write_csv(q_summary, "M7_output_scorecard_summary.csv")
+  write_csv(scorecard_a4, "M7_output_scorecard_admin_area_4.csv")
+  write_csv(summary_a4, "M7_output_scorecard_summary_admin_area_4.csv")
+  message(sprintf("  Wrote M7_output_scorecard_admin_area_4.csv (%d rows)", nrow(scorecard_a4)))
+} else {
+  dummy_scorecard_a4 <- data.frame(
+    admin_area_2 = character(), admin_area_3 = character(), admin_area_4 = character(),
+    quarter_id = integer(), year = integer(),
+    indicator_common_id = character(), value = numeric()
+  )
+  dummy_summary_a4 <- data.frame(
+    admin_area_2 = character(), admin_area_3 = character(), admin_area_4 = character(),
+    avg_population_prev_quarter = numeric()
+  )
+  write_csv(dummy_scorecard_a4, "M7_output_scorecard_admin_area_4.csv")
+  write_csv(dummy_summary_a4, "M7_output_scorecard_summary_admin_area_4.csv")
+  message("  No admin_area_4 data — saved empty files")
+}
 
-message(sprintf("Done. Wrote M7_output_scorecard.csv (%d rows) and M7_output_scorecard_summary.csv (%d rows)",
-                nrow(combined_scorecard), nrow(q_summary)))
+message("\nDone. All geographic levels processed.")
