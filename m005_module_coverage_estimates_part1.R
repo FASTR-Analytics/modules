@@ -1331,6 +1331,12 @@ create_combined_results_table <- function(coverage_comparison, survey_raw_df, al
     )
 
   # Step 5: Combine all results
+  # Harmonize admin_area_1 so all rows use the same country name (from HMIS data)
+  hmis_admin1 <- unique(coverage_results$admin_area_1)[1]
+  if (!is.na(hmis_admin1)) {
+    survey_results <- survey_results %>% mutate(admin_area_1 = hmis_admin1)
+  }
+
   combined_results <- bind_rows(coverage_results, survey_results) %>%
     arrange(
       admin_area_1,
