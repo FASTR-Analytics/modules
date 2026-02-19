@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "ZMB"
+COUNTRY_ISO3 <- "SOM"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 30
+# Last edit: 2026 Feb 19
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -260,11 +260,13 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
       )
   }
   
+  has_iso3 <- "iso3_code" %in% names(adjusted_volume_data)
   group_vars <- if (has_admin2) c("admin_area_1", "admin_area_2", "year") else c("admin_area_1", "year")
+  if (has_iso3) group_vars <- c("iso3_code", group_vars)
   
   adjusted_volume <- adjusted_volume_data %>%
     mutate(count = .data[[count_col]]) %>%
-    select(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
+    select(any_of(c("iso3_code", "admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
     arrange(across(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id"))))
   
   missing <- setdiff(expected_indicators, unique(adjusted_volume$indicator_common_id))
@@ -626,6 +628,13 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL,
     raw_pick_long     <- raw_pick_long     %>% mutate(admin_area_2 = "NATIONAL")
   }
 
+  # Carry iso3_code through to outputs so downstream joins can use it
+  if (!is.null(hmis_iso3)) {
+    survey_carried    <- survey_carried    %>% mutate(iso3_code = hmis_iso3[1])
+    raw_survey_values <- raw_survey_values %>% mutate(iso3_code = hmis_iso3[1])
+    raw_pick_long     <- raw_pick_long     %>% mutate(iso3_code = hmis_iso3[1])
+  }
+
   # Always duplicate pnc1carry → pnc1_mothercarry (survey only has pnc1)
   if ("pnc1carry" %in% names(survey_carried)) {
     survey_carried$pnc1_mothercarry <- survey_carried$pnc1carry
@@ -663,13 +672,17 @@ process_national_population_data <- function(population_data, hmis_countries, hm
   
   #original wide
   wide <- base %>%
-    select(admin_area_1, year, indicator_common_id, survey_value, source) %>%
+    select(any_of("iso3_code"), admin_area_1, year, indicator_common_id, survey_value, source) %>%
     pivot_wider(
       names_from  = c(indicator_common_id, source),
       values_from = survey_value,
       names_glue  = "{indicator_common_id}_{source}",
       values_fn   = mean
     )
+  # Ensure iso3_code is carried through for downstream joins
+  if (!is.null(hmis_iso3) && !"iso3_code" %in% names(wide)) {
+    wide <- wide %>% mutate(iso3_code = hmis_iso3[1])
+  }
   
   #raw
   raw_long <- base %>%
@@ -696,15 +709,20 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   # nmrcarry is handled by the survey data processing, no need for redundant check here
   
   has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
-  
+  use_iso <- "iso3_code" %in% names(hmis_data) && "iso3_code" %in% names(survey_data)
+
   if (has_admin_area_2) {
     # Standard join admin_area_2 to admin_area_2 (survey data is restructured)
+    join_keys <- if (use_iso) c("iso3_code", "admin_area_2", "year") else c("admin_area_1", "admin_area_2", "year")
     data <- hmis_data %>%
-      full_join(survey_data, by = c("admin_area_1", "admin_area_2", "year"))
+      full_join(survey_data, by = join_keys)
   } else {
+    join_keys <- if (use_iso) c("iso3_code", "year") else c("admin_area_1", "year")
+    use_iso_pop <- use_iso && !is.null(population_data) && "iso3_code" %in% names(population_data)
+    join_keys_pop <- if (use_iso_pop) c("iso3_code", "year") else c("admin_area_1", "year")
     data <- hmis_data %>%
-      full_join(survey_data, by = c("admin_area_1", "year")) %>%
-      full_join(population_data, by = c("admin_area_1", "year"))
+      full_join(survey_data, by = join_keys) %>%
+      { if (!is.null(population_data)) full_join(., population_data, by = join_keys_pop) else . }
   }
   
   indicator_vars <- list(
@@ -907,12 +925,15 @@ create_denominator_summary <- function(denominators_data, analysis_type = "NATIO
   has_admin2 <- "admin_area_2" %in% names(denominators_data)
   has_admin3 <- "admin_area_3" %in% names(denominators_data)
   
+  has_iso3 <- "iso3_code" %in% names(denominators_data)
+  iso_prefix <- if (has_iso3) "iso3_code" else NULL
+
   select_cols <- if (has_admin3) {
-    c("admin_area_1", "admin_area_3", "year", denominator_cols)
+    c(iso_prefix, "admin_area_1", "admin_area_3", "year", denominator_cols)
   } else if (has_admin2) {
-    c("admin_area_1", "admin_area_2", "year", denominator_cols)
+    c(iso_prefix, "admin_area_1", "admin_area_2", "year", denominator_cols)
   } else {
-    c("admin_area_1", "year", denominator_cols)
+    c(iso_prefix, "admin_area_1", "year", denominator_cols)
   }
   
   summary_stats <- denominators_data %>%
@@ -1068,7 +1089,8 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   # Check if ISO code is available in both datasets (prefer for national comparisons)
   has_iso_cov <- "iso3_code" %in% names(coverage_data)
   has_iso_sur <- "iso3_code" %in% names(survey_expanded_df)
-  use_iso <- has_iso_cov && has_iso_sur && !has_admin2_cov && !has_admin3_cov
+  is_national_data <- !has_admin2_cov || all(coverage_data$admin_area_2 == "NATIONAL", na.rm = TRUE)
+  use_iso <- has_iso_cov && has_iso_sur && is_national_data
 
   # Add missing admin_area_2 only if neither dataset has admin_area_3
   if (!has_admin2_cov && !has_admin3_cov) coverage_data <- coverage_data %>% mutate(admin_area_2 = "NATIONAL")
@@ -1335,7 +1357,7 @@ make_numerators_long <- function(annual_hmis_df) {
       values_to = "count",
       names_pattern = "^count(.*)$"
     ) %>%
-    select(admin_area_1, admin_area_2, year, indicator_common_id, count) %>%
+    select(any_of("iso3_code"), admin_area_1, admin_area_2, year, indicator_common_id, count) %>%
     arrange(admin_area_1, admin_area_2, year, indicator_common_id)
 }
 
@@ -1357,7 +1379,7 @@ make_denominators_results <- function(summary_df) {
       target_population = str_replace(denominator_type, ".*_([^_]+)$", "\\1")
     ) %>%
     select(
-      admin_area_1, admin_area_2, year,
+      any_of("iso3_code"), admin_area_1, admin_area_2, year,
       denominator = denominator_type, source_indicator, target_population, value
     )
 }
