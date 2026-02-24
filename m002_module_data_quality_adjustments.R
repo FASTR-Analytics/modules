@@ -4,7 +4,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2026 Jan 19
+# Last edit: 2026 Feb 24
 #-------------------------------------------------------------------------------------------------------------
 
 # -------------------------- KEY OUTPUT ----------------------------------------------------------------------
@@ -17,7 +17,7 @@ library(data.table)
 library(zoo)
 library(lubridate)
 
-EXCLUDED_FROM_ADJUSTMENT <- c("u5_deaths", "maternal_deaths", "neonatal_deaths")
+EXCLUDED_PATTERN <- "death|still_birth"
 
 # Load
 raw_data         <- fread(PROJECT_DATA_HMIS)
@@ -152,7 +152,7 @@ apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_dat
     dat  <- apply_adjustments(raw_data, completeness_data, outlier_data,
                               adjust_outliers = opts$adjust_outliers,
                               adjust_completeness = opts$adjust_completeness)
-    dat[indicator_common_id %in% EXCLUDED_FROM_ADJUSTMENT |
+    dat[grepl(EXCLUDED_PATTERN, indicator_common_id, ignore.case = TRUE) |
         indicator_common_id %in% LOW_VOLUME_INDICATORS, count_working := count]
     dat <- dat[, .(facility_id, indicator_common_id, period_id,
                    count_final = count_working)]
