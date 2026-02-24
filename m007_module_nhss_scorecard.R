@@ -6,7 +6,7 @@ SELECTED_COUNT_VARIABLE <- "count_final_none"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
-# Last edit: 2026 Feb 18
+# Last edit: 2026 Feb 25
 #
 # Calculates NHSS scorecard indicators at multiple geographic levels.
 # All indicator data comes from the M2 adjusted data pipeline.
@@ -23,9 +23,35 @@ library(tidyr)
 
 # Load Data ------------------------------------------------------------------------------------------------
 ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
-POPULATION_FILE <- "total_population.csv"
+POPULATION_FILE <- paste0("total_population_", COUNTRY_ISO3, ".csv")
 adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
 population <- read_csv(POPULATION_FILE, show_col_types = FALSE)
+if ("indicator_common_id" %in% names(population)) {
+  population <- population %>% filter(indicator_common_id == "total_population") %>% select(-indicator_common_id)
+}
+if ("admin_area_1" %in% names(population)) {
+  population <- population %>% select(-admin_area_1)
+}
+
+# Derive nhmis_timely_and_data: on-time reports that also contain data
+# John's definition: on-time AND (General Attendance > 0 OR OPD > 0 OR Penta3 > 0)
+content_indicators <- intersect(c("gnl_attendance", "opd", "penta3"), unique(adjusted_data$indicator_common_id))
+if (length(content_indicators) > 0 && "nhmis_actual_reports_ontime" %in% unique(adjusted_data$indicator_common_id)) {
+  message("Deriving nhmis_timely_and_data (on-time + content check)...")
+  cv <- SELECTED_COUNT_VARIABLE
+  has_content <- adjusted_data %>%
+    filter(indicator_common_id %in% content_indicators, !is.na(.data[[cv]]), .data[[cv]] > 0) %>%
+    distinct(facility_id, period_id)
+  ontime_rows <- adjusted_data %>%
+    filter(indicator_common_id == "nhmis_actual_reports_ontime", !is.na(.data[[cv]]), .data[[cv]] > 0)
+  timely_data_rows <- ontime_rows %>%
+    semi_join(has_content, by = c("facility_id", "period_id")) %>%
+    mutate(indicator_common_id = "nhmis_timely_and_data")
+  message(sprintf("  %d/%d on-time reports also have content (%.0f%% empty filtered out)",
+                  nrow(timely_data_rows), nrow(ontime_rows),
+                  (1 - nrow(timely_data_rows) / nrow(ontime_rows)) * 100))
+  adjusted_data <- bind_rows(adjusted_data, timely_data_rows)
+}
 
 # Scorecard Parameters
 SCORECARD_YEAR <- 2025
@@ -135,154 +161,70 @@ merge_population <- function(area_data, geo_level) {
 calculate_scorecard <- function(data, geo_cols) {
   has_col <- function(col_name) col_name %in% names(data)
 
-  # Pre-compute stockout sum (can't use across() with local vars inside mutate)
-  stockout_cols <- c("stockout_bcg", "stockout_hepb", "stockout_opv", "stockout_penta",
-                     "stockout_rotavirus", "stockout_measles", "stockout_yellowfever",
-                     "stockout_pcv", "stockout_ipv", "stockout_mena", "stockout_tt", "stockout_any")
-  available_stockout <- intersect(stockout_cols, names(data))
-  if (length(available_stockout) > 0) {
-    data$.stockout_sum <- rowSums(data[available_stockout], na.rm = TRUE)
-  }
-
   data %>%
     mutate(
-      # B: ANC Coverage (1 Visit)
-      anc_coverage_1_visit = if(has_col("anc1")) (anc1 / (total_population * PREGNANT_WOMEN_PCT)) * 100 else NA,
+      # 1: ANC4/ANC1 <20wks Ratio
+      anc4_anc1_before20_ratio = if(has_col("anc1_before20") & has_col("anc4")) {
+        ifelse(anc1_before20 == 0, NA, (anc4 / anc1_before20) * 100)
+      } else NA,
 
-      # C: ANC4/ANC1 Ratio
+      # 2: ANC4/ANC1 Ratio
       anc4_anc1_ratio = if(has_col("anc1") & has_col("anc4")) {
         ifelse(anc1 == 0, NA, (anc4 / anc1) * 100)
       } else NA,
 
-      # D: Skilled Birth Attendance
+      # 3: Skilled Birth Attendance
       skilled_birth_attendance = if(has_col("delivery") & has_col("sba")) {
         ifelse(delivery == 0, NA, (sba / delivery) * 100)
       } else NA,
 
-      # E: Uterotonics Coverage
-      uterotonics_coverage = if(has_col("delivery") & has_col("uterotonics")) {
-        ifelse(delivery == 0, NA, (uterotonics / delivery) * 100)
+      # 4: New FP Acceptors / Women of Reproductive Age
+      new_fp_acceptors_rate = if(has_col("new_fp")) {
+        (new_fp / (total_population * WOMEN_15_49_PCT)) * 100
       } else NA,
 
-      # F: Fistula per 10000 Deliveries
-      fistula_per_1000_deliveries = if(has_col("delivery") & has_col("obstetric_fistula")) {
-        ifelse(delivery == 0, NA, (obstetric_fistula / (delivery / 10000)))
+      # 5: ACT for Uncomplicated Malaria
+      #    mal_treatment (ouzURM9c1FI) / mal_confirmed_uncomplicated (HdtaLx63988)
+      #    Fallback: mal_treatment / mal_positive
+      act_malaria_treatment = if(has_col("mal_treatment") & has_col("mal_confirmed_uncomplicated")) {
+        ifelse(mal_confirmed_uncomplicated == 0, NA, (mal_treatment / mal_confirmed_uncomplicated) * 100)
+      } else if(has_col("mal_treatment") & has_col("mal_positive")) {
+        ifelse(mal_positive == 0, NA, (mal_treatment / mal_positive) * 100)
       } else NA,
 
-      # G: Newborn Resuscitation
-      newborn_resuscitation = if(has_col("birth_asphyxia") & has_col("neonatal_resuscitation")) {
-        ifelse(birth_asphyxia == 0, NA, (neonatal_resuscitation / birth_asphyxia) * 100)
+      # 6: Penta3 Coverage
+      penta3_coverage = if(has_col("penta3")) {
+        (penta3 / (total_population * BIRTHS_PCT)) * 100
       } else NA,
 
-      # H: Postnatal Visits (Within 3 days) — sum of newborn 1d + 2-3d visits
-      postnatal_visits_3d = if(has_col("live_births") & (has_col("pnc_newborn_1d") | has_col("pnc_newborn_2_3d") | has_col("pnc"))) {
-        pnc_total <- if(has_col("pnc_newborn_1d") & has_col("pnc_newborn_2_3d")) {
-          pnc_newborn_1d + pnc_newborn_2_3d
-        } else if(has_col("pnc")) pnc else 0
-        ifelse(live_births == 0, NA, (pnc_total / live_births) * 100)
-      } else NA,
-
-      # I: LBW KMC Coverage — uses actual LBW counts if available, falls back to 15% estimate
-      lbw_kmc_coverage = if(has_col("kmc")) {
-        lbw_total <- if(has_col("lbw_female") & has_col("lbw_male")) {
-          lbw_female + lbw_male
-        } else if(has_col("live_births")) live_births * 0.15 else NA
-        ifelse(is.na(lbw_total) | lbw_total == 0, NA, (kmc / lbw_total) * 100)
-      } else NA,
-
-      # J: Birth Registration
-      birth_registration = if(has_col("child_registration")) {
-        (child_registration / (total_population * BIRTHS_PCT)) * 100
-      } else NA,
-
-      # K: Modern Contraceptive Use
-      modern_contraceptive_use = if(has_col("modern_fp")) {
-        (modern_fp / (total_population * WOMEN_15_49_PCT)) * 100
-      } else NA,
-
-      # L: Pneumonia Treatment
-      pneumonia_antibiotic_treatment = if(has_col("pneumonia") & has_col("pneumonia_treatment")) {
-        ifelse(pneumonia == 0, NA, (pneumonia_treatment / pneumonia) * 100)
-      } else NA,
-
-      # M: Diarrhea Treatment
-      diarrhea_ors_zinc_treatment = if(has_col("diarrhoea") & has_col("ors_zinc")) {
-        ifelse(diarrhoea == 0, NA, (ors_zinc / diarrhoea) * 100)
-      } else NA,
-
-      # N: IPTp3 Coverage
-      iptp3_coverage = if(has_col("anc1") & has_col("iptp3")) {
-        ifelse(anc1 == 0, NA, (iptp3 / anc1) * 100)
-      } else NA,
-
-      # O: Under-5 LLIN Coverage (uses fully_immunized as denominator per legacy Excel)
-      under5_llin_coverage = if(has_col("llin") && has_col("fully_immunized")) {
-        (llin / fully_immunized) * 100
-      } else NA,
-
-      # P: BCG Coverage
-      bcg_coverage = if(has_col("bcg")) {
-        (bcg / (total_population * BIRTHS_PCT)) * 100
-      } else NA,
-
-      # Q: Fully Immunized Coverage
-      fully_immunized_coverage = if(has_col("fully_immunized")) {
-        (fully_immunized / (total_population * BIRTHS_PCT)) * 100
-      } else NA,
-
-      # R: Vaccine Stockout — stockout flags / reporting facilities * 100
-      vaccine_stockout_percentage = if(has_col(".stockout_sum") & has_col("nhmis_actual_reports")) {
-        stockout_den <- nhmis_actual_reports + if(has_col("nhmis_v2013_actual_reports")) nhmis_v2013_actual_reports else 0
-        ifelse(stockout_den == 0, NA, (.stockout_sum / stockout_den) * 100)
-      } else NA,
-
-      # S: Exclusive Breastfeeding
-      exclusive_breastfeeding_rate = if(has_col("ebf")) {
-        (ebf / (total_population * INFANTS_0_6M_PCT)) * 100
-      } else NA,
-
-      # T: Growth Monitoring
-      growth_monitoring_coverage = if(has_col("nutrition_screening")) {
-        (nutrition_screening / (total_population * 0.20 * 0.25)) * 100
-      } else NA,
-
-      # U: GBV Care Coverage
-      gbv_care_coverage = if(has_col("gbv_cases") & has_col("gbv_care")) {
-        ifelse(gbv_cases == 0, NA, (gbv_care / gbv_cases) * 100)
-      } else NA,
-
-      # V: Facility Utilisation (OPD per 100 person-years)
-      facility_utilisation_opd = if(has_col("opd")) {
-        (opd / (total_population * 0.25)) * 100
-      } else NA,
-
-      # W: Under-1 Fully Immunised (MCV1 proxy)
-      under1_fully_immunised_mcv1 = if(has_col("measles1")) {
+      # 7: Measles1 Coverage (surviving infants denominator: cCiUHE2KeQ0)
+      under1_fully_immunised_mcv1 = if(has_col("measles1") & has_col("surviving_infants")) {
+        ifelse(surviving_infants == 0, NA, (measles1 / surviving_infants) * 100)
+      } else if(has_col("measles1")) {
         (measles1 / (total_population * BIRTHS_PCT)) * 100
       } else NA,
 
-      # X: NHMIS Reporting Rate — actual / expected * 100
-      nhmis_reporting_rate_final = if(has_col("nhmis_actual_reports") & has_col("nhmis_expected_reports")) {
-        ifelse(nhmis_expected_reports == 0, NA, (nhmis_actual_reports / nhmis_expected_reports) * 100)
+      # 8: HTN New Cases per 10,000 person-years
+      htn_new_per_10000 = if(has_col("hypertension_new")) {
+        (hypertension_new / (total_population * 0.25)) * 10000
       } else NA,
 
-      # Y: NHMIS Timeliness — on_time / expected * 100
-      nhmis_data_timeliness_final = if(has_col("nhmis_actual_reports_ontime") & has_col("nhmis_expected_reports")) {
+      # 9: Diabetes New Cases per 10,000 person-years
+      diabetes_new_per_10000 = if(has_col("diabetes_new")) {
+        (diabetes_new / (total_population * 0.25)) * 10000
+      } else NA,
+
+      # 10: NHMIS Timeliness (on-time + content check / expected)
+      nhmis_data_timeliness_final = if(has_col("nhmis_timely_and_data") & has_col("nhmis_expected_reports")) {
+        ifelse(nhmis_expected_reports == 0, NA, (nhmis_timely_and_data / nhmis_expected_reports) * 100)
+      } else if(has_col("nhmis_actual_reports_ontime") & has_col("nhmis_expected_reports")) {
         ifelse(nhmis_expected_reports == 0, NA, (nhmis_actual_reports_ontime / nhmis_expected_reports) * 100)
       } else NA
     ) %>%
-    select(all_of(geo_cols), anc_coverage_1_visit:nhmis_data_timeliness_final) %>%
+    select(all_of(geo_cols), anc4_anc1_before20_ratio:nhmis_data_timeliness_final) %>%
     mutate(across(where(is.numeric), ~round(.x, 2)))
 }
 
-create_total_row <- function(merged_data, geo_cols) {
-  total_counts <- merged_data %>%
-    summarise(across(where(is.numeric), \(x) sum(x, na.rm = TRUE)))
-  for (gc in geo_cols) total_counts[[gc]] <- paste0("__", COUNTRY_ISO3)
-
-  calculate_scorecard(total_counts, geo_cols) %>%
-    mutate(across(where(is.numeric), ~round(.x, 2)))
-}
 
 convert_scorecard_to_long <- function(scorecard_wide, geo_cols) {
   quarter_id <- as.numeric(paste0(SCORECARD_YEAR, sprintf("%02d", SCORECARD_QUARTER)))
@@ -357,15 +299,7 @@ create_summary_table <- function(adjusted_data, population, geo_level) {
     summary_table$vaccine_stockout_pct <- ifelse(den == 0, NA, (summary_table$stockout_sum / den) * 100)
   }
 
-  # Create total row
-  total_row <- summary_table %>%
-    summarise(
-      avg_population_prev_quarter = sum(avg_population_prev_quarter, na.rm = TRUE),
-      across(where(is.numeric) & !matches("avg_population_prev_quarter"), \(x) sum(x, na.rm = TRUE))
-    )
-  for (gc in geo_cols) total_row[[gc]] <- "__NATIONAL"
-
-  bind_rows(summary_table, total_row) %>% arrange(.data[[tail(geo_cols, 1)]])
+  summary_table %>% arrange(.data[[tail(geo_cols, 1)]])
 }
 
 # ------------------- Main Execution ------------------------------------------------------------------------
@@ -381,12 +315,9 @@ if ("admin_area_2" %in% names(adjusted_data)) {
   merged_a2 <- merge_population(agg_a2, "admin_area_2")
 
   scorecard_wide_a2 <- calculate_scorecard(merged_a2, geo_cols_a2)
-  total_wide_a2 <- create_total_row(merged_a2, geo_cols_a2)
 
-  scorecard_a2 <- bind_rows(
-    convert_scorecard_to_long(scorecard_wide_a2, geo_cols_a2),
-    convert_scorecard_to_long(total_wide_a2, geo_cols_a2)
-  ) %>% arrange(admin_area_2, indicator_common_id)
+  scorecard_a2 <- convert_scorecard_to_long(scorecard_wide_a2, geo_cols_a2) %>%
+    arrange(admin_area_2, indicator_common_id)
 
   summary_a2 <- create_summary_table(adjusted_data, population, "admin_area_2")
 
@@ -415,12 +346,9 @@ if ("admin_area_3" %in% names(adjusted_data)) {
   merged_a3 <- merge_population(agg_a3, "admin_area_3")
 
   scorecard_wide_a3 <- calculate_scorecard(merged_a3, geo_cols_a3)
-  total_wide_a3 <- create_total_row(merged_a3, geo_cols_a3)
 
-  scorecard_a3 <- bind_rows(
-    convert_scorecard_to_long(scorecard_wide_a3, geo_cols_a3),
-    convert_scorecard_to_long(total_wide_a3, geo_cols_a3)
-  ) %>% arrange(admin_area_3, indicator_common_id)
+  scorecard_a3 <- convert_scorecard_to_long(scorecard_wide_a3, geo_cols_a3) %>%
+    arrange(admin_area_3, indicator_common_id)
 
   summary_a3 <- create_summary_table(adjusted_data, population, "admin_area_3")
 
@@ -451,12 +379,9 @@ if ("admin_area_4" %in% names(adjusted_data)) {
   merged_a4 <- merge_population(agg_a4, "admin_area_4")
 
   scorecard_wide_a4 <- calculate_scorecard(merged_a4, geo_cols_a4)
-  total_wide_a4 <- create_total_row(merged_a4, geo_cols_a4)
 
-  scorecard_a4 <- bind_rows(
-    convert_scorecard_to_long(scorecard_wide_a4, geo_cols_a4),
-    convert_scorecard_to_long(total_wide_a4, geo_cols_a4)
-  ) %>% arrange(admin_area_4, indicator_common_id)
+  scorecard_a4 <- convert_scorecard_to_long(scorecard_wide_a4, geo_cols_a4) %>%
+    arrange(admin_area_4, indicator_common_id)
 
   summary_a4 <- create_summary_table(adjusted_data, population, "admin_area_4")
 
