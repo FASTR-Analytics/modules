@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 14
+# Last edit: 2026 Feb 24
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -205,7 +205,8 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
   # Removed: pnc1 renaming in HMIS (handled via survey duplication instead)
 
   has_admin2 <- "admin_area_2" %in% names(adjusted_volume_data)
-  
+  has_iso3 <- "iso3_code" %in% names(adjusted_volume_data)
+
   # Ensure year and month exist
   if (!all(c("year", "month") %in% names(adjusted_volume_data))) {
     adjusted_volume_data <- adjusted_volume_data %>%
@@ -214,12 +215,13 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
         month = as.integer(substr(period_id, 5, 6))
       )
   }
-  
+
   group_vars <- if (has_admin2) c("admin_area_1", "admin_area_2", "year") else c("admin_area_1", "year")
-  
+  if (has_iso3) group_vars <- c("iso3_code", group_vars)
+
   adjusted_volume <- adjusted_volume_data %>%
     mutate(count = .data[[count_col]]) %>%
-    dplyr::select(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
+    dplyr::select(any_of(c("iso3_code", "admin_area_1", "admin_area_2", "year", "month", "indicator_common_id", "count"))) %>%
     arrange(across(any_of(c("admin_area_1", "admin_area_2", "year", "month", "indicator_common_id"))))
   
   missing <- setdiff(expected_indicators, unique(adjusted_volume$indicator_common_id))
@@ -482,6 +484,12 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     raw_survey_values <- raw_survey_values %>% mutate(admin_area_2 = "NATIONAL")
   }
 
+  # Carry iso3_code through to outputs so downstream joins can use it
+  if (!is.null(hmis_iso3)) {
+    survey_carried    <- survey_carried    %>% mutate(iso3_code = hmis_iso3[1])
+    raw_survey_values <- raw_survey_values %>% mutate(iso3_code = hmis_iso3[1])
+  }
+
   # Efficient fallback: duplicate survey columns if HMIS has indicators not in survey
   if (!is.null(hmis_indicators)) {
     # pnc1_mother fallback from pnc1
@@ -537,15 +545,22 @@ process_national_population_data <- function(population_data, hmis_countries, hm
              admin_area_1 %in% hmis_countries)
   }
 
-  population_data %>%
+  wide <- population_data %>%
     mutate(source = tolower(source)) %>%
-    select(admin_area_1, year, indicator_common_id, survey_value, source) %>%
+    select(any_of("iso3_code"), admin_area_1, year, indicator_common_id, survey_value, source) %>%
     pivot_wider(
       names_from  = c(indicator_common_id, source),
       values_from = survey_value,
       names_glue  = "{indicator_common_id}_{source}",
       values_fn   = mean
     )
+
+  # Ensure iso3_code is carried through for downstream joins
+  if (!is.null(hmis_iso3) && !"iso3_code" %in% names(wide)) {
+    wide <- wide %>% mutate(iso3_code = hmis_iso3[1])
+  }
+
+  wide
 }
 
 #Part 3 - calculate denominators
@@ -556,17 +571,38 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   }
   
   has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
-  
+  use_iso <- "iso3_code" %in% names(hmis_data) && "iso3_code" %in% names(survey_data)
+
+  # When joining on iso3_code, drop admin_area_1 from non-HMIS sides to avoid duplicates
+  if (use_iso) {
+    survey_data <- survey_data %>% select(-any_of("admin_area_1"))
+    if (!is.null(population_data)) {
+      population_data <- population_data %>% select(-any_of("admin_area_1"))
+    }
+  }
+
   if (has_admin_area_2) {
     # Standard join admin_area_2 to admin_area_2 (survey data is restructured)
+    join_keys <- if (use_iso) c("iso3_code", "admin_area_2", "year") else c("admin_area_1", "admin_area_2", "year")
     data <- hmis_data %>%
-      full_join(survey_data, by = c("admin_area_1", "admin_area_2", "year"))
+      full_join(survey_data, by = join_keys)
   } else {
+    join_keys <- if (use_iso) c("iso3_code", "year") else c("admin_area_1", "year")
+    use_iso_pop <- use_iso && !is.null(population_data) && "iso3_code" %in% names(population_data)
+    join_keys_pop <- if (use_iso_pop) c("iso3_code", "year") else c("admin_area_1", "year")
     data <- hmis_data %>%
-      full_join(survey_data,     by = c("admin_area_1", "year")) %>%
-      full_join(population_data, by = c("admin_area_1", "year"))
+      full_join(survey_data, by = join_keys) %>%
+      { if (!is.null(population_data)) full_join(., population_data, by = join_keys_pop) else . }
+
+    # Backfill admin_area_1 for survey/pop-only rows created by full_join
+    if (use_iso && "admin_area_1" %in% names(data)) {
+      hmis_admin1 <- unique(na.omit(data$admin_area_1))
+      if (length(hmis_admin1) == 1) {
+        data <- data %>% mutate(admin_area_1 = coalesce(admin_area_1, hmis_admin1))
+      }
+    }
   }
-  
+
   indicator_vars <- list(
     anc1      = c("countanc1", "anc1carry"),
     anc4      = c("countanc4", "anc4carry"),
@@ -941,7 +977,8 @@ project_coverage_from_all <- function(ranked_coverage) {
     arrange(year) %>%
     mutate(
       # Find baseline: last survey value before HMIS starts
-      baseline_survey = last(reference_value[is.na(coverage)], default = first(reference_value)),
+      # Use dplyr:: to avoid data.table masking (data.table::last ignores 'default')
+      baseline_survey = dplyr::last(reference_value[is.na(coverage)], default = dplyr::first(reference_value)),
       # Calculate cumulative HMIS deltas
       cumulative_delta = cumsum(coverage_delta),
       # For survey-only years: use reference_value; for HMIS years: project from baseline
@@ -963,10 +1000,10 @@ project_coverage_from_all <- function(ranked_coverage) {
       arrange(year) %>%
       summarise(
         # Find LAST survey year (where reference_value exists but no coverage/HMIS)
-        baseline_year = last(year[!is.na(reference_value) & is.na(coverage)]),
-        baseline_value = last(reference_value[!is.na(reference_value) & is.na(coverage)]),
+        baseline_year = dplyr::last(year[!is.na(reference_value) & is.na(coverage)]),
+        baseline_value = dplyr::last(reference_value[!is.na(reference_value) & is.na(coverage)]),
         # Find FIRST HMIS year (where coverage exists)
-        first_hmis_year = first(year[!is.na(coverage)]),
+        first_hmis_year = dplyr::first(year[!is.na(coverage)]),
         .groups = "drop"
       )
 
@@ -1014,11 +1051,14 @@ project_coverage_from_all <- function(ranked_coverage) {
 #Part 6 - prepare outputs
 prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_wide) {
   has_admin_area_2 <- "admin_area_2" %in% names(projected_data)
-  
+  use_iso <- "iso3_code" %in% names(projected_data) && "iso3_code" %in% names(raw_survey_wide)
+
+  # Use iso3_code instead of admin_area_1 for joins when available
+  geo_key <- if (use_iso) "iso3_code" else "admin_area_1"
   join_keys <- if (has_admin_area_2) {
-    c("admin_area_1", "admin_area_2", "year", "indicator_common_id")
+    c(geo_key, "admin_area_2", "year", "indicator_common_id")
   } else {
-    c("admin_area_1", "year", "indicator_common_id")
+    c(geo_key, "year", "indicator_common_id")
   }
   
   raw_survey_long <- raw_survey_wide %>%
@@ -1061,7 +1101,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   # Filter projected_data to only keep valid denominator-indicator pairs
   valid_denominator_map <- projected_data %>%
     select(
-      admin_area_1,
+      any_of(c("iso3_code", "admin_area_1")),
       admin_area_2 = if (has_admin_area_2) "admin_area_2" else NULL,
       indicator_common_id,
       denominator
@@ -1075,10 +1115,8 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   expansion_grid <- min_years %>%
     inner_join(valid_denominator_map, by = setdiff(join_keys, "year")) %>%
-    rowwise() %>%
-    mutate(year = list(seq.int(min_year, max_year))) %>%
+    mutate(year = purrr::map(min_year, ~ seq.int(.x, max_year))) %>%
     unnest(year) %>%
-    ungroup() %>%
     select(-min_year)
   
   survey_expanded <- left_join(
@@ -1123,6 +1161,7 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   
   combined <- combined %>%
     transmute(
+      across(any_of("iso3_code")),
       admin_area_1,
       admin_area_2,
       year,
@@ -1134,9 +1173,10 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
       rank,
       source_type
     )
-  
+
   combined <- combined %>%
     select(
+      any_of("iso3_code"),
       admin_area_1,
       admin_area_2,
       indicator_common_id,
@@ -1243,14 +1283,14 @@ if (nrow(national_denominator_mapping) > 0 && "indicator_common_id" %in% names(n
 if (nrow(combined_national) == 0 || !all(c("admin_area_1", "indicator_common_id") %in% names(combined_national))) {
   warning("Combined national data is empty or malformed - skipping main export")
   main_export <- data.frame()
-} else if (nrow(national_denominator_mapping) == 0 || !all(c("admin_area_1", "indicator_common_id", "best_denom") %in% names(national_denominator_mapping))) {
+} else if (nrow(national_denominator_mapping) == 0 || !all(c("indicator_common_id", "best_denom") %in% names(national_denominator_mapping))) {
   warning("Denominator mapping is empty or malformed - skipping main export")
   main_export <- data.frame()
 } else {
   main_export <- combined_national %>%
     inner_join(
-      national_denominator_mapping %>% select(admin_area_1, indicator_common_id, best_denom),
-      by = c("admin_area_1", "indicator_common_id")
+      national_denominator_mapping %>% select(indicator_common_id, best_denom),
+      by = "indicator_common_id"
     ) %>%
     filter(denominator == best_denom) %>%
     select(admin_area_1, indicator_common_id, year, denominator,
@@ -1435,6 +1475,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     hmis_indicators_admin2 <- sub("^count", "", grep("^count", names(hmis_processed_admin2$annual_hmis), value = TRUE))
     survey_processed_admin2 <- tryCatch({
       process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
+                          hmis_iso3 = hmis_processed_admin2$hmis_iso3,
                           national_reference = survey_processed_national$carried,
                           hmis_indicators = hmis_indicators_admin2)
     }, error = function(e) {
@@ -1503,6 +1544,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         ) %>%
         filter(!is.na(selected_denom)) %>%
         filter(denominator == selected_denom) %>%
+        filter(!is.na(coverage)) %>%
         select(admin_area_2, indicator_common_id, year, coverage) %>%
         rename(coverage_cov = coverage)
 
@@ -1577,6 +1619,9 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         select(-admin_area_2) %>%
         rename(admin_area_2 = admin_area_3)
 
+      # Capture valid admin_area_3 names (now renamed to admin_area_2) for filtering exports
+      valid_admin3_areas <- unique(hmis_admin3$admin_area_2)
+
       if (nrow(hmis_admin3) > 0) {
         # Run pipeline up to coverage evaluation (skip projection)
         hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
@@ -1593,6 +1638,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         hmis_indicators_admin3 <- sub("^count", "", grep("^count", names(hmis_processed_admin3$annual_hmis), value = TRUE))
         survey_processed_admin3 <- tryCatch({
           process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries,
+                              hmis_iso3 = hmis_processed_admin3$hmis_iso3,
                               national_reference = survey_processed_national$carried,
                               hmis_indicators = hmis_indicators_admin3)
         }, error = function(e) {
@@ -1632,6 +1678,8 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
             ) %>%
             filter(!is.na(selected_denom)) %>%
             filter(denominator == selected_denom) %>%
+            filter(!is.na(coverage)) %>%
+            filter(admin_area_2 %in% valid_admin3_areas) %>%
             select(admin_area_2, indicator_common_id, year, coverage) %>%
             rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
 
@@ -1696,12 +1744,12 @@ message("✓ Step 6/6: Saving output files")
 
 # Write national CSV
 message("  → Saving national results...")
-write.csv(combined_national_export_fixed, "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(combined_national_export_fixed %>% select(-any_of("iso3_code")), "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
 message("✓ Saved national results: M4_coverage_estimation.csv")
 
 # Best denominator summary
 message("  → Saving denominator summary...")
-write.csv(best_denom_summary, "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
+write.csv(best_denom_summary %>% select(-any_of("iso3_code")), "M4_selected_denominator_per_indicator.csv", row.names = FALSE)
 message("✓ Saved denominator summary: M4_selected_denominator_per_indicator.csv")
 
 # Write admin_area_2 CSV
@@ -1709,7 +1757,7 @@ message("  → Saving subnational results...")
 if (exists("combined_admin2_export") &&
     is.data.frame(combined_admin2_export) &&
     nrow(combined_admin2_export) > 0) {
-  write.csv(combined_admin2_export, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(combined_admin2_export %>% select(-any_of("iso3_code")), "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_2 results: ", nrow(combined_admin2_export), " rows")
 } else {
   # Create empty file
@@ -1723,7 +1771,7 @@ if (exists("combined_admin2_export") &&
 if (exists("combined_admin3_export") &&
     is.data.frame(combined_admin3_export) &&
     nrow(combined_admin3_export) > 0) {
-  write.csv(combined_admin3_export, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(combined_admin3_export %>% select(-any_of("iso3_code")), "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_3 results: ", nrow(combined_admin3_export), " rows")
 } else {
   # Create empty file
