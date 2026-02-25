@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Feb 24
+# Last edit: 2026 Feb 25
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -1238,24 +1238,33 @@ combined_national <- prepare_combined_coverage_from_projected(
   raw_survey_wide = survey_processed_national$raw
 )
 
-# 7 - detect the best and second_best denominators per indicator
+# 7 - detect the best and second_best denominators per TARGET POPULATION GROUP
+# Pool squared errors across all indicators in the same group (e.g., penta1+penta2+penta3 → dpt)
+# to ensure they all use the SAME denominator. This prevents inconsistencies like penta1 using
+# ddelivery_dpt while penta3 uses dpenta1_dpt — they target the same population.
 # Logic: Prefer independent denominators, but allow reference_based as fallback if no independent options exist
-# NEW: Also store second_best for subnational fallback when best is national-only
-ranked_denom_per_indicator <- national_coverage_eval$full_ranking %>%
-  group_by(admin_area_1, indicator_common_id, denominator) %>%
+# Also store second_best for subnational fallback when best is national-only
+
+# Build indicator → group lookup from the data
+indicator_group_lookup <- national_coverage_eval$full_ranking %>%
+  distinct(denominator_type, indicator_common_id)
+
+ranked_denom_per_group <- national_coverage_eval$full_ranking %>%
+  filter(!is.na(squared_error)) %>%
+  group_by(admin_area_1, denominator_type, denominator) %>%
   summarise(total_error = sum(squared_error, na.rm = TRUE),
             source_type = first(source_type),
             .groups = "drop") %>%
-  group_by(admin_area_1, indicator_common_id) %>%
+  group_by(admin_area_1, denominator_type) %>%
   mutate(is_reference_based = source_type == "reference_based") %>%
   arrange(is_reference_based, total_error, .by_group = TRUE) %>%
   mutate(rank = row_number()) %>%
   ungroup()
 
-# Extract best and second_best denominators
-national_denominator_mapping <- ranked_denom_per_indicator %>%
+# Extract best and second_best per target population group
+group_mapping <- ranked_denom_per_group %>%
   filter(rank <= 2) %>%
-  group_by(admin_area_1, indicator_common_id) %>%
+  group_by(admin_area_1, denominator_type) %>%
   summarise(
     best_denom = first(denominator),
     second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
@@ -1264,13 +1273,19 @@ national_denominator_mapping <- ranked_denom_per_indicator %>%
     .groups = "drop"
   )
 
+# Expand group-level mapping back to per-indicator for downstream compatibility
+national_denominator_mapping <- group_mapping %>%
+  inner_join(indicator_group_lookup, by = "denominator_type") %>%
+  select(admin_area_1, indicator_common_id, denominator_type,
+         best_denom, second_best_denom, best_is_national_only, second_is_national_only)
+
 # Clean print to console
-message("Selected denominator per indicator:")
-if (nrow(national_denominator_mapping) > 0 && "indicator_common_id" %in% names(national_denominator_mapping)) {
-  national_denominator_mapping %>%
-    arrange(indicator_common_id) %>%
-    mutate(msg = sprintf("  - %s → %s (second_best: %s)",
-                         indicator_common_id,
+message("Selected denominator per population group:")
+if (nrow(group_mapping) > 0) {
+  group_mapping %>%
+    arrange(denominator_type) %>%
+    mutate(msg = sprintf("  - [%s] → %s (second_best: %s)",
+                         denominator_type,
                          best_denom,
                          ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
     pull(msg) %>%

@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOM"
+COUNTRY_ISO3 <- "ZMB"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Feb 19
+# Last edit: 2026 Feb 25
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1133,36 +1133,42 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     )
     # NOTE: Don't filter out NAs here - we need all denominators for ranking
 
-  # Step 1: Select best and second_best denominators for each indicator (SAME across all regions within country)
-  # Logic: 1) Prefer independent (non-reference, non-UNWPP) with lowest error
-  #        2) Fallback to reference-based only if no independent options exist
-  #        3) UNWPP denominators are EXCLUDED from "best" selection
-  #        4) Exception: UNWPP used as last resort if no other denominators exist
-  # NOTE: Group by country + indicator ONLY (not by region) to ensure consistency
-  # NEW: Store both best and second_best for subnational fallback when best is national-only
+  # Step 1: Select best and second_best denominators per TARGET POPULATION GROUP
+  # (not per indicator) to ensure all indicators targeting the same population
+  # (e.g., penta1, penta2, penta3 → dpt group) use the SAME denominator.
+  # Logic: 1) Pool squared errors across all indicators in the group
+  #        2) Prefer independent (non-reference, non-UNWPP) with lowest pooled error
+  #        3) Fallback to reference-based only if no independent options exist
+  #        4) UNWPP denominators are EXCLUDED from "best" selection (except as last resort)
+  # NOTE: Group by country + target_population ONLY (not by region or indicator)
+
+  # Build indicator → target_population lookup from the data itself
+  indicator_group_lookup <- coverage_with_reference %>%
+    distinct(target_population, indicator_common_id)
 
   # Try to select best and second_best denominators excluding UNWPP
+  # Pool squared errors across ALL indicators in the same target_population group
   ranked_denominators_no_unwpp <- coverage_with_reference %>%
-    filter(!is.na(squared_error)) %>%  # Only consider denominators with survey comparisons
-    filter(source_type != "unwpp_based") %>%  # EXCLUDE UNWPP from best selection
-    group_by(across(all_of(country_only_keys)), indicator_common_id, denominator) %>%
+    filter(!is.na(squared_error)) %>%
+    filter(source_type != "unwpp_based") %>%
+    group_by(across(all_of(country_only_keys)), target_population, denominator) %>%
     summarise(total_error = sum(squared_error, na.rm = TRUE),
               source_type = first(source_type),
               .groups = "drop") %>%
-    group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
+    group_by(across(all_of(country_only_keys)), target_population) %>%
     mutate(is_reference_based = source_type == "reference_based") %>%
     arrange(
       is_reference_based,    # FALSE (independent) comes first, TRUE (reference) comes last
       total_error,           # Among each type, pick lowest error
       .by_group = TRUE
     ) %>%
-    mutate(rank = row_number()) %>%  # Rank all denominators
+    mutate(rank = row_number()) %>%
     ungroup()
 
-  # Extract best and second_best
-  best_denominators_no_unwpp <- ranked_denominators_no_unwpp %>%
+  # Extract best and second_best per target_population group
+  best_by_group_no_unwpp <- ranked_denominators_no_unwpp %>%
     filter(rank <= 2) %>%
-    group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
+    group_by(across(all_of(country_only_keys)), target_population) %>%
     summarise(
       best_denom = first(denominator),
       second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
@@ -1171,27 +1177,27 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
       .groups = "drop"
     )
 
-  # Fallback: if no non-UNWPP denominators exist for some indicators, include UNWPP as last resort
-  missing_indicators <- coverage_with_reference %>%
+  # Fallback: if no non-UNWPP denominators exist for some groups, include UNWPP as last resort
+  missing_groups <- coverage_with_reference %>%
     filter(!is.na(squared_error)) %>%
-    distinct(across(all_of(country_only_keys)), indicator_common_id) %>%
-    anti_join(best_denominators_no_unwpp, by = c(country_only_keys, "indicator_common_id"))
+    distinct(across(all_of(country_only_keys)), target_population) %>%
+    anti_join(best_by_group_no_unwpp, by = c(country_only_keys, "target_population"))
 
-  if (nrow(missing_indicators) > 0) {
-    warning("Some indicators only have UNWPP denominators available. Including UNWPP as fallback for these cases.")
+  if (nrow(missing_groups) > 0) {
+    warning("Some population groups only have UNWPP denominators available. Including UNWPP as fallback.")
 
-    unwpp_fallbacks <- coverage_with_reference %>%
+    unwpp_group_fallbacks <- coverage_with_reference %>%
       filter(!is.na(squared_error)) %>%
-      semi_join(missing_indicators, by = c(country_only_keys, "indicator_common_id")) %>%
+      semi_join(missing_groups, by = c(country_only_keys, "target_population")) %>%
       filter(source_type == "unwpp_based") %>%
-      group_by(across(all_of(country_only_keys)), indicator_common_id, denominator) %>%
+      group_by(across(all_of(country_only_keys)), target_population, denominator) %>%
       summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
-      group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
+      group_by(across(all_of(country_only_keys)), target_population) %>%
       arrange(total_error, .by_group = TRUE) %>%
       mutate(rank = row_number()) %>%
       ungroup() %>%
       filter(rank <= 2) %>%
-      group_by(across(all_of(country_only_keys)), indicator_common_id) %>%
+      group_by(across(all_of(country_only_keys)), target_population) %>%
       summarise(
         best_denom = first(denominator),
         second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
@@ -1200,12 +1206,18 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
         .groups = "drop"
       )
 
-    denominator_mapping <- bind_rows(best_denominators_no_unwpp, unwpp_fallbacks)
+    group_mapping <- bind_rows(best_by_group_no_unwpp, unwpp_group_fallbacks)
   } else {
-    denominator_mapping <- best_denominators_no_unwpp
+    group_mapping <- best_by_group_no_unwpp
   }
 
-  # Print selected denominators
+  # Expand group-level mapping back to per-indicator for downstream compatibility
+  denominator_mapping <- group_mapping %>%
+    inner_join(indicator_group_lookup, by = "target_population") %>%
+    select(all_of(country_only_keys), indicator_common_id, target_population,
+           best_denom, second_best_denom, best_is_national_only, second_is_national_only)
+
+  # Print selected denominators (grouped by target population)
   level_name <- if ("admin_area_3" %in% geo_keys) {
     "admin_area_3"
   } else if ("admin_area_2" %in% geo_keys) {
@@ -1218,11 +1230,11 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     "national"
   }
 
-  message(sprintf("  → Selected denominators for %s:", level_name))
-  denominator_mapping %>%
-    arrange(indicator_common_id) %>%
-    mutate(msg = sprintf("     - %s → %s (second_best: %s)",
-                         indicator_common_id,
+  message(sprintf("  → Selected denominators for %s (by population group):", level_name))
+  group_mapping %>%
+    arrange(target_population) %>%
+    mutate(msg = sprintf("     - [%s] → %s (second_best: %s)",
+                         target_population,
                          best_denom,
                          ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
     pull(msg) %>%
