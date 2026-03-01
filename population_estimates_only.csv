@@ -1320,3 +1320,5 @@ Burkina Faso,NATIONAL,2025,Female population of reproductive age (15-49 years),w
 Somaliland,NATIONAL,2020,DM_POP_TOT,poptot,population_estimate,4300000,SLHDS,Somaliland CSD PESS 2014 projection,household,Somaliland,SO,SOMALILAND
 Somaliland,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,159100,SLHDS,Estimated from CBR 37/1000,household,Somaliland,SO,SOMALILAND
 Somaliland,NATIONAL,2020,Crude birth rate,crudebr,rate,37,SLHDS,Somaliland CSD SLHDS 2020,modeled,Somaliland,SO,SOMALILAND
+Central African Republic,NATIONAL,1994,FE_FRTR_W_CBR,crudebr,rate,38.3,DHS National,CF1994DHS,household,Central African Republic,CF,CAF
+Central African Republic,NATIONAL,1994,FE_FRTY_W_NPG,womenrepage,other,5884,DHS National,CF1994DHS,household,Central African Republic,CF,CAF
