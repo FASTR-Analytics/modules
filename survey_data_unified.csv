@@ -19491,3 +19491,21 @@ Central African Republic,NATIONAL,1994,CH_VACC_C_OP2,polio2,percent,0.6,DHS Nati
 Central African Republic,NATIONAL,1994,CH_VACC_C_OP3,polio3,percent,0.457,DHS National,CF1994DHS,household,Central African Republic,CF,CAF
 Central African Republic,NATIONAL,1994,CH_VACC_C_MSL,measles1,percent,0.524,DHS National,CF1994DHS,household,Central African Republic,CF,CAF
 Central African Republic,NATIONAL,1994,CH_VACC_C_BAS,fully_immunized,percent,0.366,DHS National,CF1994DHS,household,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2020,Infant mortality rate (IMR),imr,rate,80.72404,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2021,Infant mortality rate (IMR),imr,rate,98.05193,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2022,Infant mortality rate (IMR),imr,rate,184.47381,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2023,Infant mortality rate (IMR),imr,rate,68.49783,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,67.10551,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2025,Infant mortality rate (IMR),imr,rate,65.9397,UNWPP,UNWPP - Infant mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2020,Under-five mortality rate (U5MR),u5mr,rate,122.114304841242,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2021,Under-five mortality rate (U5MR),u5mr,rate,169.94440942181,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2022,Under-five mortality rate (U5MR),u5mr,rate,379.885600930573,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2023,Under-five mortality rate (U5MR),u5mr,rate,94.5009054272095,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2024,Under-five mortality rate (U5MR),u5mr,rate,92.6197775352953,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2025,Under-five mortality rate (U5MR),u5mr,rate,91.14663289652799,UNWPP,UNWPP - Under-five mortality rate,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2020,CP Modern,mcpr,percent,0.147,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2021,CP Modern,mcpr,percent,0.152,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2022,CP Modern,mcpr,percent,0.157,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2023,CP Modern,mcpr,percent,0.162,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2024,CP Modern,mcpr,percent,0.16699999999999998,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
+République centrafricaine,NATIONAL,2025,CP Modern,mcpr,percent,0.172,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Central African Republic,CF,CAF
