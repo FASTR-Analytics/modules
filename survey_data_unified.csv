@@ -19569,3 +19569,13 @@ République centrafricaine,RS 3,1994,CH_VACC_C_BAS,fully_immunized,percent,0.247
 République centrafricaine,RS 4,1994,CH_VACC_C_BAS,fully_immunized,percent,0.368,DHS Sub-national,CF1994DHS,household,Central African Republic,CF,CAF
 République centrafricaine,RS 5,1994,CH_VACC_C_BAS,fully_immunized,percent,0.35100000000000003,DHS Sub-national,CF1994DHS,household,Central African Republic,CF,CAF
 République centrafricaine,RS 7,1994,CH_VACC_C_BAS,fully_immunized,percent,0.579,DHS Sub-national,CF1994DHS,household,Central African Republic,CF,CAF
+République centrafricaine,RS 6,1994,FE_FRTR_W_TFR,total_fertility_rate,rate,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CM_ECMR_C_NNR,nmr,rate,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,RH_ANCP_W_SKP,anc1,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,RH_ANCN_W_N4P,anc4,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,RH_DELP_C_DHF,delivery,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CH_VACC_C_BCG,bcg,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CH_VACC_C_OP2,polio2,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CH_VACC_C_OP3,polio3,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CH_VACC_C_MSL,measles1,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
+République centrafricaine,RS 6,1994,CH_VACC_C_BAS,fully_immunized,percent,NA,DHS Sub-national,CF1994DHS,household,République centrafricaine,CF,CAF
