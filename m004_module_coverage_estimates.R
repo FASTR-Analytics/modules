@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 03
+# Last edit: 2026 Mar 04
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -931,7 +931,9 @@ evaluate_coverage_by_denominator <- function(data) {
     denominator_long,
     by = c(geo_keys, "indicator_common_id")
   ) %>%
-    mutate(coverage = numerator / denominator_value)
+    filter(!is.na(denominator_value), denominator_value > 0) %>%
+    mutate(coverage = if_else(numerator == 0, NA_real_, numerator / denominator_value)) %>%
+    filter(!is.na(coverage), !is.infinite(coverage))
 
   # Reference values
   carry_cols <- grep("carry$", names(data), value = TRUE)
@@ -1359,10 +1361,9 @@ ranked_denom_per_group_no_unwpp <- national_coverage_eval$full_ranking %>%
   filter(source_type != "unwpp_based") %>%
   group_by(admin_area_1, denominator_type, denominator) %>%
   summarise(total_error = sum(squared_error, na.rm = TRUE),
-            source_type = first(source_type),
+            is_reference_based = all(source_type == "reference_based"),
             .groups = "drop") %>%
   group_by(admin_area_1, denominator_type) %>%
-  mutate(is_reference_based = source_type == "reference_based") %>%
   arrange(is_reference_based, total_error, .by_group = TRUE) %>%
   mutate(rank = row_number()) %>%
   ungroup()
@@ -1696,11 +1697,18 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       message("  → Applying national denominator selection to admin_area_2...")
 
       # Apply national mapping with fallback logic
-      # Build subnational source lookup from raw survey data
+      # Build subnational source lookup from raw survey data (most recent source per region × indicator)
       admin2_source_lookup <- if (!is.null(survey_processed_admin2$raw_long) && nrow(survey_processed_admin2$raw_long) > 0) {
         survey_processed_admin2$raw_long %>%
           select(admin_area_2, year, indicator_common_id, survey_source = source, survey_source_detail = source_detail) %>%
-          distinct()
+          distinct() %>%
+          group_by(admin_area_2, indicator_common_id) %>%
+          arrange(desc(year)) %>%
+          summarise(
+            survey_source = first(survey_source),
+            survey_source_detail = first(survey_source_detail),
+            .groups = "drop"
+          )
       } else NULL
 
       combined_admin2_export <- coverage_eval_admin2$full_ranking %>%
@@ -1723,10 +1731,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         select(admin_area_2, indicator_common_id, year, coverage) %>%
         rename(coverage_cov = coverage)
 
-      # Join survey source info
+      # Join survey source info (by region × indicator, not year — survey years don't overlap HMIS years)
       if (!is.null(admin2_source_lookup)) {
         combined_admin2_export <- combined_admin2_export %>%
-          left_join(admin2_source_lookup, by = c("admin_area_2", "year", "indicator_common_id"))
+          left_join(admin2_source_lookup, by = c("admin_area_2", "indicator_common_id"))
       } else {
         combined_admin2_export$survey_source <- NA_character_
         combined_admin2_export$survey_source_detail <- NA_character_
@@ -1845,11 +1853,18 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           # Apply national denominator mapping with fallback logic for national-only denominators
           message("  → Applying national denominator selection to admin_area_3...")
 
-          # Build subnational source lookup from raw survey data
+          # Build subnational source lookup from raw survey data (most recent source per region × indicator)
           admin3_source_lookup <- if (!is.null(survey_processed_admin3$raw_long) && nrow(survey_processed_admin3$raw_long) > 0) {
             survey_processed_admin3$raw_long %>%
               select(admin_area_2, year, indicator_common_id, survey_source = source, survey_source_detail = source_detail) %>%
-              distinct()
+              distinct() %>%
+              group_by(admin_area_2, indicator_common_id) %>%
+              arrange(desc(year)) %>%
+              summarise(
+                survey_source = first(survey_source),
+                survey_source_detail = first(survey_source_detail),
+                .groups = "drop"
+              )
           } else NULL
 
           # Apply national mapping with fallback logic
@@ -1874,11 +1889,11 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
             select(admin_area_2, indicator_common_id, year, coverage) %>%
             rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
 
-          # Join survey source info (admin_area_2 in raw_long maps to admin_area_3 here)
+          # Join survey source info (by region × indicator, not year)
           if (!is.null(admin3_source_lookup)) {
             combined_admin3_export <- combined_admin3_export %>%
               left_join(admin3_source_lookup %>% rename(admin_area_3 = admin_area_2),
-                        by = c("admin_area_3", "year", "indicator_common_id"))
+                        by = c("admin_area_3", "indicator_common_id"))
           } else {
             combined_admin3_export$survey_source <- NA_character_
             combined_admin3_export$survey_source_detail <- NA_character_

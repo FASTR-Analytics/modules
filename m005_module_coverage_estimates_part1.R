@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 03
+# Last edit: 2026 Mar 04
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1153,12 +1153,11 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     filter(source_type != "unwpp_based") %>%
     group_by(across(all_of(country_only_keys)), target_population, denominator) %>%
     summarise(total_error = sum(squared_error, na.rm = TRUE),
-              source_type = first(source_type),
+              is_reference_based = all(source_type == "reference_based"),
               .groups = "drop") %>%
     group_by(across(all_of(country_only_keys)), target_population) %>%
-    mutate(is_reference_based = source_type == "reference_based") %>%
     arrange(
-      is_reference_based,    # FALSE (independent) comes first, TRUE (reference) comes last
+      is_reference_based,    # FALSE (independent/mixed) comes first, TRUE (fully reference) comes last
       total_error,           # Among each type, pick lowest error
       .by_group = TRUE
     ) %>%
