@@ -1360,10 +1360,12 @@ ranked_denom_per_group_no_unwpp <- national_coverage_eval$full_ranking %>%
   filter(!is.na(squared_error)) %>%
   filter(source_type != "unwpp_based") %>%
   group_by(admin_area_1, denominator_type, denominator) %>%
+  arrange(indicator_common_id) %>%
   summarise(total_error = sum(squared_error, na.rm = TRUE),
-            is_reference_based = all(source_type == "reference_based"),
+            source_type = first(source_type),
             .groups = "drop") %>%
   group_by(admin_area_1, denominator_type) %>%
+  mutate(is_reference_based = source_type == "reference_based") %>%
   arrange(is_reference_based, total_error, .by_group = TRUE) %>%
   mutate(rank = row_number()) %>%
   ungroup()
