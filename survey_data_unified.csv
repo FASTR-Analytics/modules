@@ -19653,3 +19653,10 @@ République centrafricaine,NATIONAL,2020,CME_MRY0T4,imr,rate,122.62268965196,UN 
 République centrafricaine,NATIONAL,2021,CME_MRY0T4,imr,rate,171.252412987167,UN IGME,UN_IGME,modeled,Central African Republic,CAF,NA
 République centrafricaine,NATIONAL,2022,CME_MRY0T4,imr,rate,387.442500174647,UN IGME,UN_IGME,modeled,Central African Republic,CAF,NA
 République centrafricaine,NATIONAL,2023,CME_MRY0T4,imr,rate,92.1958673827785,UN IGME,UN_IGME,modeled,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2010,MNCH_ANC1,anc1,percent,0.682,MICS,Multiple Indicator Cluster Survey 2010,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2019,MNCH_ANC1,anc1,percent,0.518,MICS,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2010,MNCH_ANC4,anc4,percent,0.381,MICS,Multiple Indicator Cluster Survey 2010,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2019,MNCH_ANC4,anc4,percent,0.414,MICS,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2010,MNCH_INSTDEL,delivery,percent,0.525,MICS,Multiple Indicator Cluster Survey 2010,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2019,MNCH_INSTDEL,delivery,percent,0.583,MICS,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CAF,NA
+République centrafricaine,NATIONAL,2019,MNCH_PNCMOM,pnc1,percent,0.574,MICS,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CAF,NA
