@@ -6,7 +6,7 @@ SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "c
 PREGNANCY_LOSS_RATE <- 0.03 
 TWIN_RATE <- 0.015       
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.041      #Default = 0.03
+P1_NMR <- 0.039      #Default = 0.03
 P2_PNMR <- 0.022
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Feb 25
+# Last edit: 2026 Mar 03
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -65,6 +65,7 @@ if ("iso3_code" %in% names(survey_data_unified)) {
       indicator_common_id = character(),
       survey_value = numeric(),
       source = character(),
+      source_detail = character(),
       stringsAsFactors = FALSE
     )
   } else {
@@ -322,23 +323,52 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
             " (priority: DHS > other > MICS)")
   }
 
-  raw_survey_values <- survey_filtered %>%
-    filter(source %in% source_priority) %>%
+  # Ensure source_detail exists (may be absent in older survey CSVs)
+  if (!"source_detail" %in% names(survey_filtered)) survey_filtered$source_detail <- NA_character_
+
+  # Pick best source per (geo, year, indicator) — keep source + source_detail
+  raw_pick_long <- survey_filtered %>%
+    filter(source %in% source_priority,
+           year >= min_year, year <= max_year) %>%
+    group_by(admin_area_1, admin_area_2, year, indicator_common_id, source) %>%
+    summarise(
+      survey_value  = mean(survey_value, na.rm = TRUE),
+      source_detail = first(source_detail[!is.na(source_detail)], default = NA_character_),
+      .groups = "drop"
+    ) %>%
     group_by(admin_area_1, admin_area_2, year, indicator_common_id) %>%
     arrange(factor(source, levels = source_priority)) %>%
-    summarise(survey_value = first(survey_value), .groups = "drop") %>%
-    filter(year >= min_year & year <= max_year) %>%
-    pivot_wider(names_from = indicator_common_id,
-                values_from = survey_value,
+    slice(1) %>%
+    ungroup() %>%
+    drop_na(survey_value)
+
+  # Wide tables: values + sources + details (matching m005 pattern)
+  raw_vals_wide <- raw_pick_long %>%
+    select(admin_area_1, admin_area_2, year, indicator_common_id, survey_value) %>%
+    pivot_wider(names_from = indicator_common_id, values_from = survey_value,
                 names_glue = "rawsurvey_{indicator_common_id}")
-  
+
+  raw_srcs_wide <- raw_pick_long %>%
+    select(admin_area_1, admin_area_2, year, indicator_common_id, source) %>%
+    pivot_wider(names_from = indicator_common_id, values_from = source,
+                names_glue = "rawsource_{indicator_common_id}")
+
+  raw_detail_wide <- raw_pick_long %>%
+    select(admin_area_1, admin_area_2, year, indicator_common_id, source_detail) %>%
+    pivot_wider(names_from = indicator_common_id, values_from = source_detail,
+                names_glue = "rawdetail_{indicator_common_id}")
+
+  raw_survey_values <- raw_vals_wide %>%
+    left_join(raw_srcs_wide,   by = c("admin_area_1", "admin_area_2", "year")) %>%
+    left_join(raw_detail_wide, by = c("admin_area_1", "admin_area_2", "year"))
+
   full_years <- seq(min_year, max_year)
   group_keys <- if (is_national) {
     c("admin_area_1", "indicator_common_id", "source")
   } else {
     c("admin_area_1", "admin_area_2", "indicator_common_id", "source")
   }
-  
+
   survey_extended <- survey_filtered %>%
     filter(year %in% full_years) %>%
     group_by(across(all_of(group_keys)), .drop = FALSE) %>%
@@ -391,14 +421,17 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
 
   # Choose most-recent source per year - priority: DHS > other > MICS
   # Updated to handle any source, not just DHS and MICS
+  # Also records which source was selected as avgsource_{ind}
   choose_most_recent <- function(df, ind, all_sources) {
     avg_col <- paste0("avgsurvey_", ind)
+    src_col <- paste0("avgsource_", ind)
 
     # Find all available columns for this indicator
     ind_cols <- grep(paste0("^", ind, "_"), names(df), value = TRUE)
 
     if (length(ind_cols) == 0) {
       df[[avg_col]] <- NA_real_
+      df[[src_col]] <- NA_character_
       return(df)
     }
 
@@ -413,9 +446,11 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     # Use first available source in priority order
     if (length(source_order) == 0) {
       df[[avg_col]] <- NA_real_
+      df[[src_col]] <- NA_character_
     } else {
       best_col <- paste0(ind, "_", source_order[1])
       df[[avg_col]] <- as.numeric(df[[best_col]])
+      df[[src_col]] <- ifelse(!is.na(df[[avg_col]]), source_order[1], NA_character_)
     }
     df
   }
@@ -439,6 +474,12 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     carry_col <- paste0(ind, "carry")
     if (avg_col %in% names(survey_carried)) {
       survey_carried[[carry_col]] <- survey_carried[[avg_col]]
+    }
+    # Also carry forward source attribution
+    src_col <- paste0("avgsource_", ind)
+    carry_src_col <- paste0(ind, "carry_source")
+    if (src_col %in% names(survey_carried)) {
+      survey_carried[[carry_src_col]] <- survey_carried[[src_col]]
     }
   }
 
@@ -488,6 +529,7 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
   if (!is.null(hmis_iso3)) {
     survey_carried    <- survey_carried    %>% mutate(iso3_code = hmis_iso3[1])
     raw_survey_values <- raw_survey_values %>% mutate(iso3_code = hmis_iso3[1])
+    raw_pick_long     <- raw_pick_long     %>% mutate(iso3_code = hmis_iso3[1])
   }
 
   # Efficient fallback: duplicate survey columns if HMIS has indicators not in survey
@@ -506,6 +548,12 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
       if ("rawsurvey_pnc1" %in% names(raw_survey_values)) {
         raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
       }
+      if ("rawsource_pnc1" %in% names(raw_survey_values)) {
+        raw_survey_values$rawsource_pnc1_mother <- raw_survey_values$rawsource_pnc1
+      }
+      if ("rawdetail_pnc1" %in% names(raw_survey_values)) {
+        raw_survey_values$rawdetail_pnc1_mother <- raw_survey_values$rawdetail_pnc1
+      }
     }
 
     # sba fallback from delivery
@@ -522,12 +570,19 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
       if ("rawsurvey_delivery" %in% names(raw_survey_values)) {
         raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery
       }
+      if ("rawsource_delivery" %in% names(raw_survey_values)) {
+        raw_survey_values$rawsource_sba <- raw_survey_values$rawsource_delivery
+      }
+      if ("rawdetail_delivery" %in% names(raw_survey_values)) {
+        raw_survey_values$rawdetail_sba <- raw_survey_values$rawdetail_delivery
+      }
     }
   }
 
   return(list(
-    carried = survey_carried %>% arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
-    raw = raw_survey_values
+    carried  = survey_carried %>% arrange(across(any_of(c("admin_area_1", if (!is_national) "admin_area_2", "year")))),
+    raw      = raw_survey_values,
+    raw_long = raw_pick_long
   ))
 }
 
@@ -638,7 +693,8 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   
   if (all(indicator_vars$livebirth %in% available_vars)) {
     data <- data %>% mutate(
-      dlivebirths_livebirth   = safe_mutate("livebirth", countlivebirth),
+      countlivebirth = ifelse(is.na(countlivebirth), 0, countlivebirth),
+      dlivebirths_livebirth   = safe_mutate("livebirth", countlivebirth / livebirthcarry),
       dlivebirths_pregnancy   = safe_calc(dlivebirths_livebirth * (1 - 0.5 * TWIN_RATE) / ((1 - STILLBIRTH_RATE) * (1 - PREGNANCY_LOSS_RATE))),
       dlivebirths_delivery    = safe_calc(dlivebirths_pregnancy * (1 - PREGNANCY_LOSS_RATE)),
       dlivebirths_birth       = safe_calc(dlivebirths_livebirth / (1 - STILLBIRTH_RATE)),
@@ -1061,7 +1117,8 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     c(geo_key, "year", "indicator_common_id")
   }
   
-  raw_survey_long <- raw_survey_wide %>%
+  # Pivot raw survey values
+  raw_vals_long <- raw_survey_wide %>%
     pivot_longer(
       cols = starts_with("rawsurvey_"),
       names_to = "indicator_common_id",
@@ -1071,6 +1128,47 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
     filter(!is.na(coverage_original_estimate)) %>%
     select(all_of(join_keys), coverage_original_estimate) %>%
     distinct()
+
+  # Pivot raw source labels
+  raw_src_long <- if (any(grepl("^rawsource_", names(raw_survey_wide)))) {
+    raw_survey_wide %>%
+      pivot_longer(
+        cols = starts_with("rawsource_"),
+        names_to = "indicator_common_id",
+        names_prefix = "rawsource_",
+        values_to = "survey_source"
+      ) %>%
+      filter(!is.na(survey_source)) %>%
+      select(all_of(join_keys), survey_source) %>%
+      distinct()
+  } else NULL
+
+  # Pivot raw source detail strings
+  raw_det_long <- if (any(grepl("^rawdetail_", names(raw_survey_wide)))) {
+    raw_survey_wide %>%
+      pivot_longer(
+        cols = starts_with("rawdetail_"),
+        names_to = "indicator_common_id",
+        names_prefix = "rawdetail_",
+        values_to = "survey_source_detail"
+      ) %>%
+      filter(!is.na(survey_source_detail)) %>%
+      select(all_of(join_keys), survey_source_detail) %>%
+      distinct()
+  } else NULL
+
+  # Combine values with source info
+  raw_survey_long <- raw_vals_long
+  if (!is.null(raw_src_long)) {
+    raw_survey_long <- raw_survey_long %>% left_join(raw_src_long, by = join_keys)
+  } else {
+    raw_survey_long$survey_source <- NA_character_
+  }
+  if (!is.null(raw_det_long)) {
+    raw_survey_long <- raw_survey_long %>% left_join(raw_det_long, by = join_keys)
+  } else {
+    raw_survey_long$survey_source_detail <- NA_character_
+  }
   
   min_years <- raw_survey_long %>%
     filter(!is.na(year)) %>%
@@ -1159,6 +1257,10 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
       select(-last_survey_year)
   }
   
+  # Ensure source columns exist even if survey data had none
+  if (!"survey_source" %in% names(combined)) combined$survey_source <- NA_character_
+  if (!"survey_source_detail" %in% names(combined)) combined$survey_source_detail <- NA_character_
+
   combined <- combined %>%
     transmute(
       across(any_of("iso3_code")),
@@ -1168,6 +1270,8 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
       indicator_common_id,
       denominator,
       coverage_original_estimate,
+      survey_source,
+      survey_source_detail,
       coverage_avgsurveyprojection = avgsurveyprojection,
       coverage_cov = coverage,
       rank,
@@ -1249,8 +1353,10 @@ combined_national <- prepare_combined_coverage_from_projected(
 indicator_group_lookup <- national_coverage_eval$full_ranking %>%
   distinct(denominator_type, indicator_common_id)
 
-ranked_denom_per_group <- national_coverage_eval$full_ranking %>%
+# Try to select best and second_best denominators excluding UNWPP
+ranked_denom_per_group_no_unwpp <- national_coverage_eval$full_ranking %>%
   filter(!is.na(squared_error)) %>%
+  filter(source_type != "unwpp_based") %>%
   group_by(admin_area_1, denominator_type, denominator) %>%
   summarise(total_error = sum(squared_error, na.rm = TRUE),
             source_type = first(source_type),
@@ -1261,8 +1367,8 @@ ranked_denom_per_group <- national_coverage_eval$full_ranking %>%
   mutate(rank = row_number()) %>%
   ungroup()
 
-# Extract best and second_best per target population group
-group_mapping <- ranked_denom_per_group %>%
+# Extract best and second_best per target population group (excluding UNWPP)
+best_by_group_no_unwpp <- ranked_denom_per_group_no_unwpp %>%
   filter(rank <= 2) %>%
   group_by(admin_area_1, denominator_type) %>%
   summarise(
@@ -1272,6 +1378,40 @@ group_mapping <- ranked_denom_per_group %>%
     second_is_national_only = if(n() >= 2) identify_national_only_denominators(nth(denominator, 2)) else NA,
     .groups = "drop"
   )
+
+# Fallback: if no non-UNWPP denominators exist for some groups, include UNWPP as last resort
+missing_groups <- national_coverage_eval$full_ranking %>%
+  filter(!is.na(squared_error)) %>%
+  distinct(admin_area_1, denominator_type) %>%
+  anti_join(best_by_group_no_unwpp, by = c("admin_area_1", "denominator_type"))
+
+if (nrow(missing_groups) > 0) {
+  warning("Some population groups only have UNWPP denominators available. Including UNWPP as fallback.")
+
+  unwpp_group_fallbacks <- national_coverage_eval$full_ranking %>%
+    filter(!is.na(squared_error)) %>%
+    semi_join(missing_groups, by = c("admin_area_1", "denominator_type")) %>%
+    filter(source_type == "unwpp_based") %>%
+    group_by(admin_area_1, denominator_type, denominator) %>%
+    summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
+    group_by(admin_area_1, denominator_type) %>%
+    arrange(total_error, .by_group = TRUE) %>%
+    mutate(rank = row_number()) %>%
+    ungroup() %>%
+    filter(rank <= 2) %>%
+    group_by(admin_area_1, denominator_type) %>%
+    summarise(
+      best_denom = first(denominator),
+      second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
+      best_is_national_only = identify_national_only_denominators(first(denominator)),
+      second_is_national_only = if(n() >= 2) identify_national_only_denominators(nth(denominator, 2)) else NA,
+      .groups = "drop"
+    )
+
+  group_mapping <- bind_rows(best_by_group_no_unwpp, unwpp_group_fallbacks)
+} else {
+  group_mapping <- best_by_group_no_unwpp
+}
 
 # Expand group-level mapping back to per-indicator for downstream compatibility
 national_denominator_mapping <- group_mapping %>%
@@ -1309,13 +1449,15 @@ if (nrow(combined_national) == 0 || !all(c("admin_area_1", "indicator_common_id"
     ) %>%
     filter(denominator == best_denom) %>%
     select(admin_area_1, indicator_common_id, year, denominator,
-           coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+           coverage_original_estimate, survey_source, survey_source_detail,
+           coverage_avgsurveyprojection, coverage_cov)
 }
 
 early_survey <- if (nrow(combined_national) > 0) {
   combined_national %>%
     filter(is.na(coverage_cov) & !is.na(coverage_original_estimate)) %>%
-    select(admin_area_1, indicator_common_id, year, coverage_original_estimate) %>%
+    select(admin_area_1, indicator_common_id, year,
+           coverage_original_estimate, survey_source, survey_source_detail) %>%
     distinct()
 } else {
   data.frame()
@@ -1326,7 +1468,8 @@ early_survey <- if (nrow(combined_national) > 0) {
     coverage_cov = NA_real_
   ) %>%
   select(indicator_common_id, year,
-         coverage_original_estimate, coverage_avgsurveyprojection, coverage_cov)
+         coverage_original_estimate, survey_source, survey_source_detail,
+         coverage_avgsurveyprojection, coverage_cov)
 
 combined_national_export <- bind_rows(
   if (nrow(main_export) > 0 && "coverage_cov" %in% names(main_export)) {
@@ -1335,6 +1478,8 @@ combined_national_export <- bind_rows(
       select(indicator_common_id,
              year,
              coverage_original_estimate,
+             survey_source,
+             survey_source_detail,
              coverage_avgsurveyprojection,
              coverage_cov)
   } else {
@@ -1358,6 +1503,8 @@ combined_national_export_fixed <- combined_national_export %>%
   group_by(indicator_common_id, year) %>%
   summarise(
     coverage_original_estimate = first(coverage_original_estimate),
+    survey_source = first(survey_source),
+    survey_source_detail = first(survey_source_detail),
     coverage_avgsurveyprojection = first(coverage_avgsurveyprojection),
     coverage_cov = first(coverage_cov),
     .groups = "drop"
@@ -1426,6 +1573,8 @@ combined_national_export_fixed <- combined_national_export %>%
     indicator_common_id,
     year,
     coverage_original_estimate,
+    survey_source,
+    survey_source_detail,
     coverage_avgsurveyprojection = avgsurveyprojection,
     coverage_cov
   )
@@ -1496,6 +1645,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     }, error = function(e) {
       message("================================================================================")
       warning("⚠️  MISMATCH: HMIS admin_area_2 does not match survey admin_area_2")
+      message("   Actual error: ", e$message)
+      message("   HMIS admin_area_2 regions: ", paste(unique(hmis_admin2$admin_area_2), collapse = ", "))
+      message("   Survey admin_area_2 regions: ", paste(unique(survey_data_subnational$admin_area_2), collapse = ", "))
+      message("================================================================================")
       NULL
     })
 
@@ -1543,6 +1696,13 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       message("  → Applying national denominator selection to admin_area_2...")
 
       # Apply national mapping with fallback logic
+      # Build subnational source lookup from raw survey data
+      admin2_source_lookup <- if (!is.null(survey_processed_admin2$raw_long) && nrow(survey_processed_admin2$raw_long) > 0) {
+        survey_processed_admin2$raw_long %>%
+          select(admin_area_2, year, indicator_common_id, survey_source = source, survey_source_detail = source_detail) %>%
+          distinct()
+      } else NULL
+
       combined_admin2_export <- coverage_eval_admin2$full_ranking %>%
         left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
                                                            best_is_national_only, second_is_national_only),
@@ -1562,6 +1722,15 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         filter(!is.na(coverage)) %>%
         select(admin_area_2, indicator_common_id, year, coverage) %>%
         rename(coverage_cov = coverage)
+
+      # Join survey source info
+      if (!is.null(admin2_source_lookup)) {
+        combined_admin2_export <- combined_admin2_export %>%
+          left_join(admin2_source_lookup, by = c("admin_area_2", "year", "indicator_common_id"))
+      } else {
+        combined_admin2_export$survey_source <- NA_character_
+        combined_admin2_export$survey_source_detail <- NA_character_
+      }
 
       # Print selected denominators for admin_area_2 (from national mapping)
       message("  → Denominators used for admin_area_2 (from national selection):")
@@ -1676,6 +1845,13 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           # Apply national denominator mapping with fallback logic for national-only denominators
           message("  → Applying national denominator selection to admin_area_3...")
 
+          # Build subnational source lookup from raw survey data
+          admin3_source_lookup <- if (!is.null(survey_processed_admin3$raw_long) && nrow(survey_processed_admin3$raw_long) > 0) {
+            survey_processed_admin3$raw_long %>%
+              select(admin_area_2, year, indicator_common_id, survey_source = source, survey_source_detail = source_detail) %>%
+              distinct()
+          } else NULL
+
           # Apply national mapping with fallback logic
           combined_admin3_export <- coverage_eval_admin3$full_ranking %>%
             left_join(national_denominator_mapping %>% select(indicator_common_id, best_denom, second_best_denom,
@@ -1697,6 +1873,16 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
             filter(admin_area_2 %in% valid_admin3_areas) %>%
             select(admin_area_2, indicator_common_id, year, coverage) %>%
             rename(admin_area_3 = admin_area_2, coverage_cov = coverage)
+
+          # Join survey source info (admin_area_2 in raw_long maps to admin_area_3 here)
+          if (!is.null(admin3_source_lookup)) {
+            combined_admin3_export <- combined_admin3_export %>%
+              left_join(admin3_source_lookup %>% rename(admin_area_3 = admin_area_2),
+                        by = c("admin_area_3", "year", "indicator_common_id"))
+          } else {
+            combined_admin3_export$survey_source <- NA_character_
+            combined_admin3_export$survey_source_detail <- NA_character_
+          }
 
           # Print selected denominators for admin_area_3 (from national mapping)
           message("  → Denominators used for admin_area_3 (from national selection):")
@@ -1777,7 +1963,8 @@ if (exists("combined_admin2_export") &&
 } else {
   # Create empty file
   dummy_data_admin2 <- data.frame(admin_area_2 = character(), indicator_common_id = character(),
-                                  year = numeric(), coverage_cov = numeric())
+                                  year = numeric(), coverage_cov = numeric(),
+                                  survey_source = character(), survey_source_detail = character())
   write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
   message("✓ No admin_area_2 results - saved empty file")
 }
@@ -1791,7 +1978,8 @@ if (exists("combined_admin3_export") &&
 } else {
   # Create empty file
   dummy_data_admin3 <- data.frame(admin_area_3 = character(), indicator_common_id = character(),
-                                  year = numeric(), coverage_cov = numeric())
+                                  year = numeric(), coverage_cov = numeric(),
+                                  survey_source = character(), survey_source_detail = character())
   write.csv(dummy_data_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE)
   message("✓ No admin_area_3 results - saved empty file")
 }

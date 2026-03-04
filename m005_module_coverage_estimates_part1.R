@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Feb 25
+# Last edit: 2026 Mar 03
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1339,7 +1339,8 @@ create_combined_results_table <- function(coverage_comparison, survey_raw_df, al
       indicator_common_id,
       denominator_best_or_survey,
       denominator_label,
-      value = survey_value
+      value = survey_value,
+      any_of(c("source", "source_detail"))
     )
 
   # Step 5: Combine all results

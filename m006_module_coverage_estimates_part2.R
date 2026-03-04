@@ -10,7 +10,7 @@ DENOM_FULLIMM <- "best"         # fully_immunized
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Feb 25
+# Last edit: 2026 Mar 03
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -86,6 +86,9 @@ extract_survey_from_combined <- function(combined_df) {
   if ("admin_area_2" %in% names(result)) cols <- c(cols, "admin_area_2")
   if ("admin_area_3" %in% names(result)) cols <- c(cols, "admin_area_3")
   cols <- c(cols, "year", "indicator_common_id", "survey_value")
+  # Include source columns if present (written by m005)
+  if ("source" %in% names(result)) cols <- c(cols, "source")
+  if ("source_detail" %in% names(result)) cols <- c(cols, "source_detail")
 
   result %>% select(all_of(cols))
 }
