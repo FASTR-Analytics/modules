@@ -1962,7 +1962,7 @@ message("✓ Step 6/6: Saving output files")
 
 # Write national CSV
 message("  → Saving national results...")
-write.csv(combined_national_export_fixed %>% select(-any_of("iso3_code")), "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(combined_national_export_fixed %>% select(-any_of(c("iso3_code", "survey_source", "survey_source_detail"))), "M4_coverage_estimation.csv", row.names = FALSE, fileEncoding = "UTF-8")
 message("✓ Saved national results: M4_coverage_estimation.csv")
 
 # Best denominator summary
@@ -1975,13 +1975,12 @@ message("  → Saving subnational results...")
 if (exists("combined_admin2_export") &&
     is.data.frame(combined_admin2_export) &&
     nrow(combined_admin2_export) > 0) {
-  write.csv(combined_admin2_export %>% select(-any_of("iso3_code")), "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(combined_admin2_export %>% select(-any_of(c("iso3_code", "survey_source", "survey_source_detail"))), "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_2 results: ", nrow(combined_admin2_export), " rows")
 } else {
   # Create empty file
   dummy_data_admin2 <- data.frame(admin_area_2 = character(), indicator_common_id = character(),
-                                  year = numeric(), coverage_cov = numeric(),
-                                  survey_source = character(), survey_source_detail = character())
+                                  year = numeric(), coverage_cov = numeric())
   write.csv(dummy_data_admin2, "M4_coverage_estimation_admin_area_2.csv", row.names = FALSE)
   message("✓ No admin_area_2 results - saved empty file")
 }
@@ -1990,13 +1989,12 @@ if (exists("combined_admin2_export") &&
 if (exists("combined_admin3_export") &&
     is.data.frame(combined_admin3_export) &&
     nrow(combined_admin3_export) > 0) {
-  write.csv(combined_admin3_export %>% select(-any_of("iso3_code")), "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(combined_admin3_export %>% select(-any_of(c("iso3_code", "survey_source", "survey_source_detail"))), "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved admin_area_3 results: ", nrow(combined_admin3_export), " rows")
 } else {
   # Create empty file
   dummy_data_admin3 <- data.frame(admin_area_3 = character(), indicator_common_id = character(),
-                                  year = numeric(), coverage_cov = numeric(),
-                                  survey_source = character(), survey_source_detail = character())
+                                  year = numeric(), coverage_cov = numeric())
   write.csv(dummy_data_admin3, "M4_coverage_estimation_admin_area_3.csv", row.names = FALSE)
   message("✓ No admin_area_3 results - saved empty file")
 }

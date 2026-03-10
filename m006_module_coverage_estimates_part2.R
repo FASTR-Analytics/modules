@@ -539,9 +539,7 @@ nat_required_cols <- c(
   "denominator",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 admin2_required_cols <- c(
@@ -552,9 +550,7 @@ admin2_required_cols <- c(
   "denominator",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 admin3_required_cols <- c(
@@ -565,9 +561,7 @@ admin3_required_cols <- c(
   "denominator",
   "coverage_original_estimate",
   "coverage_avgsurveyprojection",
-  "coverage_cov",
-  "survey_raw_source",
-  "survey_raw_source_detail"
+  "coverage_cov"
 )
 
 # ---------------- NATIONAL (no admin_area_2) ----------------
@@ -594,8 +588,6 @@ if (exists("final_national") && is.data.frame(final_national) && nrow(final_nati
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_source = character(),
-    survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
   write.csv(dummy_nat, "M6_coverage_estimation_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
@@ -620,8 +612,6 @@ if (exists("final_admin2") && is.data.frame(final_admin2) && nrow(final_admin2) 
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_source = character(),
-    survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
   write.csv(dummy_a2, "M6_coverage_estimation_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
@@ -641,15 +631,13 @@ if (exists("final_admin3") && is.data.frame(final_admin3) && nrow(final_admin3) 
 } else {
   dummy_a3 <- data.frame(
     admin_area_1 = character(),
-    admin_area_3 = character(),  # Changed from admin_area_2 to admin_area_3
+    admin_area_3 = character(),
     year = integer(),
     indicator_common_id = character(),
     denominator = character(),
     coverage_original_estimate = double(),
     coverage_avgsurveyprojection = double(),
     coverage_cov = double(),
-    survey_raw_source = character(),
-    survey_raw_source_detail = character(),
     stringsAsFactors = FALSE
   )
   write.csv(dummy_a3, "M6_coverage_estimation_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
