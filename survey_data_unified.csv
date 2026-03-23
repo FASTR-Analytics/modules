@@ -19742,3 +19742,288 @@ République centrafricaine,RS 4,2019,CME_MRY0T4,imr,rate,70,MICS Sub-national,Mu
 République centrafricaine,RS 5,2019,CME_MRY0T4,imr,rate,53,MICS Sub-national,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CF,CAF
 République centrafricaine,RS 6,2019,CME_MRY0T4,imr,rate,73,MICS Sub-national,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CF,CAF
 République centrafricaine,RS 7,2019,CME_MRY0T4,imr,rate,38,MICS Sub-national,Multiple Indicator Cluster Survey 2018-2019,household,Central African Republic,CF,CAF
+Mauritanie,Hodh Chargui,2020,FE_FRTR_W_TFR,tfr,rate,6.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,FE_FRTR_W_TFR,tfr,rate,6.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,FE_FRTR_W_TFR,tfr,rate,5.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,FE_FRTR_W_TFR,tfr,rate,6.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,FE_FRTR_W_TFR,tfr,rate,6.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,FE_FRTR_W_TFR,tfr,rate,4.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,FE_FRTR_W_TFR,tfr,rate,4.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,FE_FRTR_W_TFR,tfr,rate,4.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,FE_FRTR_W_TFR,tfr,rate,6.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,FE_FRTR_W_TFR,tfr,rate,6.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,FE_FRTR_W_TFR,tfr,rate,4.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,FE_FRTR_W_TFR,tfr,rate,4.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,FE_FRTR_W_TFR,tfr,rate,3.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,FE_FRTR_W_TFR,tfr,rate,3.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,FE_FRTR_W_CBR,crudebr,rate,39.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,FE_FRTR_W_CBR,crudebr,rate,41.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,FE_FRTR_W_CBR,crudebr,rate,36.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,FE_FRTR_W_CBR,crudebr,rate,36.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,FE_FRTR_W_CBR,crudebr,rate,38.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,FE_FRTR_W_CBR,crudebr,rate,33.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,FE_FRTR_W_CBR,crudebr,rate,31.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,FE_FRTR_W_CBR,crudebr,rate,32.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,FE_FRTR_W_CBR,crudebr,rate,36.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,FE_FRTR_W_CBR,crudebr,rate,42.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,FE_FRTR_W_CBR,crudebr,rate,32.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,FE_FRTR_W_CBR,crudebr,rate,29.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,FE_FRTR_W_CBR,crudebr,rate,29.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,FE_FRTR_W_CBR,crudebr,rate,28.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,FE_FRTY_W_NPG,womenrepage,other,2034.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,FE_FRTY_W_NPG,womenrepage,other,1580.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,FE_FRTY_W_NPG,womenrepage,other,1249.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,FE_FRTY_W_NPG,womenrepage,other,1293.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,FE_FRTY_W_NPG,womenrepage,other,1282.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,FE_FRTY_W_NPG,womenrepage,other,961.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,FE_FRTY_W_NPG,womenrepage,other,298.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,FE_FRTY_W_NPG,womenrepage,other,539.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,FE_FRTY_W_NPG,womenrepage,other,349.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,FE_FRTY_W_NPG,womenrepage,other,1244.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,FE_FRTY_W_NPG,womenrepage,other,273.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,FE_FRTY_W_NPG,womenrepage,other,793.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,FE_FRTY_W_NPG,womenrepage,other,2073.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,FE_FRTY_W_NPG,womenrepage,other,1747.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CM_ECMR_C_NNR,nmr,rate,21.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CM_ECMR_C_NNR,nmr,rate,24.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CM_ECMR_C_NNR,nmr,rate,24.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CM_ECMR_C_NNR,nmr,rate,31.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CM_ECMR_C_NNR,nmr,rate,29.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CM_ECMR_C_NNR,nmr,rate,19.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CM_ECMR_C_NNR,nmr,rate,45.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CM_ECMR_C_NNR,nmr,rate,16.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CM_ECMR_C_NNR,nmr,rate,42.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CM_ECMR_C_NNR,nmr,rate,23.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CM_ECMR_C_NNR,nmr,rate,20.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CM_ECMR_C_NNR,nmr,rate,12.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CM_ECMR_C_NNR,nmr,rate,17.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CM_ECMR_C_NNR,nmr,rate,9.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CM_ECMR_C_IMR,imr,rate,34.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CM_ECMR_C_IMR,imr,rate,35.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CM_ECMR_C_IMR,imr,rate,41.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CM_ECMR_C_IMR,imr,rate,42.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CM_ECMR_C_IMR,imr,rate,36.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CM_ECMR_C_IMR,imr,rate,28.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CM_ECMR_C_IMR,imr,rate,69.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CM_ECMR_C_IMR,imr,rate,31.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CM_ECMR_C_IMR,imr,rate,61.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CM_ECMR_C_IMR,imr,rate,36.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CM_ECMR_C_IMR,imr,rate,38.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CM_ECMR_C_IMR,imr,rate,22.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CM_ECMR_C_IMR,imr,rate,26.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CM_ECMR_C_IMR,imr,rate,13.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,RH_ANCP_W_SKP,anc1,other,58.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,RH_ANCP_W_SKP,anc1,other,76.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,RH_ANCP_W_SKP,anc1,other,84.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,RH_ANCP_W_SKP,anc1,other,94.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,RH_ANCP_W_SKP,anc1,other,85.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,RH_ANCP_W_SKP,anc1,other,96.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,RH_ANCP_W_SKP,anc1,other,80.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,RH_ANCP_W_SKP,anc1,other,98.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,RH_ANCP_W_SKP,anc1,other,78.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,RH_ANCP_W_SKP,anc1,other,86.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,RH_ANCP_W_SKP,anc1,other,96.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,RH_ANCP_W_SKP,anc1,other,98.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,RH_ANCP_W_SKP,anc1,other,97.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,RH_ANCP_W_SKP,anc1,other,96.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,RH_ANCN_W_N4P,anc4,other,19.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,RH_ANCN_W_N4P,anc4,other,32.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,RH_ANCN_W_N4P,anc4,other,44.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,RH_ANCN_W_N4P,anc4,other,40.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,RH_ANCN_W_N4P,anc4,other,48.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,RH_ANCN_W_N4P,anc4,other,51.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,RH_ANCN_W_N4P,anc4,other,18.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,RH_ANCN_W_N4P,anc4,other,70.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,RH_ANCN_W_N4P,anc4,other,33.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,RH_ANCN_W_N4P,anc4,other,40.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,RH_ANCN_W_N4P,anc4,other,27.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,RH_ANCN_W_N4P,anc4,other,53.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,RH_ANCN_W_N4P,anc4,other,42.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,RH_ANCN_W_N4P,anc4,other,42.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,RH_DELP_C_DHF,delivery,other,48.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,RH_DELP_C_DHF,delivery,other,55.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,RH_DELP_C_DHF,delivery,other,64.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,RH_DELP_C_DHF,delivery,other,66.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,RH_DELP_C_DHF,delivery,other,78.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,RH_DELP_C_DHF,delivery,other,88.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,RH_DELP_C_DHF,delivery,other,77.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,RH_DELP_C_DHF,delivery,other,98.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,RH_DELP_C_DHF,delivery,other,65.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,RH_DELP_C_DHF,delivery,other,53.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,RH_DELP_C_DHF,delivery,other,98.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,RH_DELP_C_DHF,delivery,other,98.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,RH_DELP_C_DHF,delivery,other,99.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,RH_DELP_C_DHF,delivery,other,97.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_BCG,bcg,other,76.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_BCG,bcg,other,85.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_BCG,bcg,other,97.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_BCG,bcg,other,86.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_BCG,bcg,other,92.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_BCG,bcg,other,94.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_BCG,bcg,other,94.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_BCG,bcg,other,98.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_BCG,bcg,other,95.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_BCG,bcg,other,90.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_BCG,bcg,other,97.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_BCG,bcg,other,86.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_BCG,bcg,other,93.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_BCG,bcg,other,98.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_PT1,penta1,other,74.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_PT1,penta1,other,85.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_PT1,penta1,other,94.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_PT1,penta1,other,84.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_PT1,penta1,other,91.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_PT1,penta1,other,91.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_PT1,penta1,other,95.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_PT1,penta1,other,98.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_PT1,penta1,other,92.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_PT1,penta1,other,91.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_PT1,penta1,other,92.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_PT1,penta1,other,78.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_PT1,penta1,other,93.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_PT1,penta1,other,88.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_PT2,penta2,other,67.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_PT2,penta2,other,83.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_PT2,penta2,other,87.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_PT2,penta2,other,73.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_PT2,penta2,other,87.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_PT2,penta2,other,86.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_PT2,penta2,other,91.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_PT2,penta2,other,97.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_PT2,penta2,other,82.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_PT2,penta2,other,89.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_PT2,penta2,other,89.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_PT2,penta2,other,73.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_PT2,penta2,other,91.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_PT2,penta2,other,84.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_PT3,penta3,other,44.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_PT3,penta3,other,71.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_PT3,penta3,other,72.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_PT3,penta3,other,67.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_PT3,penta3,other,80.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_PT3,penta3,other,79.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_PT3,penta3,other,81.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_PT3,penta3,other,97.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_PT3,penta3,other,76.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_PT3,penta3,other,83.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_PT3,penta3,other,71.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_PT3,penta3,other,71.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_PT3,penta3,other,86.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_PT3,penta3,other,69.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_OP1,polio1,other,72.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_OP1,polio1,other,80.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_OP1,polio1,other,90.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_OP1,polio1,other,75.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_OP1,polio1,other,89.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_OP1,polio1,other,65.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_OP1,polio1,other,79.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_OP1,polio1,other,96.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_OP1,polio1,other,81.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_OP1,polio1,other,91.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_OP1,polio1,other,93.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_OP1,polio1,other,77.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_OP1,polio1,other,90.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_OP1,polio1,other,88.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_OP2,polio2,other,61.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_OP2,polio2,other,72.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_OP2,polio2,other,80.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_OP2,polio2,other,68.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_OP2,polio2,other,80.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_OP2,polio2,other,59.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_OP2,polio2,other,74.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_OP2,polio2,other,96.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_OP2,polio2,other,72.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_OP2,polio2,other,88.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_OP2,polio2,other,81.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_OP2,polio2,other,71.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_OP2,polio2,other,83.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_OP2,polio2,other,76.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_OP3,polio3,other,37.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_OP3,polio3,other,60.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_OP3,polio3,other,45.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_OP3,polio3,other,47.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_OP3,polio3,other,48.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_OP3,polio3,other,30.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_OP3,polio3,other,61.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_OP3,polio3,other,40.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_OP3,polio3,other,40.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_OP3,polio3,other,63.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_OP3,polio3,other,50.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_OP3,polio3,other,39.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_OP3,polio3,other,58.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_OP3,polio3,other,38.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_MSL,measles1,other,56.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_MSL,measles1,other,66.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_MSL,measles1,other,81.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_MSL,measles1,other,76.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_MSL,measles1,other,82.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_MSL,measles1,other,89.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_MSL,measles1,other,82.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_MSL,measles1,other,94.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_MSL,measles1,other,76.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_MSL,measles1,other,72.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_MSL,measles1,other,88.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_MSL,measles1,other,65.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_MSL,measles1,other,82.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_MSL,measles1,other,74.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_BAS,fully_immunized,other,23.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_BAS,fully_immunized,other,47.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_BAS,fully_immunized,other,38.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_BAS,fully_immunized,other,39.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_BAS,fully_immunized,other,43.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_BAS,fully_immunized,other,25.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_BAS,fully_immunized,other,54.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_BAS,fully_immunized,other,36.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_BAS,fully_immunized,other,29.8,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_BAS,fully_immunized,other,49.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_BAS,fully_immunized,other,42.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_BAS,fully_immunized,other,28.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_BAS,fully_immunized,other,48.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_BAS,fully_immunized,other,27.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_VACC_C_NON,no_immunization,other,18.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_NON,no_immunization,other,10.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_NON,no_immunization,other,2.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,CH_VACC_C_NON,no_immunization,other,11.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,CH_VACC_C_NON,no_immunization,other,5.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,CH_VACC_C_NON,no_immunization,other,3.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,CH_VACC_C_NON,no_immunization,other,3.3,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,CH_VACC_C_NON,no_immunization,other,1.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,CH_VACC_C_NON,no_immunization,other,2.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,CH_VACC_C_NON,no_immunization,other,5.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,CH_VACC_C_NON,no_immunization,percent,0.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_NON,no_immunization,other,13.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_NON,no_immunization,other,3.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,CH_VACC_C_NON,no_immunization,percent,0.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,ML_FEVT_C_ADV,fever_treatment,other,32.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,ML_FEVT_C_ADV,fever_treatment,other,24.1,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,ML_FEVT_C_ADV,fever_treatment,other,36.5,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,ML_FEVT_C_ADV,fever_treatment,other,23.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Brakna,2020,ML_FEVT_C_ADV,fever_treatment,other,46.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,ML_FEVT_C_ADV,fever_treatment,other,44.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Adrar,2020,ML_FEVT_C_ADV,fever_treatment,other,33.9,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Dakhlet Nouadhibou,2020,ML_FEVT_C_ADV,fever_treatment,other,27.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tagant,2020,ML_FEVT_C_ADV,fever_treatment,other,19.2,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,ML_FEVT_C_ADV,fever_treatment,other,14.0,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,ML_FEVT_C_ADV,fever_treatment,other,53.7,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,ML_FEVT_C_ADV,fever_treatment,other,55.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,ML_FEVT_C_ADV,fever_treatment,other,43.4,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,ML_FEVT_C_ADV,fever_treatment,other,37.6,DHS Sub-national,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,FE_FRTR_W_TFR,tfr,rate,5.2,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,FE_FRTR_W_CBR,crudebr,rate,35.5,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,FE_FRTY_W_NPG,womenrepage,other,15714.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CM_ECMR_C_NNR,nmr,rate,22.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CM_ECMR_C_IMR,imr,rate,33.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,RH_ANCP_W_SKP,anc1,other,84.8,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,RH_ANCN_W_N4P,anc4,other,39.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,RH_DELP_C_DHF,delivery,other,71.8,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACS_C_OP1,polio1,other,83.4,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACS_C_OP2,polio2,other,75.5,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACS_C_OP3,polio3,other,48.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_BCG,bcg,other,90.1,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_PT1,penta1,other,87.8,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_PT2,penta2,other,83.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_PT3,penta3,other,72.4,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_MSL,measles1,other,75.0,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_BAS,fully_immunized,other,37.9,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,CH_VACC_C_NON,no_immunization,other,7.3,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2020,ML_FEVT_C_ADV,fever_treatment,other,31.4,DHS National,MR2020DHS,dhs,Mauritanie,MR,MRT
