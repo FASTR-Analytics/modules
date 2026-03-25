@@ -1,4 +1,4 @@
-COUNTRY_ISO3 <- "SOMALILAND"
+COUNTRY_ISO3 <- "ZMB"
 
 SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "count_final_outlier", "count_final_completeness", "count_final_both"
 
@@ -7,7 +7,7 @@ PREGNANCY_LOSS_RATE <- 0.03
 TWIN_RATE <- 0.015       
 STILLBIRTH_RATE <- 0.02
 P1_NMR <- 0.039      #Default = 0.03
-P2_PNMR <- 0.022
+P2_PNMR <- 0.028
 INFANT_MORTALITY_RATE <- 0.063  #Default = 0.05
 
 UNDER5_MORTALITY_RATE <- 0.103
@@ -16,7 +16,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 04
+# Last edit: 2026 Mar 25
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -268,7 +268,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
 process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR,
-                                national_reference = NULL, hmis_indicators = NULL) {
+                                national_reference = NULL) {
 
   # Filter by ISO3 if available, otherwise use admin_area_1
   if (!is.null(hmis_iso3) && "iso3_code" %in% names(survey_data)) {
@@ -483,8 +483,10 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     }
   }
 
-  # If sba reference doesn't exist, use delivery reference as fallback
-  if (!"sbacarry" %in% names(survey_carried) && "deliverycarry" %in% names(survey_carried)) {
+  # If sba reference doesn't exist or is all NA, use delivery reference as fallback
+  sba_carry_missing <- !"sbacarry" %in% names(survey_carried) ||
+    all(is.na(survey_carried$sbacarry))
+  if (sba_carry_missing && "deliverycarry" %in% names(survey_carried)) {
     survey_carried$sbacarry <- survey_carried$deliverycarry
   }
 
@@ -492,7 +494,9 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
   # If no national reference is available, leave as NA (no coverage calculation)
   if (!is_national && !is.null(national_reference)) {
     # Extract national coverage values by year for vaccination indicators
-    for (ind in c("bcg", "penta1", "penta3")) {
+    for (ind in c("anc1","anc4","delivery","sba","bcg","penta1","penta3",
+                  "measles1","measles2","opv1","opv2","opv3","rota1","rota2",
+                  "pnc1","vitaminA","fully_immunized")) {
       carry_col <- paste0(ind, "carry")
       nat_col <- paste0("avgsurvey_", ind)
 
@@ -532,51 +536,9 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     raw_pick_long     <- raw_pick_long     %>% mutate(iso3_code = hmis_iso3[1])
   }
 
-  # Efficient fallback: duplicate survey columns if HMIS has indicators not in survey
-  if (!is.null(hmis_indicators)) {
-    # pnc1_mother fallback from pnc1
-    if ("pnc1_mother" %in% hmis_indicators) {
-      for (col in names(survey_carried)) {
-        if (grepl("\\bpnc1\\b", col) && !grepl("pnc1_mother", col)) {
-          survey_carried[[gsub("\\bpnc1\\b", "pnc1_mother", col)]] <- survey_carried[[col]]
-        }
-      }
-      # Also create the carry column for pnc1_mother
-      if ("pnc1carry" %in% names(survey_carried)) {
-        survey_carried$pnc1_mothercarry <- survey_carried$pnc1carry
-      }
-      if ("rawsurvey_pnc1" %in% names(raw_survey_values)) {
-        raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
-      }
-      if ("rawsource_pnc1" %in% names(raw_survey_values)) {
-        raw_survey_values$rawsource_pnc1_mother <- raw_survey_values$rawsource_pnc1
-      }
-      if ("rawdetail_pnc1" %in% names(raw_survey_values)) {
-        raw_survey_values$rawdetail_pnc1_mother <- raw_survey_values$rawdetail_pnc1
-      }
-    }
-
-    # sba fallback from delivery
-    if ("sba" %in% hmis_indicators) {
-      for (col in names(survey_carried)) {
-        if (grepl("\\bdelivery\\b", col) && !grepl("sba", col)) {
-          survey_carried[[gsub("\\bdelivery\\b", "sba", col)]] <- survey_carried[[col]]
-        }
-      }
-      # Also create the carry column for sba
-      if ("deliverycarry" %in% names(survey_carried)) {
-        survey_carried$sbacarry <- survey_carried$deliverycarry
-      }
-      if ("rawsurvey_delivery" %in% names(raw_survey_values)) {
-        raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery
-      }
-      if ("rawsource_delivery" %in% names(raw_survey_values)) {
-        raw_survey_values$rawsource_sba <- raw_survey_values$rawsource_delivery
-      }
-      if ("rawdetail_delivery" %in% names(raw_survey_values)) {
-        raw_survey_values$rawdetail_sba <- raw_survey_values$rawdetail_delivery
-      }
-    }
+  # Always duplicate pnc1carry → pnc1_mothercarry (survey only has pnc1)
+  if ("pnc1carry" %in% names(survey_carried)) {
+    survey_carried$pnc1_mothercarry <- survey_carried$pnc1carry
   }
 
   return(list(
@@ -620,11 +582,8 @@ process_national_population_data <- function(population_data, hmis_countries, hm
 
 #Part 3 - calculate denominators
 calculate_denominators <- function(hmis_data, survey_data, population_data = NULL) {
-  if (!"nmrcarry" %in% names(survey_data)) {
-    message("`nmrcarry` not found in survey data – filling with default from P1_NMR = ", P1_NMR)
-    survey_data$nmrcarry <- P1_NMR
-  }
-  
+  # nmrcarry is handled by the survey data processing, no need for redundant check here
+
   has_admin_area_2 <- "admin_area_2" %in% names(hmis_data)
   use_iso <- "iso3_code" %in% names(hmis_data) && "iso3_code" %in% names(survey_data)
 
@@ -992,92 +951,93 @@ evaluate_coverage_by_denominator <- function(data) {
 }
 
 #Part 5 - run projections
-project_coverage_from_all <- function(ranked_coverage) {
+project_coverage_from_all <- function(ranked_coverage, survey_raw_long = NULL) {
   message("Projecting survey coverage forward using HMIS deltas...")
 
   if (!"reference_value" %in% names(ranked_coverage)) {
     stop("ERROR!! 'reference_value' column not found in ranked_coverage.")
   }
 
-  if (nrow(ranked_coverage) > 0 && "year" %in% names(ranked_coverage)) {
-    survey_only <- ranked_coverage %>% filter(!is.na(reference_value) & is.na(coverage))
-    hmis_only <- ranked_coverage %>% filter(!is.na(coverage) & is.na(reference_value))
-    both <- ranked_coverage %>% filter(!is.na(coverage) & !is.na(reference_value))
-    if (nrow(survey_only) > 0) {
-    }
-    if (nrow(hmis_only) > 0) {
-    }
-    if (nrow(both) > 0) {
-    }
-  }
-  
   has_admin_area_2 <- "admin_area_2" %in% names(ranked_coverage)
   geo_keys <- if (has_admin_area_2) {
     c("admin_area_1", "admin_area_2", "indicator_common_id", "denominator")
   } else {
     c("admin_area_1", "indicator_common_id", "denominator")
   }
-  
+
+  # Compute year-on-year deltas
   ranked_with_delta <- ranked_coverage %>%
     arrange(across(all_of(c(geo_keys, "year")))) %>%
     group_by(across(all_of(geo_keys))) %>%
     mutate(
-      coverage_delta = if_else(
-        !is.na(coverage) & !is.na(lag(coverage)),
-        coverage - lag(coverage),
-        0
-      )
+      coverage_delta = coverage - lag(coverage)
     ) %>%
     ungroup()
-  
+
+  # Find baseline: last survey year OVERALL (matching m006 pattern)
+  baseline_join_keys <- intersect(c("admin_area_1", "admin_area_2", "indicator_common_id"), names(ranked_coverage))
+
+  if (!is.null(survey_raw_long) && nrow(survey_raw_long) > 0) {
+    survey_baseline_keys <- c(intersect(c("admin_area_1", "admin_area_2"), names(survey_raw_long)), "indicator_common_id")
+    baseline_info <- survey_raw_long %>%
+      group_by(across(all_of(survey_baseline_keys))) %>%
+      filter(year == max(year, na.rm = TRUE)) %>%
+      slice_tail(n = 1) %>%
+      ungroup() %>%
+      transmute(
+        across(all_of(survey_baseline_keys)),
+        baseline_year = as.integer(year),
+        baseline_value = as.numeric(survey_value)
+      )
+  } else {
+    # Fallback: derive baseline from ranked_coverage reference_value
+    baseline_info <- ranked_coverage %>%
+      filter(!is.na(reference_value)) %>%
+      group_by(across(all_of(baseline_join_keys))) %>%
+      filter(year == max(year, na.rm = TRUE)) %>%
+      slice_tail(n = 1) %>%
+      ungroup() %>%
+      transmute(
+        across(all_of(baseline_join_keys)),
+        baseline_year = as.integer(year),
+        baseline_value = as.numeric(reference_value)
+      )
+  }
+
+  # Join baseline and compute projections (matching m006: cumsum only from baseline_year+1)
   all_projected <- ranked_with_delta %>%
+    left_join(baseline_info, by = baseline_join_keys) %>%
     group_by(across(all_of(geo_keys))) %>%
     arrange(year) %>%
     mutate(
-      # Find baseline: last survey value before HMIS starts
-      # Use dplyr:: to avoid data.table masking (data.table::last ignores 'default')
-      baseline_survey = dplyr::last(reference_value[is.na(coverage)], default = dplyr::first(reference_value)),
-      # Calculate cumulative HMIS deltas
-      cumulative_delta = cumsum(coverage_delta),
-      # For survey-only years: use reference_value; for HMIS years: project from baseline
+      cum_delta = cumsum(if_else(year > baseline_year & !is.na(coverage_delta), coverage_delta, 0)),
       avgsurveyprojection = if_else(
         is.na(coverage),
-        reference_value,  # Survey years: use actual survey value
-        baseline_survey + cumulative_delta  # HMIS years: baseline + accumulated changes
+        reference_value,
+        baseline_value + cum_delta
       ),
       projection_source = paste0("avgsurveyprojection_", denominator)
     ) %>%
-    select(-baseline_survey, -cumulative_delta) %>%
+    select(-cum_delta, -baseline_year, -baseline_value) %>%
     ungroup()
 
-  # NEW: Carry forward baseline value to fill gap between last survey and first HMIS year
-  # Look at INPUT data (ranked_coverage) to find the true baseline survey year
+  # Carry forward baseline value to fill gap between last survey and first HMIS year
   baseline_and_gaps <- tryCatch({
-    gap_summary <- ranked_coverage %>%
+    gap_summary <- ranked_with_delta %>%
+      left_join(baseline_info, by = baseline_join_keys) %>%
       group_by(across(all_of(geo_keys))) %>%
-      arrange(year) %>%
       summarise(
-        # Find LAST survey year (where reference_value exists but no coverage/HMIS)
-        baseline_year = dplyr::last(year[!is.na(reference_value) & is.na(coverage)]),
-        baseline_value = dplyr::last(reference_value[!is.na(reference_value) & is.na(coverage)]),
-        # Find FIRST HMIS year (where coverage exists)
-        first_hmis_year = dplyr::first(year[!is.na(coverage)]),
+        baseline_year = first(baseline_year),
+        baseline_value = first(baseline_value),
+        first_hmis_year = suppressWarnings(min(year[!is.na(coverage)], na.rm = TRUE)),
         .groups = "drop"
-      )
-
-    message("  → Gap analysis: ", nrow(gap_summary), " groups checked")
-    gaps_found <- gap_summary %>%
-      filter(!is.na(baseline_year), !is.na(first_hmis_year),
+      ) %>%
+      filter(!is.na(baseline_year), is.finite(first_hmis_year),
              first_hmis_year > baseline_year + 1)
-    message("  → Gaps found: ", nrow(gaps_found), " groups have gaps")
-    message("  → Sample gaps: baseline_year=",
-            paste(head(gaps_found$baseline_year, 3), collapse=", "),
-            " first_hmis=",
-            paste(head(gaps_found$first_hmis_year, 3), collapse=", "))
 
-    # Only create gap rows if there's actually a gap
-    gaps_found %>%
-      # Create rows for all gap years
+    message("  → Gap analysis: ", nrow(gap_summary), " groups have gaps")
+
+    gap_summary %>%
       mutate(gap_years = purrr::map2(baseline_year, first_hmis_year,
                                       ~seq(.x + 1, .y - 1))) %>%
       tidyr::unnest(gap_years) %>%
@@ -1092,10 +1052,9 @@ project_coverage_from_all <- function(ranked_coverage) {
       )
   }, error = function(e) {
     message("Note: Gap filling skipped - ", e$message)
-    data.frame()  # Return empty dataframe if gap filling fails
+    data.frame()
   })
 
-  # Combine original data with gap-filled rows (only if gap filling succeeded)
   if (nrow(baseline_and_gaps) > 0) {
     message("  → Added ", nrow(baseline_and_gaps), " gap-fill rows")
     all_projected <- bind_rows(all_projected, baseline_and_gaps) %>%
@@ -1239,24 +1198,27 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
       admin_area_2 = if (!has_admin_area_2) "NATIONAL" else admin_area_2
     )
   
-  if (is_national && "coverage_original_estimate" %in% names(combined)) {
+  if ("coverage_original_estimate" %in% names(combined)) {
     combined <- combined %>%
       group_by(across(all_of(c(setdiff(join_keys, "year"), "denominator")))) %>%
       mutate(
-        last_survey_year = if (all(is.na(coverage_original_estimate))) NA_integer_ else max(year[!is.na(coverage_original_estimate)], na.rm = TRUE),
+        .last_survey_year = suppressWarnings(if (all(is.na(coverage_original_estimate))) NA_real_ else max(year[!is.na(coverage_original_estimate)], na.rm = TRUE)),
+        .last_survey_value = if_else(!is.na(.last_survey_year), coverage_original_estimate[year == .last_survey_year][1], NA_real_),
+        .baseline_cov = if_else(!is.na(.last_survey_year), coverage[year == .last_survey_year][1], NA_real_),
         avgsurveyprojection = case_when(
-          year == last_survey_year ~ coverage_original_estimate,
-          year > last_survey_year ~ avgsurveyprojection,
+          year == .last_survey_year ~ .last_survey_value,
+          year > .last_survey_year & !is.na(coverage) ~
+            .last_survey_value + (coverage - .baseline_cov),
           TRUE ~ NA_real_
         ),
         coverage_original_estimate = ifelse(
-          year > last_survey_year,
+          year > .last_survey_year,
           NA_real_,
           coverage_original_estimate
         )
       ) %>%
       ungroup() %>%
-      select(-last_survey_year)
+      select(-.last_survey_year, -.last_survey_value, -.baseline_cov)
   }
   
   # Ensure source columns exist even if survey data had none
@@ -1304,12 +1266,10 @@ hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
 
 # 2 - prepare the survey data
 message("  → Preparing survey data...")
-hmis_indicators_national <- sub("^count", "", grep("^count", names(hmis_processed$annual_hmis), value = TRUE))
 survey_processed_national <- process_survey_data(
   survey_data = survey_data_national,
   hmis_countries = hmis_processed$hmis_countries,
-  hmis_iso3 = hmis_processed$hmis_iso3,
-  hmis_indicators = hmis_indicators_national
+  hmis_iso3 = hmis_processed$hmis_iso3
 )
 
 message("  → Preparing population data...")
@@ -1333,7 +1293,8 @@ national_coverage_eval <- evaluate_coverage_by_denominator(denominators_national
 
 # 5 - project survey coverage forward using HMIS deltas
 message("  → Projecting coverage forward...")
-national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking)
+national_coverage_projected <- project_coverage_from_all(national_coverage_eval$full_ranking,
+                                                          survey_raw_long = survey_processed_national$raw_long)
 
 
 # 6 - prepare results and save
@@ -1639,12 +1600,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
 
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
-    hmis_indicators_admin2 <- sub("^count", "", grep("^count", names(hmis_processed_admin2$annual_hmis), value = TRUE))
     survey_processed_admin2 <- tryCatch({
       process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
                           hmis_iso3 = hmis_processed_admin2$hmis_iso3,
-                          national_reference = survey_processed_national$carried,
-                          hmis_indicators = hmis_indicators_admin2)
+                          national_reference = survey_processed_national$carried)
     }, error = function(e) {
       message("================================================================================")
       warning("⚠️  MISMATCH: HMIS admin_area_2 does not match survey admin_area_2")
@@ -1829,12 +1788,10 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         }
 
         # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
-        hmis_indicators_admin3 <- sub("^count", "", grep("^count", names(hmis_processed_admin3$annual_hmis), value = TRUE))
         survey_processed_admin3 <- tryCatch({
           process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries,
                               hmis_iso3 = hmis_processed_admin3$hmis_iso3,
-                              national_reference = survey_processed_national$carried,
-                              hmis_indicators = hmis_indicators_admin3)
+                              national_reference = survey_processed_national$carried)
         }, error = function(e) {
           message("================================================================================")
           warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
