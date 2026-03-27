@@ -372,7 +372,7 @@ filter_by_denominator_selection <- function(combined_results_df, chain_param = "
   } else {
     # Manual chain override — filter by prefix
     if (!chain_param %in% names(chain_prefixes)) {
-      stop("Invalid DENOMINATOR_CHAIN: '", chain_param,
+      stop("Invalid DENOMINATOR CHAIN: '", chain_param,
            "'. Options: auto, ", paste(names(chain_prefixes), collapse = ", "))
     }
     prefix <- chain_prefixes[[chain_param]]

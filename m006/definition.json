@@ -3,9 +3,7 @@
     "en": "M6. Coverage estimates ~ new, part 2",
     "fr": "M6. Estimations de couverture ~ nouveau, partie 2"
   },
-  "prerequisites": [
-    "m005"
-  ],
+  "prerequisites": ["m005"],
   "assetsToImport": [],
   "dataSources": [
     {
@@ -99,14 +97,9 @@
         "en": "National",
         "fr": "National"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "year"
-      ],
+      "requiredDisaggregationOptions": ["indicator_common_id", "year"],
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "periodOptions": ["year"],
       "aiDescription": {
         "summary": {
           "en": "Comprehensive coverage estimates at national level using user-selected denominators, combining survey benchmarks with HMIS-derived trends.",
@@ -146,11 +139,7 @@
             "fr": "Générer des séries temporelles de couverture annuelles"
           }
         ],
-        "relatedMetrics": [
-          "m6-02-01",
-          "m6-03-01",
-          "m4a-02-01"
-        ],
+        "relatedMetrics": ["m6-02-01", "m6-03-01", "m4a-02-01"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and year (both required). Compare the three coverage types to assess data quality - they should show consistent trends if both HMIS and denominators are reliable. Time series reveals coverage evolution and inter-survey projection accuracy.",
           "fr": "Toujours désagréger par indicator_common_id et year (tous deux requis). Comparer les trois types de couverture pour évaluer la qualité des données."
@@ -236,9 +225,7 @@
         "year"
       ],
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "periodOptions": ["year"],
       "aiDescription": {
         "summary": {
           "en": "Subnational coverage estimates at admin area 2 level combining survey, projected, and HMIS-derived values.",
@@ -266,11 +253,7 @@
             "fr": "Ciblage géographique des interventions sanitaires"
           }
         ],
-        "relatedMetrics": [
-          "m6-02-02",
-          "m6-01-01",
-          "m6-03-01"
-        ],
+        "relatedMetrics": ["m6-02-02", "m6-01-01", "m6-03-01"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Compare three coverage types for regional data quality validation.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Comparer trois types de couverture pour la validation de la qualité des données régionales."
@@ -289,9 +272,7 @@
           },
           "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f26",
           "needsReplicant": true,
-          "allowedFilters": [
-            "admin_area_2"
-          ],
+          "allowedFilters": ["admin_area_2"],
           "config": {
             "d": {
               "type": "timeseries",
@@ -348,9 +329,7 @@
             "nMonths": 12
           },
           "needsReplicant": true,
-          "allowedFilters": [
-            "admin_area_2"
-          ],
+          "allowedFilters": ["admin_area_2"],
           "config": {
             "d": {
               "type": "chart",
@@ -368,9 +347,7 @@
               ],
               "filterBy": [],
               "selectedReplicantValue": "anc4",
-              "valuesFilter": [
-                "coverage_cov"
-              ]
+              "valuesFilter": ["coverage_cov"]
             },
             "s": {
               "showDataLabels": true,
@@ -398,9 +375,7 @@
     {
       "id": "m6-02-02",
       "resultsObjectId": "M6_coverage_estimation_admin2.csv",
-      "valueProps": [
-        "coverage_cov"
-      ],
+      "valueProps": ["coverage_cov"],
       "valueFunc": "AVG",
       "valueLabelReplacements": {
         "coverage_cov": "Coverage calculated from HMIS data"
@@ -419,9 +394,7 @@
         "year"
       ],
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "periodOptions": ["year"],
       "aiDescription": {
         "summary": {
           "en": "HMIS-only coverage estimates at admin area 2 level for simplified regional monitoring.",
@@ -445,9 +418,7 @@
             "fr": "Tableaux de bord de performance opérationnelle"
           }
         ],
-        "relatedMetrics": [
-          "m6-02-01"
-        ],
+        "relatedMetrics": ["m6-02-01"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Use for regional operational monitoring.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Utiliser pour la surveillance opérationnelle régionale."
@@ -482,9 +453,7 @@
         "year"
       ],
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "periodOptions": ["year"],
       "aiDescription": {
         "summary": {
           "en": "District-level coverage estimates combining survey, projected, and HMIS-derived values.",
@@ -508,10 +477,7 @@
             "fr": "Planification sanitaire au niveau du district"
           }
         ],
-        "relatedMetrics": [
-          "m6-03-02",
-          "m6-02-01"
-        ],
+        "relatedMetrics": ["m6-03-02", "m6-02-01"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Compare with admin area 2 for context.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Comparer avec la zone administrative 2 pour le contexte."
@@ -530,9 +496,7 @@
           },
           "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f27",
           "needsReplicant": true,
-          "allowedFilters": [
-            "admin_area_3"
-          ],
+          "allowedFilters": ["admin_area_3"],
           "config": {
             "d": {
               "type": "timeseries",
@@ -589,9 +553,7 @@
             "nMonths": 12
           },
           "needsReplicant": true,
-          "allowedFilters": [
-            "admin_area_3"
-          ],
+          "allowedFilters": ["admin_area_3"],
           "config": {
             "d": {
               "type": "chart",
@@ -609,9 +571,7 @@
               ],
               "filterBy": [],
               "selectedReplicantValue": "anc4",
-              "valuesFilter": [
-                "coverage_cov"
-              ]
+              "valuesFilter": ["coverage_cov"]
             },
             "s": {
               "showDataLabels": true,
@@ -639,9 +599,7 @@
     {
       "id": "m6-03-02",
       "resultsObjectId": "M6_coverage_estimation_admin3.csv",
-      "valueProps": [
-        "coverage_cov"
-      ],
+      "valueProps": ["coverage_cov"],
       "valueFunc": "AVG",
       "valueLabelReplacements": {
         "coverage_cov": "Coverage calculated from HMIS data"
@@ -660,9 +618,7 @@
         "year"
       ],
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "periodOptions": ["year"],
       "aiDescription": {
         "summary": {
           "en": "HMIS-only coverage estimates at district level for operational monitoring.",
@@ -686,9 +642,7 @@
             "fr": "Tableaux de bord de gestion sanitaire de district"
           }
         ],
-        "relatedMetrics": [
-          "m6-03-01"
-        ],
+        "relatedMetrics": ["m6-03-01"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Simplified metric for district operations.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Métrique simplifiée pour les opérations de district."
@@ -700,244 +654,34 @@
   "configRequirements": {
     "parameters": [
       {
-        "description": "DENOM_PREGNANCY",
-        "replacementString": "DENOM_PREGNANCY",
+        "description": "Denominator to use for all coverage calculations",
+        "replacementString": "DENOMINATOR_CHAIN",
         "input": {
           "inputType": "select",
           "options": [
             {
-              "value": "best",
-              "label": "Best"
+              "value": "auto",
+              "label": "auto"
             },
             {
-              "value": "danc1_pregnancy",
-              "label": "danc1_pregnancy"
+              "value": "anc1",
+              "label": "anc1"
             },
             {
-              "value": "ddelivery_pregnancy",
-              "label": "ddelivery_pregnancy"
+              "value": "delivery",
+              "label": "delivery"
             },
             {
-              "value": "dbcg_pregnancy",
-              "label": "dbcg_pregnancy"
+              "value": "bcg",
+              "label": "bcg"
             },
             {
-              "value": "dlivebirths_pregnancy",
-              "label": "dlivebirths_pregnancy"
-            },
-            {
-              "value": "dwpp_pregnancy",
-              "label": "dwpp_pregnancy"
+              "value": "penta1",
+              "label": "penta1"
             }
           ],
           "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_LIVEBIRTH",
-        "replacementString": "DENOM_LIVEBIRTH",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            },
-            {
-              "value": "danc1_livebirth",
-              "label": "danc1_livebirth"
-            },
-            {
-              "value": "ddelivery_livebirth",
-              "label": "ddelivery_livebirth"
-            },
-            {
-              "value": "dbcg_livebirth",
-              "label": "dbcg_livebirth"
-            },
-            {
-              "value": "dlivebirths_livebirth",
-              "label": "dlivebirths_livebirth"
-            },
-            {
-              "value": "dwpp_livebirth",
-              "label": "dwpp_livebirth"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_DPT",
-        "replacementString": "DENOM_DPT",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            },
-            {
-              "value": "danc1_dpt",
-              "label": "danc1_dpt"
-            },
-            {
-              "value": "ddelivery_dpt",
-              "label": "ddelivery_dpt"
-            },
-            {
-              "value": "dpenta1_dpt",
-              "label": "dpenta1_dpt"
-            },
-            {
-              "value": "dbcg_dpt",
-              "label": "dbcg_dpt"
-            },
-            {
-              "value": "dlivebirths_dpt",
-              "label": "dlivebirths_dpt"
-            },
-            {
-              "value": "dwpp_dpt",
-              "label": "dwpp_dpt"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_MEASLES1",
-        "replacementString": "DENOM_MEASLES1",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            },
-            {
-              "value": "danc1_measles1",
-              "label": "danc1_measles1"
-            },
-            {
-              "value": "ddelivery_measles1",
-              "label": "ddelivery_measles1"
-            },
-            {
-              "value": "dpenta1_measles1",
-              "label": "dpenta1_measles1"
-            },
-            {
-              "value": "dbcg_measles1",
-              "label": "dbcg_measles1"
-            },
-            {
-              "value": "dlivebirths_measles1",
-              "label": "dlivebirths_measles1"
-            },
-            {
-              "value": "dwpp_measles1",
-              "label": "dwpp_measles1"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_MEASLES2",
-        "replacementString": "DENOM_MEASLES2",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            },
-            {
-              "value": "danc1_measles2",
-              "label": "danc1_measles2"
-            },
-            {
-              "value": "ddelivery_measles2",
-              "label": "ddelivery_measles2"
-            },
-            {
-              "value": "dpenta1_measles2",
-              "label": "dpenta1_measles2"
-            },
-            {
-              "value": "dbcg_measles2",
-              "label": "dbcg_measles2"
-            },
-            {
-              "value": "dlivebirths_measles2",
-              "label": "dlivebirths_measles2"
-            },
-            {
-              "value": "dwpp_measles2",
-              "label": "dwpp_measles2"
-            },
-            {
-              "value": "danc1_measles2",
-              "label": "danc1_measles2"
-            },
-            {
-              "value": "ddelivery_measles2",
-              "label": "ddelivery_measles2"
-            },
-            {
-              "value": "dpenta1_measles2",
-              "label": "dpenta1_measles2"
-            },
-            {
-              "value": "dbcg_measles2",
-              "label": "dbcg_measles2"
-            },
-            {
-              "value": "dlivebirths_measles2",
-              "label": "dlivebirths_measles2"
-            },
-            {
-              "value": "dwpp_measles2",
-              "label": "dwpp_measles2"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_VITAMINA",
-        "replacementString": "DENOM_VITAMINA",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
-        }
-      },
-      {
-        "description": "DENOM_FULLIMM",
-        "replacementString": "DENOM_FULLIMM",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "best",
-              "label": "Best"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "best"
+          "defaultValue": "auto"
         }
       }
     ]
