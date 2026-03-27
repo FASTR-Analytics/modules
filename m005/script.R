@@ -14,7 +14,7 @@ UNDER5_MORTALITY_RATE <- 0.103
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
-DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "penta1"
+
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
@@ -37,7 +37,7 @@ PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/mo
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
 MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
-
+DENOMINATOR_CHAIN <- "auto" 
 message("✓ Step 1/7: Loading input datasets...")
 
 # Input Datasets
