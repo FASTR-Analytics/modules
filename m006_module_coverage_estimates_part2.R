@@ -1,16 +1,12 @@
 COUNTRY_ISO3 <- "ZMB"
 
-DENOM_PREGNANCY <- "best"       # anc1, anc4
-DENOM_LIVEBIRTH <- "best"       # delivery, sba, bcg, pnc1_mother, pnc1
-DENOM_DPT <- "best"             # penta1-3, opv1-3, pcv1-3, rota1-2, ipv1-2
-DENOM_MEASLES1 <- "best"        # measles1
-DENOM_MEASLES2 <- "best"        # measles2
-DENOM_VITAMINA <- "best"        # vitaminA
-DENOM_FULLIMM <- "best"         # fully_immunized
+DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "penta1"
+                             # Must match M005's DENOMINATOR_CHAIN setting.
+                             # "auto" uses M005's chain selection (recommended).
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 03
+# Last edit: 2026 Mar 27
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -20,38 +16,6 @@ library(tidyr)
 library(zoo)
 library(stringr)
 library(purrr)
-
-# Group-level denominator selection: all indicators in the same target population
-# group MUST use the same denominator. Set the group param to override all indicators in that group.
-# Use "best" to let m005's automatic selection apply (recommended).
-DENOMINATOR_SELECTION <- list(
-  # PREGNANCY-RELATED INDICATORS (anc1, anc4)
-  anc1 = DENOM_PREGNANCY,              # Options: "best", "danc1_pregnancy", "ddelivery_pregnancy", "dbcg_pregnancy", "dlivebirths_pregnancy", "dwpp_pregnancy"
-  anc4 = DENOM_PREGNANCY,              # Same group as anc1 — must use same denominator
-
-  # LIVE BIRTH-RELATED INDICATORS (delivery, sba, bcg, pnc1_mother, pnc1)
-  delivery = DENOM_LIVEBIRTH,          # Options: "best", "danc1_livebirth", "ddelivery_livebirth", "dbcg_livebirth", "dlivebirths_livebirth", "dwpp_livebirth"
-  bcg = DENOM_LIVEBIRTH,               # Same group as delivery
-  sba = DENOM_LIVEBIRTH,               # Same group as delivery
-  pnc1_mother = DENOM_LIVEBIRTH,       # Same group as delivery
-  pnc1 = DENOM_LIVEBIRTH,             # Same group as delivery
-
-  # DPT-ELIGIBLE AGE GROUP INDICATORS (penta1-3, opv1-3, pcv1-3, rota1-2, ipv1-2)
-  penta1 = DENOM_DPT,                  # Options: "best", "danc1_dpt", "ddelivery_dpt", "dpenta1_dpt", "dbcg_dpt", "dlivebirths_dpt", "dwpp_dpt"
-  penta2 = DENOM_DPT,                  # Same group as penta1
-  penta3 = DENOM_DPT,                  # Same group as penta1
-  opv1 = DENOM_DPT,                    # Same group as penta1
-  opv2 = DENOM_DPT,                    # Same group as penta1
-  opv3 = DENOM_DPT,                    # Same group as penta1
-
-  # MEASLES-ELIGIBLE AGE GROUP INDICATORS
-  measles1 = DENOM_MEASLES1,           # Options: "best", "danc1_measles1", "ddelivery_measles1", "dpenta1_measles1", "dbcg_measles1", "dlivebirths_measles1", "dwpp_measles1"
-  measles2 = DENOM_MEASLES2,           # Options: "best", "danc1_measles2", "ddelivery_measles2", "dpenta1_measles2", "dbcg_measles2", "dlivebirths_measles2", "dwpp_measles2"
-
-  # OTHER
-  vitaminA = DENOM_VITAMINA,           # Options: "best", "danc1_vitaminA", "dbcg_vitaminA", "ddelivery_vitaminA", "dwpp_vitaminA"
-  fully_immunized = DENOM_FULLIMM      # Options: "best", "danc1_fully_immunized", "dbcg_fully_immunized", "ddelivery_fully_immunized", "dwpp_fully_immunized"
-)
 
 # ------------------------------ Define Analysis Parameters --------------------------------------------------
 # These parameters control the administrative levels (national, admin2, admin3)
@@ -390,49 +354,45 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
 
 # ------------------------------ Helper Functions for New Approach ---------------------------
 
-# Function to filter combined results based on user denominator selection
-filter_by_denominator_selection <- function(combined_results_df, selection_list) {
+# Function to filter combined results based on chain-based denominator selection
+filter_by_denominator_selection <- function(combined_results_df, chain_param = "auto") {
 
-  # Initialize empty results
-  filtered_results <- data.frame()
+  # Chain prefixes
+  chain_prefixes <- c(
+    anc1     = "danc1_",
+    delivery = "ddelivery_",
+    bcg      = "dbcg_",
+    penta1   = "dpenta1_"
+  )
 
-  # Process each indicator in selection list
-  for (indicator in names(selection_list)) {
-    selected_denom <- selection_list[[indicator]]
-
-    # Filter data for this indicator
-    indicator_data <- combined_results_df %>%
-      filter(indicator_common_id == indicator)
-
-    if (nrow(indicator_data) == 0) next
-
-    if (selected_denom == "best") {
-      # Use "best" entries (already selected by Part 1)
-      selected_data <- indicator_data %>%
-        filter(denominator_best_or_survey == "best")
-    } else {
-      # Use specific denominator entries
-      selected_data <- indicator_data %>%
-        filter(denominator_best_or_survey == selected_denom)
+  if (chain_param == "auto") {
+    # Use M005's chain selection — filter for "best" rows
+    selected_data <- combined_results_df %>%
+      filter(denominator_best_or_survey == "best")
+  } else {
+    # Manual chain override — filter by prefix
+    if (!chain_param %in% names(chain_prefixes)) {
+      stop("Invalid DENOMINATOR_CHAIN: '", chain_param,
+           "'. Options: auto, ", paste(names(chain_prefixes), collapse = ", "))
     }
-
-    # Add to results
-    if (nrow(selected_data) > 0) {
-      # Convert to coverage format expected by downstream functions
-      coverage_format <- selected_data %>%
-        mutate(
-          denominator = denominator_best_or_survey,
-          coverage = value
-        ) %>%
-        # Only keep coverage estimates (not survey entries)
-        filter(denominator_best_or_survey != "survey") %>%
-        select(-denominator_best_or_survey, -value)
-
-      filtered_results <- bind_rows(filtered_results, coverage_format)
-    }
+    prefix <- chain_prefixes[[chain_param]]
+    selected_data <- combined_results_df %>%
+      filter(startsWith(denominator_best_or_survey, prefix))
   }
 
-  return(filtered_results)
+  if (nrow(selected_data) == 0) {
+    warning("No rows found for chain '", chain_param, "'. Check M005 output.")
+    return(data.frame())
+  }
+
+  # Convert to coverage format expected by downstream functions
+  selected_data %>%
+    mutate(
+      denominator = denominator_best_or_survey,
+      coverage = value
+    ) %>%
+    filter(denominator_best_or_survey != "survey") %>%
+    select(-denominator_best_or_survey, -value)
 }
 
 # ------------------------------ Main Execution ------------------------------
@@ -441,7 +401,7 @@ filter_by_denominator_selection <- function(combined_results_df, selection_list)
 message("Step 1 (NATIONAL): Filtering combined results by user denominator selection...")
 coverage_national <- filter_by_denominator_selection(
   combined_results_national,
-  DENOMINATOR_SELECTION
+  DENOMINATOR_CHAIN
 )
 message("✓ Coverage filtering complete: ", nrow(coverage_national), " records selected")
 
@@ -469,7 +429,7 @@ if (RUN_ADMIN2) {
   message("Step 1 (ADMIN2): Filtering combined results by user denominator selection...")
   coverage_admin2 <- filter_by_denominator_selection(
     combined_results_admin2,
-    DENOMINATOR_SELECTION
+    DENOMINATOR_CHAIN
   )
   message("✓ Coverage filtering complete: ", nrow(coverage_admin2), " records selected")
 
@@ -500,7 +460,7 @@ if (RUN_ADMIN3) {
   message("Step 1 (ADMIN3): Filtering combined results by user denominator selection...")
   coverage_admin3 <- filter_by_denominator_selection(
     combined_results_admin3,
-    DENOMINATOR_SELECTION
+    DENOMINATOR_CHAIN
   )
   message("✓ Coverage filtering complete: ", nrow(coverage_admin3), " records selected")
 

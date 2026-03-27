@@ -14,9 +14,11 @@ UNDER5_MORTALITY_RATE <- 0.103
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
+DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "penta1"
+
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 04
+# Last edit: 2026 Mar 25
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -999,10 +1001,121 @@ classify_source_type <- function(denominator, ind) {
   "independent"
 }
 
-# Helper function: Identify national-only denominators (UNWPP and BCG-derived)
-# BCG-derived denominators are not calculated at subnational level
-identify_national_only_denominators <- function(denominator_name) {
-  startsWith(denominator_name, "dwpp_") || startsWith(denominator_name, "dbcg_")
+# Part 4b - Select best denominator chain (UNWPP proximity)
+# Compares each HMIS chain to UNWPP and picks the one closest to ratio 1.0
+# Or uses a manual override if DENOMINATOR_CHAIN != "auto"
+select_best_chain <- function(denominators_national, chain_param = "auto") {
+
+  # Available chains and their prefixes
+  # bcg is national-only (not computed at subnational level), so excluded from auto
+  chain_info_all <- list(
+    anc1     = "danc1_",
+    delivery = "ddelivery_",
+    bcg      = "dbcg_",
+    penta1   = "dpenta1_"
+  )
+  chain_info_auto <- chain_info_all[c("anc1", "delivery", "penta1")]  # exclude bcg from auto
+
+  # If manual override, return immediately (allow all chains including bcg)
+  if (chain_param != "auto") {
+    if (!chain_param %in% names(chain_info_all)) {
+      stop("Invalid DENOMINATOR_CHAIN: '", chain_param,
+           "'. Options: auto, ", paste(names(chain_info_all), collapse = ", "))
+    }
+    prefix <- chain_info_all[[chain_param]]
+    message("\n--- Chain Selection (manual override) ---")
+    message("Selected chain: ", chain_param, " (prefix: ", prefix, ")")
+    if (chain_param == "bcg") {
+      message("  Note: bcg is national-only — subnational results will be empty")
+    }
+    return(list(chain = chain_param, prefix = prefix))
+  }
+
+  # Auto: compare each chain to UNWPP
+  message("\n--- Chain Selection (UNWPP proximity) ---")
+
+  # Target populations to compare (the main demographic quantities)
+  targets <- c("pregnancy", "livebirth", "dpt")
+
+  # Check which UNWPP columns exist
+  unwpp_cols <- paste0("dwpp_", targets)
+  available_unwpp <- unwpp_cols[unwpp_cols %in% names(denominators_national)]
+
+  if (length(available_unwpp) == 0) {
+    warning("No UNWPP denominators available for chain comparison. Defaulting to delivery chain.")
+    return(list(chain = "delivery", prefix = "ddelivery_"))
+  }
+
+  available_targets <- sub("^dwpp_", "", available_unwpp)
+
+  # Compare each chain to UNWPP
+  chain_results <- data.frame(
+    chain = character(),
+    median_ratio = numeric(),
+    n_comparisons = integer(),
+    stringsAsFactors = FALSE
+  )
+
+  for (chain_name in names(chain_info_auto)) {
+    prefix <- chain_info_auto[[chain_name]]
+    ratios <- c()
+
+    for (target in available_targets) {
+      chain_col <- paste0(prefix, target)
+      unwpp_col <- paste0("dwpp_", target)
+
+      if (chain_col %in% names(denominators_national) &&
+          unwpp_col %in% names(denominators_national)) {
+        chain_vals <- denominators_national[[chain_col]]
+        unwpp_vals <- denominators_national[[unwpp_col]]
+
+        # Compute ratios where both are non-NA and positive
+        valid <- !is.na(chain_vals) & !is.na(unwpp_vals) &
+                 chain_vals > 0 & unwpp_vals > 0
+        if (any(valid)) {
+          ratios <- c(ratios, chain_vals[valid] / unwpp_vals[valid])
+        }
+      }
+    }
+
+    if (length(ratios) > 0) {
+      chain_results <- rbind(chain_results, data.frame(
+        chain = chain_name,
+        median_ratio = median(ratios),
+        n_comparisons = length(ratios),
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
+
+  if (nrow(chain_results) == 0) {
+    warning("No HMIS chains have overlapping data with UNWPP. Defaulting to delivery chain.")
+    return(list(chain = "delivery", prefix = "ddelivery_"))
+  }
+
+  # Pick chain closest to ratio = 1.0
+  chain_results$distance <- abs(chain_results$median_ratio - 1.0)
+  best_idx <- which.min(chain_results$distance)
+  selected_chain <- chain_results$chain[best_idx]
+
+  # Print summary table
+  message(sprintf("%-12s | %-22s | %s", "Chain", "Median ratio to UNWPP", "Verdict"))
+  for (i in seq_len(nrow(chain_results))) {
+    ratio <- chain_results$median_ratio[i]
+    pct <- round((ratio - 1) * 100)
+    verdict <- if (chain_results$chain[i] == selected_chain) {
+      "SELECTED (closest)"
+    } else if (pct >= 0) {
+      paste0(pct, "% above")
+    } else {
+      paste0(abs(pct), "% below")
+    }
+    message(sprintf("%-12s | %-22.2f | %s",
+                    chain_results$chain[i], ratio, verdict))
+  }
+  message("Selected chain: ", selected_chain)
+
+  return(list(chain = selected_chain, prefix = chain_info_auto[[selected_chain]]))
 }
 
 # Part 5 - Calculate coverage estimates (from Part 2)
@@ -1071,7 +1184,8 @@ calculate_coverage <- function(denominators_data, numerators_data) {
 }
 
 # Part 6 - Compare coverage vs carried Survey (LONG format only)
-compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
+# Uses a single selected chain for ALL target populations (one-chain approach)
+compare_coverage_to_survey <- function(coverage_data, survey_expanded_df, selected_chain) {
   stopifnot(is.data.frame(coverage_data), is.data.frame(survey_expanded_df))
   need_long <- c("admin_area_1","year","indicator_common_id","reference_value")
   if (!all(need_long %in% names(survey_expanded_df))) {
@@ -1079,6 +1193,9 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
          paste(need_long, collapse = ", "),
          " (admin_area_2 and admin_area_3 optional; defaults to 'NATIONAL').")
   }
+
+  chain_prefix <- selected_chain$prefix
+  chain_name <- selected_chain$chain
 
   # Determine which admin columns exist
   has_admin2_cov <- "admin_area_2" %in% names(coverage_data)
@@ -1110,18 +1227,24 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
   if (has_admin3_cov && has_admin3_sur) geo_keys <- c(geo_keys, "admin_area_3")
   geo_keys <- c(geo_keys, "year")
 
-  # Geographic grouping keys (exclude year for consistent denominator selection)
-  geo_only_keys <- geo_keys[geo_keys != "year"]
-
-  # Country-level grouping keys (for denominator selection - SAME denominator across all regions)
+  # Country-level grouping keys
   country_only_keys <- if (use_iso) "iso3_code" else "admin_area_1"
 
   # Types & keys
   coverage_data$year        <- as.integer(coverage_data$year)
   survey_expanded_df$year   <- as.integer(survey_expanded_df$year)
 
-  # Join coverage with survey reference values
-  coverage_with_reference <- coverage_data %>%
+  # Filter coverage to selected chain only
+  chain_coverage <- coverage_data %>%
+    filter(startsWith(denominator, chain_prefix))
+
+  if (nrow(chain_coverage) == 0) {
+    warning("No coverage data found for chain '", chain_name, "' (prefix: ", chain_prefix, ")")
+    return(list(coverage_comparison = data.frame(), denominator_mapping = data.frame()))
+  }
+
+  # Join with survey for diagnostics (squared_error) — NOT used for selection
+  coverage_with_reference <- chain_coverage %>%
     left_join(
       survey_expanded_df %>%
         select(all_of(geo_keys), indicator_common_id, reference_value),
@@ -1129,130 +1252,42 @@ compare_coverage_to_survey <- function(coverage_data, survey_expanded_df) {
     ) %>%
     mutate(
       squared_error = (coverage - reference_value)^2,
-      source_type   = as.character(mapply(classify_source_type, denominator, indicator_common_id, USE.NAMES = FALSE))
-    )
-    # NOTE: Don't filter out NAs here - we need all denominators for ranking
-
-  # Step 1: Select best and second_best denominators per TARGET POPULATION GROUP
-  # (not per indicator) to ensure all indicators targeting the same population
-  # (e.g., penta1, penta2, penta3 → dpt group) use the SAME denominator.
-  # Logic: 1) Pool squared errors across all indicators in the group
-  #        2) Prefer independent (non-reference, non-UNWPP) with lowest pooled error
-  #        3) Fallback to reference-based only if no independent options exist
-  #        4) UNWPP denominators are EXCLUDED from "best" selection (except as last resort)
-  # NOTE: Group by country + target_population ONLY (not by region or indicator)
-
-  # Build indicator → target_population lookup from the data itself
-  indicator_group_lookup <- coverage_with_reference %>%
-    distinct(target_population, indicator_common_id)
-
-  # Try to select best and second_best denominators excluding UNWPP
-  # Pool squared errors across ALL indicators in the same target_population group
-  ranked_denominators_no_unwpp <- coverage_with_reference %>%
-    filter(!is.na(squared_error)) %>%
-    filter(source_type != "unwpp_based") %>%
-    group_by(across(all_of(country_only_keys)), target_population, denominator) %>%
-    arrange(indicator_common_id) %>%
-    summarise(total_error = sum(squared_error, na.rm = TRUE),
-              source_type = first(source_type),
-              .groups = "drop") %>%
-    group_by(across(all_of(country_only_keys)), target_population) %>%
-    mutate(is_reference_based = source_type == "reference_based") %>%
-    arrange(is_reference_based, total_error, .by_group = TRUE) %>%
-    mutate(rank = row_number()) %>%
-    ungroup()
-
-  # Extract best and second_best per target_population group
-  best_by_group_no_unwpp <- ranked_denominators_no_unwpp %>%
-    filter(rank <= 2) %>%
-    group_by(across(all_of(country_only_keys)), target_population) %>%
-    summarise(
-      best_denom = first(denominator),
-      second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
-      best_is_national_only = identify_national_only_denominators(first(denominator)),
-      second_is_national_only = if(n() >= 2) identify_national_only_denominators(nth(denominator, 2)) else NA,
-      .groups = "drop"
+      rank = ifelse(!is.na((coverage - reference_value)^2), 1L, NA_integer_)
     )
 
-  # Fallback: if no non-UNWPP denominators exist for some groups, include UNWPP as last resort
-  missing_groups <- coverage_with_reference %>%
-    filter(!is.na(squared_error)) %>%
-    distinct(across(all_of(country_only_keys)), target_population) %>%
-    anti_join(best_by_group_no_unwpp, by = c(country_only_keys, "target_population"))
+  # Build denominator mapping: each indicator → the chain's denominator
+  # BCG chain is national-only (not computed at subnational level)
+  is_chain_national_only <- startsWith(chain_prefix, "dbcg_")
 
-  if (nrow(missing_groups) > 0) {
-    warning("Some population groups only have UNWPP denominators available. Including UNWPP as fallback.")
+  denominator_mapping <- chain_coverage %>%
+    distinct(indicator_common_id, target_population, denominator) %>%
+    rename(best_denom = denominator) %>%
+    mutate(
+      second_best_denom = NA_character_,
+      best_is_national_only = is_chain_national_only,
+      second_is_national_only = NA
+    )
 
-    unwpp_group_fallbacks <- coverage_with_reference %>%
-      filter(!is.na(squared_error)) %>%
-      semi_join(missing_groups, by = c(country_only_keys, "target_population")) %>%
-      filter(source_type == "unwpp_based") %>%
-      group_by(across(all_of(country_only_keys)), target_population, denominator) %>%
-      summarise(total_error = sum(squared_error, na.rm = TRUE), .groups = "drop") %>%
-      group_by(across(all_of(country_only_keys)), target_population) %>%
-      arrange(total_error, .by_group = TRUE) %>%
-      mutate(rank = row_number()) %>%
-      ungroup() %>%
-      filter(rank <= 2) %>%
-      group_by(across(all_of(country_only_keys)), target_population) %>%
-      summarise(
-        best_denom = first(denominator),
-        second_best_denom = if(n() >= 2) nth(denominator, 2) else NA_character_,
-        best_is_national_only = identify_national_only_denominators(first(denominator)),
-        second_is_national_only = if(n() >= 2) identify_national_only_denominators(nth(denominator, 2)) else NA,
-        .groups = "drop"
-      )
-
-    group_mapping <- bind_rows(best_by_group_no_unwpp, unwpp_group_fallbacks)
+  # Add country key
+  if (use_iso) {
+    country_key <- unique(coverage_data$iso3_code)[1]
+    denominator_mapping <- denominator_mapping %>% mutate(iso3_code = country_key)
   } else {
-    group_mapping <- best_by_group_no_unwpp
+    country_key <- unique(coverage_data$admin_area_1)[1]
+    denominator_mapping <- denominator_mapping %>% mutate(admin_area_1 = country_key)
   }
-
-  # Expand group-level mapping back to per-indicator for downstream compatibility
-  denominator_mapping <- group_mapping %>%
-    inner_join(indicator_group_lookup, by = "target_population") %>%
-    select(all_of(country_only_keys), indicator_common_id, target_population,
-           best_denom, second_best_denom, best_is_national_only, second_is_national_only)
 
   # Print selected denominators (grouped by target population)
-  level_name <- if ("admin_area_3" %in% geo_keys) {
-    "admin_area_3"
-  } else if ("admin_area_2" %in% geo_keys) {
-    if ("admin_area_2" %in% names(coverage_data) && all(coverage_data$admin_area_2 == "NATIONAL", na.rm = TRUE)) {
-      "national"
-    } else {
-      "admin_area_2"
-    }
-  } else {
-    "national"
-  }
-
-  message(sprintf("  → Selected denominators for %s (by population group):", level_name))
-  group_mapping %>%
+  message(sprintf("  → Chain '%s' denominators applied to all indicators:", chain_name))
+  denominator_mapping %>%
+    distinct(target_population, best_denom) %>%
     arrange(target_population) %>%
-    mutate(msg = sprintf("     - [%s] → %s (second_best: %s)",
-                         target_population,
-                         best_denom,
-                         ifelse(is.na(second_best_denom), "none", second_best_denom))) %>%
+    mutate(msg = sprintf("     - [%s] → %s", target_population, best_denom)) %>%
     pull(msg) %>%
     walk(message)
 
-  # Step 2: Filter coverage data to use only the best denominator for each indicator (applied to all regions)
-  # and apply ranking within years for the selected denominators
-  final_result <- coverage_with_reference %>%
-    left_join(denominator_mapping %>% select(all_of(country_only_keys), indicator_common_id, best_denom),
-              by = c(country_only_keys, "indicator_common_id")) %>%
-    filter(denominator == best_denom) %>%
-    select(-best_denom) %>%
-    # Now rank within geo × indicator × year (should be rank 1 for each since we have only one denominator per indicator)
-    # But only rank where we have survey reference values
-    group_by(across(all_of(geo_keys)), indicator_common_id) %>%
-    arrange(squared_error, .by_group = TRUE) %>%
-    mutate(rank = ifelse(!is.na(squared_error), row_number(), NA_integer_)) %>%
-    ungroup()
-
   return(list(
-    coverage_comparison = final_result,
+    coverage_comparison = coverage_with_reference,
     denominator_mapping = denominator_mapping
   ))
 }
@@ -1571,8 +1606,11 @@ if (!is.null(denominators_national_results) &&
   national_coverage <- calculate_coverage(denominators_national_results, numerators_national_long)
   national_coverage <- add_denominator_labels(national_coverage)
 
+  message("  → Selecting denominator chain...")
+  selected_chain <- select_best_chain(denominators_national, DENOMINATOR_CHAIN)
+
   message("  → Comparing coverage to survey data...")
-  national_comparison_result <- compare_coverage_to_survey(national_coverage, survey_reference_national)
+  national_comparison_result <- compare_coverage_to_survey(national_coverage, survey_reference_national, selected_chain)
   national_comparison <- national_comparison_result$coverage_comparison
   national_denominator_mapping <- national_comparison_result$denominator_mapping
 
@@ -1583,28 +1621,16 @@ if (!is.null(denominators_national_results) &&
     all_coverage_data   = national_coverage
   )
 
-  # Create improved denominator summary with geographic levels
+  # Create denominator summary with geographic levels (one-chain approach)
+  # All indicators use the same chain; subnational = same as national unless chain is national-only
   message("  → Creating denominator summary by geographic level...")
   best_denom_summary <- national_denominator_mapping %>%
     mutate(
-      # National always uses best_denom (fallback to NOT_AVAILABLE if NA)
       denominator_national = if_else(is.na(best_denom), "NOT_AVAILABLE", best_denom),
-
-      # Admin2: Use best if subnational-capable, else second_best if available
-      denominator_admin2 = case_when(
-        !best_is_national_only ~ best_denom,
-        best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-        TRUE ~ "NOT_AVAILABLE"
-      ),
-
-      # Admin3: Same logic as admin2
-      denominator_admin3 = case_when(
-        !best_is_national_only ~ best_denom,
-        best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-        TRUE ~ "NOT_AVAILABLE"
-      )
+      # Subnational: same chain unless it's national-only (e.g. bcg)
+      denominator_admin2 = if_else(best_is_national_only, "NOT_AVAILABLE", best_denom),
+      denominator_admin3 = if_else(best_is_national_only, "NOT_AVAILABLE", best_denom)
     ) %>%
-    # Ensure no NULL/NA values remain in any denominator column
     mutate(
       denominator_national = replace_na(denominator_national, "NOT_AVAILABLE"),
       denominator_admin2 = replace_na(denominator_admin2, "NOT_AVAILABLE"),
@@ -1769,39 +1795,22 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         admin2_coverage <- calculate_coverage(denominators_admin2_results, numerators_admin2_long)
         admin2_coverage <- add_denominator_labels(admin2_coverage)
 
-        message("  → Applying national denominator selection to admin area 2...")
-        # Apply national mapping with fallback logic for national-only denominators
-        # MEMORY OPTIMIZATION: Break pipeline into steps to reduce memory usage
+        message("  → Applying chain '", selected_chain$chain, "' to admin area 2...")
 
-        # Step 1: Join with denominator mapping (adds columns only)
-        denom_mapping_subset <- national_denominator_mapping %>%
-          select(indicator_common_id, best_denom, second_best_denom,
-                 best_is_national_only, second_is_national_only)
-
+        # Filter to selected chain's denominators
         admin2_coverage_temp <- admin2_coverage %>%
-          left_join(denom_mapping_subset, by = "indicator_common_id")
-
-        rm(denom_mapping_subset)
-        gc(verbose = FALSE)
-
-        # Step 2: Calculate selected denominator and filter (reduces data dramatically)
-        admin2_coverage_temp <- admin2_coverage_temp %>%
-          mutate(
-            selected_denom = case_when(
-              # Best is subnational-capable → use it
-              !best_is_national_only ~ best_denom,
-              # Best is national-only, second exists and is subnational-capable → use second
-              best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-              # Both are national-only or no second_best → skip (return NA)
-              TRUE ~ NA_character_
-            )
+          inner_join(
+            national_denominator_mapping %>%
+              filter(!best_is_national_only) %>%
+              select(indicator_common_id, best_denom),
+            by = "indicator_common_id"
           ) %>%
-          filter(!is.na(selected_denom), denominator == selected_denom) %>%
-          select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom)
+          filter(denominator == best_denom) %>%
+          select(-best_denom)
 
         gc(verbose = FALSE)
 
-        # Step 3: Join with survey reference (now on much smaller dataset)
+        # Join with survey reference for diagnostics
         survey_ref_subset <- survey_reference_admin2 %>%
           select(admin_area_1, admin_area_2, year, indicator_common_id, reference_value)
 
@@ -1809,41 +1818,20 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           left_join(survey_ref_subset, by = c("admin_area_1", "admin_area_2", "year", "indicator_common_id")) %>%
           mutate(
             squared_error = if_else(!is.na(reference_value), (coverage - reference_value)^2, NA_real_),
-            rank = 1  # Add rank column for create_combined_results_table
+            rank = 1
           )
 
         rm(admin2_coverage_temp, survey_ref_subset)
         gc(verbose = FALSE)
 
-        # Print selected denominators for admin_area_2 (from national mapping)
-        message("  → Denominators used for admin_area_2 (from national selection):")
-        national_denominator_mapping %>%
-          arrange(indicator_common_id) %>%
-          mutate(
-            used_denom = case_when(
-              !best_is_national_only ~ best_denom,
-              best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-              TRUE ~ NA_character_
-            ),
-            # Only show fallback label when we're actually using second_best
-            msg = if_else(
-              best_is_national_only & !is.na(second_best_denom) & !second_is_national_only,
-              sprintf("     - %s → %s (fallback: best was %s, national-only)", indicator_common_id, used_denom, best_denom),
-              sprintf("     - %s → %s", indicator_common_id, used_denom)
-            )
-          ) %>%
-          filter(!is.na(used_denom)) %>%
-          pull(msg) %>%
-          walk(message)
-
-        # Log skipped indicators
-        skipped_indicators <- national_denominator_mapping %>%
-          filter(best_is_national_only & (is.na(second_best_denom) | second_is_national_only)) %>%
-          pull(indicator_common_id)
-
-        if (length(skipped_indicators) > 0) {
-          message("   ⚠️  SKIPPED for admin_area_2 (no subnational-capable denominator): ",
-                  paste(skipped_indicators, collapse = ", "))
+        message("  → Chain '", selected_chain$chain, "' applied to admin_area_2")
+        if (any(national_denominator_mapping$best_is_national_only)) {
+          skipped <- national_denominator_mapping %>%
+            filter(best_is_national_only) %>%
+            pull(indicator_common_id) %>%
+            unique()
+          message("   Note: ", length(skipped), " indicators skipped (chain is national-only): ",
+                  paste(skipped, collapse = ", "))
         }
 
         message("  → Creating admin area 2 combined results table...")
@@ -2021,39 +2009,22 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
           admin3_coverage <- calculate_coverage(denominators_admin3_results, numerators_admin3_long)
           admin3_coverage <- add_denominator_labels(admin3_coverage)
 
-          message("  → Applying national denominator selection to admin area 3...")
-          # Apply national mapping with fallback logic for national-only denominators
-          # MEMORY OPTIMIZATION: Break pipeline into steps to reduce memory usage
+          message("  → Applying chain '", selected_chain$chain, "' to admin area 3...")
 
-          # Step 1: Join with denominator mapping (adds columns only)
-          denom_mapping_subset <- national_denominator_mapping %>%
-            select(indicator_common_id, best_denom, second_best_denom,
-                   best_is_national_only, second_is_national_only)
-
+          # Filter to selected chain's denominators
           admin3_coverage_temp <- admin3_coverage %>%
-            left_join(denom_mapping_subset, by = "indicator_common_id")
-
-          rm(denom_mapping_subset)
-          gc(verbose = FALSE)
-
-          # Step 2: Calculate selected denominator and filter (reduces data dramatically)
-          admin3_coverage_temp <- admin3_coverage_temp %>%
-            mutate(
-              selected_denom = case_when(
-                # Best is subnational-capable → use it
-                !best_is_national_only ~ best_denom,
-                # Best is national-only, second exists and is subnational-capable → use second
-                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-                # Both are national-only or no second_best → skip (return NA)
-                TRUE ~ NA_character_
-              )
+            inner_join(
+              national_denominator_mapping %>%
+                filter(!best_is_national_only) %>%
+                select(indicator_common_id, best_denom),
+              by = "indicator_common_id"
             ) %>%
-            filter(!is.na(selected_denom), denominator == selected_denom) %>%
-            select(-best_denom, -second_best_denom, -best_is_national_only, -second_is_national_only, -selected_denom)
+            filter(denominator == best_denom) %>%
+            select(-best_denom)
 
           gc(verbose = FALSE)
 
-          # Step 3: Join with survey reference (now on much smaller dataset)
+          # Join with survey reference for diagnostics
           survey_ref_subset <- survey_reference_admin3 %>%
             select(admin_area_1, admin_area_3, year, indicator_common_id, reference_value)
 
@@ -2061,42 +2032,13 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
             left_join(survey_ref_subset, by = c("admin_area_1", "admin_area_3", "year", "indicator_common_id")) %>%
             mutate(
               squared_error = if_else(!is.na(reference_value), (coverage - reference_value)^2, NA_real_),
-              rank = 1  # Add rank column for create_combined_results_table
+              rank = 1
             )
 
           rm(admin3_coverage_temp, survey_ref_subset)
           gc(verbose = FALSE)
 
-          # Print selected denominators for admin_area_3 (from national mapping)
-          message("  → Denominators used for admin_area_3 (from national selection):")
-          national_denominator_mapping %>%
-            arrange(indicator_common_id) %>%
-            mutate(
-              used_denom = case_when(
-                !best_is_national_only ~ best_denom,
-                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only ~ second_best_denom,
-                TRUE ~ NA_character_
-              ),
-              # Only show fallback label when we're actually using second_best
-              msg = if_else(
-                best_is_national_only & !is.na(second_best_denom) & !second_is_national_only,
-                sprintf("     - %s → %s (fallback: best was %s, national-only)", indicator_common_id, used_denom, best_denom),
-                sprintf("     - %s → %s", indicator_common_id, used_denom)
-              )
-            ) %>%
-            filter(!is.na(used_denom)) %>%
-            pull(msg) %>%
-            walk(message)
-
-          # Log skipped indicators
-          skipped_indicators <- national_denominator_mapping %>%
-            filter(best_is_national_only & (is.na(second_best_denom) | second_is_national_only)) %>%
-            pull(indicator_common_id)
-
-          if (length(skipped_indicators) > 0) {
-            message("   ⚠️  SKIPPED for admin_area_3 (no subnational-capable denominator): ",
-                    paste(skipped_indicators, collapse = ", "))
-          }
+          message("  → Chain '", selected_chain$chain, "' applied to admin_area_3")
 
           message("  → Creating admin area 3 combined results table...")
           admin3_combined_results <- create_combined_results_table(
