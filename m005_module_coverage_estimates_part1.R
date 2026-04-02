@@ -14,11 +14,11 @@ UNDER5_MORTALITY_RATE <- 0.103
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
 
-DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "penta1"
+
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 25
+# Last edit: 2026 Apr 02
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ library(purrr)
 # Use local files for testing (comment out GitHub URLs when testing local changes)
 PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/survey_data_unified.csv"
 PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/population_estimates_only.csv"
-
+DENOMINATOR_CHAIN <- "auto"
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
 MIN_YEAR <- 2000  # Set a fixed minimum year for filtering
@@ -726,7 +726,17 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
       full_join(survey_data, by = join_keys) %>%
       { if (!is.null(population_data)) full_join(., population_data, by = join_keys_pop) else . }
   }
-  
+
+  # When joining by iso3_code, admin_area_1 gets .x/.y suffixes — coalesce back
+  if (use_iso) {
+    a1_cols <- grep("^admin_area_1", names(data), value = TRUE)
+    if (length(a1_cols) > 1) {
+      data <- data %>%
+        mutate(admin_area_1 = coalesce(!!!syms(a1_cols))) %>%
+        select(-any_of(setdiff(a1_cols, "admin_area_1")))
+    }
+  }
+
   indicator_vars <- list(
     anc1 = c("countanc1", "anc1carry"),
     anc4 = c("countanc4", "anc4carry"),
