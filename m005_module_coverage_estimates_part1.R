@@ -737,6 +737,14 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     }
   }
 
+  # Fill any remaining NA admin_area_1 (from extra population/survey years via full_join)
+  if ("admin_area_1" %in% names(data) && any(is.na(data$admin_area_1))) {
+    fill_val <- data$admin_area_1[!is.na(data$admin_area_1)][1]
+    if (!is.na(fill_val)) {
+      data$admin_area_1[is.na(data$admin_area_1)] <- fill_val
+    }
+  }
+
   indicator_vars <- list(
     anc1 = c("countanc1", "anc1carry"),
     anc4 = c("countanc4", "anc4carry"),
