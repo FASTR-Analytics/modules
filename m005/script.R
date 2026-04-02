@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 25
+# Last edit: 2026 Apr 02
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -726,7 +726,25 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
       full_join(survey_data, by = join_keys) %>%
       { if (!is.null(population_data)) full_join(., population_data, by = join_keys_pop) else . }
   }
-  
+
+  # When joining by iso3_code, admin_area_1 gets .x/.y suffixes — coalesce back
+  if (use_iso) {
+    a1_cols <- grep("^admin_area_1", names(data), value = TRUE)
+    if (length(a1_cols) > 1) {
+      data <- data %>%
+        mutate(admin_area_1 = coalesce(!!!syms(a1_cols))) %>%
+        select(-any_of(setdiff(a1_cols, "admin_area_1")))
+    }
+  }
+
+  # Fill any remaining NA admin_area_1 (from extra population/survey years via full_join)
+  if ("admin_area_1" %in% names(data) && any(is.na(data$admin_area_1))) {
+    fill_val <- data$admin_area_1[!is.na(data$admin_area_1)][1]
+    if (!is.na(fill_val)) {
+      data$admin_area_1[is.na(data$admin_area_1)] <- fill_val
+    }
+  }
+
   indicator_vars <- list(
     anc1 = c("countanc1", "anc1carry"),
     anc4 = c("countanc4", "anc4carry"),
