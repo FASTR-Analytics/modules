@@ -256,7 +256,7 @@
               },
               "footnote": {
                 "en": "Yearly volume is adjusted for both outliers and completeness.",
-                "fr": "Le volume annuel est ajusté pour les valeurs aberrantes CLAUDE TO DO."
+                "fr": "Le volume annuel est ajusté à la fois pour les valeurs aberrantes et la complétude."
               }
             }
           }
