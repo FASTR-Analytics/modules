@@ -1,0 +1,304 @@
+{
+  "label": {
+    "en": "M7. National Health Sector Scorecard (NHSS)",
+    "fr": "M7. Tableau de bord du secteur national de la sante (NHSS)"
+  },
+  "prerequisites": [
+    "m002"
+  ],
+  "assetsToImport": [
+    "total_population_{COUNTRY_ISO3}.csv"
+  ],
+  "dataSources": [
+    {
+      "replacementString": "M2_adjusted_data.csv",
+      "sourceType": "results_object",
+      "resultsObjectId": "M2_adjusted_data.csv",
+      "moduleId": "m002"
+    }
+  ],
+  "resultsObjects": [
+    {
+      "id": "M7_output_scorecard_admin_area_2.csv",
+      "description": "Scorecard indicators at zone level (long format)",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "quarter_id": "INTEGER NOT NULL",
+        "year": "INTEGER NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "value": "NUMERIC"
+      }
+    },
+    {
+      "id": "M7_output_scorecard_admin_area_3.csv",
+      "description": "Scorecard indicators at state level (long format)",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "quarter_id": "INTEGER NOT NULL",
+        "year": "INTEGER NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "value": "NUMERIC"
+      }
+    },
+    {
+      "id": "M7_output_scorecard_admin_area_4.csv",
+      "description": "Scorecard indicators at LGA level (long format)",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "admin_area_4": "TEXT NOT NULL",
+        "quarter_id": "INTEGER NOT NULL",
+        "year": "INTEGER NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "value": "NUMERIC"
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "id": "m7-01",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "ANC4/ANC1 <20wks ratio",
+        "fr": "Ratio CPN4/CPN1 <20 semaines"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Ratio of 4th ANC visits to 1st ANC visits before 20 weeks gestation. Measures ANC continuity among early attendees.",
+          "fr": "Ratio des 4e visites CPN aux 1eres visites CPN avant 20 semaines de grossesse."
+        }
+      }
+    },
+    {
+      "id": "m7-02",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "ANC4/ANC1 ratio",
+        "fr": "Ratio CPN4/CPN1"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Ratio of 4th ANC visits to all 1st ANC visits. Measures ANC continuity (dropout between 1st and 4th visit).",
+          "fr": "Ratio des 4e visites CPN a toutes les 1eres visites CPN."
+        }
+      }
+    },
+    {
+      "id": "m7-03",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "Skilled birth attendance rate",
+        "fr": "Taux d'accouchement assiste par du personnel qualifie"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Deliveries attended by skilled birth attendants as percentage of all reported deliveries. Institutional denominator.",
+          "fr": "Accouchements assistes par du personnel qualifie en pourcentage de tous les accouchements declares."
+        }
+      }
+    },
+    {
+      "id": "m7-04",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "New FP acceptors per women of reproductive age",
+        "fr": "Nouvelles utilisatrices de PF par femmes en age de procreer"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "New family planning acceptors as percentage of estimated women of reproductive age (15-49). Denominator: total_population x 5.5%.",
+          "fr": "Nouvelles utilisatrices de planification familiale en pourcentage des femmes en age de procreer estimees."
+        }
+      }
+    },
+    {
+      "id": "m7-05",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "ACT treatment for uncomplicated malaria",
+        "fr": "Traitement ACT pour paludisme non complique"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Persons with confirmed uncomplicated malaria treated with ACT as percentage of confirmed uncomplicated malaria cases (or malaria positive if uncomplicated not available).",
+          "fr": "Personnes atteintes de paludisme non complique confirme traitees par ACT."
+        }
+      }
+    },
+    {
+      "id": "m7-06",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "Penta3 coverage",
+        "fr": "Couverture Penta3"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Penta3 doses given as percentage of estimated quarterly births. Denominator: total_population x 1%.",
+          "fr": "Doses de Penta3 administrees en pourcentage des naissances trimestrielles estimees."
+        }
+      }
+    },
+    {
+      "id": "m7-07",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "Fully immunized coverage",
+        "fr": "Couverture vaccination complete"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Children fully immunized as percentage of estimated quarterly births. Denominator: total_population x 1%.",
+          "fr": "Enfants completement vaccines en pourcentage des naissances trimestrielles estimees."
+        }
+      }
+    },
+    {
+      "id": "m7-08",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "Hypertension new cases per 10,000 person-years",
+        "fr": "Nouveaux cas d'hypertension pour 10 000 personnes-annees"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "number",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "New suspected hypertension cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
+          "fr": "Nouveaux cas suspects d'hypertension pour 10 000 personnes-annees."
+        }
+      }
+    },
+    {
+      "id": "m7-09",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "Diabetes new cases per 10,000 person-years",
+        "fr": "Nouveaux cas de diabete pour 10 000 personnes-annees"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "number",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "New suspected diabetes cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
+          "fr": "Nouveaux cas suspects de diabete pour 10 000 personnes-annees."
+        }
+      }
+    },
+    {
+      "id": "m7-10",
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
+      "label": {
+        "en": "NHMIS timeliness and completeness",
+        "fr": "Ponctualite et completude du SNIS"
+      },
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "requiredDisaggregationOptions": [],
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id",
+        "year"
+      ],
+      "aiDescription": {
+        "summary": {
+          "en": "Percentage of expected facility reports that were submitted on time AND contained data (positive value in General Attendance, OPD, or Penta3). Derived at facility-month level then aggregated.",
+          "fr": "Pourcentage de rapports attendus soumis a temps ET contenant des donnees. Derive au niveau etablissement-mois puis agrege."
+        }
+      }
+    }
+  ],
+  "scriptGenerationType": "template",
+  "configRequirements": {
+    "parameters": []
+  }
+}
