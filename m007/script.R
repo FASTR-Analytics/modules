@@ -14,7 +14,6 @@ SELECTED_COUNT_VARIABLE <- "count_final_none"
 #
 # OUTPUTS (one per geo level):
 #   M7_output_scorecard_{level}.csv         — Scorecard indicators (long format, areas + national)
-#   M7_output_scorecard_summary_{level}.csv — Raw quarterly counts by area (debug)
 #
 # Load Required Libraries -----------------------------------------------------------------------------------
 library(dplyr)
