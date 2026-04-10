@@ -3,12 +3,8 @@
     "en": "M7. National Health Sector Scorecard (NHSS)",
     "fr": "M7. Tableau de bord du secteur national de la sante (NHSS)"
   },
-  "prerequisites": [
-    "m002"
-  ],
-  "assetsToImport": [
-    "total_population_{COUNTRY_ISO3}.csv"
-  ],
+  "prerequisites": ["m002"],
+  "assetsToImport": ["total_population_NGA.csv"],
   "dataSources": [
     {
       "replacementString": "M2_adjusted_data.csv",
@@ -63,16 +59,11 @@
         "en": "ANC4/ANC1 <20wks ratio",
         "fr": "Ratio CPN4/CPN1 <20 semaines"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Ratio of 4th ANC visits to 1st ANC visits before 20 weeks gestation. Measures ANC continuity among early attendees.",
@@ -113,16 +104,11 @@
         "en": "ANC4/ANC1 ratio",
         "fr": "Ratio CPN4/CPN1"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Ratio of 4th ANC visits to all 1st ANC visits. Measures ANC continuity (dropout between 1st and 4th visit).",
@@ -163,16 +149,11 @@
         "en": "Skilled birth attendance rate",
         "fr": "Taux d'accouchement assiste par du personnel qualifie"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Deliveries attended by skilled birth attendants as percentage of all reported deliveries. Institutional denominator.",
@@ -213,16 +194,11 @@
         "en": "New FP acceptors per women of reproductive age",
         "fr": "Nouvelles utilisatrices de PF par femmes en age de procreer"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "New family planning acceptors as percentage of estimated women of reproductive age (15-49). Denominator: total_population x 5.5%.",
@@ -263,16 +239,11 @@
         "en": "ACT treatment for uncomplicated malaria",
         "fr": "Traitement ACT pour paludisme non complique"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Persons with confirmed uncomplicated malaria treated with ACT as percentage of confirmed uncomplicated malaria cases (or malaria positive if uncomplicated not available).",
@@ -313,16 +284,11 @@
         "en": "Penta3 coverage",
         "fr": "Couverture Penta3"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Penta3 doses given as percentage of estimated quarterly births. Denominator: total_population x 1%.",
@@ -363,16 +329,11 @@
         "en": "Fully immunized coverage",
         "fr": "Couverture vaccination complete"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Children fully immunized as percentage of estimated quarterly births. Denominator: total_population x 1%.",
@@ -413,16 +374,11 @@
         "en": "Hypertension new cases per 10,000 person-years",
         "fr": "Nouveaux cas d'hypertension pour 10 000 personnes-annees"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "number",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "New suspected hypertension cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
@@ -463,16 +419,11 @@
         "en": "Diabetes new cases per 10,000 person-years",
         "fr": "Nouveaux cas de diabete pour 10 000 personnes-annees"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "number",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "New suspected diabetes cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
@@ -513,16 +464,11 @@
         "en": "NHMIS timeliness and completeness",
         "fr": "Ponctualite et completude du SNIS"
       },
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id",
-        "year"
-      ],
+      "periodOptions": ["quarter_id", "year"],
       "aiDescription": {
         "summary": {
           "en": "Percentage of expected facility reports that were submitted on time AND contained data (positive value in General Attendance, OPD, or Penta3). Derived at facility-month level then aggregated.",
@@ -559,6 +505,47 @@
   ],
   "scriptGenerationType": "template",
   "configRequirements": {
-    "parameters": []
+    "parameters": [
+      {
+        "replacementString": "PREGNANT_WOMEN_PCT",
+        "description": "Quarterly pregnant women as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.0125"
+        }
+      },
+      {
+        "replacementString": "BIRTHS_PCT",
+        "description": "Quarterly births as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.01"
+        }
+      },
+      {
+        "replacementString": "WOMEN_15_49_PCT",
+        "description": "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.055"
+        }
+      },
+      {
+        "replacementString": "CHILDREN_U5_PCT",
+        "description": "Quarterly children under 5 as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.03"
+        }
+      },
+      {
+        "replacementString": "INFANTS_0_6M_PCT",
+        "description": "Quarterly infants 0-6 months as proportion of total population",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.02"
+        }
+      }
+    ]
   }
 }

@@ -1,6 +1,12 @@
 COUNTRY_ISO3 <- "NGA"
 SELECTED_COUNT_VARIABLE <- "count_final_none"
 
+# Population assumptions (quarterly rates)
+PREGNANT_WOMEN_PCT <- 0.05 * 0.25
+BIRTHS_PCT <- 0.04 * 0.25
+WOMEN_15_49_PCT <- 0.22 * 0.25
+CHILDREN_U5_PCT <- 0.12 * 0.25
+INFANTS_0_6M_PCT <- 0.02
 
 
 #-------------------------------------------------------------------------------------------------------------
@@ -22,7 +28,7 @@ library(tidyr)
 
 # Load Data ------------------------------------------------------------------------------------------------
 ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
-POPULATION_FILE <- paste0("total_population_", COUNTRY_ISO3, ".csv")
+POPULATION_FILE <- "total_population_NGA.csv"
 adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
 population <- read_csv(POPULATION_FILE, show_col_types = FALSE)
 if ("indicator_common_id" %in% names(population)) {
@@ -48,7 +54,7 @@ if (length(content_indicators) > 0 && "nhmis_actual_reports_ontime" %in% unique(
     mutate(indicator_common_id = "nhmis_timely_and_data")
   message(sprintf("  %d/%d on-time reports also have content (%.0f%% empty filtered out)",
                   nrow(timely_data_rows), nrow(ontime_rows),
-                  (1 - nrow(timely_data_rows) / nrow(ontime_rows)) * 100))
+                  (1 - nrow(timely_data_rows) / nrow(ontime_rows))))
   adjusted_data <- bind_rows(adjusted_data, timely_data_rows)
 }
 
@@ -58,12 +64,6 @@ SCORECARD_QUARTER <- 4
 
 
 
-# Population assumptions (quarterly rates)
-PREGNANT_WOMEN_PCT <- 0.05 * 0.25
-BIRTHS_PCT <- 0.04 * 0.25
-WOMEN_15_49_PCT <- 0.22 * 0.25
-CHILDREN_U5_PCT <- 0.12 * 0.25
-INFANTS_0_6M_PCT <- 0.02
 
 # Helper: quarter months from quarter number
 quarter_months <- function(q) {
@@ -164,41 +164,41 @@ calculate_scorecard <- function(data, geo_cols) {
     mutate(
       # 1: ANC4/ANC1 <20wks Ratio
       anc4_anc1_before20_ratio = if(has_col("anc1_before20") & has_col("anc4")) {
-        ifelse(anc1_before20 == 0, NA, (anc4 / anc1_before20) * 100)
+        ifelse(anc1_before20 == 0, NA, (anc4 / anc1_before20))
       } else NA,
 
       # 2: ANC4/ANC1 Ratio
       anc4_anc1_ratio = if(has_col("anc1") & has_col("anc4")) {
-        ifelse(anc1 == 0, NA, (anc4 / anc1) * 100)
+        ifelse(anc1 == 0, NA, (anc4 / anc1))
       } else NA,
 
       # 3: Skilled Birth Attendance
       skilled_birth_attendance = if(has_col("delivery") & has_col("sba")) {
-        ifelse(delivery == 0, NA, (sba / delivery) * 100)
+        ifelse(delivery == 0, NA, (sba / delivery))
       } else NA,
 
       # 4: New FP Acceptors / Women of Reproductive Age
       new_fp_acceptors_rate = if(has_col("new_fp")) {
-        (new_fp / (total_population * WOMEN_15_49_PCT)) * 100
+        (new_fp / (total_population * WOMEN_15_49_PCT))
       } else NA,
 
       # 5: ACT for Uncomplicated Malaria
       #    mal_treatment (ouzURM9c1FI) / mal_confirmed_uncomplicated (HdtaLx63988)
       #    Fallback: mal_treatment / mal_positive
       act_malaria_treatment = if(has_col("mal_treatment") & has_col("mal_confirmed_uncomplicated")) {
-        ifelse(mal_confirmed_uncomplicated == 0, NA, (mal_treatment / mal_confirmed_uncomplicated) * 100)
+        ifelse(mal_confirmed_uncomplicated == 0, NA, (mal_treatment / mal_confirmed_uncomplicated))
       } else if(has_col("mal_treatment") & has_col("mal_positive")) {
-        ifelse(mal_positive == 0, NA, (mal_treatment / mal_positive) * 100)
+        ifelse(mal_positive == 0, NA, (mal_treatment / mal_positive))
       } else NA,
 
       # 6: Penta3 Coverage
       penta3_coverage = if(has_col("penta3")) {
-        (penta3 / (total_population * BIRTHS_PCT)) * 100
+        (penta3 / (total_population * BIRTHS_PCT))
       } else NA,
 
       # 7: Fully Immunized Coverage
       fully_immunized_coverage = if(has_col("fully_immunized")) {
-        (fully_immunized / (total_population * BIRTHS_PCT)) * 100
+        (fully_immunized / (total_population * BIRTHS_PCT))
       } else NA,
 
       # 8: HTN New Cases per 10,000 person-years
@@ -213,9 +213,9 @@ calculate_scorecard <- function(data, geo_cols) {
 
       # 10: NHMIS Timeliness (on-time + content check / expected)
       nhmis_data_timeliness_final = if(has_col("nhmis_timely_and_data") & has_col("nhmis_expected_reports")) {
-        ifelse(nhmis_expected_reports == 0, NA, (nhmis_timely_and_data / nhmis_expected_reports) * 100)
+        ifelse(nhmis_expected_reports == 0, NA, (nhmis_timely_and_data / nhmis_expected_reports))
       } else if(has_col("nhmis_actual_reports_ontime") & has_col("nhmis_expected_reports")) {
-        ifelse(nhmis_expected_reports == 0, NA, (nhmis_actual_reports_ontime / nhmis_expected_reports) * 100)
+        ifelse(nhmis_expected_reports == 0, NA, (nhmis_actual_reports_ontime / nhmis_expected_reports))
       } else NA
     ) %>%
     select(all_of(geo_cols), anc4_anc1_before20_ratio:nhmis_data_timeliness_final) %>%
