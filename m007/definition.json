@@ -507,6 +507,33 @@
   "configRequirements": {
     "parameters": [
       {
+        "description": "Count value to use",
+        "replacementString": "SELECTED_COUNT_VARIABLE",
+        "input": {
+          "inputType": "select",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "valueType": "string",
+          "defaultValue": "count_final_none"
+        }
+      },
+      {
         "replacementString": "PREGNANT_WOMEN_PCT",
         "description": "Quarterly pregnant women as proportion of total population (annual rate x 0.25)",
         "input": {
