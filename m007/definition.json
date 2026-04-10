@@ -77,6 +77,32 @@
         "summary": {
           "en": "Ratio of 4th ANC visits to 1st ANC visits before 20 weeks gestation. Measures ANC continuity among early attendees.",
           "fr": "Ratio des 4e visites CPN aux 1eres visites CPN avant 20 semaines de grossesse."
+        },
+        "methodology": {
+          "en": "Calculated as ANC4 / ANC1 (before 20 weeks) x 100. Numerator and denominator from HMIS facility reports aggregated to state and quarter level.",
+          "fr": "Calcule comme CPN4 / CPN1 (avant 20 semaines) x 100. Numerateur et denominateur issus des rapports HMIS agreges par etat et trimestre."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better ANC continuity among women who started care early. Values above 100% suggest data quality issues.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure continuite des CPN. Des valeurs superieures a 100% suggerent des problemes de qualite."
+        },
+        "typicalRange": {
+          "en": "30-80% in most sub-Saharan African settings.",
+          "fr": "30-80% dans la plupart des contextes d'Afrique subsaharienne."
+        },
+        "useCases": [
+          {
+            "en": "Monitor ANC dropout between 1st and 4th visits",
+            "fr": "Surveiller l'abandon entre la 1ere et la 4e visite CPN"
+          },
+          {
+            "en": "Compare ANC continuity across states",
+            "fr": "Comparer la continuite des CPN entre les etats"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to identify areas with high ANC dropout. Compare quarters to detect seasonal patterns.",
+          "fr": "Desagreger par admin_area_3 (etat) pour identifier les zones a fort abandon. Comparer les trimestres pour detecter les tendances saisonnieres."
         }
       }
     },
@@ -101,6 +127,32 @@
         "summary": {
           "en": "Ratio of 4th ANC visits to all 1st ANC visits. Measures ANC continuity (dropout between 1st and 4th visit).",
           "fr": "Ratio des 4e visites CPN a toutes les 1eres visites CPN."
+        },
+        "methodology": {
+          "en": "Calculated as ANC4 / ANC1 x 100. Both values from HMIS facility reports aggregated to state and quarter level.",
+          "fr": "Calcule comme CPN4 / CPN1 x 100. Les deux valeurs proviennent des rapports HMIS agreges par etat et trimestre."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better continuity of antenatal care. Values above 100% may indicate data quality issues or women attending ANC4 without prior ANC1 registration at the same facility.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure continuite des soins prenataux. Des valeurs superieures a 100% peuvent indiquer des problemes de qualite des donnees."
+        },
+        "typicalRange": {
+          "en": "30-80% in most sub-Saharan African settings.",
+          "fr": "30-80% dans la plupart des contextes d'Afrique subsaharienne."
+        },
+        "useCases": [
+          {
+            "en": "Track ANC continuity over time",
+            "fr": "Suivre la continuite des CPN dans le temps"
+          },
+          {
+            "en": "Identify states with high ANC dropout",
+            "fr": "Identifier les etats avec un fort abandon des CPN"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to compare ANC continuity. Use quarterly trends to assess programme impact.",
+          "fr": "Desagreger par admin_area_3 (etat) pour comparer la continuite. Utiliser les tendances trimestrielles pour evaluer l'impact des programmes."
         }
       }
     },
@@ -125,6 +177,32 @@
         "summary": {
           "en": "Deliveries attended by skilled birth attendants as percentage of all reported deliveries. Institutional denominator.",
           "fr": "Accouchements assistes par du personnel qualifie en pourcentage de tous les accouchements declares."
+        },
+        "methodology": {
+          "en": "Calculated as SBA / deliveries x 100. Uses institutional denominator (total deliveries reported by facilities).",
+          "fr": "Calcule comme accouchements assistes / accouchements x 100. Utilise le denominateur institutionnel."
+        },
+        "interpretation": {
+          "en": "Higher values indicate greater access to skilled care during delivery. Values near or above 100% are expected since denominator is institutional deliveries.",
+          "fr": "Des valeurs plus elevees indiquent un meilleur acces aux soins qualifies. Des valeurs proches ou superieures a 100% sont attendues."
+        },
+        "typicalRange": {
+          "en": "80-100% when using institutional denominator.",
+          "fr": "80-100% avec le denominateur institutionnel."
+        },
+        "useCases": [
+          {
+            "en": "Monitor quality of delivery care at facility level",
+            "fr": "Surveiller la qualite des soins a l'accouchement"
+          },
+          {
+            "en": "Identify states where SBA coverage lags",
+            "fr": "Identifier les etats ou la couverture en personnel qualifie est faible"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to identify areas with lower skilled attendance. Compare quarters to track trends.",
+          "fr": "Desagreger par admin_area_3 (etat) pour identifier les zones a faible couverture. Comparer les trimestres pour suivre les tendances."
         }
       }
     },
@@ -149,6 +227,32 @@
         "summary": {
           "en": "New family planning acceptors as percentage of estimated women of reproductive age (15-49). Denominator: total_population x 5.5%.",
           "fr": "Nouvelles utilisatrices de planification familiale en pourcentage des femmes en age de procreer estimees."
+        },
+        "methodology": {
+          "en": "Calculated as modern_fp / (total_population x 0.055) x 100. Population-based denominator estimates quarterly women 15-49 from total population.",
+          "fr": "Calcule comme PF_moderne / (population_totale x 0.055) x 100. Denominateur base sur la population estimant les femmes 15-49 ans."
+        },
+        "interpretation": {
+          "en": "Higher values indicate greater uptake of modern family planning. Very high values may reflect denominator underestimation or high demand.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure adoption de la planification familiale moderne."
+        },
+        "typicalRange": {
+          "en": "2-15% per quarter in most sub-Saharan African settings.",
+          "fr": "2-15% par trimestre dans la plupart des contextes d'Afrique subsaharienne."
+        },
+        "useCases": [
+          {
+            "en": "Track family planning programme performance",
+            "fr": "Suivre la performance des programmes de planification familiale"
+          },
+          {
+            "en": "Compare FP uptake across states",
+            "fr": "Comparer l'adoption de la PF entre les etats"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to identify areas with low FP uptake. Quarterly trends help assess programme impact.",
+          "fr": "Desagreger par admin_area_3 (etat) pour identifier les zones a faible adoption. Les tendances trimestrielles aident a evaluer l'impact."
         }
       }
     },
@@ -173,6 +277,32 @@
         "summary": {
           "en": "Persons with confirmed uncomplicated malaria treated with ACT as percentage of confirmed uncomplicated malaria cases (or malaria positive if uncomplicated not available).",
           "fr": "Personnes atteintes de paludisme non complique confirme traitees par ACT."
+        },
+        "methodology": {
+          "en": "Calculated as malaria_act_treatment / malaria_uncomplicated (or malaria_positive) x 100. Institutional denominator from HMIS facility reports.",
+          "fr": "Calcule comme traitement_ACT / paludisme_non_complique (ou paludisme_positif) x 100. Denominateur institutionnel."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better adherence to malaria treatment protocols. Values above 100% may indicate data quality issues or treatment of clinically diagnosed cases.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure adherence aux protocoles de traitement. Des valeurs superieures a 100% peuvent indiquer des problemes de qualite."
+        },
+        "typicalRange": {
+          "en": "60-100% in settings with adequate ACT supply.",
+          "fr": "60-100% dans les contextes avec un approvisionnement adequat en ACT."
+        },
+        "useCases": [
+          {
+            "en": "Monitor malaria treatment protocol adherence",
+            "fr": "Surveiller l'adherence aux protocoles de traitement du paludisme"
+          },
+          {
+            "en": "Identify states with ACT supply or treatment gaps",
+            "fr": "Identifier les etats avec des lacunes en approvisionnement ou traitement ACT"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to find treatment gaps. Seasonal trends important given malaria transmission patterns.",
+          "fr": "Desagreger par admin_area_3 (etat) pour trouver les lacunes. Les tendances saisonnieres sont importantes."
         }
       }
     },
@@ -197,6 +327,32 @@
         "summary": {
           "en": "Penta3 doses given as percentage of estimated quarterly births. Denominator: total_population x 1%.",
           "fr": "Doses de Penta3 administrees en pourcentage des naissances trimestrielles estimees."
+        },
+        "methodology": {
+          "en": "Calculated as penta3 / (total_population x 0.01) x 100. Denominator estimates quarterly births as 1% of total population.",
+          "fr": "Calcule comme penta3 / (population_totale x 0.01) x 100. Le denominateur estime les naissances trimestrielles a 1% de la population."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better immunization programme performance. Values above 100% may reflect population denominator issues or cross-boundary service delivery.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure performance du programme de vaccination. Des valeurs superieures a 100% peuvent refleter des problemes de denominateur."
+        },
+        "typicalRange": {
+          "en": "40-90% in most sub-Saharan African settings.",
+          "fr": "40-90% dans la plupart des contextes d'Afrique subsaharienne."
+        },
+        "useCases": [
+          {
+            "en": "Track routine immunization coverage",
+            "fr": "Suivre la couverture vaccinale de routine"
+          },
+          {
+            "en": "Identify states with low Penta3 uptake",
+            "fr": "Identifier les etats a faible couverture Penta3"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to identify immunization gaps. Quarterly trends help detect supply or demand-side issues.",
+          "fr": "Desagreger par admin_area_3 (etat) pour identifier les lacunes. Les tendances trimestrielles aident a detecter les problemes."
         }
       }
     },
@@ -221,6 +377,32 @@
         "summary": {
           "en": "Children fully immunized as percentage of estimated quarterly births. Denominator: total_population x 1%.",
           "fr": "Enfants completement vaccines en pourcentage des naissances trimestrielles estimees."
+        },
+        "methodology": {
+          "en": "Calculated as fully_immunized / (total_population x 0.01) x 100. Denominator estimates quarterly births as 1% of total population.",
+          "fr": "Calcule comme completement_vaccines / (population_totale x 0.01) x 100. Le denominateur estime les naissances trimestrielles a 1% de la population."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better completion of the immunization schedule. Significant gap between Penta3 and fully immunized suggests dropout during the schedule.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure completion du calendrier vaccinal. Un ecart significatif avec Penta3 suggere un abandon."
+        },
+        "typicalRange": {
+          "en": "30-80% in most sub-Saharan African settings.",
+          "fr": "30-80% dans la plupart des contextes d'Afrique subsaharienne."
+        },
+        "useCases": [
+          {
+            "en": "Monitor completion of childhood immunization schedule",
+            "fr": "Surveiller la completion du calendrier vaccinal infantile"
+          },
+          {
+            "en": "Compare with Penta3 to assess immunization dropout",
+            "fr": "Comparer avec Penta3 pour evaluer l'abandon vaccinal"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to find areas with high dropout. Compare with Penta3 coverage at the same level.",
+          "fr": "Desagreger par admin_area_3 (etat) pour trouver les zones a fort abandon. Comparer avec la couverture Penta3."
         }
       }
     },
@@ -245,6 +427,32 @@
         "summary": {
           "en": "New suspected hypertension cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
           "fr": "Nouveaux cas suspects d'hypertension pour 10 000 personnes-annees."
+        },
+        "methodology": {
+          "en": "Calculated as hypertension_new / (total_population x 0.25) x 10000. Converts quarterly count to annualized rate per 10,000 person-years.",
+          "fr": "Calcule comme hypertension_nouveaux / (population_totale x 0.25) x 10000. Convertit le nombre trimestriel en taux annualise pour 10 000 personnes-annees."
+        },
+        "interpretation": {
+          "en": "Higher values indicate greater case detection, which may reflect better screening or higher disease burden. Trends over time more informative than absolute values.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure detection des cas. Les tendances dans le temps sont plus informatives que les valeurs absolues."
+        },
+        "typicalRange": {
+          "en": "Varies widely by setting and screening capacity; 10-200 per 10,000 person-years.",
+          "fr": "Varie largement selon le contexte et la capacite de depistage; 10-200 pour 10 000 personnes-annees."
+        },
+        "useCases": [
+          {
+            "en": "Monitor NCD screening and detection at state level",
+            "fr": "Surveiller le depistage et la detection des MNT au niveau des etats"
+          },
+          {
+            "en": "Track trends in hypertension case finding",
+            "fr": "Suivre les tendances dans la detection des cas d'hypertension"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to compare NCD detection rates. Quarterly trends help assess screening programme scale-up.",
+          "fr": "Desagreger par admin_area_3 (etat) pour comparer les taux de detection. Les tendances trimestrielles aident a evaluer la montee en charge."
         }
       }
     },
@@ -269,6 +477,32 @@
         "summary": {
           "en": "New suspected diabetes cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
           "fr": "Nouveaux cas suspects de diabete pour 10 000 personnes-annees."
+        },
+        "methodology": {
+          "en": "Calculated as diabetes_new / (total_population x 0.25) x 10000. Converts quarterly count to annualized rate per 10,000 person-years.",
+          "fr": "Calcule comme diabete_nouveaux / (population_totale x 0.25) x 10000. Convertit le nombre trimestriel en taux annualise pour 10 000 personnes-annees."
+        },
+        "interpretation": {
+          "en": "Higher values indicate greater case detection, which may reflect better screening or higher disease burden. Trends over time more informative than absolute values.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure detection des cas. Les tendances sont plus informatives que les valeurs absolues."
+        },
+        "typicalRange": {
+          "en": "Varies widely by setting and screening capacity; 5-100 per 10,000 person-years.",
+          "fr": "Varie largement selon le contexte et la capacite de depistage; 5-100 pour 10 000 personnes-annees."
+        },
+        "useCases": [
+          {
+            "en": "Monitor NCD screening and detection at state level",
+            "fr": "Surveiller le depistage et la detection des MNT au niveau des etats"
+          },
+          {
+            "en": "Track trends in diabetes case finding",
+            "fr": "Suivre les tendances dans la detection des cas de diabete"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to compare NCD detection rates. Quarterly trends help assess screening programme scale-up.",
+          "fr": "Desagreger par admin_area_3 (etat) pour comparer les taux de detection. Les tendances trimestrielles aident a evaluer la montee en charge."
         }
       }
     },
@@ -293,6 +527,32 @@
         "summary": {
           "en": "Percentage of expected facility reports that were submitted on time AND contained data (positive value in General Attendance, OPD, or Penta3). Derived at facility-month level then aggregated.",
           "fr": "Pourcentage de rapports attendus soumis a temps ET contenant des donnees. Derive au niveau etablissement-mois puis agrege."
+        },
+        "methodology": {
+          "en": "Calculated at facility-month level: a report is 'timely and complete' if submitted by deadline AND contains at least one positive value for key indicators. Aggregated to state-quarter as percentage of expected reports.",
+          "fr": "Calcule au niveau etablissement-mois: un rapport est 'ponctuel et complet' s'il est soumis avant la date limite ET contient au moins une valeur positive. Agrege en pourcentage des rapports attendus."
+        },
+        "interpretation": {
+          "en": "Higher values indicate better HMIS reporting performance. Low values may indicate systemic reporting challenges or data pipeline issues rather than service delivery problems.",
+          "fr": "Des valeurs plus elevees indiquent une meilleure performance de reporting HMIS. Des valeurs basses peuvent indiquer des problemes systemiques de reporting."
+        },
+        "typicalRange": {
+          "en": "50-95% depending on HMIS maturity and reporting infrastructure.",
+          "fr": "50-95% selon la maturite du HMIS et l'infrastructure de reporting."
+        },
+        "useCases": [
+          {
+            "en": "Assess HMIS data quality and reporting reliability",
+            "fr": "Evaluer la qualite des donnees HMIS et la fiabilite du reporting"
+          },
+          {
+            "en": "Identify states with weak reporting systems",
+            "fr": "Identifier les etats avec des systemes de reporting faibles"
+          }
+        ],
+        "disaggregationGuidance": {
+          "en": "Disaggregate by admin_area_3 (state) to identify reporting gaps. Low timeliness may indicate infrastructure or capacity issues requiring targeted support.",
+          "fr": "Desagreger par admin_area_3 (etat) pour identifier les lacunes de reporting. Une faible ponctualite peut indiquer des problemes necessitant un soutien cible."
         }
       }
     }
