@@ -6,7 +6,7 @@ SELECTED_COUNT_VARIABLE <- "count_final_none"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: NATIONAL HEALTH SECTOR SCORECARD (NHSS)
-# Last edit: 2026 Feb 25
+# Last edit: 2026 Apr 09
 #
 # Calculates NHSS scorecard indicators at multiple geographic levels.
 # All indicator data comes from the M2 adjusted data pipeline.
@@ -14,7 +14,6 @@ SELECTED_COUNT_VARIABLE <- "count_final_none"
 #
 # OUTPUTS (one per geo level):
 #   M7_output_scorecard_{level}.csv         — Scorecard indicators (long format, areas + national)
-#   M7_output_scorecard_summary_{level}.csv — Raw quarterly counts by area (debug)
 #
 # Load Required Libraries -----------------------------------------------------------------------------------
 library(dplyr)
@@ -197,11 +196,9 @@ calculate_scorecard <- function(data, geo_cols) {
         (penta3 / (total_population * BIRTHS_PCT)) * 100
       } else NA,
 
-      # 7: Measles1 Coverage (surviving infants denominator: cCiUHE2KeQ0)
-      under1_fully_immunised_mcv1 = if(has_col("measles1") & has_col("surviving_infants")) {
-        ifelse(surviving_infants == 0, NA, (measles1 / surviving_infants) * 100)
-      } else if(has_col("measles1")) {
-        (measles1 / (total_population * BIRTHS_PCT)) * 100
+      # 7: Fully Immunized Coverage
+      fully_immunized_coverage = if(has_col("fully_immunized")) {
+        (fully_immunized / (total_population * BIRTHS_PCT)) * 100
       } else NA,
 
       # 8: HTN New Cases per 10,000 person-years
@@ -236,72 +233,6 @@ convert_scorecard_to_long <- function(scorecard_wide, geo_cols) {
     arrange(.data[[tail(geo_cols, 1)]], indicator_common_id)
 }
 
-create_summary_table <- function(adjusted_data, population, geo_level) {
-  geo_cols <- geo_columns(geo_level)
-  q_months <- quarter_months(SCORECARD_QUARTER)
-  target_periods <- as.integer(sprintf("%04d%02d", SCORECARD_YEAR, q_months))
-
-  # Previous quarter for population fallback
-  prev_q <- if (SCORECARD_QUARTER == 1) 4 else SCORECARD_QUARTER - 1
-  prev_year <- if (SCORECARD_QUARTER == 1) SCORECARD_YEAR - 1 else SCORECARD_YEAR
-  prev_periods <- sprintf("%04d%02d", prev_year, quarter_months(prev_q))
-
-  # Aggregate population to the target geo level
-  pop <- population %>%
-    group_by(.data[[geo_level]], period_id) %>%
-    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
-
-  # Get indicator data for target quarter
-  q_indicators <- adjusted_data %>%
-    filter(period_id %in% target_periods) %>%
-    group_by(across(all_of(geo_cols)), indicator_common_id) %>%
-    summarise(total_quarter = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
-    pivot_wider(names_from = indicator_common_id, values_from = total_quarter, values_fill = 0)
-
-  # Get previous quarter population average
-  prev_pop_data <- list()
-  for (period in prev_periods) {
-    period_data <- pop %>% filter(period_id == period)
-    if (nrow(period_data) > 0) prev_pop_data[[period]] <- period_data
-  }
-
-  if (length(prev_pop_data) == 0) {
-    warning("No previous quarter population found! Using latest available.")
-    latest_period <- pop %>% filter(!is.na(count)) %>%
-      summarise(max_period = max(period_id)) %>% pull(max_period)
-    if (!is.na(latest_period)) {
-      prev_pop_data[[as.character(latest_period)]] <- pop %>% filter(period_id == latest_period)
-    }
-  }
-
-  if (length(prev_pop_data) == 0) {
-    stop("ERROR: No population data available!")
-  }
-
-  pop_avg <- bind_rows(prev_pop_data) %>%
-    group_by(.data[[geo_level]]) %>%
-    summarise(avg_population_prev_quarter = mean(count, na.rm = TRUE), .groups = "drop")
-
-  # Merge indicators with population
-  summary_table <- q_indicators %>%
-    left_join(pop_avg, by = geo_level) %>%
-    select(all_of(geo_cols), avg_population_prev_quarter, everything())
-
-  # Compute vaccine stockout percentage for debug
-  stockout_cols <- c("stockout_bcg", "stockout_hepb", "stockout_opv", "stockout_penta",
-                     "stockout_rotavirus", "stockout_measles", "stockout_yellowfever",
-                     "stockout_pcv", "stockout_ipv", "stockout_mena", "stockout_tt", "stockout_any")
-  avail_stockout <- intersect(stockout_cols, names(summary_table))
-  if (length(avail_stockout) > 0 && "nhmis_actual_reports" %in% names(summary_table)) {
-    summary_table$stockout_sum <- rowSums(summary_table[avail_stockout], na.rm = TRUE)
-    den <- summary_table$nhmis_actual_reports +
-      if ("nhmis_v2013_actual_reports" %in% names(summary_table)) summary_table$nhmis_v2013_actual_reports else 0
-    summary_table$vaccine_stockout_pct <- ifelse(den == 0, NA, (summary_table$stockout_sum / den) * 100)
-  }
-
-  summary_table %>% arrange(.data[[tail(geo_cols, 1)]])
-}
-
 # ------------------- Main Execution ------------------------------------------------------------------------
 message(sprintf("Calculating NHSS Scorecard for %d Q%d using %s...",
                 SCORECARD_YEAR, SCORECARD_QUARTER, SELECTED_COUNT_VARIABLE))
@@ -310,97 +241,53 @@ message(sprintf("Calculating NHSS Scorecard for %d Q%d using %s...",
 message("\n========== Processing admin_area_2 ==========")
 if ("admin_area_2" %in% names(adjusted_data)) {
   geo_cols_a2 <- geo_columns("admin_area_2")
-
   agg_a2 <- aggregate_to_quarter(adjusted_data, "admin_area_2")
   merged_a2 <- merge_population(agg_a2, "admin_area_2")
-
   scorecard_wide_a2 <- calculate_scorecard(merged_a2, geo_cols_a2)
-
   scorecard_a2 <- convert_scorecard_to_long(scorecard_wide_a2, geo_cols_a2) %>%
     arrange(admin_area_2, indicator_common_id)
-
-  summary_a2 <- create_summary_table(adjusted_data, population, "admin_area_2")
-
   write_csv(scorecard_a2, "M7_output_scorecard_admin_area_2.csv")
-  write_csv(summary_a2, "M7_output_scorecard_summary_admin_area_2.csv")
   message(sprintf("  Wrote M7_output_scorecard_admin_area_2.csv (%d rows)", nrow(scorecard_a2)))
 } else {
-  dummy_scorecard_a2 <- data.frame(
-    admin_area_2 = character(), quarter_id = integer(), year = integer(),
-    indicator_common_id = character(), value = numeric()
-  )
-  dummy_summary_a2 <- data.frame(
-    admin_area_2 = character(), avg_population_prev_quarter = numeric()
-  )
-  write_csv(dummy_scorecard_a2, "M7_output_scorecard_admin_area_2.csv")
-  write_csv(dummy_summary_a2, "M7_output_scorecard_summary_admin_area_2.csv")
-  message("  No admin_area_2 data — saved empty files")
+  write_csv(data.frame(admin_area_2 = character(), quarter_id = integer(), year = integer(),
+    indicator_common_id = character(), value = numeric()), "M7_output_scorecard_admin_area_2.csv")
+  message("  No admin_area_2 data — saved empty file")
 }
 
 # ===== ADMIN_AREA_3 =====
 message("\n========== Processing admin_area_3 ==========")
 if ("admin_area_3" %in% names(adjusted_data)) {
   geo_cols_a3 <- geo_columns("admin_area_3")
-
   agg_a3 <- aggregate_to_quarter(adjusted_data, "admin_area_3")
   merged_a3 <- merge_population(agg_a3, "admin_area_3")
-
   scorecard_wide_a3 <- calculate_scorecard(merged_a3, geo_cols_a3)
-
   scorecard_a3 <- convert_scorecard_to_long(scorecard_wide_a3, geo_cols_a3) %>%
     arrange(admin_area_3, indicator_common_id)
-
-  summary_a3 <- create_summary_table(adjusted_data, population, "admin_area_3")
-
   write_csv(scorecard_a3, "M7_output_scorecard_admin_area_3.csv")
-  write_csv(summary_a3, "M7_output_scorecard_summary_admin_area_3.csv")
   message(sprintf("  Wrote M7_output_scorecard_admin_area_3.csv (%d rows)", nrow(scorecard_a3)))
 } else {
-  dummy_scorecard_a3 <- data.frame(
-    admin_area_2 = character(), admin_area_3 = character(),
+  write_csv(data.frame(admin_area_2 = character(), admin_area_3 = character(),
     quarter_id = integer(), year = integer(),
-    indicator_common_id = character(), value = numeric()
-  )
-  dummy_summary_a3 <- data.frame(
-    admin_area_2 = character(), admin_area_3 = character(),
-    avg_population_prev_quarter = numeric()
-  )
-  write_csv(dummy_scorecard_a3, "M7_output_scorecard_admin_area_3.csv")
-  write_csv(dummy_summary_a3, "M7_output_scorecard_summary_admin_area_3.csv")
-  message("  No admin_area_3 data — saved empty files")
+    indicator_common_id = character(), value = numeric()), "M7_output_scorecard_admin_area_3.csv")
+  message("  No admin_area_3 data — saved empty file")
 }
 
 # ===== ADMIN_AREA_4 =====
 message("\n========== Processing admin_area_4 ==========")
 if ("admin_area_4" %in% names(adjusted_data)) {
   geo_cols_a4 <- geo_columns("admin_area_4")
-
   agg_a4 <- aggregate_to_quarter(adjusted_data, "admin_area_4")
   merged_a4 <- merge_population(agg_a4, "admin_area_4")
-
   scorecard_wide_a4 <- calculate_scorecard(merged_a4, geo_cols_a4)
-
   scorecard_a4 <- convert_scorecard_to_long(scorecard_wide_a4, geo_cols_a4) %>%
     arrange(admin_area_4, indicator_common_id)
-
-  summary_a4 <- create_summary_table(adjusted_data, population, "admin_area_4")
-
   write_csv(scorecard_a4, "M7_output_scorecard_admin_area_4.csv")
-  write_csv(summary_a4, "M7_output_scorecard_summary_admin_area_4.csv")
   message(sprintf("  Wrote M7_output_scorecard_admin_area_4.csv (%d rows)", nrow(scorecard_a4)))
 } else {
-  dummy_scorecard_a4 <- data.frame(
-    admin_area_2 = character(), admin_area_3 = character(), admin_area_4 = character(),
+  write_csv(data.frame(admin_area_2 = character(), admin_area_3 = character(), admin_area_4 = character(),
     quarter_id = integer(), year = integer(),
-    indicator_common_id = character(), value = numeric()
-  )
-  dummy_summary_a4 <- data.frame(
-    admin_area_2 = character(), admin_area_3 = character(), admin_area_4 = character(),
-    avg_population_prev_quarter = numeric()
-  )
-  write_csv(dummy_scorecard_a4, "M7_output_scorecard_admin_area_4.csv")
-  write_csv(dummy_summary_a4, "M7_output_scorecard_summary_admin_area_4.csv")
-  message("  No admin_area_4 data — saved empty files")
+    indicator_common_id = character(), value = numeric()), "M7_output_scorecard_admin_area_4.csv")
+  message("  No admin_area_4 data — saved empty file")
 }
 
 message("\nDone. All geographic levels processed.")
