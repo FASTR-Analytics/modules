@@ -20,7 +20,6 @@
       "createTableStatementPossibleColumns": {
         "admin_area_2": "TEXT NOT NULL",
         "quarter_id": "INTEGER NOT NULL",
-        "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "value": "NUMERIC"
       }
@@ -32,7 +31,6 @@
         "admin_area_2": "TEXT NOT NULL",
         "admin_area_3": "TEXT NOT NULL",
         "quarter_id": "INTEGER NOT NULL",
-        "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "value": "NUMERIC"
       }
@@ -45,7 +43,6 @@
         "admin_area_3": "TEXT NOT NULL",
         "admin_area_4": "TEXT NOT NULL",
         "quarter_id": "INTEGER NOT NULL",
-        "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "value": "NUMERIC"
       }
@@ -63,7 +60,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Ratio of 4th ANC visits to 1st ANC visits before 20 weeks gestation. Measures ANC continuity among early attendees.",
@@ -108,7 +105,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Ratio of 4th ANC visits to all 1st ANC visits. Measures ANC continuity (dropout between 1st and 4th visit).",
@@ -153,7 +150,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Deliveries attended by skilled birth attendants as percentage of all reported deliveries. Institutional denominator.",
@@ -198,7 +195,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "New family planning acceptors as percentage of estimated women of reproductive age (15-49). Denominator: total_population x 5.5%.",
@@ -243,7 +240,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Persons with confirmed uncomplicated malaria treated with ACT as percentage of confirmed uncomplicated malaria cases (or malaria positive if uncomplicated not available).",
@@ -288,7 +285,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Penta3 doses given as percentage of estimated quarterly births. Denominator: total_population x 1%.",
@@ -333,7 +330,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Children fully immunized as percentage of estimated quarterly births. Denominator: total_population x 1%.",
@@ -378,7 +375,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "number",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "New suspected hypertension cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
@@ -423,7 +420,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "number",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "New suspected diabetes cases per 10,000 person-years. Denominator: total_population x 0.25 (quarterly).",
@@ -468,7 +465,7 @@
       "valueFunc": "identity",
       "requiredDisaggregationOptions": [],
       "formatAs": "percent",
-      "periodOptions": ["quarter_id", "year"],
+      "periodOptions": ["quarter_id"],
       "aiDescription": {
         "summary": {
           "en": "Percentage of expected facility reports that were submitted on time AND contained data (positive value in General Attendance, OPD, or Penta3). Derived at facility-month level then aggregated.",
@@ -534,14 +531,6 @@
         }
       },
       {
-        "replacementString": "PREGNANT_WOMEN_PCT",
-        "description": "Quarterly pregnant women as proportion of total population (annual rate x 0.25)",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.0125"
-        }
-      },
-      {
         "replacementString": "BIRTHS_PCT",
         "description": "Quarterly births as proportion of total population (annual rate x 0.25)",
         "input": {
@@ -558,19 +547,22 @@
         }
       },
       {
-        "replacementString": "CHILDREN_U5_PCT",
-        "description": "Quarterly children under 5 as proportion of total population (annual rate x 0.25)",
+        "replacementString": "INTERPOLATE_POPULATION",
+        "description": "Use smoothed (interpolated) population or raw annual values",
         "input": {
-          "inputType": "number",
-          "defaultValue": "0.03"
-        }
-      },
-      {
-        "replacementString": "INFANTS_0_6M_PCT",
-        "description": "Quarterly infants 0-6 months as proportion of total population",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.02"
+          "inputType": "select",
+          "options": [
+            {
+              "value": "FALSE",
+              "label": "Raw (annual step)"
+            },
+            {
+              "value": "TRUE",
+              "label": "Smoothed (interpolated)"
+            }
+          ],
+          "valueType": "number",
+          "defaultValue": "FALSE"
         }
       }
     ]
