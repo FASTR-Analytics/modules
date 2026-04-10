@@ -30,7 +30,12 @@ library(tidyr)
 # Load Data ------------------------------------------------------------------------------------------------
 ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
 POPULATION_FILE <- "total_population_NGA.csv"
-adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
+adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE) %>%
+  mutate(
+    year = as.integer(substr(as.character(period_id), 1, 4)),
+    month = as.integer(substr(as.character(period_id), 5, 6)),
+    quarter_id = as.integer(paste0(year, sprintf("%02d", ceiling(month / 3))))
+  )
 population <- read_csv(POPULATION_FILE, show_col_types = FALSE)
 if ("indicator_common_id" %in% names(population)) {
   population <- population %>% filter(indicator_common_id == "total_population") %>% select(-indicator_common_id)
@@ -64,20 +69,12 @@ if (length(content_indicators) > 0 && "nhmis_actual_reports_ontime" %in% unique(
 # A quarter has population if we can find pop data for that year (or fall back to previous year).
 
 detect_indicator_quarters <- function(data) {
-  periods <- unique(data$period_id)
-  year_month <- data.frame(
-    year = as.integer(substr(as.character(periods), 1, 4)),
-    month = as.integer(substr(as.character(periods), 5, 6))
-  )
-  year_month$quarter <- ceiling(year_month$month / 3)
-  # Count how many distinct months per year-quarter
-  quarter_coverage <- year_month %>%
-    distinct(year, quarter, month) %>%
-    group_by(year, quarter) %>%
+  data %>%
+    distinct(year, month, quarter_id) %>%
+    mutate(quarter = ceiling(month / 3)) %>%
+    group_by(year, quarter, quarter_id) %>%
     summarise(n_months = n(), .groups = "drop") %>%
-    filter(n_months == 3)
-  quarter_coverage %>%
-    mutate(quarter_id = as.integer(paste0(year, sprintf("%02d", quarter)))) %>%
+    filter(n_months == 3) %>%
     select(year, quarter, quarter_id)
 }
 
@@ -114,35 +111,21 @@ geo_columns <- function(geo_level) {
 
 aggregate_to_quarter <- function(data, geo_level, sc_year, sc_quarter) {
   geo_cols <- geo_columns(geo_level)
-  target_quarter_id <- as.numeric(paste0(sc_year, sprintf("%02d", sc_quarter)))
+  target_quarter_id <- as.integer(paste0(sc_year, sprintf("%02d", sc_quarter)))
 
   if (!geo_level %in% names(data)) {
     stop(sprintf("ERROR: Column '%s' not found in data. Available: %s",
                  geo_level, paste(grep("admin_area", names(data), value = TRUE), collapse = ", ")))
   }
 
-  if (!"year" %in% names(data)) {
-    data <- data %>% mutate(
-      year = as.integer(substr(as.character(period_id), 1, 4)),
-      month = as.integer(substr(as.character(period_id), 5, 6)),
-      quarter_id = as.integer(paste0(year, sprintf("%02d", ceiling(month / 3))))
-    )
-  }
-
   data %>%
-    filter(year == sc_year, quarter_id == target_quarter_id) %>%
+    filter(quarter_id == target_quarter_id) %>%
     group_by(across(all_of(geo_cols)), indicator_common_id) %>%
     summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop") %>%
     pivot_wider(names_from = indicator_common_id, values_from = count, values_fill = 0)
 }
 
-interpolate_population <- function(pop_data, geo_level, sc_year, sc_quarter) {
-  # Get one population value per area per year
-  yearly_pop <- pop_data %>%
-    mutate(pop_year = as.integer(substr(as.character(period_id), 1, 4))) %>%
-    group_by(.data[[geo_level]], pop_year) %>%
-    summarise(pop_value = first(count), .groups = "drop")
-
+interpolate_population <- function(yearly_pop, geo_level, sc_year, sc_quarter) {
   # Quarter midpoint as fractional year (Q1=0.125, Q2=0.375, Q3=0.625, Q4=0.875)
   quarter_midpoints <- c(0.125, 0.375, 0.625, 0.875)
   t_target <- sc_year + quarter_midpoints[sc_quarter]
@@ -191,17 +174,12 @@ interpolate_population <- function(pop_data, geo_level, sc_year, sc_quarter) {
   result
 }
 
-merge_population <- function(area_data, geo_level, sc_year, sc_quarter = NULL) {
+merge_population <- function(area_data, geo_level, sc_year, sc_quarter, pop_by_geo, yearly_pop_by_geo) {
   area_names <- unique(area_data[[geo_level]])
 
-  # Aggregate population to the target geo level
-  pop <- population %>%
-    group_by(.data[[geo_level]], period_id) %>%
-    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
-
   # --- Interpolation path ---
-  if (INTERPOLATE_POPULATION && !is.null(sc_quarter)) {
-    pop_interp <- interpolate_population(pop, geo_level, sc_year, sc_quarter) %>%
+  if (INTERPOLATE_POPULATION) {
+    pop_interp <- interpolate_population(yearly_pop_by_geo, geo_level, sc_year, sc_quarter) %>%
       filter(.data[[geo_level]] %in% area_names)
 
     missing <- setdiff(area_names, unique(pop_interp[[geo_level]]))
@@ -216,25 +194,25 @@ merge_population <- function(area_data, geo_level, sc_year, sc_quarter = NULL) {
   }
   # --- End interpolation path ---
 
-  # Try current year (latest month first)
+  # Raw path: use latest available month for the target year
   current_year_periods <- sprintf("%04d%02d", sc_year, 12:1)
   pop_data <- NULL
 
   for (period in current_year_periods) {
-    pop_data <- pop %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
+    pop_data <- pop_by_geo %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
     if (nrow(pop_data) > 0) {
       message(sprintf("  Using population from period: %s", period))
       break
     }
   }
 
-  # Fallback: average of last 3 months of previous year
+  # Fallback: average of last 3 months of previous year (when indicators are ahead of pop data)
   if (is.null(pop_data) || nrow(pop_data) == 0) {
     message("  No current year population. Trying Q4 of previous year...")
     prev_periods <- sprintf("%04d%02d", sc_year - 1, 10:12)
     prev_data <- list()
     for (period in prev_periods) {
-      period_data <- pop %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
+      period_data <- pop_by_geo %>% filter(period_id == period, .data[[geo_level]] %in% area_names)
       if (nrow(period_data) > 0) prev_data[[period]] <- period_data
     }
     if (length(prev_data) > 0) {
@@ -352,6 +330,18 @@ process_geo_level <- function(geo_level, data, empty_cols) {
   }
 
   geo_cols <- geo_columns(geo_level)
+
+  # Pre-aggregate population to this geo level once
+  pop_by_geo <- population %>%
+    group_by(.data[[geo_level]], period_id) %>%
+    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
+
+  # Pre-compute yearly population for interpolation (one value per area per year)
+  yearly_pop_by_geo <- pop_by_geo %>%
+    mutate(pop_year = as.integer(substr(as.character(period_id), 1, 4))) %>%
+    group_by(.data[[geo_level]], pop_year) %>%
+    summarise(pop_value = first(count), .groups = "drop")
+
   all_results <- list()
 
   for (i in seq_len(nrow(available_quarters))) {
@@ -364,7 +354,7 @@ process_geo_level <- function(geo_level, data, empty_cols) {
       message(sprintf("    No data for %s in %d Q%d, skipping", geo_level, sc_year, sc_quarter))
       next
     }
-    merged <- merge_population(agg, geo_level, sc_year, sc_quarter)
+    merged <- merge_population(agg, geo_level, sc_year, sc_quarter, pop_by_geo, yearly_pop_by_geo)
     scorecard_wide <- calculate_scorecard(merged, geo_cols)
     scorecard_long <- convert_scorecard_to_long(scorecard_wide, geo_cols, sc_year, sc_quarter)
     all_results[[length(all_results) + 1]] <- scorecard_long
