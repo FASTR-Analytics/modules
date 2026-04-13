@@ -267,11 +267,8 @@ calculate_scorecard <- function(data, geo_cols) {
 
       # 5: ACT for Uncomplicated Malaria
       #    mal_treatment (ouzURM9c1FI) / mal_confirmed_uncomplicated (HdtaLx63988)
-      #    Fallback: mal_treatment / mal_positive
       act_malaria_treatment = if(has_col("mal_treatment") & has_col("mal_confirmed_uncomplicated")) {
         ifelse(mal_confirmed_uncomplicated == 0, NA, (mal_treatment / mal_confirmed_uncomplicated))
-      } else if(has_col("mal_treatment") & has_col("mal_positive")) {
-        ifelse(mal_positive == 0, NA, (mal_treatment / mal_positive))
       } else NA,
 
       # 6: Penta3 Coverage
