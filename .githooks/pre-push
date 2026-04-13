@@ -50,7 +50,7 @@ RESULT_FILE=$(mktemp)
 ERROR_FILE=$(mktemp)
 echo "$ERRORS" > "$ERROR_FILE"
 
-if command -v wt.exe >/dev/null 2>&1; then
+if command -v powershell.exe >/dev/null 2>&1 || command -v cmd.exe >/dev/null 2>&1; then
   PROMPT_SCRIPT=$(mktemp /tmp/push-prompt-XXXXXX.sh)
 
   cat > "$PROMPT_SCRIPT" << PROMPT_EOF
@@ -71,19 +71,35 @@ esac
 PROMPT_EOF
 
   chmod +x "$PROMPT_SCRIPT"
-  wt.exe wsl.exe bash "$PROMPT_SCRIPT"
 
-  # Wait up to 120s for the user to respond
-  WAITED=0
-  while [ ! -s "$RESULT_FILE" ] && [ $WAITED -lt 120 ]; do
-    sleep 1
-    WAITED=$((WAITED + 1))
-  done
+  # Launch via PowerShell Start-Process so Windows finds wt.exe in the Windows PATH
+  # (VS Code's git subprocess may not have the AppData/WindowsApps path in WSL PATH)
+  LAUNCHED=false
+  if command -v powershell.exe >/dev/null 2>&1; then
+    powershell.exe -NoProfile -Command "Start-Process wt.exe -ArgumentList 'wsl.exe bash $PROMPT_SCRIPT'" 2>/dev/null \
+      && LAUNCHED=true
+  fi
 
-  RESULT=$(cat "$RESULT_FILE" 2>/dev/null | tr -d '\r\n')
-  rm -f "$RESULT_FILE" "$ERROR_FILE" "$PROMPT_SCRIPT"
+  # Fall back to a basic console window via cmd.exe
+  if ! $LAUNCHED && command -v cmd.exe >/dev/null 2>&1; then
+    cmd.exe /c "start wsl.exe bash $PROMPT_SCRIPT" 2>/dev/null \
+      && LAUNCHED=true
+  fi
 
-  [ "$RESULT" = "yes" ] && exit 0 || exit 1
+  if $LAUNCHED; then
+    # Wait up to 120s for the user to respond
+    WAITED=0
+    while [ ! -s "$RESULT_FILE" ] && [ $WAITED -lt 120 ]; do
+      sleep 1
+      WAITED=$((WAITED + 1))
+    done
+
+    RESULT=$(cat "$RESULT_FILE" 2>/dev/null | tr -d '\r\n')
+    rm -f "$RESULT_FILE" "$ERROR_FILE" "$PROMPT_SCRIPT"
+    [ "$RESULT" = "yes" ] && exit 0 || exit 1
+  fi
+
+  rm -f "$PROMPT_SCRIPT"
 fi
 
 # Option 3: PowerShell dialog (WSL fallback when Windows Terminal isn't installed)
