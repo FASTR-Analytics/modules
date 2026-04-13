@@ -1,0 +1,35 @@
+#!/bin/sh
+# Pre-push hook: validates definition.json files before pushing.
+# To install: git config core.hooksPath .githooks
+
+# Check deno is available
+if ! command -v deno >/dev/null 2>&1; then
+  echo "WARNING: deno not found -- skipping local validation (CI will still validate)"
+  exit 0
+fi
+
+# Run validation: stdout (OK lines) streams to terminal, stderr (errors) is captured
+ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1 >/dev/tty)
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+  exit 0
+fi
+
+# Show captured errors
+echo "" >/dev/tty
+echo "-------------------------------------------------------" >/dev/tty
+echo "  VALIDATION ERRORS" >/dev/tty
+echo "-------------------------------------------------------" >/dev/tty
+echo "$ERRORS" >/dev/tty
+echo "-------------------------------------------------------" >/dev/tty
+echo "" >/dev/tty
+
+# Prompt via /dev/tty (git uses stdin for push ref data, so we can't use stdin directly)
+printf "Push anyway? (y/N) " >/dev/tty
+read REPLY </dev/tty
+
+case "$REPLY" in
+  [yY]) echo "Pushing with validation errors..." >/dev/tty; exit 0 ;;
+  *)    echo "Push cancelled." >/dev/tty; exit 1 ;;
+esac
