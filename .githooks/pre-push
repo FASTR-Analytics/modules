@@ -2,6 +2,11 @@
 # Pre-push hook: validates definition.json files before pushing.
 # To install: git config core.hooksPath .githooks
 
+# Full paths to Windows executables — used because VS Code's git subprocess
+# may have a restricted PATH that doesn't include Windows binaries
+CMD_EXE="/mnt/c/Windows/System32/cmd.exe"
+POWERSHELL_EXE="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+
 if ! command -v deno >/dev/null 2>&1; then
   echo "WARNING: deno not found -- skipping local validation (CI will still validate)"
   exit 0
@@ -45,15 +50,13 @@ if $HAS_TTY; then
   esac
 fi
 
-# Option 2: Open a new Windows Terminal window (GUI git clients on WSL/Windows)
+# Option 2: Open a new console window (GUI git clients on WSL/Windows)
 RESULT_FILE=$(mktemp)
 ERROR_FILE=$(mktemp)
 echo "$ERRORS" > "$ERROR_FILE"
 
-if command -v powershell.exe >/dev/null 2>&1 || command -v cmd.exe >/dev/null 2>&1; then
-  PROMPT_SCRIPT=$(mktemp /tmp/push-prompt-XXXXXX.sh)
-
-  cat > "$PROMPT_SCRIPT" << PROMPT_EOF
+PROMPT_SCRIPT=$(mktemp /tmp/push-prompt-XXXXXX.sh)
+cat > "$PROMPT_SCRIPT" << PROMPT_EOF
 #!/bin/sh
 echo ""
 echo "-------------------------------------------------------"
@@ -69,44 +72,42 @@ case "\$REPLY" in
   *)    printf no  > "$RESULT_FILE" ;;
 esac
 PROMPT_EOF
+chmod +x "$PROMPT_SCRIPT"
 
-  chmod +x "$PROMPT_SCRIPT"
+LAUNCHED=false
 
-  # Launch via PowerShell Start-Process so Windows finds wt.exe in the Windows PATH
-  # (VS Code's git subprocess may not have the AppData/WindowsApps path in WSL PATH)
-  LAUNCHED=false
-  if command -v powershell.exe >/dev/null 2>&1; then
-    powershell.exe -NoProfile -Command "Start-Process wt.exe -ArgumentList 'wsl.exe bash $PROMPT_SCRIPT'" 2>/dev/null \
-      && LAUNCHED=true
-  fi
-
-  # Fall back to a basic console window via cmd.exe
-  if ! $LAUNCHED && command -v cmd.exe >/dev/null 2>&1; then
-    cmd.exe /c "start wsl.exe bash $PROMPT_SCRIPT" 2>/dev/null \
-      && LAUNCHED=true
-  fi
-
-  if $LAUNCHED; then
-    # Wait up to 120s for the user to respond
-    WAITED=0
-    while [ ! -s "$RESULT_FILE" ] && [ $WAITED -lt 120 ]; do
-      sleep 1
-      WAITED=$((WAITED + 1))
-    done
-
-    RESULT=$(cat "$RESULT_FILE" 2>/dev/null | tr -d '\r\n')
-    rm -f "$RESULT_FILE" "$ERROR_FILE" "$PROMPT_SCRIPT"
-    [ "$RESULT" = "yes" ] && exit 0 || exit 1
-  fi
-
-  rm -f "$PROMPT_SCRIPT"
+# Try Windows Terminal via full path to PowerShell (avoids PATH issues)
+if [ -x "$POWERSHELL_EXE" ]; then
+  "$POWERSHELL_EXE" -NoProfile -Command "Start-Process wt.exe -ArgumentList 'wsl.exe', 'bash', '$PROMPT_SCRIPT'" 2>/dev/null \
+    && LAUNCHED=true
 fi
 
-# Option 3: PowerShell dialog (WSL fallback when Windows Terminal isn't installed)
-if command -v powershell.exe >/dev/null 2>&1 && command -v wslpath >/dev/null 2>&1; then
+# Fall back to a basic console via cmd.exe
+if ! $LAUNCHED && [ -x "$CMD_EXE" ]; then
+  "$CMD_EXE" /c "start wsl.exe bash $PROMPT_SCRIPT" 2>/dev/null \
+    && LAUNCHED=true
+fi
+
+if $LAUNCHED; then
+  # Wait up to 120s for the user to respond
+  WAITED=0
+  while [ ! -s "$RESULT_FILE" ] && [ $WAITED -lt 120 ]; do
+    sleep 1
+    WAITED=$((WAITED + 1))
+  done
+
+  RESULT=$(cat "$RESULT_FILE" 2>/dev/null | tr -d '\r\n')
+  rm -f "$RESULT_FILE" "$ERROR_FILE" "$PROMPT_SCRIPT"
+  [ "$RESULT" = "yes" ] && exit 0 || exit 1
+fi
+
+rm -f "$PROMPT_SCRIPT"
+
+# Option 3: PowerShell dialog (if terminal window launch failed)
+if [ -x "$POWERSHELL_EXE" ] && command -v wslpath >/dev/null 2>&1; then
   WIN_ERROR=$(wslpath -w "$ERROR_FILE" 2>/dev/null)
   if [ -n "$WIN_ERROR" ]; then
-    RESULT=$(powershell.exe -NoProfile -Command "
+    RESULT=$("$POWERSHELL_EXE" -NoProfile -Command "
       try {
         \$e = (Get-Content '$WIN_ERROR' -Raw).Trim()
         Add-Type -AssemblyName PresentationFramework
