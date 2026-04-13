@@ -2,34 +2,107 @@
 # Pre-push hook: validates definition.json files before pushing.
 # To install: git config core.hooksPath .githooks
 
-# Check deno is available
 if ! command -v deno >/dev/null 2>&1; then
   echo "WARNING: deno not found -- skipping local validation (CI will still validate)"
   exit 0
 fi
 
-# Run validation: stdout (OK lines) streams to terminal, stderr (errors) is captured
-ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1 >/dev/tty)
+# Check if we have an interactive terminal
+if [ -e /dev/tty ] && [ -w /dev/tty ]; then
+  HAS_TTY=true
+else
+  HAS_TTY=false
+fi
+
+# Run validation: in terminal mode, stream OK lines live and capture errors separately
+if $HAS_TTY; then
+  ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1 >/dev/tty)
+else
+  ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1)
+fi
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 0 ]; then
   exit 0
 fi
 
-# Show captured errors
-echo "" >/dev/tty
-echo "-------------------------------------------------------" >/dev/tty
-echo "  VALIDATION ERRORS" >/dev/tty
-echo "-------------------------------------------------------" >/dev/tty
-echo "$ERRORS" >/dev/tty
-echo "-------------------------------------------------------" >/dev/tty
-echo "" >/dev/tty
+# --- Validation failed ---
 
-# Prompt via /dev/tty (git uses stdin for push ref data, so we can't use stdin directly)
-printf "Push anyway? (y/N) " >/dev/tty
-read REPLY </dev/tty
+# Option 1: Interactive terminal (terminal-based git clients)
+if $HAS_TTY; then
+  echo "" >/dev/tty
+  echo "-------------------------------------------------------" >/dev/tty
+  echo "  VALIDATION ERRORS" >/dev/tty
+  echo "-------------------------------------------------------" >/dev/tty
+  echo "$ERRORS" >/dev/tty
+  echo "-------------------------------------------------------" >/dev/tty
+  echo "" >/dev/tty
+  printf "Push anyway? (y/N) " >/dev/tty
+  read REPLY </dev/tty
+  case "$REPLY" in
+    [yY]) echo "Pushing with validation errors..." >/dev/tty; exit 0 ;;
+    *)    echo "Push cancelled." >/dev/tty; exit 1 ;;
+  esac
+fi
 
-case "$REPLY" in
-  [yY]) echo "Pushing with validation errors..." >/dev/tty; exit 0 ;;
-  *)    echo "Push cancelled." >/dev/tty; exit 1 ;;
+# Option 2: Open a new Windows Terminal window (GUI git clients on WSL/Windows)
+RESULT_FILE=$(mktemp)
+ERROR_FILE=$(mktemp)
+echo "$ERRORS" > "$ERROR_FILE"
+
+if command -v wt.exe >/dev/null 2>&1; then
+  PROMPT_SCRIPT=$(mktemp /tmp/push-prompt-XXXXXX.sh)
+
+  cat > "$PROMPT_SCRIPT" << PROMPT_EOF
+#!/bin/sh
+echo ""
+echo "-------------------------------------------------------"
+echo "  VALIDATION ERRORS"
+echo "-------------------------------------------------------"
+cat "$ERROR_FILE"
+echo "-------------------------------------------------------"
+echo ""
+printf "Push anyway? (y/N) "
+read REPLY
+case "\$REPLY" in
+  [yY]) printf yes > "$RESULT_FILE" ;;
+  *)    printf no  > "$RESULT_FILE" ;;
 esac
+PROMPT_EOF
+
+  chmod +x "$PROMPT_SCRIPT"
+  wt.exe wsl.exe bash "$PROMPT_SCRIPT"
+
+  # Wait up to 120s for the user to respond
+  WAITED=0
+  while [ ! -s "$RESULT_FILE" ] && [ $WAITED -lt 120 ]; do
+    sleep 1
+    WAITED=$((WAITED + 1))
+  done
+
+  RESULT=$(cat "$RESULT_FILE" 2>/dev/null | tr -d '\r\n')
+  rm -f "$RESULT_FILE" "$ERROR_FILE" "$PROMPT_SCRIPT"
+
+  [ "$RESULT" = "yes" ] && exit 0 || exit 1
+fi
+
+# Option 3: PowerShell dialog (WSL fallback when Windows Terminal isn't installed)
+if command -v powershell.exe >/dev/null 2>&1 && command -v wslpath >/dev/null 2>&1; then
+  WIN_ERROR=$(wslpath -w "$ERROR_FILE" 2>/dev/null)
+  if [ -n "$WIN_ERROR" ]; then
+    RESULT=$(powershell.exe -NoProfile -Command "
+      try {
+        \$e = (Get-Content '$WIN_ERROR' -Raw).Trim()
+        Add-Type -AssemblyName PresentationFramework
+        \$r = [System.Windows.MessageBox]::Show(\"Validation errors:\`n\`n\$e\`n\`nPush anyway?\", 'Validation Failed', 'YesNo', 'Warning')
+        Write-Output \$r
+      } catch { Write-Output 'No' }
+    " 2>/dev/null | tr -d '\r\n')
+    rm -f "$RESULT_FILE" "$ERROR_FILE"
+    [ "$RESULT" = "Yes" ] && exit 0 || exit 1
+  fi
+fi
+
+# No interactive method available - block by default
+rm -f "$RESULT_FILE" "$ERROR_FILE"
+exit 1
