@@ -1,0 +1,38 @@
+#!/bin/sh
+# Validate, commit, and push in one step.
+# Usage: ./deploy.sh [git push arguments]
+
+if ! command -v deno >/dev/null 2>&1; then
+  echo "WARNING: deno not found -- skipping validation"
+else
+  echo "Running validation..."
+  ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1 >/dev/tty)
+  EXIT_CODE=$?
+
+  if [ $EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "-------------------------------------------------------"
+    echo "  VALIDATION ERRORS"
+    echo "-------------------------------------------------------"
+    echo "$ERRORS"
+    echo "-------------------------------------------------------"
+    echo ""
+    printf "Push anyway? (y/N) "
+    read CONFIRM
+    case "$CONFIRM" in
+      [yY]) ;;
+      *) echo "Push cancelled."; exit 1 ;;
+    esac
+  fi
+fi
+
+echo ""
+printf "Commit message: "
+read MSG
+
+if [ -z "$MSG" ]; then
+  echo "Aborted: commit message cannot be empty."
+  exit 1
+fi
+
+git add -A && git commit -m "$MSG" && git push "$@"
