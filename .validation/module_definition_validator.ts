@@ -205,7 +205,7 @@ const configS = z
       .enum(["series", "cell", "col", "row"])
       .optional(),
     sortIndicatorValues: z.enum(["ascending", "descending", "none"]),
-    formatAdminArea3Labels: z.boolean(),
+    formatAdminArea3Labels: z.boolean().optional(),
     mapColorPreset: z.enum(["red", "blue", "green", "red-green", "custom"]),
     mapColorFrom: z.string(),
     mapColorTo: z.string(),
@@ -266,7 +266,7 @@ const metricDefinitionJSON = z.object({
   valueProps: z.array(z.string()),
   valueFunc: valueFunc,
   formatAs: z.enum(["percent", "number"]),
-  periodOptions: z.array(periodOption),
+  periodOptions: z.array(periodOption).optional(),
   requiredDisaggregationOptions: z.array(disaggregationOption),
   valueLabelReplacements: z.record(z.string(), z.string()).optional(),
   postAggregationExpression: postAggregationExpression.optional(),
