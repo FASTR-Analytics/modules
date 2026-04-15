@@ -1498,3 +1498,11 @@ Niger,NATIONAL,2022,Annual population age 0-4,totu5pop,population_estimate,50623
 Niger,NATIONAL,2023,Annual population age 0-4,totu5pop,population_estimate,52319734,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
 Niger,NATIONAL,2024,Annual population age 0-4,totu5pop,population_estimate,54064825,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
 Niger,NATIONAL,2025,Annual population age 0-4,totu5pop,population_estimate,55835662,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,1992,FE_FRTR_W_CBR,crudebr,rate,49.7,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,FE_FRTY_W_NPG,womenrepage,other,6503,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,FE_FRTR_W_CBR,crudebr,rate,51.7,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,FE_FRTY_W_NPG,womenrepage,other,7577,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,FE_FRTR_W_CBR,crudebr,rate,45.8,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,FE_FRTY_W_NPG,womenrepage,other,9223,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,FE_FRTR_W_CBR,crudebr,rate,46.6,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,FE_FRTY_W_NPG,womenrepage,other,11160,DHS National,NI2012DHS,household,Niger,NE,NER
