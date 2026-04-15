@@ -1,18 +1,18 @@
 import type { ModuleDefinitionCore } from "../.validation/module_definition_validator.ts";
 
 export const core: ModuleDefinitionCore = {
-  "label": {
-    "en": "M1. Data quality assessment",
-    "fr": "M1. Évaluation de la qualité des données"
+  label: {
+    en: "M1. Data quality assessment",
+    fr: "M1. Évaluation de la qualité des données",
   },
-  "prerequisites": [],
-  "scriptGenerationType": "template",
-  "dataSources": [
+  prerequisites: [],
+  scriptGenerationType: "template",
+  dataSources: [
     {
-      "sourceType": "dataset",
-      "replacementString": "PROJECT_DATA_HMIS",
-      "datasetType": "hmis"
-    }
+      sourceType: "dataset",
+      replacementString: "PROJECT_DATA_HMIS",
+      datasetType: "hmis",
+    },
   ],
-  "assetsToImport": []
+  assetsToImport: [],
 };
