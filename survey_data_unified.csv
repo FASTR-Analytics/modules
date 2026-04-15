@@ -18616,15 +18616,86 @@ Niger,NATIONAL,2022,Infant mortality rate (IMR),imr,rate,65.26114,UNWPP,UNWPP - 
 Niger,NATIONAL,2023,Infant mortality rate (IMR),imr,rate,64.56042,UNWPP,UNWPP - Infant mortality rate,modeled,Niger,NE,NER
 Niger,NATIONAL,2024,Infant mortality rate (IMR),imr,rate,63.25632,UNWPP,UNWPP - Infant mortality rate,modeled,Niger,NE,NER
 Niger,NATIONAL,2025,Infant mortality rate (IMR),imr,rate,62.11321,UNWPP,UNWPP - Infant mortality rate,modeled,Niger,NE,NER
-Niger,NATIONAL,2020,Under-five mortality rate (U5MR),u5mr,rate,120.72714840629301,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,Under-five mortality rate (U5MR),u5mr,rate,120.727148406293,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
 Niger,NATIONAL,2021,Under-five mortality rate (U5MR),u5mr,rate,119.362535944625,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
-Niger,NATIONAL,2022,Under-five mortality rate (U5MR),u5mr,rate,117.66984209606301,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
-Niger,NATIONAL,2023,Under-five mortality rate (U5MR),u5mr,rate,116.00232474798699,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,Under-five mortality rate (U5MR),u5mr,rate,117.669842096063,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,Under-five mortality rate (U5MR),u5mr,rate,116.002324747987,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
 Niger,NATIONAL,2024,Under-five mortality rate (U5MR),u5mr,rate,113.723844748489,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
 Niger,NATIONAL,2025,Under-five mortality rate (U5MR),u5mr,rate,111.617568528498,UNWPP,UNWPP - Under-five mortality rate,modeled,Niger,NE,NER
-Niger,NATIONAL,2020,CP Modern,mcpr,percent,0.11199999999999999,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,CP Modern,mcpr,percent,0.112,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
 Niger,NATIONAL,2021,CP Modern,mcpr,percent,0.11,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
 Niger,NATIONAL,2022,CP Modern,mcpr,percent,0.11,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
-Niger,NATIONAL,2023,CP Modern,mcpr,percent,0.11199999999999999,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,CP Modern,mcpr,percent,0.112,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
 Niger,NATIONAL,2024,CP Modern,mcpr,percent,0.114,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
-Niger,NATIONAL,2025,CP Modern,mcpr,percent,0.11699999999999999,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,CP Modern,mcpr,percent,0.117,UNWPP,UNWPP - Modern contraceptive prevalence,modeled,Niger,NE,NER
+Niger,NATIONAL,1992,FE_FRTR_W_TFR,total_fertility_rate,rate,7,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,FP_SRCM_W_TOT,fp,percent,1,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CM_ECMT_C_IMR,imr,rate,123,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CM_ECMR_C_NNR,nmr,rate,41,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,RH_ANCP_W_SKP,anc1,percent,0.312,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,RH_ANCN_W_N4P,anc4,percent,0.08,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,RH_DELP_C_DHF,delivery,percent,0.158,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACS_C_OP1,polio1,percent,0.358,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_BCG,bcg,percent,0.39899999999999997,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_OP2,polio2,percent,0.244,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_OP3,polio3,percent,0.201,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_MSL,measles1,percent,0.278,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_BAS,fully_immunized,percent,0.174,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,7.2,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,FP_SRCM_W_TOT,fp,percent,1,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CM_ECMT_C_IMR,imr,rate,123,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CM_ECMR_C_NNR,nmr,rate,44,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,RH_ANCP_W_SKP,anc1,percent,0.397,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,RH_ANCN_W_N4P,anc4,percent,0.113,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.18100000000000002,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACS_C_OP1,polio1,percent,0.52,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACC_C_BCG,bcg,percent,0.473,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACC_C_OP2,polio2,percent,0.387,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACC_C_OP3,polio3,percent,0.24,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACC_C_MSL,measles1,percent,0.349,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,CH_VACC_C_BAS,fully_immunized,percent,0.184,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,7,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,FP_SRCM_W_TOT,fp,percent,1,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CM_ECMT_C_IMR,imr,rate,81,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CM_ECMR_C_NNR,nmr,rate,33,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CM_PNMR_C_NSB,stillbirth,number,123,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,RH_ANCP_W_SKP,anc1,percent,0.47,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,RH_ANCN_W_N4P,anc4,percent,0.153,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,RH_ANCC_W_IRN,iron_anc,percent,0.444,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,RH_DELP_C_DHF,delivery,percent,0.18899999999999997,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACS_C_OP1,polio1,percent,0.7959999999999999,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACC_C_BCG,bcg,percent,0.636,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACC_C_OP2,polio2,percent,0.7090000000000001,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACC_C_OP3,polio3,percent,0.546,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACC_C_MSL,measles1,percent,0.47,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CH_VACC_C_BAS,fully_immunized,percent,0.29,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,CN_MIAC_C_VAS,vitamina,percent,0.6970000000000001,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,ML_IPTP_W_SPF,iptp1,percent,0.005,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,ML_IPTP_W_2SP,iptp2,percent,0.005,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2006,ML_IPTP_W_3SP,iptp3,percent,0.004,DHS National,NI2006DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,7.6,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,FP_SRCM_W_TOT,fp,percent,1,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CM_ECMT_C_IMR,imr,rate,51,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CM_ECMR_C_NNR,nmr,rate,24,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CM_PNMR_C_NSB,stillbirth,number,225,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,RH_ANCP_W_SKP,anc1,percent,0.851,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,RH_ANCN_W_N4P,anc4,percent,0.331,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,RH_ANCC_W_IRN,iron_anc,percent,0.8340000000000001,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,RH_DELP_C_DHF,delivery,percent,0.341,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_VACS_C_OP1,polio1,percent,0.927,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_VACC_C_OP2,polio2,percent,0.847,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_VACC_C_OP3,polio3,percent,0.747,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_VACC_C_MSL,measles1,percent,0.687,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_VACC_C_BAS,fully_immunized,percent,0.52,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.083,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CN_MIAC_C_VAS,vitamina,percent,0.596,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,CN_MIAC_C_DWM,deworming,percent,0.265,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,ML_IPTP_W_SPF,iptp1,percent,0.627,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,ML_IPTP_W_2SP,iptp2,percent,0.369,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2012,ML_IPTP_W_3SP,iptp3,percent,0.091,DHS National,NI2012DHS,household,Niger,NE,NER
+Niger,NATIONAL,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,6.2,DHS National,NI2021MIS,household,Niger,NE,NER
+Niger,NATIONAL,2021,RH_ANCP_W_SKP,anc1,percent,0.938,DHS National,NI2021MIS,household,Niger,NE,NER
+Niger,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.433,DHS National,NI2021MIS,household,Niger,NE,NER
+Niger,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.816,DHS National,NI2021MIS,household,Niger,NE,NER
+Niger,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.562,DHS National,NI2021MIS,household,Niger,NE,NER
+Niger,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.25,DHS National,NI2021MIS,household,Niger,NE,NER
