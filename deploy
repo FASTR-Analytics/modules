@@ -3,8 +3,14 @@
 # Usage: ./deploy.sh [git push arguments]
 
 if ! command -v deno >/dev/null 2>&1; then
-  echo "WARNING: deno not found -- skipping validation"
+  echo "WARNING: deno not found -- skipping build and validation"
 else
+  echo "Building definitions..."
+  if ! deno run --allow-read --allow-write build_definitions.ts; then
+    echo "Build failed."
+    exit 1
+  fi
+
   echo "Running validation..."
   ERRORS=$(deno run --allow-read --allow-net .validation/validate_definitions.ts 2>&1 >/dev/tty)
   EXIT_CODE=$?

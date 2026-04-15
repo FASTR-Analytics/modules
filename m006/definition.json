@@ -3,28 +3,66 @@
     "en": "M6. Coverage estimates ~ new, part 2",
     "fr": "M6. Estimations de couverture ~ nouveau, partie 2"
   },
-  "prerequisites": ["m005"],
-  "assetsToImport": [],
+  "prerequisites": [
+    "m005"
+  ],
+  "scriptGenerationType": "template",
   "dataSources": [
     {
-      "replacementString": "M5_combined_results_national.csv",
       "sourceType": "results_object",
+      "replacementString": "M5_combined_results_national.csv",
       "resultsObjectId": "M5_combined_results_national.csv",
       "moduleId": "m005"
     },
     {
-      "replacementString": "M5_combined_results_admin2.csv",
       "sourceType": "results_object",
+      "replacementString": "M5_combined_results_admin2.csv",
       "resultsObjectId": "M5_combined_results_admin2.csv",
       "moduleId": "m005"
     },
     {
-      "replacementString": "M5_combined_results_admin3.csv",
       "sourceType": "results_object",
+      "replacementString": "M5_combined_results_admin3.csv",
       "resultsObjectId": "M5_combined_results_admin3.csv",
       "moduleId": "m005"
     }
   ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "DENOMINATOR_CHAIN",
+        "description": "Denominator to use for all coverage calculations",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "auto",
+              "label": "auto"
+            },
+            {
+              "value": "anc1",
+              "label": "anc1"
+            },
+            {
+              "value": "delivery",
+              "label": "delivery"
+            },
+            {
+              "value": "bcg",
+              "label": "bcg"
+            },
+            {
+              "value": "penta1",
+              "label": "penta1"
+            }
+          ],
+          "defaultValue": "auto"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [],
   "resultsObjects": [
     {
       "id": "M6_coverage_estimation_national.csv",
@@ -77,18 +115,6 @@
   "metrics": [
     {
       "id": "m6-01-01",
-      "resultsObjectId": "M6_coverage_estimation_national.csv",
-      "valueProps": [
-        "coverage_original_estimate",
-        "coverage_avgsurveyprojection",
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_original_estimate": "Survey-based estimate (when available)",
-        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage (all estimation types)",
         "fr": "Couverture (tous types d'estimation)"
@@ -97,9 +123,26 @@
         "en": "National",
         "fr": "National"
       },
-      "requiredDisaggregationOptions": ["indicator_common_id", "year"],
+      "valueProps": [
+        "coverage_original_estimate",
+        "coverage_avgsurveyprojection",
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
-      "periodOptions": ["year"],
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "year"
+      ],
+      "valueLabelReplacements": {
+        "coverage_original_estimate": "Survey-based estimate (when available)",
+        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M6_coverage_estimation_national.csv",
       "aiDescription": {
         "summary": {
           "en": "Comprehensive coverage estimates at national level using user-selected denominators, combining survey benchmarks with HMIS-derived trends.",
@@ -139,7 +182,11 @@
             "fr": "Générer des séries temporelles de couverture annuelles"
           }
         ],
-        "relatedMetrics": ["m6-02-01", "m6-03-01", "m4a-02-01"],
+        "relatedMetrics": [
+          "m6-02-01",
+          "m6-03-01",
+          "m4a-02-01"
+        ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and year (both required). Compare the three coverage types to assess data quality - they should show consistent trends if both HMIS and denominators are reliable. Time series reveals coverage evolution and inter-survey projection accuracy.",
           "fr": "Toujours désagréger par indicator_common_id et year (tous deux requis). Comparer les trois types de couverture pour évaluer la qualité des données."
@@ -156,9 +203,9 @@
             "en": "National coverage timeseries with survey benchmarks",
             "fr": "Séries temporelles de couverture nationale avec repères d'enquête"
           },
-          "createDefaultVisualizationOnInstall": "2a74f737-78e5-41a1-8f6d-7a3f59be2d19",
           "needsReplicant": true,
           "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "2a74f737-78e5-41a1-8f6d-7a3f59be2d19",
           "config": {
             "d": {
               "type": "timeseries",
@@ -199,18 +246,6 @@
     },
     {
       "id": "m6-02-01",
-      "resultsObjectId": "M6_coverage_estimation_admin2.csv",
-      "valueProps": [
-        "coverage_original_estimate",
-        "coverage_avgsurveyprojection",
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_original_estimate": "Survey-based estimate (when available)",
-        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage (all estimation types)",
         "fr": "Couverture (tous types d'estimation)"
@@ -219,13 +254,27 @@
         "en": "Admin area 2",
         "fr": "Zone administrative 2"
       },
+      "valueProps": [
+        "coverage_original_estimate",
+        "coverage_avgsurveyprojection",
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_2",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": ["year"],
+      "valueLabelReplacements": {
+        "coverage_original_estimate": "Survey-based estimate (when available)",
+        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M6_coverage_estimation_admin2.csv",
       "aiDescription": {
         "summary": {
           "en": "Subnational coverage estimates at admin area 2 level combining survey, projected, and HMIS-derived values.",
@@ -253,7 +302,11 @@
             "fr": "Ciblage géographique des interventions sanitaires"
           }
         ],
-        "relatedMetrics": ["m6-02-02", "m6-01-01", "m6-03-01"],
+        "relatedMetrics": [
+          "m6-02-02",
+          "m6-01-01",
+          "m6-03-01"
+        ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Compare three coverage types for regional data quality validation.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Comparer trois types de couverture pour la validation de la qualité des données régionales."
@@ -270,9 +323,11 @@
             "en": "Coverage trends over time by admin area 2",
             "fr": "Tendances de couverture dans le temps par zone administrative 2"
           },
-          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f26",
           "needsReplicant": true,
-          "allowedFilters": ["admin_area_2"],
+          "allowedFilters": [
+            "admin_area_2"
+          ],
+          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f26",
           "config": {
             "d": {
               "type": "timeseries",
@@ -289,8 +344,8 @@
                 }
               ],
               "filterBy": [],
-              "includeNationalForAdminArea2": true,
-              "selectedReplicantValue": "anc1"
+              "selectedReplicantValue": "anc1",
+              "includeNationalForAdminArea2": true
             },
             "s": {
               "scale": 1.7,
@@ -324,17 +379,22 @@
             "en": "Bar chart comparing coverage across regions",
             "fr": "Diagramme à barres comparant la couverture entre régions"
           },
+          "needsReplicant": true,
+          "allowedFilters": [
+            "admin_area_2"
+          ],
           "createDefaultVisualizationOnInstall": "9d4977b4-0d87-44e1-b2bd-3eddcba623f4",
           "defaultPeriodFilterForDefaultVisualizations": {
             "nMonths": 12
           },
-          "needsReplicant": true,
-          "allowedFilters": ["admin_area_2"],
           "config": {
             "d": {
               "type": "chart",
               "periodOpt": "year",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "coverage_cov"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "admin_area_2",
@@ -346,12 +406,11 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": "anc4",
-              "valuesFilter": ["coverage_cov"]
+              "selectedReplicantValue": "anc4"
             },
             "s": {
-              "showDataLabels": true,
               "colorScale": "single-grey",
+              "showDataLabels": true,
               "sortIndicatorValues": "descending"
             },
             "t": {
@@ -374,12 +433,6 @@
     },
     {
       "id": "m6-02-02",
-      "resultsObjectId": "M6_coverage_estimation_admin2.csv",
-      "valueProps": ["coverage_cov"],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage (HMIS only)",
         "fr": "Couverture (HMIS uniquement)"
@@ -388,13 +441,23 @@
         "en": "Admin area 2",
         "fr": "Zone administrative 2"
       },
+      "valueProps": [
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_2",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": ["year"],
+      "valueLabelReplacements": {
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M6_coverage_estimation_admin2.csv",
       "aiDescription": {
         "summary": {
           "en": "HMIS-only coverage estimates at admin area 2 level for simplified regional monitoring.",
@@ -418,7 +481,9 @@
             "fr": "Tableaux de bord de performance opérationnelle"
           }
         ],
-        "relatedMetrics": ["m6-02-01"],
+        "relatedMetrics": [
+          "m6-02-01"
+        ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Use for regional operational monitoring.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Utiliser pour la surveillance opérationnelle régionale."
@@ -427,18 +492,6 @@
     },
     {
       "id": "m6-03-01",
-      "resultsObjectId": "M6_coverage_estimation_admin3.csv",
-      "valueProps": [
-        "coverage_original_estimate",
-        "coverage_avgsurveyprojection",
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_original_estimate": "Survey-based estimate (when available)",
-        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage (all estimation types)",
         "fr": "Couverture (tous types d'estimation)"
@@ -447,13 +500,27 @@
         "en": "Admin area 3",
         "fr": "Zone administrative 3"
       },
+      "valueProps": [
+        "coverage_original_estimate",
+        "coverage_avgsurveyprojection",
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_3",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": ["year"],
+      "valueLabelReplacements": {
+        "coverage_original_estimate": "Survey-based estimate (when available)",
+        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M6_coverage_estimation_admin3.csv",
       "aiDescription": {
         "summary": {
           "en": "District-level coverage estimates combining survey, projected, and HMIS-derived values.",
@@ -477,7 +544,10 @@
             "fr": "Planification sanitaire au niveau du district"
           }
         ],
-        "relatedMetrics": ["m6-03-02", "m6-02-01"],
+        "relatedMetrics": [
+          "m6-03-02",
+          "m6-02-01"
+        ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Compare with admin area 2 for context.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Comparer avec la zone administrative 2 pour le contexte."
@@ -494,9 +564,11 @@
             "en": "Coverage trends over time by admin area 3",
             "fr": "Tendances de couverture dans le temps par zone administrative 3"
           },
-          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f27",
           "needsReplicant": true,
-          "allowedFilters": ["admin_area_3"],
+          "allowedFilters": [
+            "admin_area_3"
+          ],
+          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f27",
           "config": {
             "d": {
               "type": "timeseries",
@@ -513,8 +585,8 @@
                 }
               ],
               "filterBy": [],
-              "includeNationalForAdminArea2": true,
-              "selectedReplicantValue": "anc1"
+              "selectedReplicantValue": "anc1",
+              "includeNationalForAdminArea2": true
             },
             "s": {
               "scale": 1.7,
@@ -548,17 +620,22 @@
             "en": "Bar chart comparing coverage across districts",
             "fr": "Diagramme à barres comparant la couverture entre districts"
           },
+          "needsReplicant": true,
+          "allowedFilters": [
+            "admin_area_3"
+          ],
           "createDefaultVisualizationOnInstall": "9d4977b4-0d87-44e1-b2bd-3eddcba623f5",
           "defaultPeriodFilterForDefaultVisualizations": {
             "nMonths": 12
           },
-          "needsReplicant": true,
-          "allowedFilters": ["admin_area_3"],
           "config": {
             "d": {
               "type": "chart",
               "periodOpt": "year",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "coverage_cov"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "admin_area_3",
@@ -570,12 +647,11 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": "anc4",
-              "valuesFilter": ["coverage_cov"]
+              "selectedReplicantValue": "anc4"
             },
             "s": {
-              "showDataLabels": true,
               "colorScale": "single-grey",
+              "showDataLabels": true,
               "sortIndicatorValues": "descending"
             },
             "t": {
@@ -598,12 +674,6 @@
     },
     {
       "id": "m6-03-02",
-      "resultsObjectId": "M6_coverage_estimation_admin3.csv",
-      "valueProps": ["coverage_cov"],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage (HMIS only)",
         "fr": "Couverture (HMIS uniquement)"
@@ -612,13 +682,23 @@
         "en": "Admin area 3",
         "fr": "Zone administrative 3"
       },
+      "valueProps": [
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_3",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": ["year"],
+      "valueLabelReplacements": {
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M6_coverage_estimation_admin3.csv",
       "aiDescription": {
         "summary": {
           "en": "HMIS-only coverage estimates at district level for operational monitoring.",
@@ -642,48 +722,14 @@
             "fr": "Tableaux de bord de gestion sanitaire de district"
           }
         ],
-        "relatedMetrics": ["m6-03-01"],
+        "relatedMetrics": [
+          "m6-03-01"
+        ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Simplified metric for district operations.",
           "fr": "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Métrique simplifiée pour les opérations de district."
         }
       }
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Denominator to use for all coverage calculations",
-        "replacementString": "DENOMINATOR_CHAIN",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "auto",
-              "label": "auto"
-            },
-            {
-              "value": "anc1",
-              "label": "anc1"
-            },
-            {
-              "value": "delivery",
-              "label": "delivery"
-            },
-            {
-              "value": "bcg",
-              "label": "bcg"
-            },
-            {
-              "value": "penta1",
-              "label": "penta1"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "auto"
-        }
-      }
-    ]
-  }
+  ]
 }

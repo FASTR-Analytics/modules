@@ -6,6 +6,131 @@
   "prerequisites": [
     "m002"
   ],
+  "scriptGenerationType": "template",
+  "dataSources": [
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data_national.csv",
+      "resultsObjectId": "M2_adjusted_data_national.csv",
+      "moduleId": "m002"
+    },
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data_admin_area.csv",
+      "resultsObjectId": "M2_adjusted_data_admin_area.csv",
+      "moduleId": "m002"
+    }
+  ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTED_COUNT_VARIABLE",
+        "description": "Count value to use",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_outliers"
+        }
+      },
+      {
+        "replacementString": "ANALYSIS_LEVEL",
+        "description": "Level to calculate coverage for",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "NATIONAL_ONLY",
+              "label": "National only"
+            },
+            {
+              "value": "NATIONAL_PLUS_AA2",
+              "label": "National and admin area 2"
+            },
+            {
+              "value": "NATIONAL_PLUS_AA2_AA3",
+              "label": "National, admin area 2, and admin area 3"
+            }
+          ],
+          "defaultValue": "NATIONAL_PLUS_AA2"
+        }
+      },
+      {
+        "replacementString": "PREGNANCY_LOSS_RATE",
+        "description": "Pregnancy loss rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.03"
+        }
+      },
+      {
+        "replacementString": "TWIN_RATE",
+        "description": "Twin rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.015"
+        }
+      },
+      {
+        "replacementString": "STILLBIRTH_RATE",
+        "description": "Stillbirth rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.02"
+        }
+      },
+      {
+        "replacementString": "P1_NMR",
+        "description": "Neonatal mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.039"
+        }
+      },
+      {
+        "replacementString": "P2_PNMR",
+        "description": "Postneonatal mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.028"
+        }
+      },
+      {
+        "replacementString": "INFANT_MORTALITY_RATE",
+        "description": "Infant mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.067"
+        }
+      },
+      {
+        "replacementString": "UNDER5_MORTALITY_RATE",
+        "description": "Under 5 mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.103"
+        }
+      }
+    ]
+  },
   "assetsToImport": [
     "survey_data_unified.csv",
     "population_estimates_only.csv",
@@ -13,20 +138,6 @@
     "ng_national_denominators_corrected.csv",
     "chmis_national_for_module4.csv",
     "chmis_admin_area_for_module4.csv"
-  ],
-  "dataSources": [
-    {
-      "replacementString": "M2_adjusted_data_national.csv",
-      "sourceType": "results_object",
-      "resultsObjectId": "M2_adjusted_data_national.csv",
-      "moduleId": "m002"
-    },
-    {
-      "replacementString": "M2_adjusted_data_admin_area.csv",
-      "sourceType": "results_object",
-      "resultsObjectId": "M2_adjusted_data_admin_area.csv",
-      "moduleId": "m002"
-    }
   ],
   "resultsObjects": [
     {
@@ -116,11 +227,26 @@
   "metrics": [
     {
       "id": "m4a-01-01",
-      "resultsObjectId": "M5_denominators_national.csv",
+      "label": {
+        "en": "Denominator values",
+        "fr": "Valeurs de dénominateur"
+      },
+      "variantLabel": {
+        "en": "National",
+        "fr": "National"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "number",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -171,22 +297,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
-      },
-      "variantLabel": {
-        "en": "National",
-        "fr": "National"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator",
-        "year"
-      ],
-      "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_denominators_national.csv",
       "aiDescription": {
         "summary": {
           "en": "Population denominators for coverage calculation at national level, derived from multiple sources and methods.",
@@ -243,11 +354,11 @@
             "en": "Table of denominator values by source and year",
             "fr": "Tableau des valeurs de dénominateur par source et année"
           },
-          "createDefaultVisualizationOnInstall": "1f8d2940-803c-43f0-b17b-278b271d34a7",
           "allowedFilters": [
             "denominator",
             "source_indicator"
           ],
+          "createDefaultVisualizationOnInstall": "1f8d2940-803c-43f0-b17b-278b271d34a7",
           "config": {
             "d": {
               "type": "table",
@@ -278,11 +389,27 @@
     },
     {
       "id": "m4a-01-02",
-      "resultsObjectId": "M5_denominators_admin2.csv",
+      "label": {
+        "en": "Denominator values",
+        "fr": "Valeurs de dénominateur"
+      },
+      "variantLabel": {
+        "en": "Admin area 2",
+        "fr": "Zone administrative 2"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "number",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator",
+        "admin_area_2",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -333,23 +460,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
-      },
-      "variantLabel": {
-        "en": "Admin area 2",
-        "fr": "Zone administrative 2"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator",
-        "admin_area_2",
-        "year"
-      ],
-      "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_denominators_admin2.csv",
       "aiDescription": {
         "summary": {
           "en": "Subnational population denominators for coverage calculation at admin area 2 level.",
@@ -389,11 +500,27 @@
     },
     {
       "id": "m4a-01-03",
-      "resultsObjectId": "M5_denominators_admin3.csv",
+      "label": {
+        "en": "Denominator values",
+        "fr": "Valeurs de dénominateur"
+      },
+      "variantLabel": {
+        "en": "Admin area 3",
+        "fr": "Zone administrative 3"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "number",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator",
+        "admin_area_3",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -444,23 +571,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
-      },
-      "variantLabel": {
-        "en": "Admin area 3",
-        "fr": "Zone administrative 3"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator",
-        "admin_area_3",
-        "year"
-      ],
-      "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_denominators_admin3.csv",
       "aiDescription": {
         "summary": {
           "en": "District-level population denominators for coverage calculation at admin area 3 level.",
@@ -496,11 +607,27 @@
     },
     {
       "id": "m4a-02-01",
-      "resultsObjectId": "M5_combined_results_national.csv",
+      "label": {
+        "en": "Coverage estimated with different denominators",
+        "fr": "Couverture estimée avec différents dénominateurs"
+      },
+      "variantLabel": {
+        "en": "National",
+        "fr": "National"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator_best_or_survey",
+        "indicator_common_id",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -551,23 +678,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
-      },
-      "variantLabel": {
-        "en": "National",
-        "fr": "National"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator_best_or_survey",
-        "indicator_common_id",
-        "year"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_combined_results_national.csv",
       "aiDescription": {
         "summary": {
           "en": "Coverage estimates calculated using alternative denominator sources, plus survey benchmarks at national level.",
@@ -624,11 +735,11 @@
             "en": "Timeseries comparing coverage across denominator sources",
             "fr": "Séries temporelles comparant la couverture entre sources de dénominateur"
           },
-          "createDefaultVisualizationOnInstall": "15ca88bd-6183-4e71-bb26-3277dd8eb02f",
           "needsReplicant": true,
           "allowedFilters": [
             "denominator_best_or_survey"
           ],
+          "createDefaultVisualizationOnInstall": "15ca88bd-6183-4e71-bb26-3277dd8eb02f",
           "config": {
             "d": {
               "type": "timeseries",
@@ -667,11 +778,28 @@
     },
     {
       "id": "m4a-02-02",
-      "resultsObjectId": "M5_combined_results_admin2.csv",
+      "label": {
+        "en": "Coverage estimated with different denominators",
+        "fr": "Couverture estimée avec différents dénominateurs"
+      },
+      "variantLabel": {
+        "en": "Admin area 2",
+        "fr": "Zone administrative 2"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator_best_or_survey",
+        "admin_area_2",
+        "indicator_common_id",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -722,24 +850,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
-      },
-      "variantLabel": {
-        "en": "Admin area 2",
-        "fr": "Zone administrative 2"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator_best_or_survey",
-        "admin_area_2",
-        "indicator_common_id",
-        "year"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_combined_results_admin2.csv",
       "aiDescription": {
         "summary": {
           "en": "Subnational coverage estimates using alternative denominators at admin area 2 level.",
@@ -775,11 +886,28 @@
     },
     {
       "id": "m4a-02-03",
-      "resultsObjectId": "M5_combined_results_admin3.csv",
+      "label": {
+        "en": "Coverage estimated with different denominators",
+        "fr": "Couverture estimée avec différents dénominateurs"
+      },
+      "variantLabel": {
+        "en": "Admin area 3",
+        "fr": "Zone administrative 3"
+      },
       "valueProps": [
         "value"
       ],
       "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "denominator_best_or_survey",
+        "admin_area_3",
+        "indicator_common_id",
+        "year"
+      ],
       "valueLabelReplacements": {
         "best": "Best",
         "survey": "Survey",
@@ -830,24 +958,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
-      "label": {
-        "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
-      },
-      "variantLabel": {
-        "en": "Admin area 3",
-        "fr": "Zone administrative 3"
-      },
-      "requiredDisaggregationOptions": [
-        "denominator_best_or_survey",
-        "admin_area_3",
-        "indicator_common_id",
-        "year"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "resultsObjectId": "M5_combined_results_admin3.csv",
       "aiDescription": {
         "summary": {
           "en": "District-level coverage estimates using alternative denominators at admin area 3 level.",
@@ -881,116 +992,5 @@
         }
       }
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Count value to use",
-        "replacementString": "SELECTED_COUNT_VARIABLE",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "count_final_none",
-              "label": "Count (unadjusted)"
-            },
-            {
-              "value": "count_final_outliers",
-              "label": "Count (adjusted for outliers)"
-            },
-            {
-              "value": "count_final_completeness",
-              "label": "Count (adjusted for completeness)"
-            },
-            {
-              "value": "count_final_both",
-              "label": "Count (adjusted for outliers and completeness)"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "count_final_outliers"
-        }
-      },
-      {
-        "description": "Level to calculate coverage for",
-        "replacementString": "ANALYSIS_LEVEL",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "NATIONAL_ONLY",
-              "label": "National only"
-            },
-            {
-              "value": "NATIONAL_PLUS_AA2",
-              "label": "National and admin area 2"
-            },
-            {
-              "value": "NATIONAL_PLUS_AA2_AA3",
-              "label": "National, admin area 2, and admin area 3"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "NATIONAL_PLUS_AA2"
-        }
-      },
-      {
-        "description": "Pregnancy loss rate",
-        "replacementString": "PREGNANCY_LOSS_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.03"
-        }
-      },
-      {
-        "description": "Twin rate",
-        "replacementString": "TWIN_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.015"
-        }
-      },
-      {
-        "description": "Stillbirth rate",
-        "replacementString": "STILLBIRTH_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.02"
-        }
-      },
-      {
-        "description": "Neonatal mortality rate",
-        "replacementString": "P1_NMR",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.039"
-        }
-      },
-      {
-        "description": "Postneonatal mortality rate",
-        "replacementString": "P2_PNMR",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.028"
-        }
-      },
-      {
-        "description": "Infant mortality rate",
-        "replacementString": "INFANT_MORTALITY_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.067"
-        }
-      },
-      {
-        "description": "Under 5 mortality rate",
-        "replacementString": "UNDER5_MORTALITY_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.103"
-        }
-      }
-    ]
-  }
+  ]
 }

@@ -7,7 +7,7 @@
     "m001",
     "m002"
   ],
-  "assetsToImport": [],
+  "scriptGenerationType": "template",
   "dataSources": [
     {
       "sourceType": "dataset",
@@ -15,24 +15,153 @@
       "datasetType": "hmis"
     },
     {
-      "replacementString": "M1_output_outliers.csv",
       "sourceType": "results_object",
+      "replacementString": "M1_output_outliers.csv",
       "resultsObjectId": "M1_output_outliers.csv",
       "moduleId": "m001"
     },
     {
-      "replacementString": "M2_adjusted_data_admin_area.csv",
       "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data_admin_area.csv",
       "resultsObjectId": "M2_adjusted_data_admin_area.csv",
       "moduleId": "m002"
     },
     {
-      "replacementString": "M2_adjusted_data.csv",
       "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data.csv",
       "resultsObjectId": "M2_adjusted_data.csv",
       "moduleId": "m002"
     }
   ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTEDCOUNT",
+        "description": "Count variable to use for modeling",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_outliers"
+        }
+      },
+      {
+        "replacementString": "VISUALIZATIONCOUNT",
+        "description": "Count variable to use for visualization",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_outliers"
+        }
+      },
+      {
+        "replacementString": "RUN_DISTRICT_MODEL",
+        "description": "Run district-level model (admin_area_3)",
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "TRUE",
+              "label": "Yes"
+            },
+            {
+              "value": "FALSE",
+              "label": "No"
+            }
+          ],
+          "defaultValue": "FALSE"
+        }
+      },
+      {
+        "replacementString": "RUN_ADMIN_AREA_4_ANALYSIS",
+        "description": "Run admin_area_4 analysis",
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "TRUE",
+              "label": "Yes"
+            },
+            {
+              "value": "FALSE",
+              "label": "No"
+            }
+          ],
+          "defaultValue": "FALSE"
+        }
+      },
+      {
+        "replacementString": "MADS_THRESHOLD",
+        "description": "Threshold for MAD-based control limits",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "1.5"
+        }
+      },
+      {
+        "replacementString": "SMOOTH_K",
+        "description": "Smoothing window (k)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "7"
+        }
+      },
+      {
+        "replacementString": "DIP_THRESHOLD",
+        "description": "Dip threshold (proportion of expected)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.9"
+        }
+      },
+      {
+        "replacementString": "DIFFPERCENT",
+        "description": "Difference percent threshold for visualization",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "10"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [],
   "resultsObjects": [
     {
       "id": "M3_service_utilization.csv",
@@ -135,7 +264,10 @@
   "metrics": [
     {
       "id": "m3-01-01",
-      "resultsObjectId": "M3_service_utilization.csv",
+      "label": {
+        "en": "Number of services reported, by adjustment type",
+        "fr": "Nombre de services déclarés, par type d'ajustement"
+      },
       "valueProps": [
         "count_final_none",
         "count_final_outliers",
@@ -143,25 +275,22 @@
         "count_final_both"
       ],
       "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "count_final_none": "Number of services reported",
-        "count_final_outliers": "Number of services after outlier adjustment",
-        "count_final_completeness": "Number of services after completeness adjustment",
-        "count_final_both": "Number of services after both outlier and completeness adjustment"
-      },
-      "label": {
-        "en": "Number of services reported, by adjustment type",
-        "fr": "Nombre de services déclarés, par type d'ajustement"
-      },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id"
-      ],
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "count_final_none": "Number of services reported",
+        "count_final_outliers": "Number of services after outlier adjustment",
+        "count_final_completeness": "Number of services after completeness adjustment",
+        "count_final_both": "Number of services after both outlier and completeness adjustment"
+      },
+      "resultsObjectId": "M3_service_utilization.csv",
       "aiDescription": {
         "summary": {
           "en": "Total service volumes across four data quality adjustment scenarios: unadjusted, outlier-adjusted, completeness-adjusted, and both adjustments combined.",
@@ -222,25 +351,25 @@
             "en": "Line chart showing monthly service volume by indicator",
             "fr": "Graphique linéaire montrant le volume de services mensuel par indicateur"
           },
-          "createDefaultVisualizationOnInstall": "45f2bcd8-879d-4423-a4b0-a84127e168bf",
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": "45f2bcd8-879d-4423-a4b0-a84127e168bf",
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "period_id",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "count_final_both"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
                   "disDisplayOpt": "cell"
                 }
               ],
-              "filterBy": [],
-              "valuesFilter": [
-                "count_final_both"
-              ]
+              "filterBy": []
             },
             "s": {
               "content": "lines"
@@ -271,28 +400,28 @@
             "en": "Bar chart showing quarterly volume with quarter-on-quarter change",
             "fr": "Diagramme à barres montrant le volume trimestriel avec variation trimestre par trimestre"
           },
+          "allowedFilters": [
+            "indicator_common_id"
+          ],
           "createDefaultVisualizationOnInstall": "7196a784-8665-41ad-b563-965c59937def",
           "defaultPeriodFilterForDefaultVisualizations": {
             "nMonths": 12
           },
-          "allowedFilters": [
-            "indicator_common_id"
-          ],
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "quarter_id",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "count_final_outliers"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": [],
-              "valuesFilter": [
-                "count_final_outliers"
-              ]
+              "filterBy": []
             },
             "s": {
               "specialBarChart": true,
@@ -324,25 +453,25 @@
             "en": "Bar chart showing annual volume with year-on-year change",
             "fr": "Diagramme à barres montrant le volume annuel avec variation d'une année sur l'autre"
           },
-          "createDefaultVisualizationOnInstall": "cfc11e32-5102-484c-b242-892bb132c410",
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": "cfc11e32-5102-484c-b242-892bb132c410",
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "year",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "count_final_outliers"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": [],
-              "valuesFilter": [
-                "count_final_outliers"
-              ]
+              "filterBy": []
             },
             "s": {
               "specialBarChart": true,
@@ -374,16 +503,19 @@
             "en": "Bar chart showing annual volume change by indicator and admin area",
             "fr": "Diagramme à barres montrant la variation annuelle du volume par indicateur et zone administrative"
           },
-          "createDefaultVisualizationOnInstall": "20658bc8-2b24-4adc-8090-407c6e34f22a",
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "20658bc8-2b24-4adc-8090-407c6e34f22a",
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "year",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "count_final_outliers"
+              ],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -394,10 +526,7 @@
                   "disDisplayOpt": "col"
                 }
               ],
-              "filterBy": [],
-              "valuesFilter": [
-                "count_final_outliers"
-              ]
+              "filterBy": []
             },
             "s": {
               "scale": 1.7,
@@ -430,23 +559,23 @@
             "en": "Line chart comparing volume under different adjustment scenarios",
             "fr": "Graphique linéaire comparant le volume selon différents scénarios d'ajustement"
           },
-          "createDefaultVisualizationOnInstall": "508f17cc-fbfd-4585-a2e8-8242234898c3",
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": "508f17cc-fbfd-4585-a2e8-8242234898c3",
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "year",
               "valuesDisDisplayOpt": "series",
+              "valuesFilter": [],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
                   "disDisplayOpt": "col"
                 }
               ],
-              "filterBy": [],
-              "valuesFilter": []
+              "filterBy": []
             },
             "s": {
               "scale": 1.8,
@@ -454,23 +583,23 @@
               "customSeriesStyles": [
                 {
                   "color": "#00897b",
-                  "lineStyle": "solid",
-                  "strokeWidth": 5
+                  "strokeWidth": 5,
+                  "lineStyle": "solid"
                 },
                 {
                   "color": "#757575",
-                  "lineStyle": "solid",
-                  "strokeWidth": 5
+                  "strokeWidth": 5,
+                  "lineStyle": "solid"
                 },
                 {
                   "color": "#8e24aa",
-                  "lineStyle": "solid",
-                  "strokeWidth": 5
+                  "strokeWidth": 5,
+                  "lineStyle": "solid"
                 },
                 {
                   "color": "#7cb342",
-                  "lineStyle": "solid",
-                  "strokeWidth": 5
+                  "strokeWidth": 5,
+                  "lineStyle": "solid"
                 }
               ]
             },
@@ -490,7 +619,6 @@
     },
     {
       "id": "m3-02-01",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
@@ -504,19 +632,20 @@
         "count_expected_if_above_diff_threshold"
       ],
       "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "count_sum": "Actual service volume",
-        "count_expected_if_above_diff_threshold": "Expected service volume"
-      },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id"
-      ],
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expected_if_above_diff_threshold": "Expected service volume"
+      },
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
           "en": "Comparison of actual reported service volumes against model-predicted expected volumes at national level.",
@@ -574,10 +703,10 @@
             "en": "Area chart showing actual vs expected service volume nationally",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu au niveau national"
           },
-          "createDefaultVisualizationOnInstall": "e51a15fd-acfc-4da9-8797-b462b9626cff",
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": "e51a15fd-acfc-4da9-8797-b462b9626cff",
           "config": {
             "d": {
               "type": "timeseries",
@@ -616,7 +745,6 @@
     },
     {
       "id": "m3-02-02",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "label": {
         "en": "Difference between actual and expected service volume",
         "fr": "Différence entre le volume de services réel et attendu"
@@ -629,6 +757,15 @@
         "pct_diff"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
       "valueLabelReplacements": {
         "pct_diff": "Percent difference"
       },
@@ -645,15 +782,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
           "en": "Percentage difference between actual and model-predicted service volumes at national level.",
@@ -704,7 +833,6 @@
     },
     {
       "id": "m3-03-01",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
@@ -718,20 +846,21 @@
         "count_expected_if_above_diff_threshold"
       ],
       "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "count_sum": "Actual service volume",
-        "count_expected_if_above_diff_threshold": "Expected service volume"
-      },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_2"
-      ],
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_2"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expected_if_above_diff_threshold": "Expected service volume"
+      },
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
           "en": "Comparison of actual reported service volumes against model-predicted expected volumes at admin area 2 (province/state) level.",
@@ -789,11 +918,11 @@
             "en": "Area chart showing actual vs expected service volume, with multiple Admin Areas 2 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, avec plusieurs Zones administratives 2 et plusieurs indicateurs"
           },
-          "createDefaultVisualizationOnInstall": "e1916b10-433a-4b19-b376-491a66b81f11",
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "e1916b10-433a-4b19-b376-491a66b81f11",
           "config": {
             "d": {
               "type": "timeseries",
@@ -841,16 +970,15 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 2 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 2 et plusieurs indicateurs"
           },
+          "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "needsReplicant": true,
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "period_id",
               "valuesDisDisplayOpt": "series",
-              "selectedReplicantValue": "",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -861,7 +989,8 @@
                   "disDisplayOpt": "replicant"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": ""
             },
             "s": {
               "content": "areas",
@@ -879,16 +1008,15 @@
             "en": "Area chart showing actual vs expected service volume, for a single indicator and multiple Admin Area 2",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour un unique indicateur et plusieurs Zones administratives 2"
           },
+          "needsReplicant": true,
           "allowedFilters": [
             "admin_area_2"
           ],
-          "needsReplicant": true,
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "period_id",
               "valuesDisDisplayOpt": "series",
-              "selectedReplicantValue": "",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -899,7 +1027,8 @@
                   "disDisplayOpt": "cell"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": ""
             },
             "s": {
               "content": "areas",
@@ -911,7 +1040,6 @@
     },
     {
       "id": "m3-03-02",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "label": {
         "en": "Difference between actual and expected service volume",
         "fr": "Différence entre le volume de services réel et attendu"
@@ -924,6 +1052,16 @@
         "pct_diff"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_2"
+      ],
       "valueLabelReplacements": {
         "pct_diff": "Percent difference"
       },
@@ -940,16 +1078,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_2"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
           "en": "Percentage difference between actual and expected service volumes at admin area 2 level.",
@@ -1061,7 +1190,6 @@
     },
     {
       "id": "m3-04-01",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
@@ -1075,20 +1203,21 @@
         "count_expected_if_above_diff_threshold"
       ],
       "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "count_sum": "Actual service volume",
-        "count_expected_if_above_diff_threshold": "Expected service volume"
-      },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_3"
-      ],
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_3"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expected_if_above_diff_threshold": "Expected service volume"
+      },
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
           "en": "Comparison of actual vs expected service volumes at admin area 3 (district) level.",
@@ -1175,16 +1304,15 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 3 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3 et plusieurs indicateurs"
           },
+          "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "needsReplicant": true,
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "period_id",
               "valuesDisDisplayOpt": "series",
-              "selectedReplicantValue": "",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -1195,7 +1323,8 @@
                   "disDisplayOpt": "replicant"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": ""
             },
             "s": {
               "content": "areas",
@@ -1207,7 +1336,6 @@
     },
     {
       "id": "m3-04-02",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "label": {
         "en": "Difference between actual and expected service volume",
         "fr": "Différence entre le volume de services réel et attendu"
@@ -1220,6 +1348,16 @@
         "pct_diff"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_3"
+      ],
       "valueLabelReplacements": {
         "pct_diff": "Percent difference"
       },
@@ -1236,16 +1374,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_3"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
           "en": "Percentage difference between actual and expected service volumes at district level.",
@@ -1358,7 +1487,6 @@
     },
     {
       "id": "m3-05-01",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
@@ -1372,20 +1500,21 @@
         "count_expected_if_above_diff_threshold"
       ],
       "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "count_sum": "Actual service volume",
-        "count_expected_if_above_diff_threshold": "Expected service volume"
-      },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_4"
-      ],
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_4"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expected_if_above_diff_threshold": "Expected service volume"
+      },
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {
           "en": "Comparison of actual vs expected service volumes at admin area 4 (sub-district) level.",
@@ -1471,16 +1600,15 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 4 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 4 et plusieurs indicateurs"
           },
+          "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "needsReplicant": true,
           "config": {
             "d": {
               "type": "timeseries",
               "periodOpt": "period_id",
               "valuesDisDisplayOpt": "series",
-              "selectedReplicantValue": "",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -1491,7 +1619,8 @@
                   "disDisplayOpt": "replicant"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": ""
             },
             "s": {
               "content": "areas",
@@ -1503,7 +1632,6 @@
     },
     {
       "id": "m3-05-02",
-      "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "label": {
         "en": "Difference between actual and expected service volume",
         "fr": "Différence entre le volume de services réel et attendu"
@@ -1516,6 +1644,16 @@
         "pct_diff"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_4"
+      ],
       "valueLabelReplacements": {
         "pct_diff": "Percent difference"
       },
@@ -1532,16 +1670,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "admin_area_4"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {
           "en": "Percentage difference between actual and expected service volumes at sub-district level.",
@@ -1618,134 +1747,5 @@
         }
       ]
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Count variable to use for modeling",
-        "replacementString": "SELECTEDCOUNT",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "count_final_none",
-              "label": "Count (unadjusted)"
-            },
-            {
-              "value": "count_final_outliers",
-              "label": "Count (adjusted for outliers)"
-            },
-            {
-              "value": "count_final_completeness",
-              "label": "Count (adjusted for completeness)"
-            },
-            {
-              "value": "count_final_both",
-              "label": "Count (adjusted for outliers and completeness)"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "count_final_outliers"
-        }
-      },
-      {
-        "description": "Count variable to use for visualization",
-        "replacementString": "VISUALIZATIONCOUNT",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "count_final_none",
-              "label": "Count (unadjusted)"
-            },
-            {
-              "value": "count_final_outliers",
-              "label": "Count (adjusted for outliers)"
-            },
-            {
-              "value": "count_final_completeness",
-              "label": "Count (adjusted for completeness)"
-            },
-            {
-              "value": "count_final_both",
-              "label": "Count (adjusted for outliers and completeness)"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "count_final_outliers"
-        }
-      },
-      {
-        "description": "Run district-level model (admin_area_3)",
-        "replacementString": "RUN_DISTRICT_MODEL",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "TRUE",
-              "label": "Yes"
-            },
-            {
-              "value": "FALSE",
-              "label": "No"
-            }
-          ],
-          "valueType": "number",
-          "defaultValue": "FALSE"
-        }
-      },
-      {
-        "description": "Run admin_area_4 analysis",
-        "replacementString": "RUN_ADMIN_AREA_4_ANALYSIS",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "TRUE",
-              "label": "Yes"
-            },
-            {
-              "value": "FALSE",
-              "label": "No"
-            }
-          ],
-          "valueType": "number",
-          "defaultValue": "FALSE"
-        }
-      },
-      {
-        "description": "Threshold for MAD-based control limits",
-        "replacementString": "MADS_THRESHOLD",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "1.5"
-        }
-      },
-      {
-        "description": "Smoothing window (k)",
-        "replacementString": "SMOOTH_K",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "7"
-        }
-      },
-      {
-        "description": "Dip threshold (proportion of expected)",
-        "replacementString": "DIP_THRESHOLD",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.9"
-        }
-      },
-      {
-        "description": "Difference percent threshold for visualization",
-        "replacementString": "DIFFPERCENT",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "10"
-        }
-      }
-    ]
-  }
+  ]
 }

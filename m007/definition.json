@@ -3,15 +3,86 @@
     "en": "M7. National Health Sector Scorecard (NHSS)",
     "fr": "M7. Tableau de bord du secteur national de la sante (NHSS)"
   },
-  "prerequisites": ["m002"],
-  "assetsToImport": ["total_population_NGA.csv"],
+  "prerequisites": [
+    "m002"
+  ],
+  "scriptGenerationType": "template",
   "dataSources": [
     {
-      "replacementString": "M2_adjusted_data.csv",
       "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data.csv",
       "resultsObjectId": "M2_adjusted_data.csv",
       "moduleId": "m002"
     }
+  ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTED_COUNT_VARIABLE",
+        "description": "Count value to use",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_none"
+        }
+      },
+      {
+        "replacementString": "BIRTHS_PCT",
+        "description": "Quarterly births as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.01"
+        }
+      },
+      {
+        "replacementString": "WOMEN_15_49_PCT",
+        "description": "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.055"
+        }
+      },
+      {
+        "replacementString": "INTERPOLATE_POPULATION",
+        "description": "Use smoothed (interpolated) population or raw annual values",
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "FALSE",
+              "label": "Raw (annual step)"
+            },
+            {
+              "value": "TRUE",
+              "label": "Smoothed (interpolated)"
+            }
+          ],
+          "defaultValue": "FALSE"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [
+    "total_population_NGA.csv"
   ],
   "resultsObjects": [
     {
@@ -51,13 +122,23 @@
   "metrics": [
     {
       "id": "m7-01-01",
-      "resultsObjectId": "M7_output_scorecard_admin_area_2.csv",
       "label": {
         "en": "Scorecard (AA2)",
         "fr": "Scorecard (AA2)"
       },
-      "valueProps": ["value"],
+      "valueProps": [
+        "value"
+      ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id"
+      ],
+      "requiredDisaggregationOptions": [
+        "admin_area_2",
+        "quarter_id",
+        "indicator_common_id"
+      ],
       "valueLabelReplacements": {
         "anc4_anc1_before20_ratio": "ANC4 / ANC1 <20wks",
         "anc4_anc1_ratio": "ANC4 / ANC1",
@@ -70,13 +151,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
-      "requiredDisaggregationOptions": [
-        "admin_area_2",
-        "quarter_id",
-        "indicator_common_id"
-      ],
-      "formatAs": "percent",
-      "periodOptions": ["quarter_id"],
+      "resultsObjectId": "M7_output_scorecard_admin_area_2.csv",
       "aiDescription": {
         "summary": {
           "en": "xxx",
@@ -112,13 +187,23 @@
     },
     {
       "id": "m7-01-02",
-      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
       "label": {
         "en": "Scorecard (AA3)",
         "fr": "Scorecard (AA3)"
       },
-      "valueProps": ["value"],
+      "valueProps": [
+        "value"
+      ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id"
+      ],
+      "requiredDisaggregationOptions": [
+        "admin_area_3",
+        "quarter_id",
+        "indicator_common_id"
+      ],
       "valueLabelReplacements": {
         "anc4_anc1_before20_ratio": "ANC4 / ANC1 <20wks",
         "anc4_anc1_ratio": "ANC4 / ANC1",
@@ -131,13 +216,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
-      "requiredDisaggregationOptions": [
-        "admin_area_3",
-        "quarter_id",
-        "indicator_common_id"
-      ],
-      "formatAs": "percent",
-      "periodOptions": ["quarter_id"],
+      "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
       "aiDescription": {
         "summary": {
           "en": "xxx",
@@ -173,13 +252,23 @@
     },
     {
       "id": "m7-01-03",
-      "resultsObjectId": "M7_output_scorecard_admin_area_4.csv",
       "label": {
         "en": "Scorecard (AA4)",
         "fr": "Scorecard (AA4)"
       },
-      "valueProps": ["value"],
+      "valueProps": [
+        "value"
+      ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "quarter_id"
+      ],
+      "requiredDisaggregationOptions": [
+        "admin_area_4",
+        "quarter_id",
+        "indicator_common_id"
+      ],
       "valueLabelReplacements": {
         "anc4_anc1_before20_ratio": "ANC4 / ANC1 <20wks",
         "anc4_anc1_ratio": "ANC4 / ANC1",
@@ -192,13 +281,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
-      "requiredDisaggregationOptions": [
-        "admin_area_4",
-        "quarter_id",
-        "indicator_common_id"
-      ],
-      "formatAs": "percent",
-      "periodOptions": ["quarter_id"],
+      "resultsObjectId": "M7_output_scorecard_admin_area_4.csv",
       "aiDescription": {
         "summary": {
           "en": "xxx",
@@ -232,72 +315,5 @@
         }
       }
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Count value to use",
-        "replacementString": "SELECTED_COUNT_VARIABLE",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "count_final_none",
-              "label": "Count (unadjusted)"
-            },
-            {
-              "value": "count_final_outliers",
-              "label": "Count (adjusted for outliers)"
-            },
-            {
-              "value": "count_final_completeness",
-              "label": "Count (adjusted for completeness)"
-            },
-            {
-              "value": "count_final_both",
-              "label": "Count (adjusted for outliers and completeness)"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "count_final_none"
-        }
-      },
-      {
-        "replacementString": "BIRTHS_PCT",
-        "description": "Quarterly births as proportion of total population (annual rate x 0.25)",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.01"
-        }
-      },
-      {
-        "replacementString": "WOMEN_15_49_PCT",
-        "description": "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.055"
-        }
-      },
-      {
-        "replacementString": "INTERPOLATE_POPULATION",
-        "description": "Use smoothed (interpolated) population or raw annual values",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "FALSE",
-              "label": "Raw (annual step)"
-            },
-            {
-              "value": "TRUE",
-              "label": "Smoothed (interpolated)"
-            }
-          ],
-          "valueType": "number",
-          "defaultValue": "FALSE"
-        }
-      }
-    ]
-  }
+  ]
 }

@@ -6,7 +6,7 @@
   "prerequisites": [
     "m001"
   ],
-  "assetsToImport": [],
+  "scriptGenerationType": "template",
   "dataSources": [
     {
       "sourceType": "dataset",
@@ -14,18 +14,22 @@
       "datasetType": "hmis"
     },
     {
-      "replacementString": "M1_output_outliers.csv",
       "sourceType": "results_object",
+      "replacementString": "M1_output_outliers.csv",
       "resultsObjectId": "M1_output_outliers.csv",
       "moduleId": "m001"
     },
     {
-      "replacementString": "M1_output_completeness.csv",
       "sourceType": "results_object",
+      "replacementString": "M1_output_completeness.csv",
       "resultsObjectId": "M1_output_completeness.csv",
       "moduleId": "m001"
     }
   ],
+  "configRequirements": {
+    "parameters": []
+  },
+  "assetsToImport": [],
   "resultsObjects": [
     {
       "id": "M2_adjusted_data.csv",
@@ -65,7 +69,6 @@
   "metrics": [
     {
       "id": "m2-01-01",
-      "resultsObjectId": "M2_adjusted_data.csv",
       "label": {
         "en": "Percent change in volume due to outlier adjustment",
         "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes"
@@ -74,6 +77,13 @@
         "pct_change"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
         "pct_change": "Percent change"
       },
@@ -90,13 +100,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_outliers)/count_final_none"
       },
-      "requiredDisaggregationOptions": [],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {
           "en": "Magnitude of change in reported service volumes after removing or adjusting outlier values.",
@@ -153,14 +157,14 @@
             "en": "Table showing percent change due to outlier adjustment by indicator and region",
             "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et région"
           },
-          "createDefaultVisualizationOnInstall": "e5edce68-369c-498e-a4b0-03ba73d31d6c",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "e5edce68-369c-498e-a4b0-03ba73d31d6c",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -203,7 +207,6 @@
     },
     {
       "id": "m2-01-02",
-      "resultsObjectId": "M2_adjusted_data.csv",
       "label": {
         "en": "Percent change in volume due to completeness adjustment",
         "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude"
@@ -212,6 +215,13 @@
         "pct_change"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
         "pct_change": "Percent change"
       },
@@ -228,13 +238,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_completeness)/count_final_none"
       },
-      "requiredDisaggregationOptions": [],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {
           "en": "Magnitude of change in reported service volumes after imputing missing facility reports.",
@@ -291,14 +295,14 @@
             "en": "Table showing percent change due to completeness adjustment by indicator and region",
             "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et région"
           },
-          "createDefaultVisualizationOnInstall": "b4750223-9ffd-43f6-958b-0ba9c0412df4",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "b4750223-9ffd-43f6-958b-0ba9c0412df4",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -341,7 +345,6 @@
     },
     {
       "id": "m2-01-03",
-      "resultsObjectId": "M2_adjusted_data.csv",
       "label": {
         "en": "Percent change in volume due to both outlier and completeness adjustment",
         "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude"
@@ -350,6 +353,13 @@
         "pct_change"
       ],
       "valueFunc": "identity",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
         "pct_change": "Percent change"
       },
@@ -366,13 +376,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_both)/count_final_none"
       },
-      "requiredDisaggregationOptions": [],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {
           "en": "Combined magnitude of change in reported service volumes after both outlier removal and missing data imputation.",
@@ -428,14 +432,14 @@
             "en": "Table showing percent change due to combined outlier and completeness adjustment by indicator and region",
             "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région"
           },
-          "createDefaultVisualizationOnInstall": "5337d614-02b8-4de8-abcb-f390d2b7a714",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "5337d614-02b8-4de8-abcb-f390d2b7a714",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -476,9 +480,5 @@
         }
       ]
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": []
-  }
+  ]
 }

@@ -6,6 +6,131 @@
   "prerequisites": [
     "m002"
   ],
+  "scriptGenerationType": "template",
+  "dataSources": [
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data_national.csv",
+      "resultsObjectId": "M2_adjusted_data_national.csv",
+      "moduleId": "m002"
+    },
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data_admin_area.csv",
+      "resultsObjectId": "M2_adjusted_data_admin_area.csv",
+      "moduleId": "m002"
+    }
+  ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTED_COUNT_VARIABLE",
+        "description": "Count value to use",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_outliers"
+        }
+      },
+      {
+        "replacementString": "ANALYSIS_LEVEL",
+        "description": "Level to calculate coverage for",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "NATIONAL_ONLY",
+              "label": "National only"
+            },
+            {
+              "value": "NATIONAL_PLUS_AA2",
+              "label": "National and admin area 2"
+            },
+            {
+              "value": "NATIONAL_PLUS_AA2_AA3",
+              "label": "National, admin area 2, and admin area 3"
+            }
+          ],
+          "defaultValue": "NATIONAL_PLUS_AA2"
+        }
+      },
+      {
+        "replacementString": "PREGNANCY_LOSS_RATE",
+        "description": "Pregnancy loss rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.03"
+        }
+      },
+      {
+        "replacementString": "TWIN_RATE",
+        "description": "Twin rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.015"
+        }
+      },
+      {
+        "replacementString": "STILLBIRTH_RATE",
+        "description": "Stillbirth rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.02"
+        }
+      },
+      {
+        "replacementString": "P1_NMR",
+        "description": "Neonatal mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.039"
+        }
+      },
+      {
+        "replacementString": "P2_PNMR",
+        "description": "Postneonatal mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.028"
+        }
+      },
+      {
+        "replacementString": "INFANT_MORTALITY_RATE",
+        "description": "Infant mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.067"
+        }
+      },
+      {
+        "replacementString": "UNDER5_MORTALITY_RATE",
+        "description": "Under 5 mortality rate",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.103"
+        }
+      }
+    ]
+  },
   "assetsToImport": [
     "survey_data_unified.csv",
     "population_estimates_only.csv",
@@ -13,20 +138,6 @@
     "ng_national_denominators_corrected.csv",
     "chmis_national_for_module4.csv",
     "chmis_admin_area_for_module4.csv"
-  ],
-  "dataSources": [
-    {
-      "replacementString": "M2_adjusted_data_national.csv",
-      "sourceType": "results_object",
-      "resultsObjectId": "M2_adjusted_data_national.csv",
-      "moduleId": "m002"
-    },
-    {
-      "replacementString": "M2_adjusted_data_admin_area.csv",
-      "sourceType": "results_object",
-      "resultsObjectId": "M2_adjusted_data_admin_area.csv",
-      "moduleId": "m002"
-    }
   ],
   "resultsObjects": [
     {
@@ -74,18 +185,6 @@
   "metrics": [
     {
       "id": "m4-01-01",
-      "resultsObjectId": "M4_coverage_estimation.csv",
-      "valueProps": [
-        "coverage_original_estimate",
-        "coverage_avgsurveyprojection",
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_original_estimate": "Survey-based estimate (when available)",
-        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage calculated from HMIS data",
         "fr": "Couverture calculée à partir des données HMIS"
@@ -94,14 +193,26 @@
         "en": "National",
         "fr": "National"
       },
-      "requiredDisaggregationOptions": [
-        "indicator_common_id",
-        "year"
+      "valueProps": [
+        "coverage_original_estimate",
+        "coverage_avgsurveyprojection",
+        "coverage_cov"
       ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
       "periodOptions": [
         "year"
       ],
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "year"
+      ],
+      "valueLabelReplacements": {
+        "coverage_original_estimate": "Survey-based estimate (when available)",
+        "coverage_avgsurveyprojection": "Projected survey estimate (when survey data is missing)",
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M4_coverage_estimation.csv",
       "aiDescription": {
         "summary": {
           "en": "Health service coverage estimates at national level, comparing HMIS-derived coverage with survey-based benchmarks.",
@@ -157,9 +268,9 @@
             "en": "National coverage timeseries with survey benchmarks",
             "fr": "Séries temporelles de couverture nationale avec repères d'enquête"
           },
-          "createDefaultVisualizationOnInstall": "3e3230cb-ad9e-48b9-b3ce-7bd01255d20b",
           "needsReplicant": true,
           "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "3e3230cb-ad9e-48b9-b3ce-7bd01255d20b",
           "config": {
             "d": {
               "type": "timeseries",
@@ -198,14 +309,6 @@
     },
     {
       "id": "m4-02-01",
-      "resultsObjectId": "M4_coverage_estimation_admin_area_2.csv",
-      "valueProps": [
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage calculated from HMIS data",
         "fr": "Couverture calculée à partir des données HMIS"
@@ -214,15 +317,23 @@
         "en": "Admin Area 2",
         "fr": "Zone administrative 2"
       },
+      "valueProps": [
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_2",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "valueLabelReplacements": {
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M4_coverage_estimation_admin_area_2.csv",
       "aiDescription": {
         "summary": {
           "en": "HMIS-derived health service coverage at admin area 2 (province/state) level.",
@@ -278,10 +389,10 @@
             "en": "Coverage trends over time by admin area 2",
             "fr": "Tendances de couverture dans le temps par zone administrative 2"
           },
-          "createDefaultVisualizationOnInstall": "a7727717-92d9-4676-b533-9b98be426a81",
           "allowedFilters": [
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "a7727717-92d9-4676-b533-9b98be426a81",
           "config": {
             "d": {
               "type": "timeseries",
@@ -330,11 +441,11 @@
             "en": "Bar chart comparing coverage across regions",
             "fr": "Diagramme à barres comparant la couverture entre régions"
           },
-          "createDefaultVisualizationOnInstall": "d452dfcf-2cc9-4c7f-bfb0-bf5b8ab6433d",
           "needsReplicant": true,
           "allowedFilters": [
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "d452dfcf-2cc9-4c7f-bfb0-bf5b8ab6433d",
           "config": {
             "d": {
               "type": "chart",
@@ -382,14 +493,6 @@
     },
     {
       "id": "m4-03-01",
-      "resultsObjectId": "M4_coverage_estimation_admin_area_3.csv",
-      "valueProps": [
-        "coverage_cov"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "coverage_cov": "Coverage calculated from HMIS data"
-      },
       "label": {
         "en": "Coverage calculated from HMIS data",
         "fr": "Couverture calculée à partir des données HMIS"
@@ -398,15 +501,23 @@
         "en": "Admin Area 3",
         "fr": "Zone administrative 3"
       },
+      "valueProps": [
+        "coverage_cov"
+      ],
+      "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "year"
+      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_3",
         "year"
       ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
+      "valueLabelReplacements": {
+        "coverage_cov": "Coverage calculated from HMIS data"
+      },
+      "resultsObjectId": "M4_coverage_estimation_admin_area_3.csv",
       "aiDescription": {
         "summary": {
           "en": "HMIS-derived health service coverage at admin area 3 (district) level.",
@@ -452,116 +563,5 @@
         }
       }
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Count value to use",
-        "replacementString": "SELECTED_COUNT_VARIABLE",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "count_final_none",
-              "label": "Count (unadjusted)"
-            },
-            {
-              "value": "count_final_outliers",
-              "label": "Count (adjusted for outliers)"
-            },
-            {
-              "value": "count_final_completeness",
-              "label": "Count (adjusted for completeness)"
-            },
-            {
-              "value": "count_final_both",
-              "label": "Count (adjusted for outliers and completeness)"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "count_final_outliers"
-        }
-      },
-      {
-        "description": "Level to calculate coverage for",
-        "replacementString": "ANALYSIS_LEVEL",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "NATIONAL_ONLY",
-              "label": "National only"
-            },
-            {
-              "value": "NATIONAL_PLUS_AA2",
-              "label": "National and admin area 2"
-            },
-            {
-              "value": "NATIONAL_PLUS_AA2_AA3",
-              "label": "National, admin area 2, and admin area 3"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "NATIONAL_PLUS_AA2"
-        }
-      },
-      {
-        "description": "Pregnancy loss rate",
-        "replacementString": "PREGNANCY_LOSS_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.03"
-        }
-      },
-      {
-        "description": "Twin rate",
-        "replacementString": "TWIN_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.015"
-        }
-      },
-      {
-        "description": "Stillbirth rate",
-        "replacementString": "STILLBIRTH_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.02"
-        }
-      },
-      {
-        "description": "Neonatal mortality rate",
-        "replacementString": "P1_NMR",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.039"
-        }
-      },
-      {
-        "description": "Postneonatal mortality rate",
-        "replacementString": "P2_PNMR",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.028"
-        }
-      },
-      {
-        "description": "Infant mortality rate",
-        "replacementString": "INFANT_MORTALITY_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.067"
-        }
-      },
-      {
-        "description": "Under 5 mortality rate",
-        "replacementString": "UNDER5_MORTALITY_RATE",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.103"
-        }
-      }
-    ]
-  }
+  ]
 }

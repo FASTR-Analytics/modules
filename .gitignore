@@ -11,6 +11,9 @@
 # Office temp/lock files
 ~$*
 
+# Local schema vendoring script (has hardcoded path)
+vendor_schema
+
 # Local documentation (not for repo)
 CLAUDE.md
 NHSS_scorecard_TWG_changes_2026Feb.md

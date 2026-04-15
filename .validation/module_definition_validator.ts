@@ -1,33 +1,31 @@
-// This file is kept in sync with:
-// platform/lib/types/module_definition_validator.ts
-// If you update the schema here, update it there too (and vice versa).
+import { z } from "zod";
 
-import { z } from "npm:zod@^3";
+export const translatableString = z.object({
+  en: z.string(),
+  fr: z.string(),
+});
 
-const translatableString = z
-  .object({
-    en: z.string(),
-    fr: z.string().optional(),
-  })
-  .passthrough();
+export const scriptGenerationType = z.enum(["template", "hfa"]);
 
-const scriptGenerationType = z.enum(["template", "hfa"]);
+export const dataSourceDataset = z.object({
+  sourceType: z.literal("dataset"),
+  replacementString: z.string(),
+  datasetType: z.enum(["hmis", "hfa"]),
+});
 
-const dataSource = z.discriminatedUnion("sourceType", [
-  z.object({
-    sourceType: z.literal("dataset"),
-    replacementString: z.string(),
-    datasetType: z.enum(["hmis", "hfa"]),
-  }),
-  z.object({
-    sourceType: z.literal("results_object"),
-    replacementString: z.string(),
-    resultsObjectId: z.string(),
-    moduleId: z.string(),
-  }),
+export const dataSourceResultsObject = z.object({
+  sourceType: z.literal("results_object"),
+  replacementString: z.string(),
+  resultsObjectId: z.string(),
+  moduleId: z.string(),
+});
+
+export const dataSource = z.discriminatedUnion("sourceType", [
+  dataSourceDataset,
+  dataSourceResultsObject,
 ]);
 
-const moduleParameterInput = z.discriminatedUnion("inputType", [
+export const moduleParameterInput = z.discriminatedUnion("inputType", [
   z.object({ inputType: z.literal("number"), defaultValue: z.string() }),
   z.object({ inputType: z.literal("text"), defaultValue: z.string() }),
   z.object({
@@ -42,17 +40,17 @@ const moduleParameterInput = z.discriminatedUnion("inputType", [
   }),
 ]);
 
-const moduleParameter = z.object({
+export const moduleParameter = z.object({
   replacementString: z.string(),
   description: z.string(),
   input: moduleParameterInput,
 });
 
-const configRequirements = z.object({
+export const configRequirements = z.object({
   parameters: z.array(moduleParameter),
 });
 
-const resultsObjectDefinition = z.object({
+export const resultsObjectDefinition = z.object({
   id: z.string(),
   description: z.string(),
   createTableStatementPossibleColumns: z
@@ -60,10 +58,10 @@ const resultsObjectDefinition = z.object({
     .optional(),
 });
 
-const valueFunc = z.enum(["SUM", "AVG", "COUNT", "MIN", "MAX", "identity"]);
-const periodOption = z.enum(["period_id", "quarter_id", "year"]);
+export const valueFunc = z.enum(["SUM", "AVG", "COUNT", "MIN", "MAX", "identity"]);
+export const periodOption = z.enum(["period_id", "quarter_id", "year"]);
 
-const disaggregationOption = z.enum([
+export const disaggregationOption = z.enum([
   "indicator_common_id",
   "admin_area_2",
   "admin_area_3",
@@ -90,7 +88,7 @@ const disaggregationOption = z.enum([
   "time_point",
 ]);
 
-const postAggregationExpression = z.object({
+export const postAggregationExpression = z.object({
   ingredientValues: z.array(
     z.object({
       prop: z.string(),
@@ -188,6 +186,7 @@ const configS = z
     specialBarChartDiffThreshold: z.number(),
     specialBarChartDataLabels: z.enum(["all-values", "threshold-values"]),
     specialCoverageChart: z.boolean(),
+    specialDisruptionsChart: z.boolean(),
     specialScorecardTable: z.boolean(),
     verticalTickLabels: z.boolean(),
     allowVerticalColHeaders: z.boolean(),
@@ -207,6 +206,7 @@ const configS = z
     sortIndicatorValues: z.enum(["ascending", "descending", "none"]),
     formatAdminArea3Labels: z.boolean().optional(),
     mapColorPreset: z.enum(["red", "blue", "green", "red-green", "custom"]),
+    mapColorReverse: z.boolean(),
     mapColorFrom: z.string(),
     mapColorTo: z.string(),
     mapProjection: z.enum(["equirectangular", "mercator", "naturalEarth1"]),
@@ -218,7 +218,7 @@ const configS = z
   })
   .partial();
 
-const vizPresetTextConfig = z.object({
+export const vizPresetTextConfig = z.object({
   caption: translatableString.optional(),
   captionRelFontSize: z.number().optional(),
   subCaption: translatableString.optional(),
@@ -227,7 +227,7 @@ const vizPresetTextConfig = z.object({
   footnoteRelFontSize: z.number().optional(),
 });
 
-const vizPreset = z.object({
+export const vizPreset = z.object({
   id: z.string(),
   label: translatableString,
   description: translatableString,
@@ -247,7 +247,7 @@ const vizPreset = z.object({
   }),
 });
 
-const metricAIDescription = z.object({
+export const metricAIDescription = z.object({
   summary: translatableString,
   methodology: translatableString,
   interpretation: translatableString,
@@ -259,7 +259,7 @@ const metricAIDescription = z.object({
   importantNotes: translatableString.optional(),
 });
 
-const metricDefinitionJSON = z.object({
+export const metricDefinitionJSON = z.object({
   id: z.string(),
   label: translatableString,
   variantLabel: translatableString.optional(),
@@ -276,6 +276,36 @@ const metricDefinitionJSON = z.object({
   vizPresets: z.array(vizPreset).optional(),
   hide: z.boolean().optional(),
 });
+
+export const moduleDefinitionCore = z.object({
+  label: translatableString,
+  prerequisites: z.array(z.string()),
+  scriptGenerationType: scriptGenerationType,
+  dataSources: z.array(dataSource),
+  assetsToImport: z.array(z.string()),
+});
+
+export type TranslatableString = z.infer<typeof translatableString>;
+export type ScriptGenerationType = z.infer<typeof scriptGenerationType>;
+export type DataSource = z.infer<typeof dataSource>;
+export type DataSourceDataset = z.infer<typeof dataSourceDataset>;
+export type DataSourceResultsObject = z.infer<typeof dataSourceResultsObject>;
+export type ModuleParameter = z.infer<typeof moduleParameter>;
+export type ModuleConfigRequirements = z.infer<typeof configRequirements>;
+export type ResultsObjectDefinitionJSON = z.infer<
+  typeof resultsObjectDefinition
+>;
+export type ValueFunc = z.infer<typeof valueFunc>;
+export type PeriodOption = z.infer<typeof periodOption>;
+export type DisaggregationOption = z.infer<typeof disaggregationOption>;
+export type PostAggregationExpression = z.infer<
+  typeof postAggregationExpression
+>;
+export type VizPresetTextConfig = z.infer<typeof vizPresetTextConfig>;
+export type VizPreset = z.infer<typeof vizPreset>;
+export type MetricAIDescription = z.infer<typeof metricAIDescription>;
+export type MetricDefinitionJSON = z.infer<typeof metricDefinitionJSON>;
+export type ModuleDefinitionCore = z.infer<typeof moduleDefinitionCore>;
 
 export const ModuleDefinitionJSONSchema = z
   .object({
@@ -343,3 +373,9 @@ export const ModuleDefinitionJSONSchema = z
       }
     }
   });
+
+export type ValidatedModuleDefinitionJSON = z.infer<
+  typeof ModuleDefinitionJSONSchema
+>;
+
+export type ModuleDefinitionJSON = ValidatedModuleDefinitionJSON;

@@ -4,7 +4,7 @@
     "fr": "M1. Évaluation de la qualité des données"
   },
   "prerequisites": [],
-  "assetsToImport": [],
+  "scriptGenerationType": "template",
   "dataSources": [
     {
       "sourceType": "dataset",
@@ -12,6 +12,144 @@
       "datasetType": "hmis"
     }
   ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "OUTLIER_PROPORTION_THRESHOLD",
+        "description": "Proportion threshold for outlier detection",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0.8"
+        }
+      },
+      {
+        "replacementString": "MINIMUM_COUNT_THRESHOLD",
+        "description": "Minimum count threshold for consideration",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "100"
+        }
+      },
+      {
+        "replacementString": "MADS",
+        "description": "Number of MADs",
+        "input": {
+          "inputType": "number",
+          "defaultValue": "10"
+        }
+      },
+      {
+        "replacementString": "DQA_INDICATORS",
+        "description": "Indicators subjected to DQA",
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "c(\"anc1\", \"penta1\", \"opd\")",
+              "label": "anc1, penta1, opd"
+            },
+            {
+              "value": "c(\"anc1\", \"penta1\")",
+              "label": "anc1, penta1"
+            },
+            {
+              "value": "c(\"anc1\", \"opd\")",
+              "label": "anc1, opd"
+            },
+            {
+              "value": "c(\"penta1\", \"opd\")",
+              "label": "penta1, opd"
+            },
+            {
+              "value": "c(\"anc1\")",
+              "label": "anc1"
+            },
+            {
+              "value": "c(\"penta1\")",
+              "label": "penta1"
+            },
+            {
+              "value": "c(\"opd\")",
+              "label": "opd"
+            }
+          ],
+          "defaultValue": "c(\"anc1\", \"penta1\", \"opd\")"
+        }
+      },
+      {
+        "replacementString": "CONSISTENCY_PAIRS_USED",
+        "description": "Consistency pairs used",
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "c(\"penta\", \"anc\", \"delivery\", \"malaria\")",
+              "label": "penta, anc, delivery, malaria"
+            },
+            {
+              "value": "c(\"penta\", \"anc\", \"delivery\")",
+              "label": "penta, anc, delivery"
+            },
+            {
+              "value": "c(\"penta\", \"anc\")",
+              "label": "penta, anc"
+            },
+            {
+              "value": "c(\"penta\", \"delivery\")",
+              "label": "penta, delivery"
+            },
+            {
+              "value": "c(\"anc\", \"delivery\")",
+              "label": "anc, delivery"
+            },
+            {
+              "value": "c(\"anc\")",
+              "label": "anc"
+            },
+            {
+              "value": "c(\"delivery\")",
+              "label": "delivery"
+            },
+            {
+              "value": "c(\"penta\")",
+              "label": "penta"
+            },
+            {
+              "value": "c(\"malaria\")",
+              "label": "malaria"
+            }
+          ],
+          "defaultValue": "c(\"penta\", \"anc\", \"delivery\")"
+        }
+      },
+      {
+        "replacementString": "GEOLEVEL",
+        "description": "Admin level used to join facilities to corresponding geo-consistency",
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "admin_area_2",
+              "label": "admin_area_2"
+            },
+            {
+              "value": "admin_area_3",
+              "label": "admin_area_3"
+            },
+            {
+              "value": "admin_area_4",
+              "label": "admin_area_4"
+            }
+          ],
+          "defaultValue": "admin_area_3"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [],
   "resultsObjects": [
     {
       "id": "M1_output_outliers.csv",
@@ -90,24 +228,23 @@
   "metrics": [
     {
       "id": "m1-01-00",
-      "hide": true,
-      "resultsObjectId": "M1_output_outliers.csv",
-      "valueProps": [
-        "facility_id"
-      ],
-      "valueFunc": "COUNT",
-      "valueLabelReplacements": {},
       "label": {
         "en": "Number of records",
         "fr": "Nombre d'enregistrements"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "facility_id"
+      ],
+      "valueFunc": "COUNT",
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {},
+      "resultsObjectId": "M1_output_outliers.csv",
       "aiDescription": {
         "summary": {
           "en": "Count of facility-month-indicator records in the dataset.",
@@ -146,29 +283,30 @@
           "en": "Disaggregate by admin_area to compare regional completeness. Use indicator_common_id to see which services have better reporting.",
           "fr": "Désagréger par zone administrative pour comparer la complétude régionale."
         }
-      }
+      },
+      "hide": true
     },
     {
       "id": "m1-01-01",
-      "resultsObjectId": "M1_output_outliers.csv",
-      "valueProps": [
-        "outlier_flag"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "outlier_flag": "Binary variable indicating whether this an outlier"
-      },
       "label": {
         "en": "Proportion of outliers",
         "fr": "Proportion de valeurs aberrantes"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "outlier_flag"
+      ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {
+        "outlier_flag": "Binary variable indicating whether this an outlier"
+      },
+      "resultsObjectId": "M1_output_outliers.csv",
       "aiDescription": {
         "summary": {
           "en": "Proportion of data points flagged as statistical outliers in the dataset.",
@@ -224,14 +362,14 @@
             "en": "Table showing proportion of outliers by indicator and region",
             "fr": "Tableau montrant la proportion de valeurs aberrantes par indicateur et région"
           },
-          "createDefaultVisualizationOnInstall": "c3cb0cc9-4352-4b27-8532-f18e465faec8",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "c3cb0cc9-4352-4b27-8532-f18e465faec8",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -274,25 +412,25 @@
     },
     {
       "id": "m1-02-02",
-      "resultsObjectId": "M1_output_completeness.csv",
-      "valueProps": [
-        "completeness_flag"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "completeness_flag": "Binary variable indicating whether the facility meets criteria"
-      },
       "label": {
         "en": "Proportion of completed records",
         "fr": "Proportion d'enregistrements complets"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "completeness_flag"
+      ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {
+        "completeness_flag": "Binary variable indicating whether the facility meets criteria"
+      },
+      "resultsObjectId": "M1_output_completeness.csv",
       "aiDescription": {
         "summary": {
           "en": "Proportion of facility-indicator-period combinations meeting completeness criteria.",
@@ -347,14 +485,14 @@
             "en": "Table showing completeness by indicator and region",
             "fr": "Tableau montrant la complétude par indicateur et région"
           },
-          "createDefaultVisualizationOnInstall": "c20f1672-edfc-4140-ae2c-09a30b50443a",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "c20f1672-edfc-4140-ae2c-09a30b50443a",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -403,10 +541,10 @@
             "en": "Area chart showing completeness trends over time by indicator",
             "fr": "Graphique en aires montrant les tendances de complétude dans le temps par indicateur"
           },
-          "createDefaultVisualizationOnInstall": "26dedd7c-4577-4022-928c-69e0ee790a71",
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": "26dedd7c-4577-4022-928c-69e0ee790a71",
           "config": {
             "d": {
               "type": "timeseries",
@@ -444,11 +582,23 @@
     },
     {
       "id": "m1-03-01",
-      "resultsObjectId": "M1_output_consistency_geo.csv",
+      "label": {
+        "en": "Proportion of sub-national areas meeting consistency criteria",
+        "fr": "Proportion de zones sous-nationales répondant aux critères de cohérence"
+      },
       "valueProps": [
         "sconsistency"
       ],
       "valueFunc": "AVG",
+      "formatAs": "percent",
+      "periodOptions": [
+        "period_id",
+        "quarter_id",
+        "year"
+      ],
+      "requiredDisaggregationOptions": [
+        "ratio_type"
+      ],
       "valueLabelReplacements": {
         "ratio_type": "Type of ratio being assessed",
         "pair_anc": "ANC1 is larger than ANC4",
@@ -456,19 +606,7 @@
         "pair_pnc": "Delivery is larger than PNC1",
         "pair_penta": "Penta 1 is larger than Penta 3"
       },
-      "label": {
-        "en": "Proportion of sub-national areas meeting consistency criteria",
-        "fr": "Proportion de zones sous-nationales répondant aux critères de cohérence"
-      },
-      "requiredDisaggregationOptions": [
-        "ratio_type"
-      ],
-      "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
+      "resultsObjectId": "M1_output_consistency_geo.csv",
       "aiDescription": {
         "summary": {
           "en": "Proportion of sub-national areas where related indicators show logical consistency.",
@@ -523,14 +661,14 @@
             "en": "Table showing consistency by ratio type and region",
             "fr": "Tableau montrant la cohérence par type de ratio et région"
           },
-          "createDefaultVisualizationOnInstall": "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "allowedFilters": [
             "ratio_type",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
+          "defaultPeriodFilterForDefaultVisualizations": {
+            "nMonths": 12
+          },
           "config": {
             "d": {
               "type": "table",
@@ -573,25 +711,25 @@
     },
     {
       "id": "m1-04-01",
-      "resultsObjectId": "M1_output_dqa.csv",
-      "valueProps": [
-        "dqa_score"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "dqa_score": "Binary variable indicating adequate data quality"
-      },
       "label": {
         "en": "Proportion of facilities with adequate data quality",
         "fr": "Proportion d'établissements avec une qualité des données adéquate"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "dqa_score"
+      ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {
+        "dqa_score": "Binary variable indicating adequate data quality"
+      },
+      "resultsObjectId": "M1_output_dqa.csv",
       "aiDescription": {
         "summary": {
           "en": "Proportion of facilities meeting the composite data quality assessment threshold.",
@@ -648,10 +786,10 @@
             "en": "Table showing DQA scores by region and year",
             "fr": "Tableau montrant les scores EQD par région et année"
           },
-          "createDefaultVisualizationOnInstall": "d46e1957-09dd-41c3-b7dc-b4409da23bbe",
           "allowedFilters": [
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "d46e1957-09dd-41c3-b7dc-b4409da23bbe",
           "config": {
             "d": {
               "type": "table",
@@ -694,25 +832,25 @@
     },
     {
       "id": "m1-04-02",
-      "resultsObjectId": "M1_output_dqa.csv",
-      "valueProps": [
-        "dqa_mean"
-      ],
-      "valueFunc": "AVG",
-      "valueLabelReplacements": {
-        "dqa_mean": "Data quality score across facilities"
-      },
       "label": {
         "en": "Average data quality score across facilities",
         "fr": "Score moyen de qualité des données à travers les établissements"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "dqa_mean"
+      ],
+      "valueFunc": "AVG",
       "formatAs": "percent",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {
+        "dqa_mean": "Data quality score across facilities"
+      },
+      "resultsObjectId": "M1_output_dqa.csv",
       "aiDescription": {
         "summary": {
           "en": "Average composite data quality score across all facilities.",
@@ -763,10 +901,10 @@
             "en": "Table showing mean DQA scores by region and year",
             "fr": "Tableau montrant les scores EQD moyens par région et année"
           },
-          "createDefaultVisualizationOnInstall": "4dc02c21-29da-4a01-9812-469deedaaac8",
           "allowedFilters": [
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": "4dc02c21-29da-4a01-9812-469deedaaac8",
           "config": {
             "d": {
               "type": "table",
@@ -809,26 +947,25 @@
     },
     {
       "id": "m1-05-01",
-      "hide": true,
-      "resultsObjectId": "M1_output_outlier_list.csv",
-      "valueProps": [
-        "count"
-      ],
-      "valueFunc": "SUM",
-      "valueLabelReplacements": {
-        "dqa_score": "Indicator outliers"
-      },
       "label": {
         "en": "Indicator outliers",
         "fr": "Valeurs aberrantes des indicateurs"
       },
-      "requiredDisaggregationOptions": [],
+      "valueProps": [
+        "count"
+      ],
+      "valueFunc": "SUM",
       "formatAs": "number",
       "periodOptions": [
         "period_id",
         "quarter_id",
         "year"
       ],
+      "requiredDisaggregationOptions": [],
+      "valueLabelReplacements": {
+        "dqa_score": "Indicator outliers"
+      },
+      "resultsObjectId": "M1_output_outlier_list.csv",
       "aiDescription": {
         "summary": {
           "en": "Total number of outlier data points identified across all facilities.",
@@ -871,145 +1008,8 @@
           "en": "Disaggregate by indicator_common_id to identify problem indicators. Use admin_area to find regions with highest outlier counts. Combine with m1-01-01 for context.",
           "fr": "Désagréger par indicator_common_id pour identifier les indicateurs problématiques. Utiliser admin_area pour trouver les régions avec le plus de valeurs aberrantes."
         }
-      }
+      },
+      "hide": true
     }
-  ],
-  "scriptGenerationType": "template",
-  "configRequirements": {
-    "parameters": [
-      {
-        "description": "Proportion threshold for outlier detection",
-        "replacementString": "OUTLIER_PROPORTION_THRESHOLD",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "0.8"
-        }
-      },
-      {
-        "description": "Minimum count threshold for consideration",
-        "replacementString": "MINIMUM_COUNT_THRESHOLD",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "100"
-        }
-      },
-      {
-        "description": "Number of MADs",
-        "replacementString": "MADS",
-        "input": {
-          "inputType": "number",
-          "defaultValue": "10"
-        }
-      },
-      {
-        "description": "Indicators subjected to DQA",
-        "replacementString": "DQA_INDICATORS",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "c(\"anc1\", \"penta1\", \"opd\")",
-              "label": "anc1, penta1, opd"
-            },
-            {
-              "value": "c(\"anc1\", \"penta1\")",
-              "label": "anc1, penta1"
-            },
-            {
-              "value": "c(\"anc1\", \"opd\")",
-              "label": "anc1, opd"
-            },
-            {
-              "value": "c(\"penta1\", \"opd\")",
-              "label": "penta1, opd"
-            },
-            {
-              "value": "c(\"anc1\")",
-              "label": "anc1"
-            },
-            {
-              "value": "c(\"penta1\")",
-              "label": "penta1"
-            },
-            {
-              "value": "c(\"opd\")",
-              "label": "opd"
-            }
-          ],
-          "valueType": "number",
-          "defaultValue": "c(\"anc1\", \"penta1\", \"opd\")"
-        }
-      },
-      {
-        "description": "Consistency pairs used",
-        "replacementString": "CONSISTENCY_PAIRS_USED",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "c(\"penta\", \"anc\", \"delivery\", \"malaria\")",
-              "label": "penta, anc, delivery, malaria"
-            },
-            {
-              "value": "c(\"penta\", \"anc\", \"delivery\")",
-              "label": "penta, anc, delivery"
-            },
-            {
-              "value": "c(\"penta\", \"anc\")",
-              "label": "penta, anc"
-            },
-            {
-              "value": "c(\"penta\", \"delivery\")",
-              "label": "penta, delivery"
-            },
-            {
-              "value": "c(\"anc\", \"delivery\")",
-              "label": "anc, delivery"
-            },
-            {
-              "value": "c(\"anc\")",
-              "label": "anc"
-            },
-            {
-              "value": "c(\"delivery\")",
-              "label": "delivery"
-            },
-            {
-              "value": "c(\"penta\")",
-              "label": "penta"
-            },
-            {
-              "value": "c(\"malaria\")",
-              "label": "malaria"
-            }
-          ],
-          "valueType": "number",
-          "defaultValue": "c(\"penta\", \"anc\", \"delivery\")"
-        }
-      },
-      {
-        "description": "Admin level used to join facilities to corresponding geo-consistency",
-        "replacementString": "GEOLEVEL",
-        "input": {
-          "inputType": "select",
-          "options": [
-            {
-              "value": "admin_area_2",
-              "label": "admin_area_2"
-            },
-            {
-              "value": "admin_area_3",
-              "label": "admin_area_3"
-            },
-            {
-              "value": "admin_area_4",
-              "label": "admin_area_4"
-            }
-          ],
-          "valueType": "string",
-          "defaultValue": "admin_area_3"
-        }
-      }
-    ]
-  }
+  ]
 }

@@ -1,3 +1,6 @@
 {
-  "nodeModulesDir": "none"
+  "nodeModulesDir": "none",
+  "imports": {
+    "zod": "npm:zod@^3.22.4"
+  }
 }
