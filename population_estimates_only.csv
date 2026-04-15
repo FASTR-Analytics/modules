@@ -1468,3 +1468,33 @@ Mauritanie,NATIONAL,2022,DM_POP_TOT,poptot,population_estimate,4875637.5,MICS,"U
 Mauritanie,NATIONAL,2022,DM_POP_U5,popu5,population_estimate,785270.5,MICS,"United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024.",household,Mauritanie,MR,MRT
 Mauritanie,NATIONAL,2023,DM_POP_TOT,poptot,population_estimate,5022441.5,MICS,"United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024.",household,Mauritanie,MR,MRT
 Mauritanie,NATIONAL,2023,DM_POP_U5,popu5,population_estimate,799916,MICS,"United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024.",household,Mauritanie,MR,MRT
+Niger,NATIONAL,2020,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.6,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2021,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.932,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.95,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.892,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2024,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.42,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,"Crude birth rate (births per 1,000 population)",crudebr,rate,40.769,UNWPP,UNWPP - Crude birth rate,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,Total population by sex,poptot,population_estimate,23717613.5,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2021,Total population by sex,poptot,population_estimate,24502140,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,Total population by sex,poptot,population_estimate,25311973,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,Total population by sex,poptot,population_estimate,26159867,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2024,Total population by sex,poptot,population_estimate,27032412.5,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,Total population by sex,poptot,population_estimate,27917831,UNWPP,UNWPP - Total population,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5032853,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2021,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5241786.5,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5460298.5,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5689196.5,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2024,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5925848.5,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,Female population of reproductive age (15-49 years),womenrepage,population_estimate,6169093,UNWPP,UNWPP - Female reproductive age population,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,951804.5,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2021,Annual population age 0,totu1pop,population_estimate,967559,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,Annual population age 0,totu1pop,population_estimate,992922,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,Annual population age 0,totu1pop,population_estimate,1025915,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2024,Annual population age 0,totu1pop,population_estimate,1053493,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,Annual population age 0,totu1pop,population_estimate,1074297,UNWPP,UNWPP - Under-1 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2020,Annual population age 0-4,totu5pop,population_estimate,47435227,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2021,Annual population age 0-4,totu5pop,population_estimate,49004280,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2022,Annual population age 0-4,totu5pop,population_estimate,50623946,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2023,Annual population age 0-4,totu5pop,population_estimate,52319734,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2024,Annual population age 0-4,totu5pop,population_estimate,54064825,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
+Niger,NATIONAL,2025,Annual population age 0-4,totu5pop,population_estimate,55835662,UNWPP,UNWPP - Under-5 population,modeled,Niger,NE,NER
