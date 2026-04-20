@@ -834,6 +834,9 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   if (all(indicator_vars$penta1 %in% available_vars)) {
     data <- data %>% mutate(
       dpenta1_dpt = safe_mutate("penta1", countpenta1 / penta1carry),
+      dpenta1_livebirth = safe_calc(dpenta1_dpt / (1 - P1_NMR)),
+      dpenta1_birth = safe_calc(dpenta1_livebirth / (1 - STILLBIRTH_RATE)),
+      dpenta1_pregnancy = safe_calc(dpenta1_birth * (1 - 0.5 * TWIN_RATE) / (1 - PREGNANCY_LOSS_RATE)),
       dpenta1_measles1 = safe_calc(dpenta1_dpt * (1 - P2_PNMR)),
       dpenta1_measles2 = safe_calc(dpenta1_dpt * (1 - 2 * P2_PNMR))
     )
