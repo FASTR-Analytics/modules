@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Apr 02
+# Last edit: 2026 Apr 20
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -1478,13 +1478,13 @@ make_survey_raw_long <- function(dhs_mics_raw_long, unwpp_raw_long = NULL) {
 
   result <- bind_rows(parts)
 
-  # Always duplicate pnc1 → pnc1_mother (survey only has pnc1)
-  if ("pnc1" %in% result$indicator_common_id) {
+  # Duplicate pnc1 → pnc1_mother only if pnc1_mother doesn't already exist
+  if ("pnc1" %in% result$indicator_common_id && !"pnc1_mother" %in% result$indicator_common_id) {
     pnc_rows <- result %>% filter(indicator_common_id == "pnc1") %>% mutate(indicator_common_id = "pnc1_mother")
     result <- bind_rows(result, pnc_rows)
   }
 
-  result %>% arrange(admin_area_1, admin_area_2, year, indicator_common_id)
+  result %>% distinct() %>% arrange(admin_area_1, admin_area_2, year, indicator_common_id)
 }
 
 # Results 4: Survey REFERENCE (from carried values)
@@ -1543,8 +1543,8 @@ make_survey_reference_long <- function(survey_expanded_df) {
     result <- bind_rows(result, sba_refs)
   }
 
-  # Always duplicate pnc1 → pnc1_mother (survey only has pnc1)
-  if (has_pnc1) {
+  # Duplicate pnc1 → pnc1_mother only if pnc1_mother doesn't already exist
+  if (has_pnc1 && !has_pnc1_mother) {
     pnc_refs <- result |>
       filter(indicator_common_id == "pnc1") |>
       mutate(indicator_common_id = "pnc1_mother")
@@ -1558,6 +1558,7 @@ make_survey_reference_long <- function(survey_expanded_df) {
   arrange_cols <- c(arrange_cols, "year", "indicator_common_id")
 
   result |>
+    distinct() |>
     arrange(across(all_of(arrange_cols)))
 }
 
