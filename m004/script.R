@@ -346,6 +346,18 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     ungroup() %>%
     drop_na(survey_value)
 
+  # Fallback: duplicate delivery → sba in long format if sba missing
+  if (!"sba" %in% raw_pick_long$indicator_common_id && "delivery" %in% raw_pick_long$indicator_common_id) {
+    raw_pick_long <- bind_rows(raw_pick_long,
+      raw_pick_long %>% filter(indicator_common_id == "delivery") %>% mutate(indicator_common_id = "sba"))
+  }
+
+  # Fallback: duplicate pnc1 → pnc1_mother if missing
+  if (!"pnc1_mother" %in% raw_pick_long$indicator_common_id && "pnc1" %in% raw_pick_long$indicator_common_id) {
+    raw_pick_long <- bind_rows(raw_pick_long,
+      raw_pick_long %>% filter(indicator_common_id == "pnc1") %>% mutate(indicator_common_id = "pnc1_mother"))
+  }
+
   # Wide tables: values + sources + details (matching m005 pattern)
   raw_vals_wide <- raw_pick_long %>%
     select(admin_area_1, admin_area_2, year, indicator_common_id, survey_value) %>%
@@ -365,6 +377,24 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
   raw_survey_values <- raw_vals_wide %>%
     left_join(raw_srcs_wide,   by = c("admin_area_1", "admin_area_2", "year")) %>%
     left_join(raw_detail_wide, by = c("admin_area_1", "admin_area_2", "year"))
+
+  # Fallback: if sba raw survey doesn't exist, copy from delivery
+  if (!"rawsurvey_sba" %in% names(raw_survey_values) && "rawsurvey_delivery" %in% names(raw_survey_values)) {
+    raw_survey_values$rawsurvey_sba <- raw_survey_values$rawsurvey_delivery
+    if ("rawsource_delivery" %in% names(raw_survey_values))
+      raw_survey_values$rawsource_sba <- raw_survey_values$rawsource_delivery
+    if ("rawdetail_delivery" %in% names(raw_survey_values))
+      raw_survey_values$rawdetail_sba <- raw_survey_values$rawdetail_delivery
+  }
+
+  # Fallback: if pnc1_mother raw survey doesn't exist, copy from pnc1
+  if (!"rawsurvey_pnc1_mother" %in% names(raw_survey_values) && "rawsurvey_pnc1" %in% names(raw_survey_values)) {
+    raw_survey_values$rawsurvey_pnc1_mother <- raw_survey_values$rawsurvey_pnc1
+    if ("rawsource_pnc1" %in% names(raw_survey_values))
+      raw_survey_values$rawsource_pnc1_mother <- raw_survey_values$rawsource_pnc1
+    if ("rawdetail_pnc1" %in% names(raw_survey_values))
+      raw_survey_values$rawdetail_pnc1_mother <- raw_survey_values$rawdetail_pnc1
+  }
 
   full_years <- seq(min_year, max_year)
   group_keys <- if (is_national) {
