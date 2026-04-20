@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2"      # Options: "NATIONAL_ONLY", "NATIONAL
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 25
+# Last edit: 2026 Apr 20
 # Module: COVERAGE ESTIMATES
 #
 # ------------------------------ Load Required Libraries -----------------------------------------------------
@@ -1521,6 +1521,29 @@ message("✓ Step 2/6 completed: National data processing finished!")
 
 message("✓ Step 3/6: Finalizing national results")
 
+# Guard: if combined_national_export is empty, create a properly-structured empty dataframe
+if (nrow(combined_national_export) == 0 || !"indicator_common_id" %in% names(combined_national_export)) {
+  warning("No national coverage data available — producing empty output files")
+  combined_national_export_fixed <- data.frame(
+    indicator_common_id = character(),
+    year = integer(),
+    coverage_original_estimate = double(),
+    survey_source = character(),
+    survey_source_detail = character(),
+    coverage_avgsurveyprojection = double(),
+    coverage_cov = double(),
+    stringsAsFactors = FALSE
+  )
+  best_denom_summary <- data.frame(
+    indicator_common_id = character(),
+    denominator_national = character(),
+    denominator_admin2 = character(),
+    denominator_admin3 = character(),
+    stringsAsFactors = FALSE
+  )
+  message("✓ Step 3/6 completed: National results finalized (empty — no overlapping data)")
+} else {
+
 combined_national_export_fixed <- combined_national_export %>%
   arrange(indicator_common_id, year) %>%
   group_by(indicator_common_id, year) %>%
@@ -1620,6 +1643,7 @@ best_denom_summary <- national_denominator_mapping %>%
 
 
 message("✓ Step 3/6 completed: National results finalized!")
+} # end of else block for non-empty combined_national_export
 
 # ------------------------------ Subnational Analysis -------------------------
 # Run separate analyses for admin_area_2 and admin_area_3 to get distinct output files
