@@ -1483,7 +1483,21 @@ early_survey <- if (nrow(combined_national) > 0) {
            coverage_original_estimate, survey_source, survey_source_detail) %>%
     distinct()
 } else {
-  data.frame()
+  # Fallback: extract survey values directly from raw survey data
+  # This handles the case where combined_national is empty (e.g. no HMIS-UNWPP overlap)
+  raw_wide <- survey_processed_national$raw
+  raw_cols <- grep("^rawsurvey_", names(raw_wide), value = TRUE)
+  if (length(raw_cols) > 0) {
+    raw_wide %>%
+      pivot_longer(cols = all_of(raw_cols), names_to = "indicator_common_id",
+                   names_prefix = "rawsurvey_", values_to = "coverage_original_estimate") %>%
+      filter(!is.na(coverage_original_estimate)) %>%
+      select(any_of(c("admin_area_1", "indicator_common_id", "year", "coverage_original_estimate"))) %>%
+      mutate(survey_source = NA_character_, survey_source_detail = NA_character_) %>%
+      distinct()
+  } else {
+    data.frame()
+  }
 } %>%
   mutate(
     denominator = NA_character_,
