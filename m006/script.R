@@ -6,7 +6,7 @@ DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "pent
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Mar 27
+# Last edit: 2026 Apr 20
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -296,6 +296,10 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
   final <- cov_proj %>%
     full_join(survey_expanded, by = final_join_keys) %>%
     distinct() %>%
+    # Fill gap years so output is continuous (match m004 behaviour)
+    group_by(across(all_of(c(base_keys, "indicator_common_id", "denominator")))) %>%
+    tidyr::complete(year = seq(min(year, na.rm = TRUE), max(year, na.rm = TRUE))) %>%
+    ungroup() %>%
     arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year")))) %>%
 
     # For each (geo, indicator, denominator):
