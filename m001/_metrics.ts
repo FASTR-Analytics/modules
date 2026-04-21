@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const metrics: MetricDefinitionJSON[] = [
   {
@@ -14,7 +14,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Count of facility-month-indicator records in the dataset.",
@@ -51,7 +50,13 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by admin_area to compare regional completeness. Use indicator_common_id to see which services have better reporting.",
         fr: "Désagréger par zone administrative pour comparer la complétude régionale.",
       },
+      caveats: null,
+      importantNotes: null,
     },
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
   },
   {
     id: "m1-01-01",
@@ -67,7 +72,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Proportion of data points flagged as statistical outliers in the dataset.",
@@ -108,6 +112,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by indicator_common_id to identify problem indicators. Use admin_area_2 for regional patterns. Combine with facility_type to see if certain facility types have more issues.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs problématiques. Utiliser admin_area_2 pour les tendances régionales.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -122,14 +127,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "c3cb0cc9-4352-4b27-8532-f18e465faec8",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -142,6 +144,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -161,10 +164,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period  is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100.",
               fr: "Les valeurs aberrantes sont des rapports anormalement élevés par rapport au volume habituel déclaré par l'établissement au cours des autres mois. Elles sont identifiées en évaluant la variation intra-établissement des déclarations mensuelles pour chaque indicateur. Les valeurs aberrantes sont définies comme des observations supérieures à 10 fois l'écart absolu médian (MAD) par rapport à la valeur médiane mensuelle de l'indicateur pour chaque période, OU une valeur dont la contribution proportionnelle au volume pour un établissement, indicateur et période est supérieure à 80%. Les valeurs aberrantes ne sont identifiées que pour les indicateurs dont le volume est supérieur ou égal à la médiane, le volume n'est pas manquant, et le volume moyen est supérieur à 100.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m1-02-02",
@@ -181,7 +193,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Proportion of facility-indicator-period combinations meeting completeness criteria.",
@@ -222,6 +233,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by admin_area to identify regions with reporting challenges. Use indicator_common_id to see if specific services have lower compliance.",
         fr: "Désagréger par zone administrative pour identifier les régions avec des défis de déclaration.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -236,14 +248,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "c20f1672-edfc-4140-ae2c-09a30b50443a",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -256,6 +265,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -275,8 +285,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",
               fr: "Une complétude élevée améliore la fiabilité des données, surtout lorsqu'elle est stable dans le temps. La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. Une complétude élevée n'indique pas que le HMIS est représentatif de toute la prestation de services dans le pays, car certains services peuvent ne pas être fournis dans les établissements, ou certains établissements peuvent ne pas déclarer.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "completeness-timeseries",
@@ -294,7 +309,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -321,10 +336,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",
               fr: "Une complétude élevée améliore la fiabilité des données, surtout lorsqu'elle est stable dans le temps. La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. Une complétude élevée n'indique pas que le HMIS est représentatif de toute la prestation de services dans le pays, car certains services peuvent ne pas être fournis dans les établissements, ou certains établissements peuvent ne pas déclarer.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m1-03-01",
@@ -344,7 +368,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["ratio_type"],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Proportion of sub-national areas where related indicators show logical consistency.",
@@ -385,6 +408,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by ratio_type as each consistency check has different implications. Use admin_area to find regions with systematic issues.",
         fr: "Toujours désagréger par ratio_type car chaque contrôle de cohérence a des implications différentes.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -399,14 +423,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["ratio_type", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -419,6 +440,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -438,10 +460,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
               fr: "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m1-04-01",
@@ -457,7 +488,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Proportion of facilities meeting the composite data quality assessment threshold.",
@@ -498,6 +528,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by admin_area to identify regions needing quality improvement support. Use facility_type to see if certain facility levels have more challenges.",
         fr: "Désagréger par zone administrative pour identifier les régions nécessitant un soutien.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -516,7 +547,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -548,10 +579,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",
               fr: "La qualité adéquate des données est définie comme : 1) Pas de données manquantes ou de valeurs aberrantes pour OPD, Penta1 et ANC1, lorsque disponibles 2) Déclaration cohérente entre Penta1/Penta3 et ANC1/ANC4.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m1-04-02",
@@ -567,7 +607,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Average composite data quality score across all facilities.",
@@ -604,6 +643,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by admin_area for regional comparison. Use time series to track improvement over time.",
         fr: "Désagréger par zone administrative pour comparaison régionale.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -622,7 +663,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -654,10 +695,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",
               fr: "Les éléments inclus dans le score EQD comprennent : Pas de données manquantes pour 1) OPD, 2) Penta1 et 3) ANC1, lorsque disponibles ; Pas de valeurs aberrantes pour 4) OPD, 5) Penta1 et 6) ANC1, lorsque disponibles ; Déclaration cohérente entre 7) Penta1/Penta3, 8) ANC1/ANC4, 9) BCG/Accouchement, lorsque disponibles.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m1-05-01",
@@ -674,7 +724,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Total number of outlier data points identified across all facilities.",
@@ -715,6 +764,11 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by indicator_common_id to identify problem indicators. Use admin_area to find regions with highest outlier counts. Combine with m1-01-01 for context.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs problématiques. Utiliser admin_area pour trouver les régions avec le plus de valeurs aberrantes.",
       },
+      importantNotes: null,
     },
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
   },
 ];

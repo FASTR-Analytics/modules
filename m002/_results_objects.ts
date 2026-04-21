@@ -1,4 +1,4 @@
-import type { ResultsObjectDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { ResultsObjectDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const resultsObjects: ResultsObjectDefinitionJSON[] = [
   {
@@ -24,11 +24,13 @@ export const resultsObjects: ResultsObjectDefinitionJSON[] = [
     id: "M2_adjusted_data_admin_area.csv",
     description:
       "Dataset including admin-level adjusted volumes for all adjustment scenarios",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M2_adjusted_data_national.csv",
     description:
       "Dataset including national-level adjusted volumes for all adjustment scenarios",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M2_low_volume_exclusions.csv",

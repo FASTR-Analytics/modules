@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const metrics: MetricDefinitionJSON[] = [
   {
@@ -29,7 +29,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Magnitude of change in reported service volumes after removing or adjusting outlier values.",
@@ -70,6 +69,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by indicator_common_id to identify which services are most affected by outlier adjustment. Use admin_area to find regions where outliers have larger impact. Time series analysis shows if adjustment impact changes over time.",
         fr: "Désagréger par indicator_common_id pour identifier quels services sont les plus affectés. Utiliser admin_area pour trouver les régions où l'impact est plus important.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -84,14 +84,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "e5edce68-369c-498e-a4b0-03ba73d31d6c",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -104,6 +101,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -123,10 +121,18 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100. The deviance is the difference in volume after removing the outlier. High levels of deviance can affect the plausiability of the data.",
               fr: "Les valeurs aberrantes sont des rapports anormalement élevés par rapport au volume habituel déclaré par l'établissement au cours des autres mois. Elles sont identifiées en évaluant la variation intra-établissement des déclarations mensuelles pour chaque indicateur. Les valeurs aberrantes sont définies comme des observations supérieures à 10 fois l'écart absolu médian (MAD) par rapport à la valeur médiane mensuelle de l'indicateur pour chaque période, OU une valeur dont la contribution proportionnelle au volume pour un établissement, indicateur et période est supérieure à 80%. Les valeurs aberrantes ne sont identifiées que pour les indicateurs dont le volume est supérieur ou égal à la médiane, le volume n'est pas manquant, et le volume moyen est supérieur à 100. La déviance est la différence de volume après suppression de la valeur aberrante. Des niveaux élevés de déviance peuvent affecter la plausibilité des données.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m2-01-02",
@@ -156,7 +162,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Magnitude of change in reported service volumes after imputing missing facility reports.",
@@ -197,6 +202,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by indicator_common_id to see which services have most missing data. Use time periods to identify when reporting completeness deteriorated. Admin_area disaggregation reveals geographic reporting patterns.",
         fr: "Désagréger par indicator_common_id pour voir quels services ont le plus de données manquantes. Utiliser les périodes pour identifier quand la complétude s'est détériorée.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -211,14 +217,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "b4750223-9ffd-43f6-958b-0ba9c0412df4",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -231,6 +234,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -250,10 +254,18 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. The deviance is the difference in volume after imputing incomplete data. High levels of deviance can affect the plausiability of the data.",
               fr: "La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. La déviance est la différence de volume après imputation des données incomplètes. Des niveaux élevés de déviance peuvent affecter la plausibilité des données.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m2-01-03",
@@ -283,7 +295,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: [],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Combined magnitude of change in reported service volumes after both outlier removal and missing data imputation.",
@@ -324,6 +335,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Disaggregate by indicator_common_id to identify indicators requiring most adjustment. Time series shows if data quality improves over time (decreasing adjustment percentages). Regional disaggregation reveals geographic patterns in data quality.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs nécessitant le plus d'ajustement. Les séries temporelles montrent si la qualité s'améliore.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -338,14 +350,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "5337d614-02b8-4de8-abcb-f390d2b7a714",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id", "admin_area_2"],
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -358,6 +367,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
           },
           s: {
             content: "lines",
@@ -377,9 +387,17 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "TBD",
               fr: "TBD",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    importantNotes: null,
+    hide: false,
   },
 ];

@@ -1,5 +1,5 @@
 import { walk } from "jsr:@std/fs@^1/walk";
-import { ModuleDefinitionJSONSchema } from "./module_definition_validator.ts";
+import { moduleDefinitionGithubSchema } from "./_module_definition_github.ts";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 
@@ -21,7 +21,7 @@ for await (const entry of walk(ROOT, {
     continue;
   }
 
-  const result = ModuleDefinitionJSONSchema.safeParse(raw);
+  const result = moduleDefinitionGithubSchema.safeParse(raw);
   if (result.success) {
     console.log(`OK    ${relativePath}`);
   } else {

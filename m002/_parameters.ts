@@ -1,3 +1,3 @@
-import type { ModuleParameter } from "../.validation/module_definition_validator.ts";
+import type { ModuleParameter } from "../.validation/_module_definition_github.ts";
 
 export const parameters: ModuleParameter[] = [];

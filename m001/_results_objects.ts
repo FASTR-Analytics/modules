@@ -1,4 +1,4 @@
-import type { ResultsObjectDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { ResultsObjectDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const resultsObjects: ResultsObjectDefinitionJSON[] = [
   {

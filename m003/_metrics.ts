@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const metrics: MetricDefinitionJSON[] = [
   {
@@ -25,7 +25,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id"],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Total service volumes across four data quality adjustment scenarios: unadjusted, outlier-adjusted, completeness-adjusted, and both adjustments combined.",
@@ -66,6 +65,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id (required) to see adjustment impact per service. Time series reveals if data quality improves over time. Regional disaggregation shows geographic variation in adjustment needs.",
         fr: "Toujours désagréger par indicator_common_id (requis) pour voir l'impact de l'ajustement par service. Les séries temporelles révèlent si la qualité des données s'améliore au fil du temps. La désagrégation régionale montre la variation géographique des besoins d'ajustement.",
       },
+      importantNotes: null,
     },
     importantNotes: {
       en: "The intention of the first four visualization presets (volume-monthly, volume-quarterly, volume-annual, volume-subnational) is that only one of the values is selected: count_final_none, count_final_outliers, count_final_completeness, or count_final_both. You should use valuesFilter to select it (i.e. filter so it is only one value). To determine which to use, run get_module_settings for module id 'm003' and see what value is set for 'Count variable to use for visualization', which should be the default value that you use (although the user may ask for a different one, which you can use instead). If the user wants to compare different adjustments, you should use preset dq-comparison.",
@@ -88,7 +88,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -115,8 +115,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Yearly volume is adjusted for both outliers and completeness.",
               fr: "Le volume annuel est ajusté à la fois pour les valeurs aberrantes et la complétude.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "volume-quarterly",
@@ -130,14 +135,11 @@ export const metrics: MetricDefinitionJSON[] = [
         },
         createDefaultVisualizationOnInstall:
           "7196a784-8665-41ad-b563-965c59937def",
-        defaultPeriodFilterForDefaultVisualizations: {
-          nMonths: 12,
-        },
         allowedFilters: ["indicator_common_id"],
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "quarter_id",
+            timeseriesGrouping: "quarter_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -146,6 +148,7 @@ export const metrics: MetricDefinitionJSON[] = [
               },
             ],
             filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
             valuesFilter: ["count_final_outliers"],
           },
           s: {
@@ -165,8 +168,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Service volume is adjusted for outliers.",
               fr: "Le volume de services est ajusté pour les valeurs aberrantes.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "volume-annual",
@@ -184,7 +192,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "year",
+            timeseriesGrouping: "year",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -212,8 +220,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Service volume is adjusted for outliers.",
               fr: "Le volume de services est ajusté pour les valeurs aberrantes.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "volume-subnational",
@@ -231,7 +244,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "year",
+            timeseriesGrouping: "year",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -264,8 +277,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "Yearly volume is adjusted for outliers.",
               fr: "Le volume annuel est ajusté pour les valeurs aberrantes.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "dq-comparison",
@@ -283,7 +301,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "year",
+            timeseriesGrouping: "year",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -329,10 +347,19 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "DATE_RANGE",
               fr: "DATE_RANGE",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    variantLabel: null,
+    postAggregationExpression: null,
+    hide: false,
   },
   {
     id: "m3-02-01",
@@ -353,7 +380,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id"],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Comparison of actual reported service volumes against model-predicted expected volumes at national level.",
@@ -394,6 +420,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id (required) to see service-specific patterns. Time series visualization is essential for identifying disruption periods and recovery trends.",
         fr: "Toujours désagréger par indicator_common_id (requis) pour voir les modèles spécifiques au service. La visualisation en séries temporelles est essentielle pour identifier les périodes de perturbation et les tendances de récupération.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -412,7 +439,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -440,10 +467,18 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "This graph quantifies changes in service volume compared to historical trends and accounting for seasonality. These signals should be triangulated to other data and contextual knowledge to determine if the results are an artifact of data quality. Unexpected volume changes are estimated by comparing the observed volume to the expected volume based on historical trends and seasonality. Previous large unexpected changes in the historical data are removed. This analysis is an interrupted time series regression with facility-level fixed effects.",
               fr: "Ce graphique quantifie les changements du volume de services par rapport aux tendances historiques et en tenant compte de la saisonnalité. Ces signaux doivent être triangulés avec d'autres données et connaissances contextuelles pour déterminer si les résultats sont un artefact de la qualité des données. Les changements de volume inattendus sont estimés en comparant le volume observé au volume attendu basé sur les tendances historiques et la saisonnalité. Les grands changements inattendus précédents dans les données historiques sont supprimés. Cette analyse est une régression de séries temporelles interrompues avec effets fixes au niveau de l'établissement.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-02-02",
@@ -476,7 +511,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id"],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Percentage difference between actual and model-predicted service volumes at national level.",
@@ -517,8 +551,11 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id (required). Time series shows disruption evolution and recovery patterns. Consider using absolute differences (m3-02-01) alongside percentages for low-volume indicators.",
         fr: "Toujours désagréger par indicator_common_id (requis). Les séries temporelles montrent l'évolution de la perturbation et les modèles de récupération. Considérer l'utilisation des différences absolues (m3-02-01) aux côtés des pourcentages pour les indicateurs à faible volume.",
       },
+      importantNotes: null,
     },
     vizPresets: [],
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-03-01",
@@ -539,7 +576,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_2"],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Comparison of actual reported service volumes against model-predicted expected volumes at admin area 2 (province/state) level.",
@@ -580,6 +616,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals when and where disruptions occurred. Map visualization effectively shows geographic distribution of service gaps.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent quand et où les perturbations se sont produites. La visualisation cartographique montre efficacement la distribution géographique des écarts de services.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -598,7 +635,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -629,8 +666,13 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "This graph quantifies changes in service volume compared to historical trends and accounting for seasonality. These signals should be triangulated to other data and contextual knowledge to determine if the results are an artifact of data quality. Unexpected volume changes are estimated by comparing the observed volume to the expected volume based on historical trends and seasonality. Previous large unexpected changes in the historical data are removed. This analysis is an interrupted time series regression with facility-level fixed effects.",
               fr: "Ce graphique quantifie les changements du volume de services par rapport aux tendances historiques et en tenant compte de la saisonnalité. Ces signaux doivent être triangulés avec d'autres données et connaissances contextuelles pour déterminer si les résultats sont un artefact de la qualité des données. Les changements de volume inattendus sont estimés en comparant le volume observé au volume attendu basé sur les tendances historiques et la saisonnalité. Les grands changements inattendus précédents dans les données historiques sont supprimés. Cette analyse est une régression de séries temporelles interrompues avec effets fixes au niveau de l'établissement.",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
       {
         id: "disruption-chart-single-admin-area-2",
@@ -647,7 +689,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             selectedReplicantValue: "",
             disaggregateBy: [
@@ -666,7 +708,17 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
       {
         id: "disruption-chart-single-indicator",
@@ -683,7 +735,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             selectedReplicantValue: "",
             disaggregateBy: [
@@ -702,9 +754,22 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-03-02",
@@ -737,7 +802,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_2"],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Percentage difference between actual and expected service volumes at admin area 2 level.",
@@ -770,6 +834,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals disruption patterns over time.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent les modèles de perturbation au fil du temps.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -786,7 +852,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -804,7 +870,18 @@ export const metrics: MetricDefinitionJSON[] = [
             conditionalFormatting: "fmt-neg10-pos10",
             decimalPlaces: 0,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        needsReplicant: false,
+        createDefaultVisualizationOnInstall: null,
       },
       {
         id: "disruption-differences-map",
@@ -820,7 +897,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "map",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "cell",
             disaggregateBy: [
               {
@@ -838,9 +915,22 @@ export const metrics: MetricDefinitionJSON[] = [
             mapColorFrom: "#fee0d2",
             mapColorTo: "#de2d26",
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        needsReplicant: false,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-04-01",
@@ -861,7 +951,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_3"],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Comparison of actual vs expected service volumes at admin area 3 (district) level.",
@@ -890,6 +979,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_3 (both required). Time series and maps reveal district-level patterns.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Les séries temporelles et cartes révèlent les modèles au niveau du district.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -907,7 +998,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -929,11 +1020,26 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
-          t: {},
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
       {
         id: "disruption-chart-single-admin-area-3",
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
         label: {
           en: "Disruptions and surpluses (single Admin Area 3, multiple indicators)",
           fr: "Perturbations et excédents (unique Zone administrative 3, plusieurs indicateurs)",
@@ -947,7 +1053,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             selectedReplicantValue: "",
             disaggregateBy: [
@@ -966,9 +1072,22 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-04-02",
@@ -1001,7 +1120,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_3"],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Percentage difference between actual and expected service volumes at district level.",
@@ -1030,6 +1148,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_3 (both required). Compare with admin area 2 for context.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Comparer avec la zone administrative 2 pour le contexte.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1047,7 +1167,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -1069,7 +1189,17 @@ export const metrics: MetricDefinitionJSON[] = [
             conditionalFormatting: "fmt-neg10-pos10",
             decimalPlaces: 0,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
       {
         id: "disruption-differences-map",
@@ -1085,7 +1215,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "map",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "cell",
             disaggregateBy: [
               {
@@ -1103,9 +1233,22 @@ export const metrics: MetricDefinitionJSON[] = [
             mapColorFrom: "#fee0d2",
             mapColorTo: "#de2d26",
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        needsReplicant: false,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-05-01",
@@ -1126,7 +1269,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_4"],
     formatAs: "number",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Comparison of actual vs expected service volumes at admin area 4 (sub-district) level.",
@@ -1155,6 +1297,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_4 (both required). Only available when RUN_ADMIN_AREA_4_ANALYSIS enabled.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Disponible uniquement si RUN_ADMIN_AREA_4_ANALYSIS activé.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1172,7 +1316,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -1194,11 +1338,26 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
-          t: {},
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
       {
         id: "disruption-chart-single-admin-area-4",
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
         label: {
           en: "Disruptions and surpluses (single Admin Area 4, multiple indicators)",
           fr: "Perturbations et excédents (unique Zone administrative 4, plusieurs indicateurs)",
@@ -1212,7 +1371,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
             selectedReplicantValue: "",
             disaggregateBy: [
@@ -1231,9 +1390,22 @@ export const metrics: MetricDefinitionJSON[] = [
             content: "areas",
             diffAreas: true,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m3-05-02",
@@ -1266,7 +1438,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["indicator_common_id", "admin_area_4"],
     formatAs: "percent",
-    periodOptions: ["period_id", "quarter_id", "year"],
     aiDescription: {
       summary: {
         en: "Percentage difference between actual and expected service volumes at sub-district level.",
@@ -1295,6 +1466,8 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by indicator_common_id and admin_area_4 (both required). Interpret with caution due to small sample sizes.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Interpréter avec prudence en raison de petites tailles d'échantillon.",
       },
+      caveats: null,
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1312,7 +1485,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "period_id",
+            timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -1334,8 +1507,20 @@ export const metrics: MetricDefinitionJSON[] = [
             conditionalFormatting: "fmt-neg10-pos10",
             decimalPlaces: 0,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        createDefaultVisualizationOnInstall: null,
       },
     ],
+    importantNotes: null,
+    hide: false,
   },
 ];

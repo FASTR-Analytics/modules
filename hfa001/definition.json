@@ -1,7 +1,7 @@
 {
   "label": {
     "en": "HFA001. Health facility assessment",
-    "fr": "HFA001. Évaluation des établissements de santé"
+    "fr": "HFA001. \u00c9valuation des \u00e9tablissements de sant\u00e9"
   },
   "prerequisites": [],
   "assetsToImport": [],
@@ -54,19 +54,18 @@
         "time_point"
       ],
       "formatAs": "percent",
-      "periodOptions": [],
       "aiDescription": {
         "summary": {
           "en": "Percentage or proportion of facilities meeting specific HFA assessment criteria.",
-          "fr": "Pourcentage ou proportion d'établissements répondant aux critères d'évaluation HFA spécifiques."
+          "fr": "Pourcentage ou proportion d'\u00e9tablissements r\u00e9pondant aux crit\u00e8res d'\u00e9valuation HFA sp\u00e9cifiques."
         },
         "methodology": {
           "en": "AVG of binary indicator values (0 or 1) from Health Facility Assessment data. Each facility receives 0 (criterion not met) or 1 (criterion met), and the average yields the proportion meeting the standard.",
-          "fr": "Moyenne des valeurs d'indicateur binaire (0 ou 1) des données d'évaluation des établissements de santé. Chaque établissement reçoit 0 (critère non rempli) ou 1 (critère rempli)."
+          "fr": "Moyenne des valeurs d'indicateur binaire (0 ou 1) des donn\u00e9es d'\u00e9valuation des \u00e9tablissements de sant\u00e9. Chaque \u00e9tablissement re\u00e7oit 0 (crit\u00e8re non rempli) ou 1 (crit\u00e8re rempli)."
         },
         "interpretation": {
           "en": "Higher values indicate better facility readiness or service availability. Disaggregation by hfa_category helps identify specific domains (e.g., infrastructure, equipment, staff) needing improvement.",
-          "fr": "Des valeurs plus élevées indiquent une meilleure préparation des établissements ou disponibilité des services. La désagrégation par hfa_category aide à identifier les domaines spécifiques nécessitant amélioration."
+          "fr": "Des valeurs plus \u00e9lev\u00e9es indiquent une meilleure pr\u00e9paration des \u00e9tablissements ou disponibilit\u00e9 des services. La d\u00e9sagr\u00e9gation par hfa_category aide \u00e0 identifier les domaines sp\u00e9cifiques n\u00e9cessitant am\u00e9lioration."
         },
         "typicalRange": {
           "en": "0-100%. Target thresholds vary by indicator type and national standards.",
@@ -74,20 +73,20 @@
         },
         "caveats": {
           "en": "HFA data is typically cross-sectional and may not reflect temporal trends. Survey timing and facility sampling affect comparability across assessments.",
-          "fr": "Les données HFA sont généralement transversales et peuvent ne pas refléter les tendances temporelles."
+          "fr": "Les donn\u00e9es HFA sont g\u00e9n\u00e9ralement transversales et peuvent ne pas refl\u00e9ter les tendances temporelles."
         },
         "useCases": [
           {
             "en": "Measure facility readiness across regions",
-            "fr": "Mesurer la préparation des établissements à travers les régions"
+            "fr": "Mesurer la pr\u00e9paration des \u00e9tablissements \u00e0 travers les r\u00e9gions"
           },
           {
             "en": "Track infrastructure and equipment availability",
-            "fr": "Suivre la disponibilité des infrastructures et équipements"
+            "fr": "Suivre la disponibilit\u00e9 des infrastructures et \u00e9quipements"
           },
           {
             "en": "Identify gaps in service delivery capacity",
-            "fr": "Identifier les lacunes dans la capacité de prestation de services"
+            "fr": "Identifier les lacunes dans la capacit\u00e9 de prestation de services"
           }
         ],
         "relatedMetrics": [
@@ -95,9 +94,15 @@
         ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point (both required). Use admin_area to compare regional readiness. Disaggregate by facility_type or facility_ownership to identify disparities between facility levels or public/private sectors.",
-          "fr": "Toujours désagréger par hfa_indicator et time_point (tous deux requis). Utiliser admin_area pour comparer la préparation régionale."
-        }
-      }
+          "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point (tous deux requis). Utiliser admin_area pour comparer la pr\u00e9paration r\u00e9gionale."
+        },
+        "importantNotes": null
+      },
+      "variantLabel": null,
+      "postAggregationExpression": null,
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "hfa001-average",
@@ -109,47 +114,46 @@
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (mean/average value) - use for averaging numeric indicators",
-        "fr": "Indicateurs HFA (valeur moyenne) - utiliser pour les indicateurs numériques moyens"
+        "fr": "Indicateurs HFA (valeur moyenne) - utiliser pour les indicateurs num\u00e9riques moyens"
       },
       "requiredDisaggregationOptions": [
         "hfa_indicator",
         "time_point"
       ],
       "formatAs": "number",
-      "periodOptions": [],
       "aiDescription": {
         "summary": {
           "en": "Average value of continuous HFA indicators across facilities (e.g., number of staff, beds, or consultation rooms).",
-          "fr": "Valeur moyenne des indicateurs HFA continus à travers les établissements (p. ex. nombre de personnel, lits ou salles de consultation)."
+          "fr": "Valeur moyenne des indicateurs HFA continus \u00e0 travers les \u00e9tablissements (p. ex. nombre de personnel, lits ou salles de consultation)."
         },
         "methodology": {
           "en": "AVG of numeric indicator values from Health Facility Assessment data. Calculates the mean value across all facilities in the selected geographic area or facility type.",
-          "fr": "Moyenne des valeurs d'indicateur numérique des données d'évaluation des établissements de santé. Calcule la valeur moyenne à travers tous les établissements."
+          "fr": "Moyenne des valeurs d'indicateur num\u00e9rique des donn\u00e9es d'\u00e9valuation des \u00e9tablissements de sant\u00e9. Calcule la valeur moyenne \u00e0 travers tous les \u00e9tablissements."
         },
         "interpretation": {
           "en": "Higher averages may indicate better resource availability, but should be interpreted considering facility size, catchment population, and service level. Use alongside total counts and facility type disaggregation for context.",
-          "fr": "Des moyennes plus élevées peuvent indiquer une meilleure disponibilité des ressources, mais doivent être interprétées en tenant compte de la taille de l'établissement."
+          "fr": "Des moyennes plus \u00e9lev\u00e9es peuvent indiquer une meilleure disponibilit\u00e9 des ressources, mais doivent \u00eatre interpr\u00e9t\u00e9es en tenant compte de la taille de l'\u00e9tablissement."
         },
         "typicalRange": {
           "en": "Varies by indicator type. Staff counts typically 5-50 per facility; bed counts 10-200 depending on facility level.",
-          "fr": "Varie selon le type d'indicateur. Comptes de personnel généralement 5-50 par établissement; lits 10-200 selon le niveau."
+          "fr": "Varie selon le type d'indicateur. Comptes de personnel g\u00e9n\u00e9ralement 5-50 par \u00e9tablissement; lits 10-200 selon le niveau."
         },
         "caveats": {
           "en": "Averages can be skewed by outlier facilities (very large hospitals). Consider using median or disaggregating by facility type for more robust analysis.",
-          "fr": "Les moyennes peuvent être faussées par des établissements aberrants (très grands hôpitaux). Considérer l'utilisation de la médiane."
+          "fr": "Les moyennes peuvent \u00eatre fauss\u00e9es par des \u00e9tablissements aberrants (tr\u00e8s grands h\u00f4pitaux). Consid\u00e9rer l'utilisation de la m\u00e9diane."
         },
         "useCases": [
           {
             "en": "Assess average staffing levels by region",
-            "fr": "Évaluer les niveaux de dotation moyens par région"
+            "fr": "\u00c9valuer les niveaux de dotation moyens par r\u00e9gion"
           },
           {
             "en": "Compare infrastructure capacity across facility types",
-            "fr": "Comparer la capacité d'infrastructure entre types d'établissements"
+            "fr": "Comparer la capacit\u00e9 d'infrastructure entre types d'\u00e9tablissements"
           },
           {
             "en": "Monitor resource distribution equity",
-            "fr": "Surveiller l'équité de la distribution des ressources"
+            "fr": "Surveiller l'\u00e9quit\u00e9 de la distribution des ressources"
           }
         ],
         "relatedMetrics": [
@@ -158,9 +162,15 @@
         ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point. Disaggregate by facility_type to avoid misleading averages that mix hospitals with health posts. Use admin_area for regional comparisons.",
-          "fr": "Toujours désagréger par hfa_indicator et time_point. Désagréger par facility_type pour éviter des moyennes trompeuses."
-        }
-      }
+          "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point. D\u00e9sagr\u00e9ger par facility_type pour \u00e9viter des moyennes trompeuses."
+        },
+        "importantNotes": null
+      },
+      "variantLabel": null,
+      "postAggregationExpression": null,
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "hfa001-total",
@@ -172,43 +182,42 @@
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (total/sum) - use for summing numeric values",
-        "fr": "Indicateurs HFA (total/somme) - utiliser pour additionner les valeurs numériques"
+        "fr": "Indicateurs HFA (total/somme) - utiliser pour additionner les valeurs num\u00e9riques"
       },
       "requiredDisaggregationOptions": [
         "hfa_indicator",
         "time_point"
       ],
       "formatAs": "number",
-      "periodOptions": [],
       "aiDescription": {
         "summary": {
           "en": "Total sum of continuous HFA indicator values across all facilities (e.g., total beds, total staff, total equipment items).",
-          "fr": "Somme totale des valeurs d'indicateur HFA continu à travers tous les établissements (p. ex. total de lits, personnel total, articles d'équipement totaux)."
+          "fr": "Somme totale des valeurs d'indicateur HFA continu \u00e0 travers tous les \u00e9tablissements (p. ex. total de lits, personnel total, articles d'\u00e9quipement totaux)."
         },
         "methodology": {
           "en": "SUM of numeric indicator values from Health Facility Assessment data. Aggregates counts across all facilities in the selected geographic area to provide total resource availability.",
-          "fr": "Somme des valeurs d'indicateur numérique des données d'évaluation des établissements de santé. Agrège les comptes à travers tous les établissements."
+          "fr": "Somme des valeurs d'indicateur num\u00e9rique des donn\u00e9es d'\u00e9valuation des \u00e9tablissements de sant\u00e9. Agr\u00e8ge les comptes \u00e0 travers tous les \u00e9tablissements."
         },
         "interpretation": {
           "en": "Higher totals indicate greater absolute resource availability in the region. Compare against population size to assess per-capita resource levels. Use alongside facility counts to understand resource distribution.",
-          "fr": "Des totaux plus élevés indiquent une plus grande disponibilité absolue des ressources dans la région. Comparer à la taille de la population."
+          "fr": "Des totaux plus \u00e9lev\u00e9s indiquent une plus grande disponibilit\u00e9 absolue des ressources dans la r\u00e9gion. Comparer \u00e0 la taille de la population."
         },
         "typicalRange": {
           "en": "Varies widely by region size and facility count. Urban regions with many facilities will have higher totals.",
-          "fr": "Varie considérablement selon la taille de la région et le nombre d'établissements. Les régions urbaines auront des totaux plus élevés."
+          "fr": "Varie consid\u00e9rablement selon la taille de la r\u00e9gion et le nombre d'\u00e9tablissements. Les r\u00e9gions urbaines auront des totaux plus \u00e9lev\u00e9s."
         },
         "caveats": {
           "en": "Total counts are sensitive to the number of facilities surveyed. Missing facilities or incomplete assessments will underestimate totals. Compare proportions or per-capita rates for more robust analysis.",
-          "fr": "Les comptes totaux sont sensibles au nombre d'établissements évalués. Les établissements manquants sous-estimeront les totaux."
+          "fr": "Les comptes totaux sont sensibles au nombre d'\u00e9tablissements \u00e9valu\u00e9s. Les \u00e9tablissements manquants sous-estimeront les totaux."
         },
         "useCases": [
           {
             "en": "Calculate total health workforce in a region",
-            "fr": "Calculer la main-d'œuvre sanitaire totale dans une région"
+            "fr": "Calculer la main-d'\u0153uvre sanitaire totale dans une r\u00e9gion"
           },
           {
             "en": "Assess overall infrastructure capacity",
-            "fr": "Évaluer la capacité globale de l'infrastructure"
+            "fr": "\u00c9valuer la capacit\u00e9 globale de l'infrastructure"
           },
           {
             "en": "Plan resource allocation and distribution",
@@ -221,9 +230,15 @@
         ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point. Use admin_area for regional totals. Combine with population data to calculate per-capita resource availability. Disaggregate by facility_type to understand resource concentration.",
-          "fr": "Toujours désagréger par hfa_indicator et time_point. Utiliser admin_area pour les totaux régionaux."
-        }
-      }
+          "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point. Utiliser admin_area pour les totaux r\u00e9gionaux."
+        },
+        "importantNotes": null
+      },
+      "variantLabel": null,
+      "postAggregationExpression": null,
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "hfa001-count",
@@ -235,47 +250,46 @@
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (record count) - useful for data quality checks",
-        "fr": "Indicateurs HFA (nombre d'enregistrements) - utile pour les contrôles de qualité des données"
+        "fr": "Indicateurs HFA (nombre d'enregistrements) - utile pour les contr\u00f4les de qualit\u00e9 des donn\u00e9es"
       },
       "requiredDisaggregationOptions": [
         "hfa_indicator",
         "time_point"
       ],
       "formatAs": "number",
-      "periodOptions": [],
       "aiDescription": {
         "summary": {
           "en": "Number of facilities with recorded values for a specific HFA indicator.",
-          "fr": "Nombre d'établissements avec des valeurs enregistrées pour un indicateur HFA spécifique."
+          "fr": "Nombre d'\u00e9tablissements avec des valeurs enregistr\u00e9es pour un indicateur HFA sp\u00e9cifique."
         },
         "methodology": {
           "en": "COUNT of facility records in the HFA results table for each indicator-timepoint combination. Provides the sample size for that indicator.",
-          "fr": "Décompte des enregistrements d'établissements dans la table de résultats HFA pour chaque combinaison indicateur-période."
+          "fr": "D\u00e9compte des enregistrements d'\u00e9tablissements dans la table de r\u00e9sultats HFA pour chaque combinaison indicateur-p\u00e9riode."
         },
         "interpretation": {
           "en": "Higher counts indicate better survey coverage for that indicator. Low counts may indicate missing data, skipped questions, or that the indicator only applies to certain facility types. Compare against total facility counts to assess completeness.",
-          "fr": "Des comptes plus élevés indiquent une meilleure couverture de l'enquête pour cet indicateur. Des comptes faibles peuvent indiquer des données manquantes."
+          "fr": "Des comptes plus \u00e9lev\u00e9s indiquent une meilleure couverture de l'enqu\u00eate pour cet indicateur. Des comptes faibles peuvent indiquer des donn\u00e9es manquantes."
         },
         "typicalRange": {
           "en": "Should ideally match the total number of facilities assessed. Lower counts may indicate indicator-specific skip patterns.",
-          "fr": "Devrait idéalement correspondre au nombre total d'établissements évalués. Des comptes inférieurs peuvent indiquer des modèles de saut."
+          "fr": "Devrait id\u00e9alement correspondre au nombre total d'\u00e9tablissements \u00e9valu\u00e9s. Des comptes inf\u00e9rieurs peuvent indiquer des mod\u00e8les de saut."
         },
         "caveats": {
           "en": "Record count does not indicate data quality, only presence. Use percentage metrics to assess actual indicator performance.",
-          "fr": "Le compte d'enregistrements n'indique pas la qualité des données, seulement la présence."
+          "fr": "Le compte d'enregistrements n'indique pas la qualit\u00e9 des donn\u00e9es, seulement la pr\u00e9sence."
         },
         "useCases": [
           {
             "en": "Verify HFA survey coverage completeness",
-            "fr": "Vérifier la complétude de la couverture de l'enquête HFA"
+            "fr": "V\u00e9rifier la compl\u00e9tude de la couverture de l'enqu\u00eate HFA"
           },
           {
             "en": "Identify indicators with missing data",
-            "fr": "Identifier les indicateurs avec des données manquantes"
+            "fr": "Identifier les indicateurs avec des donn\u00e9es manquantes"
           },
           {
             "en": "Validate sample sizes for statistical analysis",
-            "fr": "Valider les tailles d'échantillon pour l'analyse statistique"
+            "fr": "Valider les tailles d'\u00e9chantillon pour l'analyse statistique"
           }
         ],
         "relatedMetrics": [
@@ -285,9 +299,15 @@
         ],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point. Use admin_area to verify regional survey coverage. Disaggregate by facility_type to understand which facility levels were included in the assessment.",
-          "fr": "Toujours désagréger par hfa_indicator et time_point. Utiliser admin_area pour vérifier la couverture régionale de l'enquête."
-        }
-      }
+          "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point. Utiliser admin_area pour v\u00e9rifier la couverture r\u00e9gionale de l'enqu\u00eate."
+        },
+        "importantNotes": null
+      },
+      "variantLabel": null,
+      "postAggregationExpression": null,
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     }
   ],
   "scriptGenerationType": "hfa",
@@ -299,6 +319,14 @@
         "input": {
           "inputType": "boolean",
           "defaultValue": "FALSE"
+        }
+      },
+      {
+        "replacementString": "STOP_IF_INDICATOR_FAILS",
+        "description": "Stop script if any single indicator fails (no R code or errors). If FALSE, skip failing indicators and only fail if no results are generated.",
+        "input": {
+          "inputType": "boolean",
+          "defaultValue": "TRUE"
         }
       }
     ]

@@ -1,4 +1,4 @@
-import type { ModuleDefinitionCore } from "../.validation/module_definition_validator.ts";
+import type { ModuleDefinitionCore } from "../.validation/_module_definition_github.ts";
 
 export const core: ModuleDefinitionCore = {
   label: {

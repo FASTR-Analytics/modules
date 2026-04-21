@@ -1,4 +1,4 @@
-import type { ResultsObjectDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { ResultsObjectDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const resultsObjects: ResultsObjectDefinitionJSON[] = [
   {
@@ -82,25 +82,30 @@ export const resultsObjects: ResultsObjectDefinitionJSON[] = [
   {
     id: "M3_chartout.csv",
     description: "Control chart analysis results with tagged anomalies",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_1.csv",
     description:
       "Shortfall and surplus calculations for all indicators (Admin area 1)",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_2.csv",
     description:
       "Shortfall and surplus calculations for all indicators (Admin area 2)",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_3.csv",
     description:
       "Shortfall and surplus calculations for all indicators (Admin area 3)",
+    createTableStatementPossibleColumns: {},
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_4.csv",
     description:
       "Shortfall and surplus calculations for all indicators (Admin area 4)",
+    createTableStatementPossibleColumns: {},
   },
 ];

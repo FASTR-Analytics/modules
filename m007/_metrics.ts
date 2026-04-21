@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 const SCORECARD_LABEL_REPLACEMENTS: Record<string, string> = {
   anc4_anc1_before20_ratio: "ANC4 / ANC1 <20wks",
@@ -18,11 +18,14 @@ const PLACEHOLDER_AI_DESCRIPTION = {
   methodology: { en: "xxx", fr: "xxx" },
   interpretation: { en: "xxx", fr: "xxx" },
   typicalRange: { en: "xxx", fr: "xxx" },
+  caveats: null,
   useCases: [
     { en: "xxx", fr: "xxx" },
     { en: "xxx", fr: "xxx" },
   ],
+  relatedMetrics: [],
   disaggregationGuidance: { en: "xxx", fr: "xxx" },
+  importantNotes: null,
 };
 
 export const metrics: MetricDefinitionJSON[] = [
@@ -39,8 +42,12 @@ export const metrics: MetricDefinitionJSON[] = [
       "indicator_common_id",
     ],
     formatAs: "percent",
-    periodOptions: ["quarter_id"],
     aiDescription: PLACEHOLDER_AI_DESCRIPTION,
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
   {
     id: "m7-01-02",
@@ -55,8 +62,12 @@ export const metrics: MetricDefinitionJSON[] = [
       "indicator_common_id",
     ],
     formatAs: "percent",
-    periodOptions: ["quarter_id"],
     aiDescription: PLACEHOLDER_AI_DESCRIPTION,
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
   {
     id: "m7-01-03",
@@ -71,7 +82,11 @@ export const metrics: MetricDefinitionJSON[] = [
       "indicator_common_id",
     ],
     formatAs: "percent",
-    periodOptions: ["quarter_id"],
     aiDescription: PLACEHOLDER_AI_DESCRIPTION,
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
 ];

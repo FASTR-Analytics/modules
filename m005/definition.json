@@ -240,9 +240,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator",
         "year"
@@ -297,6 +294,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_denominators_national.csv",
       "aiDescription": {
         "summary": {
@@ -341,8 +339,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
           "fr": "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "values-table",
@@ -354,6 +354,8 @@
             "en": "Table of denominator values by source and year",
             "fr": "Tableau des valeurs de dénominateur par source et année"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "denominator",
             "source_indicator"
@@ -362,7 +364,7 @@
           "config": {
             "d": {
               "type": "table",
-              "periodOpt": "year",
+              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -382,10 +384,19 @@
             },
             "s": {
               "showDataLabels": true
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m4a-01-02",
@@ -402,9 +413,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator",
         "admin_area_2",
@@ -460,6 +468,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_denominators_admin2.csv",
       "aiDescription": {
         "summary": {
@@ -478,6 +487,7 @@
           "en": "Varies by region size and population. Proportional to national denominators.",
           "fr": "Varie selon la taille de la région et la population. Proportionnel aux dénominateurs nationaux."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "Regional coverage calculation",
@@ -495,8 +505,12 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator, admin_area_2, and year (all required). Compare denominator sources to assess regional data quality.",
           "fr": "Toujours désagréger par denominator, admin_area_2 et year (tous requis). Comparer les sources de dénominateur pour évaluer la qualité des données régionales."
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m4a-01-03",
@@ -513,9 +527,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "number",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator",
         "admin_area_3",
@@ -571,6 +582,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_denominators_admin3.csv",
       "aiDescription": {
         "summary": {
@@ -589,6 +601,7 @@
           "en": "Varies by district size. Smaller than admin area 2 denominators, proportional to population.",
           "fr": "Varie selon la taille du district. Plus petit que les dénominateurs de zone administrative 2, proportionnel à la population."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "District-level coverage calculation",
@@ -602,8 +615,12 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator, admin_area_3, and year (all required). Interpret with caution due to denominator uncertainty at this level.",
           "fr": "Toujours désagréger par denominator, admin_area_3 et year (tous requis). Interpréter avec prudence en raison de l'incertitude du dénominateur à ce niveau."
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m4a-02-01",
@@ -620,9 +637,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator_best_or_survey",
         "indicator_common_id",
@@ -678,6 +692,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_combined_results_national.csv",
       "aiDescription": {
         "summary": {
@@ -722,8 +737,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, indicator_common_id, and year (all required). Compare 'best' vs 'survey' to validate denominator selection. Visualize all denominator types to assess range of plausible coverage estimates.",
           "fr": "Toujours désagréger par denominator_best_or_survey, indicator_common_id et year (tous requis). Comparer 'meilleur' vs 'enquête' pour valider la sélection du dénominateur."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "coverage-timeseries",
@@ -735,6 +752,7 @@
             "en": "Timeseries comparing coverage across denominator sources",
             "fr": "Séries temporelles comparant la couverture entre sources de dénominateur"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "denominator_best_or_survey"
@@ -743,7 +761,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "year",
+              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -767,14 +785,19 @@
                 "en": "Coverage based of different denominators, REPLICANT",
                 "fr": "Couverture selon différents dénominateurs, REPLICANT"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
-              }
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m4a-02-02",
@@ -791,9 +814,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator_best_or_survey",
         "admin_area_2",
@@ -850,6 +870,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_combined_results_admin2.csv",
       "aiDescription": {
         "summary": {
@@ -868,6 +889,7 @@
           "en": "0-100%. Variation across denominators indicates uncertainty in regional coverage estimates.",
           "fr": "0-100%. La variation entre dénominateurs indique une incertitude dans les estimations de couverture régionale."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "Regional coverage sensitivity analysis",
@@ -881,8 +903,12 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, admin_area_2, indicator_common_id, and year (all required). Compare denominator types to assess regional estimate uncertainty.",
           "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_2, indicator_common_id et year (tous requis). Comparer les types de dénominateur pour évaluer l'incertitude des estimations régionales."
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m4a-02-03",
@@ -899,9 +925,6 @@
       ],
       "valueFunc": "AVG",
       "formatAs": "percent",
-      "periodOptions": [
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "denominator_best_or_survey",
         "admin_area_3",
@@ -958,6 +981,7 @@
         "target_vitaminA": "Children aged 6-59 months eligible for Vitamin A supplementation",
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M5_combined_results_admin3.csv",
       "aiDescription": {
         "summary": {
@@ -976,6 +1000,7 @@
           "en": "0-100%. Wide variation across denominators common due to small sample sizes and denominator uncertainty.",
           "fr": "0-100%. Variation large entre dénominateurs commune en raison de petites tailles d'échantillon et incertitude du dénominateur."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "District-level coverage sensitivity analysis",
@@ -989,8 +1014,12 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, admin_area_3, indicator_common_id, and year (all required). High uncertainty at this level - consider aggregating to admin area 2.",
           "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_3, indicator_common_id et year (tous requis). Incertitude élevée à ce niveau - considérer l'agrégation à la zone administrative 2."
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     }
   ]
 }

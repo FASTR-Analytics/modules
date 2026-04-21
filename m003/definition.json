@@ -242,23 +242,28 @@
     },
     {
       "id": "M3_chartout.csv",
-      "description": "Control chart analysis results with tagged anomalies"
+      "description": "Control chart analysis results with tagged anomalies",
+      "createTableStatementPossibleColumns": {}
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_1.csv",
-      "description": "Shortfall and surplus calculations for all indicators (Admin area 1)"
+      "description": "Shortfall and surplus calculations for all indicators (Admin area 1)",
+      "createTableStatementPossibleColumns": {}
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_2.csv",
-      "description": "Shortfall and surplus calculations for all indicators (Admin area 2)"
+      "description": "Shortfall and surplus calculations for all indicators (Admin area 2)",
+      "createTableStatementPossibleColumns": {}
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_3.csv",
-      "description": "Shortfall and surplus calculations for all indicators (Admin area 3)"
+      "description": "Shortfall and surplus calculations for all indicators (Admin area 3)",
+      "createTableStatementPossibleColumns": {}
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_4.csv",
-      "description": "Shortfall and surplus calculations for all indicators (Admin area 4)"
+      "description": "Shortfall and surplus calculations for all indicators (Admin area 4)",
+      "createTableStatementPossibleColumns": {}
     }
   ],
   "metrics": [
@@ -268,6 +273,7 @@
         "en": "Number of services reported, by adjustment type",
         "fr": "Nombre de services déclarés, par type d'ajustement"
       },
+      "variantLabel": null,
       "valueProps": [
         "count_final_none",
         "count_final_outliers",
@@ -276,11 +282,6 @@
       ],
       "valueFunc": "SUM",
       "formatAs": "number",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id"
       ],
@@ -290,6 +291,7 @@
         "count_final_completeness": "Number of services after completeness adjustment",
         "count_final_both": "Number of services after both outlier and completeness adjustment"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M3_service_utilization.csv",
       "aiDescription": {
         "summary": {
@@ -334,7 +336,8 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id (required) to see adjustment impact per service. Time series reveals if data quality improves over time. Regional disaggregation shows geographic variation in adjustment needs.",
           "fr": "Toujours désagréger par indicator_common_id (requis) pour voir l'impact de l'ajustement par service. Les séries temporelles révèlent si la qualité des données s'améliore au fil du temps. La désagrégation régionale montre la variation géographique des besoins d'ajustement."
-        }
+        },
+        "importantNotes": null
       },
       "importantNotes": {
         "en": "The intention of the first four visualization presets (volume-monthly, volume-quarterly, volume-annual, volume-subnational) is that only one of the values is selected: count_final_none, count_final_outliers, count_final_completeness, or count_final_both. You should use valuesFilter to select it (i.e. filter so it is only one value). To determine which to use, run get_module_settings for module id 'm003' and see what value is set for 'Count variable to use for visualization', which should be the default value that you use (although the user may ask for a different one, which you can use instead). If the user wants to compare different adjustments, you should use preset dq-comparison.",
@@ -351,6 +354,8 @@
             "en": "Line chart showing monthly service volume by indicator",
             "fr": "Graphique linéaire montrant le volume de services mensuel par indicateur"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id"
           ],
@@ -358,7 +363,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [
                 "count_final_both"
@@ -379,14 +384,17 @@
                 "en": "Service utilization over time",
                 "fr": "Utilisation des services dans le temps"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Yearly volume is adjusted for both outliers and completeness.",
                 "fr": "Le volume annuel est ajusté à la fois pour les valeurs aberrantes et la complétude."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -400,17 +408,16 @@
             "en": "Bar chart showing quarterly volume with quarter-on-quarter change",
             "fr": "Diagramme à barres montrant le volume trimestriel avec variation trimestre par trimestre"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id"
           ],
           "createDefaultVisualizationOnInstall": "7196a784-8665-41ad-b563-965c59937def",
-          "defaultPeriodFilterForDefaultVisualizations": {
-            "nMonths": 12
-          },
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "quarter_id",
+              "timeseriesGrouping": "quarter_id",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [
                 "count_final_outliers"
@@ -421,7 +428,11 @@
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              }
             },
             "s": {
               "specialBarChart": true,
@@ -432,14 +443,17 @@
                 "en": "Service volume by quarter & quarter-on-quarter change",
                 "fr": "Volume de services par trimestre et variation trimestre par trimestre"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Service volume is adjusted for outliers.",
                 "fr": "Le volume de services est ajusté pour les valeurs aberrantes."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -453,6 +467,8 @@
             "en": "Bar chart showing annual volume with year-on-year change",
             "fr": "Diagramme à barres montrant le volume annuel avec variation d'une année sur l'autre"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id"
           ],
@@ -460,7 +476,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "year",
+              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [
                 "count_final_outliers"
@@ -482,14 +498,17 @@
                 "en": "Service volume by year & year-on-year change",
                 "fr": "Volume de services par année et variation d'une année sur l'autre"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Service volume is adjusted for outliers.",
                 "fr": "Le volume de services est ajusté pour les valeurs aberrantes."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -503,6 +522,8 @@
             "en": "Bar chart showing annual volume change by indicator and admin area",
             "fr": "Diagramme à barres montrant la variation annuelle du volume par indicateur et zone administrative"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
@@ -511,7 +532,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "year",
+              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [
                 "count_final_outliers"
@@ -538,14 +559,17 @@
                 "en": "Service volume by year & year-on-year change",
                 "fr": "Volume de services par année et variation d'une année sur l'autre"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Yearly volume is adjusted for outliers.",
                 "fr": "Le volume annuel est ajusté pour les valeurs aberrantes."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -559,6 +583,8 @@
             "en": "Line chart comparing volume under different adjustment scenarios",
             "fr": "Graphique linéaire comparant le volume selon différents scénarios d'ajustement"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id"
           ],
@@ -566,7 +592,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "year",
+              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [],
               "disaggregateBy": [
@@ -608,14 +634,19 @@
                 "en": "Change in volume due to data quality adjustments",
                 "fr": "Variation du volume due aux ajustements de qualité des données"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
-              }
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-02-01",
@@ -633,11 +664,6 @@
       ],
       "valueFunc": "SUM",
       "formatAs": "number",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id"
       ],
@@ -645,6 +671,7 @@
         "count_sum": "Actual service volume",
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
@@ -690,8 +717,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id (required) to see service-specific patterns. Time series visualization is essential for identifying disruption periods and recovery trends.",
           "fr": "Toujours désagréger par indicator_common_id (requis) pour voir les modèles spécifiques au service. La visualisation en séries temporelles est essentielle pour identifier les périodes de perturbation et les tendances de récupération."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-chart",
@@ -703,6 +732,8 @@
             "en": "Area chart showing actual vs expected service volume nationally",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu au niveau national"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id"
           ],
@@ -710,7 +741,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -722,26 +753,29 @@
             },
             "s": {
               "scale": 2.5,
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
             },
             "t": {
               "caption": {
                 "en": "Disruptions and surpluses in service volume, nationally",
                 "fr": "Perturbations et excédents du volume de services, au niveau national"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "This graph quantifies changes in service volume compared to historical trends and accounting for seasonality. These signals should be triangulated to other data and contextual knowledge to determine if the results are an artifact of data quality. Unexpected volume changes are estimated by comparing the observed volume to the expected volume based on historical trends and seasonality. Previous large unexpected changes in the historical data are removed. This analysis is an interrupted time series regression with facility-level fixed effects.",
                 "fr": "Ce graphique quantifie les changements du volume de services par rapport aux tendances historiques et en tenant compte de la saisonnalité. Ces signaux doivent être triangulés avec d'autres données et connaissances contextuelles pour déterminer si les résultats sont un artefact de la qualité des données. Les changements de volume inattendus sont estimés en comparant le volume observé au volume attendu basé sur les tendances historiques et la saisonnalité. Les grands changements inattendus précédents dans les données historiques sont supprimés. Cette analyse est une régression de séries temporelles interrompues avec effets fixes au niveau de l'établissement."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-02-02",
@@ -758,11 +792,6 @@
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id"
       ],
@@ -827,9 +856,12 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id (required). Time series shows disruption evolution and recovery patterns. Consider using absolute differences (m3-02-01) alongside percentages for low-volume indicators.",
           "fr": "Toujours désagréger par indicator_common_id (requis). Les séries temporelles montrent l'évolution de la perturbation et les modèles de récupération. Considérer l'utilisation des différences absolues (m3-02-01) aux côtés des pourcentages pour les indicateurs à faible volume."
-        }
+        },
+        "importantNotes": null
       },
-      "vizPresets": []
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m3-03-01",
@@ -847,11 +879,6 @@
       ],
       "valueFunc": "SUM",
       "formatAs": "number",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_2"
@@ -860,6 +887,7 @@
         "count_sum": "Actual service volume",
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -905,8 +933,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals when and where disruptions occurred. Map visualization effectively shows geographic distribution of service gaps.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent quand et où les perturbations se sont produites. La visualisation cartographique montre efficacement la distribution géographique des écarts de services."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-chart",
@@ -918,6 +948,8 @@
             "en": "Area chart showing actual vs expected service volume, with multiple Admin Areas 2 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, avec plusieurs Zones administratives 2 et plusieurs indicateurs"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
@@ -926,7 +958,7 @@
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -941,22 +973,24 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
             },
             "t": {
               "caption": {
                 "en": "Disruptions and surpluses in service volume, sub-nationally",
                 "fr": "Perturbations et excédents du volume de services, au niveau sous-national"
               },
+              "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
                 "fr": "DATE_RANGE"
               },
+              "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "This graph quantifies changes in service volume compared to historical trends and accounting for seasonality. These signals should be triangulated to other data and contextual knowledge to determine if the results are an artifact of data quality. Unexpected volume changes are estimated by comparing the observed volume to the expected volume based on historical trends and seasonality. Previous large unexpected changes in the historical data are removed. This analysis is an interrupted time series regression with facility-level fixed effects.",
                 "fr": "Ce graphique quantifie les changements du volume de services par rapport aux tendances historiques et en tenant compte de la saisonnalité. Ces signaux doivent être triangulés avec d'autres données et connaissances contextuelles pour déterminer si les résultats sont un artefact de la qualité des données. Les changements de volume inattendus sont estimés en comparant le volume observé au volume attendu basé sur les tendances historiques et la saisonnalité. Les grands changements inattendus précédents dans les données historiques sont supprimés. Cette analyse est une régression de séries temporelles interrompues avec effets fixes au niveau de l'établissement."
-              }
+              },
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -970,14 +1004,16 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 2 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 2 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -993,8 +1029,15 @@
               "selectedReplicantValue": ""
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -1008,14 +1051,16 @@
             "en": "Area chart showing actual vs expected service volume, for a single indicator and multiple Admin Area 2",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour un unique indicateur et plusieurs Zones administratives 2"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -1031,12 +1076,20 @@
               "selectedReplicantValue": ""
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-03-02",
@@ -1053,11 +1106,6 @@
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_2"
@@ -1096,6 +1144,7 @@
           "en": "±10-30% variation common; >30% deviation warrants investigation.",
           "fr": "Variation de ±10-30% commune; écart >30% nécessite investigation."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "Quantify regional service gaps",
@@ -1112,8 +1161,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals disruption patterns over time.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent les modèles de perturbation au fil du temps."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-differences-table",
@@ -1125,14 +1176,17 @@
             "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, with multiple Admin Areas 2 and multiple indicators",
             "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, avec plusieurs Zones administratives 2 et plusieurs indicateurs"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_2"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "table",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1147,8 +1201,15 @@
               "filterBy": []
             },
             "s": {
-              "conditionalFormatting": "fmt-neg10-pos10",
               "decimalPlaces": 0
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -1162,11 +1223,14 @@
             "en": "Map showing disruption levels by admin area for a single indicator and time period",
             "fr": "Carte montrant les niveaux de perturbation par zone administrative pour un indicateur et une période unique"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "map",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
@@ -1180,13 +1244,19 @@
               ],
               "filterBy": []
             },
-            "s": {
-              "mapColorFrom": "#fee0d2",
-              "mapColorTo": "#de2d26"
+            "s": {},
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-04-01",
@@ -1204,11 +1274,6 @@
       ],
       "valueFunc": "SUM",
       "formatAs": "number",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_3"
@@ -1217,6 +1282,7 @@
         "count_sum": "Actual service volume",
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
@@ -1235,6 +1301,7 @@
           "en": "Varies by district size. Expect similar patterns to admin area 2 but with more volatility.",
           "fr": "Varie selon la taille du district. S'attendre à des modèles similaires à la zone administrative 2 mais avec plus de volatilité."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "District-level operational planning",
@@ -1248,8 +1315,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_3 (both required). Time series and maps reveal district-level patterns.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Les séries temporelles et cartes révèlent les modèles au niveau du district."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-chart-single-admin-area-2-multiple-admin-area-3",
@@ -1261,15 +1330,17 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_3"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -1288,10 +1359,16 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
             },
-            "t": {}
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
           }
         },
         {
@@ -1304,14 +1381,16 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 3 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -1327,12 +1406,20 @@
               "selectedReplicantValue": ""
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-04-02",
@@ -1349,11 +1436,6 @@
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_3"
@@ -1392,6 +1474,7 @@
           "en": "±10-40% variation common at district level; >40% deviation warrants investigation.",
           "fr": "Variation de ±10-40% commune au niveau du district; écart >40% nécessite investigation."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "District performance monitoring",
@@ -1404,8 +1487,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_3 (both required). Compare with admin area 2 for context.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Comparer avec la zone administrative 2 pour le contexte."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-differences-table-single-admin-area-2-multiple-admin-area-3",
@@ -1417,15 +1502,17 @@
             "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
             "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_3"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "table",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1444,8 +1531,15 @@
               "filterBy": []
             },
             "s": {
-              "conditionalFormatting": "fmt-neg10-pos10",
               "decimalPlaces": 0
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         },
@@ -1459,11 +1553,14 @@
             "en": "Map showing disruption levels by admin area for a single indicator and time period",
             "fr": "Carte montrant les niveaux de perturbation par zone administrative pour un indicateur et une période unique"
           },
+          "importantNotes": null,
+          "needsReplicant": false,
           "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "map",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
@@ -1477,13 +1574,19 @@
               ],
               "filterBy": []
             },
-            "s": {
-              "mapColorFrom": "#fee0d2",
-              "mapColorTo": "#de2d26"
+            "s": {},
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-05-01",
@@ -1501,11 +1604,6 @@
       ],
       "valueFunc": "SUM",
       "formatAs": "number",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_4"
@@ -1514,6 +1612,7 @@
         "count_sum": "Actual service volume",
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {
@@ -1532,6 +1631,7 @@
           "en": "Highly variable by sub-district. Expect greater volatility than higher geographic levels.",
           "fr": "Très variable selon le sous-district. S'attendre à plus de volatilité que les niveaux géographiques supérieurs."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "Facility-catchment area analysis",
@@ -1544,8 +1644,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_4 (both required). Only available when RUN_ADMIN_AREA_4_ANALYSIS enabled.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Disponible uniquement si RUN_ADMIN_AREA_4_ANALYSIS activé."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-chart-single-admin-area-3-multiple-admin-area-4",
@@ -1557,15 +1659,17 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_4"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -1584,10 +1688,16 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
             },
-            "t": {}
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
           }
         },
         {
@@ -1600,14 +1710,16 @@
             "en": "Area chart showing actual vs expected service volume, for a single Admin Area 4 and multiple indicators",
             "fr": "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 4 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "series",
               "disaggregateBy": [
                 {
@@ -1623,12 +1735,20 @@
               "selectedReplicantValue": ""
             },
             "s": {
-              "content": "areas",
-              "diffAreas": true
+              "content": "areas"
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     },
     {
       "id": "m3-05-02",
@@ -1645,11 +1765,6 @@
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "period_id",
-        "quarter_id",
-        "year"
-      ],
       "requiredDisaggregationOptions": [
         "indicator_common_id",
         "admin_area_4"
@@ -1688,6 +1803,7 @@
           "en": "±20-50% variation common; high volatility expected at this granular level.",
           "fr": "Variation de ±20-50% commune; forte volatilité attendue à ce niveau granulaire."
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "Facility-specific performance tracking",
@@ -1700,8 +1816,10 @@
         "disaggregationGuidance": {
           "en": "Always disaggregate by indicator_common_id and admin_area_4 (both required). Interpret with caution due to small sample sizes.",
           "fr": "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Interpréter avec prudence en raison de petites tailles d'échantillon."
-        }
+        },
+        "importantNotes": null
       },
+      "importantNotes": null,
       "vizPresets": [
         {
           "id": "disruption-differences-table-single-admin-area-3-multiple-admin-area-4",
@@ -1713,15 +1831,17 @@
             "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
             "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs"
           },
+          "importantNotes": null,
           "needsReplicant": true,
           "allowedFilters": [
             "indicator_common_id",
             "admin_area_4"
           ],
+          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "table",
-              "periodOpt": "period_id",
+              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1740,12 +1860,20 @@
               "filterBy": []
             },
             "s": {
-              "conditionalFormatting": "fmt-neg10-pos10",
               "decimalPlaces": 0
+            },
+            "t": {
+              "caption": null,
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
             }
           }
         }
-      ]
+      ],
+      "hide": false
     }
   ]
 }

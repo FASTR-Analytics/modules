@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/module_definition_validator.ts";
+import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
 
 export const metrics: MetricDefinitionJSON[] = [
   {
@@ -99,7 +99,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["denominator", "year"],
     formatAs: "number",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "Population denominators for coverage calculation at national level, derived from multiple sources and methods.",
@@ -140,6 +139,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
         fr: "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -158,7 +158,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "table",
-            periodOpt: "year",
+            timeseriesGrouping: "year",
             valuesDisDisplayOpt: "col",
             disaggregateBy: [
               {
@@ -179,9 +179,22 @@ export const metrics: MetricDefinitionJSON[] = [
           s: {
             showDataLabels: true,
           },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
+        importantNotes: null,
+        needsReplicant: false,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m4a-01-02",
@@ -281,7 +294,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["denominator", "admin_area_2", "year"],
     formatAs: "number",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "Subnational population denominators for coverage calculation at admin area 2 level.",
@@ -314,7 +326,13 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator, admin_area_2, and year (all required). Compare denominator sources to assess regional data quality.",
         fr: "Toujours désagréger par denominator, admin_area_2 et year (tous requis). Comparer les sources de dénominateur pour évaluer la qualité des données régionales.",
       },
+      caveats: null,
+      importantNotes: null,
     },
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
   {
     id: "m4a-01-03",
@@ -414,7 +432,6 @@ export const metrics: MetricDefinitionJSON[] = [
     },
     requiredDisaggregationOptions: ["denominator", "admin_area_3", "year"],
     formatAs: "number",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "District-level population denominators for coverage calculation at admin area 3 level.",
@@ -443,7 +460,13 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator, admin_area_3, and year (all required). Interpret with caution due to denominator uncertainty at this level.",
         fr: "Toujours désagréger par denominator, admin_area_3 et year (tous requis). Interpréter avec prudence en raison de l'incertitude du dénominateur à ce niveau.",
       },
+      caveats: null,
+      importantNotes: null,
     },
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
   {
     id: "m4a-02-01",
@@ -547,7 +570,6 @@ export const metrics: MetricDefinitionJSON[] = [
       "year",
     ],
     formatAs: "percent",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "Coverage estimates calculated using alternative denominator sources, plus survey benchmarks at national level.",
@@ -588,6 +610,7 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator_best_or_survey, indicator_common_id, and year (all required). Compare 'best' vs 'survey' to validate denominator selection. Visualize all denominator types to assess range of plausible coverage estimates.",
         fr: "Toujours désagréger par denominator_best_or_survey, indicator_common_id et year (tous requis). Comparer 'meilleur' vs 'enquête' pour valider la sélection du dénominateur.",
       },
+      importantNotes: null,
     },
     vizPresets: [
       {
@@ -607,7 +630,7 @@ export const metrics: MetricDefinitionJSON[] = [
         config: {
           d: {
             type: "timeseries",
-            periodOpt: "year",
+            timeseriesGrouping: "year",
             valuesDisDisplayOpt: "series",
             disaggregateBy: [
               {
@@ -635,10 +658,18 @@ export const metrics: MetricDefinitionJSON[] = [
               en: "DATE_RANGE",
               fr: "DATE_RANGE",
             },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
           },
         },
+        importantNotes: null,
       },
     ],
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
   },
   {
     id: "m4a-02-02",
@@ -743,7 +774,6 @@ export const metrics: MetricDefinitionJSON[] = [
       "year",
     ],
     formatAs: "percent",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "Subnational coverage estimates using alternative denominators at admin area 2 level.",
@@ -772,7 +802,13 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator_best_or_survey, admin_area_2, indicator_common_id, and year (all required). Compare denominator types to assess regional estimate uncertainty.",
         fr: "Toujours désagréger par denominator_best_or_survey, admin_area_2, indicator_common_id et year (tous requis). Comparer les types de dénominateur pour évaluer l'incertitude des estimations régionales.",
       },
+      caveats: null,
+      importantNotes: null,
     },
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
   {
     id: "m4a-02-03",
@@ -877,7 +913,6 @@ export const metrics: MetricDefinitionJSON[] = [
       "year",
     ],
     formatAs: "percent",
-    periodOptions: ["year"],
     aiDescription: {
       summary: {
         en: "District-level coverage estimates using alternative denominators at admin area 3 level.",
@@ -906,6 +941,12 @@ export const metrics: MetricDefinitionJSON[] = [
         en: "Always disaggregate by denominator_best_or_survey, admin_area_3, indicator_common_id, and year (all required). High uncertainty at this level - consider aggregating to admin area 2.",
         fr: "Toujours désagréger par denominator_best_or_survey, admin_area_3, indicator_common_id et year (tous requis). Incertitude élevée à ce niveau - considérer l'agrégation à la zone administrative 2.",
       },
+      caveats: null,
+      importantNotes: null,
     },
+    postAggregationExpression: null,
+    importantNotes: null,
+    vizPresets: [],
+    hide: false,
   },
 ];

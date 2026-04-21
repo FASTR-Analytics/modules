@@ -1,4 +1,4 @@
-import { ModuleDefinitionJSONSchema } from "./.validation/module_definition_validator.ts";
+import { ModuleDefinitionJSONSchema } from "./.validation/_module_definition_github.ts";
 
 const root = new URL(".", import.meta.url);
 const moduleDirs: string[] = [];

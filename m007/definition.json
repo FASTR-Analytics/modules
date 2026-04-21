@@ -126,14 +126,12 @@
         "en": "Scorecard (AA2)",
         "fr": "Scorecard (AA2)"
       },
+      "variantLabel": null,
       "valueProps": [
         "value"
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id"
-      ],
       "requiredDisaggregationOptions": [
         "admin_area_2",
         "quarter_id",
@@ -151,6 +149,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M7_output_scorecard_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -169,6 +168,7 @@
           "en": "xxx",
           "fr": "xxx"
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "xxx",
@@ -179,11 +179,16 @@
             "fr": "xxx"
           }
         ],
+        "relatedMetrics": [],
         "disaggregationGuidance": {
           "en": "xxx",
           "fr": "xxx"
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m7-01-02",
@@ -191,14 +196,12 @@
         "en": "Scorecard (AA3)",
         "fr": "Scorecard (AA3)"
       },
+      "variantLabel": null,
       "valueProps": [
         "value"
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id"
-      ],
       "requiredDisaggregationOptions": [
         "admin_area_3",
         "quarter_id",
@@ -216,6 +219,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M7_output_scorecard_admin_area_3.csv",
       "aiDescription": {
         "summary": {
@@ -234,6 +238,7 @@
           "en": "xxx",
           "fr": "xxx"
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "xxx",
@@ -244,11 +249,16 @@
             "fr": "xxx"
           }
         ],
+        "relatedMetrics": [],
         "disaggregationGuidance": {
           "en": "xxx",
           "fr": "xxx"
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     },
     {
       "id": "m7-01-03",
@@ -256,14 +266,12 @@
         "en": "Scorecard (AA4)",
         "fr": "Scorecard (AA4)"
       },
+      "variantLabel": null,
       "valueProps": [
         "value"
       ],
       "valueFunc": "identity",
       "formatAs": "percent",
-      "periodOptions": [
-        "quarter_id"
-      ],
       "requiredDisaggregationOptions": [
         "admin_area_4",
         "quarter_id",
@@ -281,6 +289,7 @@
         "diabetes_new_per_10000": " Diabetes New per 10,000 person-years",
         "nhmis_data_timeliness_final": "NHMIS reports on time with content"
       },
+      "postAggregationExpression": null,
       "resultsObjectId": "M7_output_scorecard_admin_area_4.csv",
       "aiDescription": {
         "summary": {
@@ -299,6 +308,7 @@
           "en": "xxx",
           "fr": "xxx"
         },
+        "caveats": null,
         "useCases": [
           {
             "en": "xxx",
@@ -309,11 +319,16 @@
             "fr": "xxx"
           }
         ],
+        "relatedMetrics": [],
         "disaggregationGuidance": {
           "en": "xxx",
           "fr": "xxx"
-        }
-      }
+        },
+        "importantNotes": null
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
     }
   ]
 }
