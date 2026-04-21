@@ -594,7 +594,6 @@
               "type": "timeseries",
               "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
-              "valuesFilter": [],
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",

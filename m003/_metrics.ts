@@ -310,7 +310,6 @@ export const metrics: MetricDefinitionGithub[] = [
               },
             ],
             filterBy: [],
-            valuesFilter: [],
           },
           s: {
             scale: 1.8,
