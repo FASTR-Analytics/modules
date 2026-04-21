@@ -1,6 +1,6 @@
-import type { ResultsObjectDefinitionJSON } from "../.validation/_module_definition_github.ts";
+import type { ResultsObjectDefinitionGithub } from "../.validation/_module_definition_github.ts";
 
-export const resultsObjects: ResultsObjectDefinitionJSON[] = [
+export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M7_output_scorecard_admin_area_2.csv",
     description: "Scorecard indicators at zone level (long format)",

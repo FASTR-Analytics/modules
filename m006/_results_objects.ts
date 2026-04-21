@@ -1,6 +1,6 @@
-import type { ResultsObjectDefinitionJSON } from "../.validation/_module_definition_github.ts";
+import type { ResultsObjectDefinitionGithub } from "../.validation/_module_definition_github.ts";
 
-export const resultsObjects: ResultsObjectDefinitionJSON[] = [
+export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M6_coverage_estimation_national.csv",
     description: "Coverage estimates (National)",

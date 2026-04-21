@@ -1,6 +1,6 @@
-import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
+import type { MetricDefinitionGithub } from "../.validation/_module_definition_github.ts";
 
-export const metrics: MetricDefinitionJSON[] = [
+export const metrics: MetricDefinitionGithub[] = [
   {
     id: "m2-01-01",
     resultsObjectId: "M2_adjusted_data.csv",

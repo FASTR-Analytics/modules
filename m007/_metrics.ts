@@ -1,4 +1,4 @@
-import type { MetricDefinitionJSON } from "../.validation/_module_definition_github.ts";
+import type { MetricDefinitionGithub } from "../.validation/_module_definition_github.ts";
 
 const SCORECARD_LABEL_REPLACEMENTS: Record<string, string> = {
   anc4_anc1_before20_ratio: "ANC4 / ANC1 <20wks",
@@ -28,7 +28,7 @@ const PLACEHOLDER_AI_DESCRIPTION = {
   importantNotes: null,
 };
 
-export const metrics: MetricDefinitionJSON[] = [
+export const metrics: MetricDefinitionGithub[] = [
   {
     id: "m7-01-01",
     resultsObjectId: "M7_output_scorecard_admin_area_2.csv",
