@@ -18636,7 +18636,7 @@ Niger,NATIONAL,1992,RH_ANCP_W_SKP,anc1,percent,0.312,DHS National,NI1992DHS,hous
 Niger,NATIONAL,1992,RH_ANCN_W_N4P,anc4,percent,0.08,DHS National,NI1992DHS,household,Niger,NE,NER
 Niger,NATIONAL,1992,RH_DELP_C_DHF,delivery,percent,0.158,DHS National,NI1992DHS,household,Niger,NE,NER
 Niger,NATIONAL,1992,CH_VACS_C_OP1,polio1,percent,0.358,DHS National,NI1992DHS,household,Niger,NE,NER
-Niger,NATIONAL,1992,CH_VACC_C_BCG,bcg,percent,0.39899999999999997,DHS National,NI1992DHS,household,Niger,NE,NER
+Niger,NATIONAL,1992,CH_VACC_C_BCG,bcg,percent,0.399,DHS National,NI1992DHS,household,Niger,NE,NER
 Niger,NATIONAL,1992,CH_VACC_C_OP2,polio2,percent,0.244,DHS National,NI1992DHS,household,Niger,NE,NER
 Niger,NATIONAL,1992,CH_VACC_C_OP3,polio3,percent,0.201,DHS National,NI1992DHS,household,Niger,NE,NER
 Niger,NATIONAL,1992,CH_VACC_C_MSL,measles1,percent,0.278,DHS National,NI1992DHS,household,Niger,NE,NER
@@ -18647,7 +18647,7 @@ Niger,NATIONAL,1998,CM_ECMT_C_IMR,imr,rate,123,DHS National,NI1998DHS,household,
 Niger,NATIONAL,1998,CM_ECMR_C_NNR,nmr,rate,44,DHS National,NI1998DHS,household,Niger,NE,NER
 Niger,NATIONAL,1998,RH_ANCP_W_SKP,anc1,percent,0.397,DHS National,NI1998DHS,household,Niger,NE,NER
 Niger,NATIONAL,1998,RH_ANCN_W_N4P,anc4,percent,0.113,DHS National,NI1998DHS,household,Niger,NE,NER
-Niger,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.18100000000000002,DHS National,NI1998DHS,household,Niger,NE,NER
+Niger,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.181,DHS National,NI1998DHS,household,Niger,NE,NER
 Niger,NATIONAL,1998,CH_VACS_C_OP1,polio1,percent,0.52,DHS National,NI1998DHS,household,Niger,NE,NER
 Niger,NATIONAL,1998,CH_VACC_C_BCG,bcg,percent,0.473,DHS National,NI1998DHS,household,Niger,NE,NER
 Niger,NATIONAL,1998,CH_VACC_C_OP2,polio2,percent,0.387,DHS National,NI1998DHS,household,Niger,NE,NER
@@ -18699,3 +18699,81 @@ Niger,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.433,DHS National,NI2021MIS,hous
 Niger,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.816,DHS National,NI2021MIS,household,Niger,NE,NER
 Niger,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.562,DHS National,NI2021MIS,household,Niger,NE,NER
 Niger,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.25,DHS National,NI2021MIS,household,Niger,NE,NER
+Cote d'Ivoire,NATIONAL,1994,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CM_ECMT_C_IMR,imr,rate,89,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CM_ECMR_C_NNR,nmr,rate,42,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,RH_ANCP_W_SKP,anc1,percent,0.828,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,RH_ANCN_W_N4P,anc4,percent,0.27399999999999997,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,RH_DELP_C_DHF,delivery,percent,0.446,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACS_C_OP1,polio1,percent,0.77,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_BCG,bcg,percent,0.738,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_OP2,polio2,percent,0.6579999999999999,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_OP3,polio3,percent,0.514,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_MSL,measles1,percent,0.531,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_BAS,fully_immunized,percent,0.374,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,5.2,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CM_ECMT_C_IMR,imr,rate,112,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CM_ECMR_C_NNR,nmr,rate,62,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,RH_ANCP_W_SKP,anc1,percent,0.85,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,RH_ANCN_W_N4P,anc4,percent,0.353,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.48100000000000004,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACS_C_OP1,polio1,percent,0.863,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_BCG,bcg,percent,0.8370000000000001,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_OP2,polio2,percent,0.747,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_OP3,polio3,percent,0.606,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_MSL,measles1,percent,0.662,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_BAS,fully_immunized,percent,0.507,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,FE_FRTR_W_TFR,total_fertility_rate,rate,4.6,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,CM_ECMT_C_IMR,imr,rate,84,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,CM_ECMR_C_NNR,nmr,rate,41,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,RH_ANCP_W_SKP,anc1,percent,0.861,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,RH_ANCN_W_N4P,anc4,percent,0.409,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2005,RH_DELP_C_DHF,delivery,percent,0.565,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,5,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CM_ECMT_C_IMR,imr,rate,68,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CM_ECMR_C_NNR,nmr,rate,38,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,RH_ANCP_W_SKP,anc1,percent,0.91,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,RH_ANCN_W_N4P,anc4,percent,0.428,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,RH_ANCC_W_IRN,iron_anc,percent,0.775,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,RH_DELP_C_DHF,delivery,percent,0.589,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACS_C_OP1,polio1,percent,0.914,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_BCG,bcg,percent,0.8340000000000001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_OP2,polio2,percent,0.838,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_OP3,polio3,percent,0.6920000000000001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_MSL,measles1,percent,0.645,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_BAS,fully_immunized,percent,0.505,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CN_MIAC_C_VAS,vitamina,percent,0.608,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,CN_MIAC_C_DWM,deworming,percent,0.36700000000000005,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_SPF,iptp1,percent,0.29,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_2SP,iptp2,percent,0.2,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_3SP,iptp3,percent,0.081,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,4.3,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CM_ECMT_C_IMR,imr,rate,52,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CM_ECMR_C_NNR,nmr,rate,30,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CM_PNMR_C_NSB,stillbirth,number,230,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,RH_ANCP_W_SKP,anc1,percent,0.9540000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.563,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,RH_ANCC_W_IRN,iron_anc,percent,0.8640000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,RH_DELP_C_DHF,delivery,percent,0.809,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,RH_PCMN_W_MOT,pnc1,percent,0.7440000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACS_C_OP1,polio1,percent,0.81,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_BCG,bcg,percent,0.873,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT1,penta1,percent,0.7,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT2,penta2,percent,0.628,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT3,penta3,percent,0.542,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_OP2,polio2,percent,0.738,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_OP3,polio3,percent,0.623,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_MSL,measles1,percent,0.603,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_RT1,rotavirus1,percent,0.677,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_RT2,rotavirus2,percent,0.585,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_BAS,fully_immunized,percent,0.35700000000000004,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CH_DIAT_C_ORZ,ors_zinc,percent,0.107,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,CN_MIAC_C_VAS,vitamina,percent,0.46,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.7979999999999999,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.583,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.34600000000000003,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
