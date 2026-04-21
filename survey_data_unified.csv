@@ -18699,81 +18699,481 @@ Niger,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.433,DHS National,NI2021MIS,hous
 Niger,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.816,DHS National,NI2021MIS,household,Niger,NE,NER
 Niger,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.562,DHS National,NI2021MIS,household,Niger,NE,NER
 Niger,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.25,DHS National,NI2021MIS,household,Niger,NE,NER
-Cote d'Ivoire,NATIONAL,1994,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CM_ECMT_C_IMR,imr,rate,89,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CM_ECMR_C_NNR,nmr,rate,42,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,RH_ANCP_W_SKP,anc1,percent,0.828,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,RH_ANCN_W_N4P,anc4,percent,0.27399999999999997,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,RH_DELP_C_DHF,delivery,percent,0.446,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACS_C_OP1,polio1,percent,0.77,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_BCG,bcg,percent,0.738,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_OP2,polio2,percent,0.6579999999999999,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_OP3,polio3,percent,0.514,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_MSL,measles1,percent,0.531,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1994,CH_VACC_C_BAS,fully_immunized,percent,0.374,DHS National,CI1994DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,5.2,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CM_ECMT_C_IMR,imr,rate,112,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CM_ECMR_C_NNR,nmr,rate,62,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,RH_ANCP_W_SKP,anc1,percent,0.85,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,RH_ANCN_W_N4P,anc4,percent,0.353,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.48100000000000004,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACS_C_OP1,polio1,percent,0.863,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_BCG,bcg,percent,0.8370000000000001,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_OP2,polio2,percent,0.747,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_OP3,polio3,percent,0.606,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_MSL,measles1,percent,0.662,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,1998,CH_VACC_C_BAS,fully_immunized,percent,0.507,DHS National,CI1998DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,FE_FRTR_W_TFR,total_fertility_rate,rate,4.6,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,CM_ECMT_C_IMR,imr,rate,84,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,CM_ECMR_C_NNR,nmr,rate,41,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,RH_ANCP_W_SKP,anc1,percent,0.861,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,RH_ANCN_W_N4P,anc4,percent,0.409,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2005,RH_DELP_C_DHF,delivery,percent,0.565,DHS National,CI2005AIS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,5,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CM_ECMT_C_IMR,imr,rate,68,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CM_ECMR_C_NNR,nmr,rate,38,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,RH_ANCP_W_SKP,anc1,percent,0.91,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,RH_ANCN_W_N4P,anc4,percent,0.428,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,RH_ANCC_W_IRN,iron_anc,percent,0.775,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,RH_DELP_C_DHF,delivery,percent,0.589,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACS_C_OP1,polio1,percent,0.914,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_BCG,bcg,percent,0.8340000000000001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_OP2,polio2,percent,0.838,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_OP3,polio3,percent,0.6920000000000001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_MSL,measles1,percent,0.645,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_VACC_C_BAS,fully_immunized,percent,0.505,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.001,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CN_MIAC_C_VAS,vitamina,percent,0.608,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,CN_MIAC_C_DWM,deworming,percent,0.36700000000000005,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_SPF,iptp1,percent,0.29,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_2SP,iptp2,percent,0.2,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2012,ML_IPTP_W_3SP,iptp3,percent,0.081,DHS National,CI2012DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,4.3,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CM_ECMT_C_IMR,imr,rate,52,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CM_ECMR_C_NNR,nmr,rate,30,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CM_PNMR_C_NSB,stillbirth,number,230,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,RH_ANCP_W_SKP,anc1,percent,0.9540000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.563,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,RH_ANCC_W_IRN,iron_anc,percent,0.8640000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,RH_DELP_C_DHF,delivery,percent,0.809,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,RH_PCMN_W_MOT,pnc1,percent,0.7440000000000001,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACS_C_OP1,polio1,percent,0.81,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_BCG,bcg,percent,0.873,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT1,penta1,percent,0.7,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT2,penta2,percent,0.628,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_PT3,penta3,percent,0.542,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_OP2,polio2,percent,0.738,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_OP3,polio3,percent,0.623,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_MSL,measles1,percent,0.603,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_RT1,rotavirus1,percent,0.677,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_RT2,rotavirus2,percent,0.585,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_VACC_C_BAS,fully_immunized,percent,0.35700000000000004,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CH_DIAT_C_ORZ,ors_zinc,percent,0.107,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,CN_MIAC_C_VAS,vitamina,percent,0.46,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.7979999999999999,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.583,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
-Cote d'Ivoire,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.34600000000000003,DHS National,CI2021DHS,household,Cote d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CM_ECMT_C_IMR,imr,rate,89,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CM_ECMR_C_NNR,nmr,rate,42,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,RH_ANCP_W_SKP,anc1,percent,0.828,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,RH_ANCN_W_N4P,anc4,percent,0.27399999999999997,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,RH_DELP_C_DHF,delivery,percent,0.446,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACS_C_OP1,polio1,percent,0.77,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACC_C_BCG,bcg,percent,0.738,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACC_C_OP2,polio2,percent,0.6579999999999999,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACC_C_OP3,polio3,percent,0.514,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACC_C_MSL,measles1,percent,0.531,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1994,CH_VACC_C_BAS,fully_immunized,percent,0.374,DHS National,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,5.2,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CM_ECMT_C_IMR,imr,rate,112,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CM_ECMR_C_NNR,nmr,rate,62,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,RH_ANCP_W_SKP,anc1,percent,0.85,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,RH_ANCN_W_N4P,anc4,percent,0.353,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,RH_DELP_C_DHF,delivery,percent,0.481,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACS_C_OP1,polio1,percent,0.863,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACC_C_BCG,bcg,percent,0.8370000000000001,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACC_C_OP2,polio2,percent,0.747,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACC_C_OP3,polio3,percent,0.606,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACC_C_MSL,measles1,percent,0.662,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,1998,CH_VACC_C_BAS,fully_immunized,percent,0.507,DHS National,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,FE_FRTR_W_TFR,total_fertility_rate,rate,4.6,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,CM_ECMT_C_IMR,imr,rate,84,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,CM_ECMR_C_NNR,nmr,rate,41,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,RH_ANCP_W_SKP,anc1,percent,0.861,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,RH_ANCN_W_N4P,anc4,percent,0.409,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2005,RH_DELP_C_DHF,delivery,percent,0.565,DHS National,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,5,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CM_ECMT_C_IMR,imr,rate,68,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CM_ECMR_C_NNR,nmr,rate,38,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,RH_ANCP_W_SKP,anc1,percent,0.91,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,RH_ANCN_W_N4P,anc4,percent,0.428,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,RH_ANCC_W_IRN,iron_anc,percent,0.775,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,RH_DELP_C_DHF,delivery,percent,0.589,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACS_C_OP1,polio1,percent,0.914,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACC_C_BCG,bcg,percent,0.8340000000000001,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACC_C_OP2,polio2,percent,0.838,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACC_C_OP3,polio3,percent,0.6920000000000001,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACC_C_MSL,measles1,percent,0.645,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_VACC_C_BAS,fully_immunized,percent,0.505,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.001,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CN_MIAC_C_VAS,vitamina,percent,0.608,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,CN_MIAC_C_DWM,deworming,percent,0.3670000000000001,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,ML_IPTP_W_SPF,iptp1,percent,0.29,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,ML_IPTP_W_2SP,iptp2,percent,0.2,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2012,ML_IPTP_W_3SP,iptp3,percent,0.081,DHS National,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,4.3,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,FP_SRCM_W_TOT,fp,percent,1,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CM_ECMT_C_IMR,imr,rate,52,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CM_ECMR_C_NNR,nmr,rate,30,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CM_PNMR_C_NSB,stillbirth,number,230,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,RH_ANCP_W_SKP,anc1,percent,0.954,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,RH_ANCN_W_N4P,anc4,percent,0.563,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,RH_ANCC_W_IRN,iron_anc,percent,0.8640000000000001,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,RH_DELP_C_DHF,delivery,percent,0.809,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,RH_PCMN_W_MOT,pnc1,percent,0.7440000000000001,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACS_C_OP1,polio1,percent,0.81,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_BCG,bcg,percent,0.873,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_PT1,penta1,percent,0.7,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_PT2,penta2,percent,0.628,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_PT3,penta3,percent,0.542,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_OP2,polio2,percent,0.738,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_OP3,polio3,percent,0.623,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_MSL,measles1,percent,0.603,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_RT1,rotavirus1,percent,0.677,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_RT2,rotavirus2,percent,0.585,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_VACC_C_BAS,fully_immunized,percent,0.35700000000000004,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CH_DIAT_C_ORZ,ors_zinc,percent,0.107,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,CN_MIAC_C_VAS,vitamina,percent,0.46,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,ML_IPTP_W_SPF,iptp1,percent,0.7979999999999999,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,ML_IPTP_W_2SP,iptp2,percent,0.583,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,NATIONAL,2021,ML_IPTP_W_3SP,iptp3,percent,0.34600000000000003,DHS National,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Niger,Niamey,1992,FE_FRTR_W_TFR,total_fertility_rate,rate,5.5,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,FE_FRTR_W_TFR,total_fertility_rate,rate,7.4,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,FE_FRTR_W_TFR,total_fertility_rate,rate,7.5,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,FE_FRTR_W_TFR,total_fertility_rate,rate,7.9,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CM_ECMR_C_NNR,nmr,rate,24,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CM_ECMR_C_NNR,nmr,rate,56,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CM_ECMR_C_NNR,nmr,rate,55,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CM_ECMR_C_NNR,nmr,rate,55,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,RH_ANCP_W_SKP,anc1,percent,0.938,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,RH_ANCP_W_SKP,anc1,percent,0.32899999999999996,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,RH_ANCP_W_SKP,anc1,percent,0.24600000000000002,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,RH_ANCP_W_SKP,anc1,percent,0.40700000000000003,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,RH_ANCN_W_N4P,anc4,percent,0.322,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,RH_ANCN_W_N4P,anc4,percent,0.066,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,RH_ANCN_W_N4P,anc4,percent,0.081,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,RH_ANCN_W_N4P,anc4,percent,0.065,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,RH_DELP_C_DHF,delivery,percent,0.79,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,RH_DELP_C_DHF,delivery,percent,0.111,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,RH_DELP_C_DHF,delivery,percent,0.165,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,RH_DELP_C_DHF,delivery,percent,0.063,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CH_VACC_C_BCG,bcg,percent,0.941,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CH_VACC_C_BCG,bcg,percent,0.449,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CH_VACC_C_BCG,bcg,percent,0.455,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CH_VACC_C_BCG,bcg,percent,0.306,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CH_VACC_C_OP2,polio2,percent,0.8420000000000001,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CH_VACC_C_OP2,polio2,percent,0.16899999999999998,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CH_VACC_C_OP2,polio2,percent,0.22899999999999998,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CH_VACC_C_OP2,polio2,percent,0.191,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CH_VACC_C_OP3,polio3,percent,0.7440000000000001,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CH_VACC_C_OP3,polio3,percent,0.12,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CH_VACC_C_OP3,polio3,percent,0.184,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CH_VACC_C_OP3,polio3,percent,0.14400000000000002,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CH_VACC_C_MSL,measles1,percent,0.7090000000000001,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CH_VACC_C_MSL,measles1,percent,0.27699999999999997,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CH_VACC_C_MSL,measles1,percent,0.355,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CH_VACC_C_MSL,measles1,percent,0.19899999999999998,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1992,CH_VACC_C_BAS,fully_immunized,percent,0.611,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Dosso,1992,CH_VACC_C_BAS,fully_immunized,percent,0.11599999999999999,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Maradi,1992,CH_VACC_C_BAS,fully_immunized,percent,0.157,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Tillaberi,1992,CH_VACC_C_BAS,fully_immunized,percent,0.13,DHS Sub-national,NI1992DHS,household,Niger,NE,NER
+Niger,Niamey,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,5,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,6.5,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,8.7,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,FE_FRTR_W_TFR,total_fertility_rate,rate,7.3,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CM_ECMR_C_NNR,nmr,rate,29,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CM_ECMR_C_NNR,nmr,rate,48,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CM_ECMR_C_NNR,nmr,rate,70,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CM_ECMR_C_NNR,nmr,rate,50,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,RH_ANCP_W_SKP,anc1,percent,0.961,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,RH_ANCP_W_SKP,anc1,percent,0.473,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,RH_ANCP_W_SKP,anc1,percent,0.255,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,RH_ANCP_W_SKP,anc1,percent,0.532,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,RH_ANCN_W_N4P,anc4,percent,0.36700000000000005,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,RH_ANCN_W_N4P,anc4,percent,0.107,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,RH_ANCN_W_N4P,anc4,percent,0.102,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,RH_ANCN_W_N4P,anc4,percent,0.078,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,RH_DELP_C_DHF,delivery,percent,0.7090000000000001,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,RH_DELP_C_DHF,delivery,percent,0.17300000000000001,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,RH_DELP_C_DHF,delivery,percent,0.151,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,RH_DELP_C_DHF,delivery,percent,0.18100000000000002,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CH_VACC_C_BCG,bcg,percent,0.953,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CH_VACC_C_BCG,bcg,percent,0.506,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CH_VACC_C_BCG,bcg,percent,0.455,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CH_VACC_C_BCG,bcg,percent,0.486,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CH_VACC_C_OP2,polio2,percent,0.868,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CH_VACC_C_OP2,polio2,percent,0.47200000000000003,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CH_VACC_C_OP2,polio2,percent,0.325,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CH_VACC_C_OP2,polio2,percent,0.392,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CH_VACC_C_OP3,polio3,percent,0.7979999999999999,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CH_VACC_C_OP3,polio3,percent,0.273,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CH_VACC_C_OP3,polio3,percent,0.182,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CH_VACC_C_OP3,polio3,percent,0.27899999999999997,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CH_VACC_C_MSL,measles1,percent,0.7909999999999999,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CH_VACC_C_MSL,measles1,percent,0.489,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CH_VACC_C_MSL,measles1,percent,0.299,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CH_VACC_C_MSL,measles1,percent,0.34600000000000003,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,1998,CH_VACC_C_BAS,fully_immunized,percent,0.713,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Dosso,1998,CH_VACC_C_BAS,fully_immunized,percent,0.225,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Maradi,1998,CH_VACC_C_BAS,fully_immunized,percent,0.106,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Tillaberi,1998,CH_VACC_C_BAS,fully_immunized,percent,0.205,DHS Sub-national,NI1998DHS,household,Niger,NE,NER
+Niger,Niamey,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,5.4,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,7.2,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,7.9,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,7.1,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,6,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,6.7,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,7.2,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,FE_FRTR_W_TFR,total_fertility_rate,rate,6.6,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CM_ECMR_C_NNR,nmr,rate,29,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CM_ECMR_C_NNR,nmr,rate,49,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CM_ECMR_C_NNR,nmr,rate,46,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CM_ECMR_C_NNR,nmr,rate,40,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CM_ECMR_C_NNR,nmr,rate,29,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CM_ECMR_C_NNR,nmr,rate,27,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CM_ECMR_C_NNR,nmr,rate,56,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CM_ECMR_C_NNR,nmr,rate,31,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CM_PNMR_C_NSB,stillbirth,number,5,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CM_PNMR_C_NSB,stillbirth,number,25,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CM_PNMR_C_NSB,stillbirth,number,10,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CM_PNMR_C_NSB,stillbirth,number,42,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CM_PNMR_C_NSB,stillbirth,number,3,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CM_PNMR_C_NSB,stillbirth,number,10,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CM_PNMR_C_NSB,stillbirth,number,27,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CM_PNMR_C_NSB,stillbirth,number,2,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,RH_ANCP_W_SKP,anc1,percent,0.914,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,RH_ANCP_W_SKP,anc1,percent,0.59,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,RH_ANCP_W_SKP,anc1,percent,0.37799999999999995,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,RH_ANCP_W_SKP,anc1,percent,0.467,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,RH_ANCP_W_SKP,anc1,percent,0.733,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,RH_ANCP_W_SKP,anc1,percent,0.512,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,RH_ANCP_W_SKP,anc1,percent,0.289,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,RH_ANCP_W_SKP,anc1,percent,0.5479999999999999,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,RH_ANCN_W_N4P,anc4,percent,0.389,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,RH_ANCN_W_N4P,anc4,percent,0.126,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,RH_ANCN_W_N4P,anc4,percent,0.182,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,RH_ANCN_W_N4P,anc4,percent,0.125,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,RH_ANCN_W_N4P,anc4,percent,0.332,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,RH_ANCN_W_N4P,anc4,percent,0.11,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,RH_ANCN_W_N4P,anc4,percent,0.11199999999999999,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,RH_ANCN_W_N4P,anc4,percent,0.17,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,RH_ANCC_W_IRN,iron_anc,percent,0.754,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,RH_ANCC_W_IRN,iron_anc,percent,0.59,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,RH_ANCC_W_IRN,iron_anc,percent,0.371,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,RH_ANCC_W_IRN,iron_anc,percent,0.41,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,RH_ANCC_W_IRN,iron_anc,percent,0.614,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,RH_ANCC_W_IRN,iron_anc,percent,0.45399999999999996,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,RH_ANCC_W_IRN,iron_anc,percent,0.344,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,RH_ANCC_W_IRN,iron_anc,percent,0.425,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,RH_DELP_C_DHF,delivery,percent,0.753,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,RH_DELP_C_DHF,delivery,percent,0.159,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,RH_DELP_C_DHF,delivery,percent,0.146,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,RH_DELP_C_DHF,delivery,percent,0.158,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,RH_DELP_C_DHF,delivery,percent,0.46,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,RH_DELP_C_DHF,delivery,percent,0.13,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,RH_DELP_C_DHF,delivery,percent,0.133,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,RH_DELP_C_DHF,delivery,percent,0.156,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CH_VACC_C_BCG,bcg,percent,0.94,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CH_VACC_C_BCG,bcg,percent,0.708,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CH_VACC_C_BCG,bcg,percent,0.593,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CH_VACC_C_BCG,bcg,percent,0.713,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CH_VACC_C_BCG,bcg,percent,0.823,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CH_VACC_C_BCG,bcg,percent,0.654,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CH_VACC_C_BCG,bcg,percent,0.405,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CH_VACC_C_BCG,bcg,percent,0.7340000000000001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CH_VACC_C_OP2,polio2,percent,0.8029999999999999,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CH_VACC_C_OP2,polio2,percent,0.772,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CH_VACC_C_OP2,polio2,percent,0.682,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CH_VACC_C_OP2,polio2,percent,0.848,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CH_VACC_C_OP2,polio2,percent,0.778,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CH_VACC_C_OP2,polio2,percent,0.78,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CH_VACC_C_OP2,polio2,percent,0.45399999999999996,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CH_VACC_C_OP2,polio2,percent,0.733,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CH_VACC_C_OP3,polio3,percent,0.6409999999999999,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CH_VACC_C_OP3,polio3,percent,0.634,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CH_VACC_C_OP3,polio3,percent,0.535,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CH_VACC_C_OP3,polio3,percent,0.598,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CH_VACC_C_OP3,polio3,percent,0.619,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CH_VACC_C_OP3,polio3,percent,0.655,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CH_VACC_C_OP3,polio3,percent,0.331,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CH_VACC_C_OP3,polio3,percent,0.494,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CH_VACC_C_MSL,measles1,percent,0.7759999999999999,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CH_VACC_C_MSL,measles1,percent,0.583,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CH_VACC_C_MSL,measles1,percent,0.406,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CH_VACC_C_MSL,measles1,percent,0.498,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CH_VACC_C_MSL,measles1,percent,0.685,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CH_VACC_C_MSL,measles1,percent,0.535,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CH_VACC_C_MSL,measles1,percent,0.255,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CH_VACC_C_MSL,measles1,percent,0.552,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CH_VACC_C_BAS,fully_immunized,percent,0.409,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CH_VACC_C_BAS,fully_immunized,percent,0.34700000000000003,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CH_VACC_C_BAS,fully_immunized,percent,0.245,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CH_VACC_C_BAS,fully_immunized,percent,0.302,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CH_VACC_C_BAS,fully_immunized,percent,0.525,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CH_VACC_C_BAS,fully_immunized,percent,0.374,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CH_VACC_C_BAS,fully_immunized,percent,0.165,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CH_VACC_C_BAS,fully_immunized,percent,0.28600000000000003,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,CN_MIAC_C_VAS,vitamina,percent,0.7190000000000001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,CN_MIAC_C_VAS,vitamina,percent,0.8690000000000001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,CN_MIAC_C_VAS,vitamina,percent,0.608,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,CN_MIAC_C_VAS,vitamina,percent,0.645,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,CN_MIAC_C_VAS,vitamina,percent,0.8640000000000001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,CN_MIAC_C_VAS,vitamina,percent,0.83,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,CN_MIAC_C_VAS,vitamina,percent,0.608,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,CN_MIAC_C_VAS,vitamina,percent,0.733,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,ML_IPTP_W_SPF,iptp1,percent,0.012,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,ML_IPTP_W_SPF,iptp1,percent,0.002,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,ML_IPTP_W_SPF,iptp1,percent,0.015,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,ML_IPTP_W_SPF,iptp1,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,ML_IPTP_W_SPF,iptp1,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,ML_IPTP_W_SPF,iptp1,percent,0.002,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,ML_IPTP_W_SPF,iptp1,percent,0.001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,ML_IPTP_W_SPF,iptp1,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,ML_IPTP_W_2SP,iptp2,percent,0.012,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,ML_IPTP_W_2SP,iptp2,percent,0.002,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,ML_IPTP_W_2SP,iptp2,percent,0.015,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,ML_IPTP_W_2SP,iptp2,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,ML_IPTP_W_2SP,iptp2,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,ML_IPTP_W_2SP,iptp2,percent,0.002,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,ML_IPTP_W_2SP,iptp2,percent,0.001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,ML_IPTP_W_2SP,iptp2,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2006,ML_IPTP_W_3SP,iptp3,percent,0.01,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Dosso,2006,ML_IPTP_W_3SP,iptp3,percent,0.001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Maradi,2006,ML_IPTP_W_3SP,iptp3,percent,0.013000000000000001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tahoua,2006,ML_IPTP_W_3SP,iptp3,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Agadez,2006,ML_IPTP_W_3SP,iptp3,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Tillaberi,2006,ML_IPTP_W_3SP,iptp3,percent,0.002,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Zinder,2006,ML_IPTP_W_3SP,iptp3,percent,0.001,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Diffa,2006,ML_IPTP_W_3SP,iptp3,percent,0,DHS Sub-national,NI2006DHS,household,Niger,NE,NER
+Niger,Niamey,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,7.5,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,8.4,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,7.3,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,5.7,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,7.9,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,8.5,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,FE_FRTR_W_TFR,total_fertility_rate,rate,6.4,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CM_ECMR_C_NNR,nmr,rate,22,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CM_ECMR_C_NNR,nmr,rate,39,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CM_ECMR_C_NNR,nmr,rate,38,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CM_ECMR_C_NNR,nmr,rate,32,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CM_ECMR_C_NNR,nmr,rate,17,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CM_ECMR_C_NNR,nmr,rate,33,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CM_ECMR_C_NNR,nmr,rate,26,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CM_ECMR_C_NNR,nmr,rate,4,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CM_PNMR_C_NSB,stillbirth,number,15,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CM_PNMR_C_NSB,stillbirth,number,31,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CM_PNMR_C_NSB,stillbirth,number,52,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CM_PNMR_C_NSB,stillbirth,number,71,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CM_PNMR_C_NSB,stillbirth,number,2,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CM_PNMR_C_NSB,stillbirth,number,23,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CM_PNMR_C_NSB,stillbirth,number,27,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CM_PNMR_C_NSB,stillbirth,number,2,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,RH_ANCP_W_SKP,anc1,percent,0.975,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,RH_ANCP_W_SKP,anc1,percent,0.915,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,RH_ANCP_W_SKP,anc1,percent,0.873,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,RH_ANCP_W_SKP,anc1,percent,0.804,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,RH_ANCP_W_SKP,anc1,percent,0.7809999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,RH_ANCP_W_SKP,anc1,percent,0.909,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,RH_ANCP_W_SKP,anc1,percent,0.807,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,RH_ANCP_W_SKP,anc1,percent,0.593,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,RH_ANCN_W_N4P,anc4,percent,0.479,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,RH_ANCN_W_N4P,anc4,percent,0.28600000000000003,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,RH_ANCN_W_N4P,anc4,percent,0.42700000000000005,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,RH_ANCN_W_N4P,anc4,percent,0.265,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,RH_ANCN_W_N4P,anc4,percent,0.32799999999999996,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,RH_ANCN_W_N4P,anc4,percent,0.258,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,RH_ANCN_W_N4P,anc4,percent,0.341,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,RH_ANCN_W_N4P,anc4,percent,0.19699999999999998,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,RH_ANCC_W_IRN,iron_anc,percent,0.912,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,RH_ANCC_W_IRN,iron_anc,percent,0.888,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,RH_ANCC_W_IRN,iron_anc,percent,0.884,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,RH_ANCC_W_IRN,iron_anc,percent,0.7829999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,RH_ANCC_W_IRN,iron_anc,percent,0.693,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,RH_ANCC_W_IRN,iron_anc,percent,0.89,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,RH_ANCC_W_IRN,iron_anc,percent,0.787,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,RH_ANCC_W_IRN,iron_anc,percent,0.584,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,RH_DELP_C_DHF,delivery,percent,0.91,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,RH_DELP_C_DHF,delivery,percent,0.391,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,RH_DELP_C_DHF,delivery,percent,0.299,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,RH_DELP_C_DHF,delivery,percent,0.322,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,RH_DELP_C_DHF,delivery,percent,0.5820000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,RH_DELP_C_DHF,delivery,percent,0.379,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,RH_DELP_C_DHF,delivery,percent,0.198,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,RH_DELP_C_DHF,delivery,percent,0.307,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_VACC_C_BCG,bcg,percent,0.961,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_VACC_C_BCG,bcg,percent,0.856,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_VACC_C_BCG,bcg,percent,0.873,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_VACC_C_BCG,bcg,percent,0.797,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_VACC_C_BCG,bcg,percent,0.9059999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_VACC_C_BCG,bcg,percent,0.868,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_VACC_C_BCG,bcg,percent,0.7979999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_VACC_C_BCG,bcg,percent,0.746,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_VACC_C_OP2,polio2,percent,0.932,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_VACC_C_OP2,polio2,percent,0.884,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_VACC_C_OP2,polio2,percent,0.8740000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_VACC_C_OP2,polio2,percent,0.7929999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_VACC_C_OP2,polio2,percent,0.8490000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_VACC_C_OP2,polio2,percent,0.8490000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_VACC_C_OP2,polio2,percent,0.8370000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_VACC_C_OP2,polio2,percent,0.715,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_VACC_C_OP3,polio3,percent,0.8640000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_VACC_C_OP3,polio3,percent,0.7959999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_VACC_C_OP3,polio3,percent,0.7709999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_VACC_C_OP3,polio3,percent,0.6970000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_VACC_C_OP3,polio3,percent,0.8490000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_VACC_C_OP3,polio3,percent,0.723,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_VACC_C_OP3,polio3,percent,0.736,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_VACC_C_OP3,polio3,percent,0.55,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_VACC_C_MSL,measles1,percent,0.8,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_VACC_C_MSL,measles1,percent,0.747,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_VACC_C_MSL,measles1,percent,0.69,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_VACC_C_MSL,measles1,percent,0.662,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_VACC_C_MSL,measles1,percent,0.769,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_VACC_C_MSL,measles1,percent,0.748,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_VACC_C_MSL,measles1,percent,0.612,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_VACC_C_MSL,measles1,percent,0.59,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_VACC_C_BAS,fully_immunized,percent,0.725,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_VACC_C_BAS,fully_immunized,percent,0.609,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_VACC_C_BAS,fully_immunized,percent,0.541,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_VACC_C_BAS,fully_immunized,percent,0.46799999999999997,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_VACC_C_BAS,fully_immunized,percent,0.657,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_VACC_C_BAS,fully_immunized,percent,0.58,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_VACC_C_BAS,fully_immunized,percent,0.408,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_VACC_C_BAS,fully_immunized,percent,0.418,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.09300000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.16,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.12,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.039,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.092,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.109,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.042,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CH_DIAT_C_ORZ,ors_zinc,percent,0.146,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CN_MIAC_C_VAS,vitamina,percent,0.64,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CN_MIAC_C_VAS,vitamina,percent,0.56,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CN_MIAC_C_VAS,vitamina,percent,0.7290000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CN_MIAC_C_VAS,vitamina,percent,0.545,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CN_MIAC_C_VAS,vitamina,percent,0.425,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CN_MIAC_C_VAS,vitamina,percent,0.5379999999999999,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CN_MIAC_C_VAS,vitamina,percent,0.563,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CN_MIAC_C_VAS,vitamina,percent,0.598,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,CN_MIAC_C_DWM,deworming,percent,0.222,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,CN_MIAC_C_DWM,deworming,percent,0.196,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,CN_MIAC_C_DWM,deworming,percent,0.38299999999999995,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,CN_MIAC_C_DWM,deworming,percent,0.237,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,CN_MIAC_C_DWM,deworming,percent,0.05,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,CN_MIAC_C_DWM,deworming,percent,0.215,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,CN_MIAC_C_DWM,deworming,percent,0.24600000000000002,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,CN_MIAC_C_DWM,deworming,percent,0.386,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,ML_IPTP_W_SPF,iptp1,percent,0.643,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,ML_IPTP_W_SPF,iptp1,percent,0.759,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,ML_IPTP_W_SPF,iptp1,percent,0.738,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,ML_IPTP_W_SPF,iptp1,percent,0.5660000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,ML_IPTP_W_SPF,iptp1,percent,0.613,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,ML_IPTP_W_SPF,iptp1,percent,0.631,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,ML_IPTP_W_SPF,iptp1,percent,0.518,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,ML_IPTP_W_SPF,iptp1,percent,0.441,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,ML_IPTP_W_2SP,iptp2,percent,0.34600000000000003,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,ML_IPTP_W_2SP,iptp2,percent,0.41200000000000003,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,ML_IPTP_W_2SP,iptp2,percent,0.46399999999999997,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,ML_IPTP_W_2SP,iptp2,percent,0.28,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,ML_IPTP_W_2SP,iptp2,percent,0.22399999999999998,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,ML_IPTP_W_2SP,iptp2,percent,0.345,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,ML_IPTP_W_2SP,iptp2,percent,0.376,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,ML_IPTP_W_2SP,iptp2,percent,0.31,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2012,ML_IPTP_W_3SP,iptp3,percent,0.121,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Dosso,2012,ML_IPTP_W_3SP,iptp3,percent,0.08,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Maradi,2012,ML_IPTP_W_3SP,iptp3,percent,0.17800000000000002,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tahoua,2012,ML_IPTP_W_3SP,iptp3,percent,0.034,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Agadez,2012,ML_IPTP_W_3SP,iptp3,percent,0.003,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Tillaberi,2012,ML_IPTP_W_3SP,iptp3,percent,0.009000000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Zinder,2012,ML_IPTP_W_3SP,iptp3,percent,0.10800000000000001,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Diffa,2012,ML_IPTP_W_3SP,iptp3,percent,0.13699999999999998,DHS Sub-national,NI2012DHS,household,Niger,NE,NER
+Niger,Niamey,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,4.3,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,5.5,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,7.4,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,5.6,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,5.8,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,6,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,7,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,FE_FRTR_W_TFR,total_fertility_rate,rate,5.3,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Niamey,2021,RH_ANCP_W_SKP,anc1,percent,0.9840000000000001,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,RH_ANCP_W_SKP,anc1,percent,0.963,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,RH_ANCP_W_SKP,anc1,percent,0.965,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,RH_ANCP_W_SKP,anc1,percent,0.951,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,RH_ANCP_W_SKP,anc1,percent,0.899,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,RH_ANCP_W_SKP,anc1,percent,0.93,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,RH_ANCP_W_SKP,anc1,percent,0.902,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,RH_ANCP_W_SKP,anc1,percent,0.758,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Niamey,2021,RH_ANCN_W_N4P,anc4,percent,0.581,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,RH_ANCN_W_N4P,anc4,percent,0.537,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,RH_ANCN_W_N4P,anc4,percent,0.38799999999999996,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,RH_ANCN_W_N4P,anc4,percent,0.521,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,RH_ANCN_W_N4P,anc4,percent,0.42700000000000005,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,RH_ANCN_W_N4P,anc4,percent,0.415,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,RH_ANCN_W_N4P,anc4,percent,0.365,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,RH_ANCN_W_N4P,anc4,percent,0.249,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Niamey,2021,ML_IPTP_W_SPF,iptp1,percent,0.879,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,ML_IPTP_W_SPF,iptp1,percent,0.855,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,ML_IPTP_W_SPF,iptp1,percent,0.8320000000000001,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,ML_IPTP_W_SPF,iptp1,percent,0.889,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,ML_IPTP_W_SPF,iptp1,percent,0.772,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,ML_IPTP_W_SPF,iptp1,percent,0.743,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,ML_IPTP_W_SPF,iptp1,percent,0.772,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,ML_IPTP_W_SPF,iptp1,percent,0.6809999999999999,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Niamey,2021,ML_IPTP_W_2SP,iptp2,percent,0.5660000000000001,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,ML_IPTP_W_2SP,iptp2,percent,0.59,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,ML_IPTP_W_2SP,iptp2,percent,0.573,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,ML_IPTP_W_2SP,iptp2,percent,0.635,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,ML_IPTP_W_2SP,iptp2,percent,0.557,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,ML_IPTP_W_2SP,iptp2,percent,0.469,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,ML_IPTP_W_2SP,iptp2,percent,0.547,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,ML_IPTP_W_2SP,iptp2,percent,0.447,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Niamey,2021,ML_IPTP_W_3SP,iptp3,percent,0.258,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Dosso,2021,ML_IPTP_W_3SP,iptp3,percent,0.276,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Maradi,2021,ML_IPTP_W_3SP,iptp3,percent,0.228,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tahoua,2021,ML_IPTP_W_3SP,iptp3,percent,0.308,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Agadez,2021,ML_IPTP_W_3SP,iptp3,percent,0.221,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Tillaberi,2021,ML_IPTP_W_3SP,iptp3,percent,0.20800000000000002,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Zinder,2021,ML_IPTP_W_3SP,iptp3,percent,0.247,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
+Niger,Diffa,2021,ML_IPTP_W_3SP,iptp3,percent,0.20199999999999999,DHS Sub-national,NI2021MIS,household,Niger,NE,NER
