@@ -2,7 +2,7 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M3. Service utilization x",
+    en: "M3. Service utilization",
     fr: "M3. Utilisation des services",
   },
   prerequisites: ["m001", "m002"],
