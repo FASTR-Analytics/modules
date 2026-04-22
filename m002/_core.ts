@@ -2,7 +2,7 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M2. Data quality adjustments",
+    en: "M2. Data quality adjustments x",
     fr: "M2. Ajustements de la qualité des données",
   },
   prerequisites: ["m001"],
