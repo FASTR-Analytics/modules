@@ -187,7 +187,36 @@
             },
             "s": {
               "content": "lines",
-              "decimalPlaces": 1
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.01,
+                0.03
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#68C690"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#F18989"
+                }
+              ],
+              "cfThresholdDirection": "lower-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
             },
             "t": {
               "caption": {
@@ -329,7 +358,36 @@
             },
             "s": {
               "content": "lines",
-              "decimalPlaces": 1
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.01,
+                0.03
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#68C690"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#F18989"
+                }
+              ],
+              "cfThresholdDirection": "lower-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
             },
             "t": {
               "caption": {
@@ -470,7 +528,36 @@
             },
             "s": {
               "content": "lines",
-              "decimalPlaces": 1
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.01,
+                0.03
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#68C690"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#F18989"
+                }
+              ],
+              "cfThresholdDirection": "lower-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
             },
             "t": {
               "caption": {

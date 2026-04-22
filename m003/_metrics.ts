@@ -1,4 +1,5 @@
 import type { MetricDefinitionGithub } from "../.validation/_module_definition_github.ts";
+import { CF_NEG10_POS10 } from "../.validation/cf_presets.ts";
 
 export const metrics: MetricDefinitionGithub[] = [
   {
@@ -866,7 +867,7 @@ export const metrics: MetricDefinitionGithub[] = [
             filterBy: [],
           },
           s: {
-            conditionalFormatting: "fmt-neg10-pos10",
+            ...CF_NEG10_POS10,
             decimalPlaces: 0,
           },
           t: {
@@ -1185,7 +1186,7 @@ export const metrics: MetricDefinitionGithub[] = [
             filterBy: [],
           },
           s: {
-            conditionalFormatting: "fmt-neg10-pos10",
+            ...CF_NEG10_POS10,
             decimalPlaces: 0,
           },
           t: {
@@ -1503,7 +1504,7 @@ export const metrics: MetricDefinitionGithub[] = [
             filterBy: [],
           },
           s: {
-            conditionalFormatting: "fmt-neg10-pos10",
+            ...CF_NEG10_POS10,
             decimalPlaces: 0,
           },
           t: {

@@ -1,4 +1,5 @@
 import type { MetricDefinitionGithub } from "../.validation/_module_definition_github.ts";
+import { CF_01_03 } from "../.validation/cf_presets.ts";
 
 export const metrics: MetricDefinitionGithub[] = [
   {
@@ -105,7 +106,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "lines",
-            conditionalFormatting: "fmt-01-03",
+            ...CF_01_03,
             decimalPlaces: 1,
           },
           t: {
@@ -238,7 +239,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "lines",
-            conditionalFormatting: "fmt-01-03",
+            ...CF_01_03,
             decimalPlaces: 1,
           },
           t: {
@@ -371,7 +372,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "lines",
-            conditionalFormatting: "fmt-01-03",
+            ...CF_01_03,
             decimalPlaces: 1,
           },
           t: {
