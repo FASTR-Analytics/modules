@@ -24,13 +24,13 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
     id: "M2_adjusted_data_admin_area.csv",
     description:
       "Dataset including admin-level adjusted volumes for all adjustment scenarios",
-    createTableStatementPossibleColumns: {},
+    createTableStatementPossibleColumns: false,
   },
   {
     id: "M2_adjusted_data_national.csv",
     description:
       "Dataset including national-level adjusted volumes for all adjustment scenarios",
-    createTableStatementPossibleColumns: {},
+    createTableStatementPossibleColumns: false,
   },
   {
     id: "M2_low_volume_exclusions.csv",

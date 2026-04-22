@@ -243,27 +243,27 @@
     {
       "id": "M3_chartout.csv",
       "description": "Control chart analysis results with tagged anomalies",
-      "createTableStatementPossibleColumns": {}
+      "createTableStatementPossibleColumns": false
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_1.csv",
       "description": "Shortfall and surplus calculations for all indicators (Admin area 1)",
-      "createTableStatementPossibleColumns": {}
+      "createTableStatementPossibleColumns": false
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_2.csv",
       "description": "Shortfall and surplus calculations for all indicators (Admin area 2)",
-      "createTableStatementPossibleColumns": {}
+      "createTableStatementPossibleColumns": false
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_3.csv",
       "description": "Shortfall and surplus calculations for all indicators (Admin area 3)",
-      "createTableStatementPossibleColumns": {}
+      "createTableStatementPossibleColumns": false
     },
     {
       "id": "M3_all_indicators_shortfalls_admin_area_4.csv",
       "description": "Shortfall and surplus calculations for all indicators (Admin area 4)",
-      "createTableStatementPossibleColumns": {}
+      "createTableStatementPossibleColumns": false
     }
   ],
   "metrics": [
