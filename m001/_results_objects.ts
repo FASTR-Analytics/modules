@@ -4,7 +4,7 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M1_output_outliers.csv",
     description:
-      "Detailed facility-level data with identified outliers and adjusted volume..",
+      "Detailed facility-level data with identified outliers and adjusted volume",
     createTableStatementPossibleColumns: {
       facility_id: "TEXT NOT NULL",
       admin_area_4: "TEXT NOT NULL",
