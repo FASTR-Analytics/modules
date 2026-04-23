@@ -452,7 +452,7 @@ export const metrics: MetricDefinitionGithub[] = [
           s: {
             scale: 2.5,
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: {
@@ -651,7 +651,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: {
@@ -706,7 +706,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
@@ -752,7 +752,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
@@ -1018,7 +1018,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
@@ -1070,7 +1070,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
@@ -1336,7 +1336,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
@@ -1388,7 +1388,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
           s: {
             content: "areas",
-            diffAreas: true,
+            specialDisruptionsChart: true,
           },
           t: {
             caption: null,
