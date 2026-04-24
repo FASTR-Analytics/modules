@@ -1689,6 +1689,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
     survey_processed_admin2 <- tryCatch({
       process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
+                          hmis_iso3 = hmis_processed_admin2$hmis_iso3,
                           national_reference = survey_processed_national$carried)
     }, error = function(e) {
       message("================================================================================")
