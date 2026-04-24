@@ -196,7 +196,7 @@ survey_vars <- c(
 
 # ------------------------------ Define Functions --------------------------------
 # Part 1 - prepare hmis data
-process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE) {
+process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELECTED_COUNT_VARIABLE, iso3_override = NULL) {
   
   expected_indicators <- c(
     # Core RMNCH indicators
@@ -256,14 +256,12 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     left_join(nummonth_data, by = group_vars) %>%
     arrange(across(all_of(group_vars)))
   
-  # Extract ISO3 code — from data if available, else from the country parameter at top of script
-  iso3_param <- tryCatch(get("COUNTRY_ISO3"), error = function(e) NULL)
+  # Extract ISO3 code from data if available, or use override parameter
   hmis_iso3 <- if ("iso3_code" %in% names(adjusted_volume_data)) {
     unique(adjusted_volume_data$iso3_code)
-  } else if (!is.null(iso3_param)) {
-    # Inject iso3_code into annual_hmis for downstream joins
-    annual_hmis <- annual_hmis %>% mutate(iso3_code = iso3_param)
-    iso3_param
+  } else if (!is.null(iso3_override)) {
+    annual_hmis <- annual_hmis %>% mutate(iso3_code = iso3_override)
+    iso3_override
   } else {
     NULL
   }
@@ -1435,7 +1433,7 @@ message("✓ Step 2/6: Processing national data")
 
 # 1 - prepare the hmis data
 message("  → Preparing HMIS adjusted volume data...")
-hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data)
+hmis_processed <- process_hmis_adjusted_volume(adjusted_volume_data, iso3_override = COUNTRY_ISO3)
 
 # 2 - prepare the survey data
 message("  → Preparing survey data...")
@@ -1760,7 +1758,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     hmis_admin2 <- hmis_data_subnational %>% select(-admin_area_3)
     
     # Run pipeline up to coverage evaluation
-    hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE)
+    hmis_processed_admin2 <- process_hmis_adjusted_volume(hmis_admin2, SELECTED_COUNT_VARIABLE, iso3_override = COUNTRY_ISO3)
 
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
     survey_processed_admin2 <- tryCatch({
@@ -1903,7 +1901,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
 
       if (nrow(hmis_admin3) > 0) {
         # Run pipeline up to coverage evaluation (skip projection)
-        hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE)
+        hmis_processed_admin3 <- process_hmis_adjusted_volume(hmis_admin3, SELECTED_COUNT_VARIABLE, iso3_override = COUNTRY_ISO3)
 
         # VALIDATION: Check if survey and HMIS regions match
         if (exists("USE_ADMIN3_AS_ADMIN2") && USE_ADMIN3_AS_ADMIN2) {
