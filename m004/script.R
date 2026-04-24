@@ -256,13 +256,14 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     left_join(nummonth_data, by = group_vars) %>%
     arrange(across(all_of(group_vars)))
   
-  # Extract ISO3 code — from data if available, else from COUNTRY_ISO3 parameter
+  # Extract ISO3 code — from data if available, else from the country parameter at top of script
+  iso3_param <- tryCatch(get("COUNTRY_ISO3"), error = function(e) NULL)
   hmis_iso3 <- if ("iso3_code" %in% names(adjusted_volume_data)) {
     unique(adjusted_volume_data$iso3_code)
-  } else if (exists("COUNTRY_ISO3")) {
+  } else if (!is.null(iso3_param)) {
     # Inject iso3_code into annual_hmis for downstream joins
-    annual_hmis <- annual_hmis %>% mutate(iso3_code = COUNTRY_ISO3)
-    COUNTRY_ISO3
+    annual_hmis <- annual_hmis %>% mutate(iso3_code = iso3_param)
+    iso3_param
   } else {
     NULL
   }
