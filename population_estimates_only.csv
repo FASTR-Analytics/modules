@@ -1845,3 +1845,99 @@ Mauritanie,Zone Sud (G1),2000,FE_FRTY_W_NPG,womenrepage,other,1522,DHS Sub-natio
 Mauritanie,Zone Fleuve (G2),2000,FE_FRTY_W_NPG,womenrepage,other,2561,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Nord (G3),2000,FE_FRTY_W_NPG,womenrepage,other,636,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Centre (G4),2000,FE_FRTY_W_NPG,womenrepage,other,842,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
+Côte d'Ivoire,Abidjan,1994,FE_FRTR_W_CBR,crudebr,rate,32.6,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Other urban,1994,FE_FRTR_W_CBR,crudebr,rate,40.1,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Foret Urbaine,1994,FE_FRTR_W_CBR,crudebr,rate,41.2,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savane Urbaine,1994,FE_FRTR_W_CBR,crudebr,rate,38.7,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Rural,1994,FE_FRTR_W_CBR,crudebr,rate,40.2,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Foret Rurale,1994,FE_FRTR_W_CBR,crudebr,rate,41.4,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savane Rurale,1994,FE_FRTR_W_CBR,crudebr,rate,38.1,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,1994,FE_FRTY_W_NPG,womenrepage,other,1796,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Other urban,1994,FE_FRTY_W_NPG,womenrepage,other,1614,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Foret Urbaine,1994,FE_FRTY_W_NPG,womenrepage,other,903,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savane Urbaine,1994,FE_FRTY_W_NPG,womenrepage,other,711,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Rural,1994,FE_FRTY_W_NPG,womenrepage,other,4689,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Foret Rurale,1994,FE_FRTY_W_NPG,womenrepage,other,3219,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savane Rurale,1994,FE_FRTY_W_NPG,womenrepage,other,1470,DHS Sub-national,CI1994DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,1998,FE_FRTR_W_CBR,crudebr,rate,33.7,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Other urban,1998,FE_FRTR_W_CBR,crudebr,rate,40.1,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Rural,1998,FE_FRTR_W_CBR,crudebr,rate,41.6,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,1998,FE_FRTY_W_NPG,womenrepage,other,766,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Other urban,1998,FE_FRTY_W_NPG,womenrepage,other,508,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Rural,1998,FE_FRTY_W_NPG,womenrepage,other,1765,DHS Sub-national,CI1998DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2005,FE_FRTR_W_CBR,crudebr,rate,35.5,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2005,FE_FRTR_W_CBR,crudebr,rate,32,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Est,2005,FE_FRTR_W_CBR,crudebr,rate,42.6,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2005,FE_FRTR_W_CBR,crudebr,rate,35.6,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Ouest,2005,FE_FRTR_W_CBR,crudebr,rate,42.2,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2005,FE_FRTR_W_CBR,crudebr,rate,32.9,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2005,FE_FRTR_W_CBR,crudebr,rate,36,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2005,FE_FRTR_W_CBR,crudebr,rate,28.8,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2005,FE_FRTR_W_CBR,crudebr,rate,38.3,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sud sans Abidjan,2005,FE_FRTR_W_CBR,crudebr,rate,43.7,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2005,FE_FRTR_W_CBR,crudebr,rate,48.7,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2005,FE_FRTY_W_NPG,womenrepage,other,1294,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2005,FE_FRTY_W_NPG,womenrepage,other,484,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Est,2005,FE_FRTY_W_NPG,womenrepage,other,120,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2005,FE_FRTY_W_NPG,womenrepage,other,292,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Ouest,2005,FE_FRTY_W_NPG,womenrepage,other,526,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2005,FE_FRTY_W_NPG,womenrepage,other,318,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2005,FE_FRTY_W_NPG,womenrepage,other,217,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2005,FE_FRTY_W_NPG,womenrepage,other,166,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2005,FE_FRTY_W_NPG,womenrepage,other,414,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sud sans Abidjan,2005,FE_FRTY_W_NPG,womenrepage,other,1058,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2005,FE_FRTY_W_NPG,womenrepage,other,294,DHS Sub-national,CI2005AIS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2012,FE_FRTR_W_CBR,crudebr,rate,30.2,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2012,FE_FRTR_W_CBR,crudebr,rate,36.5,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Est,2012,FE_FRTR_W_CBR,crudebr,rate,34.5,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2012,FE_FRTR_W_CBR,crudebr,rate,35.9,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Ouest,2012,FE_FRTR_W_CBR,crudebr,rate,37.3,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2012,FE_FRTR_W_CBR,crudebr,rate,43.8,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2012,FE_FRTR_W_CBR,crudebr,rate,38.5,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2012,FE_FRTR_W_CBR,crudebr,rate,43.9,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2012,FE_FRTR_W_CBR,crudebr,rate,41.9,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sud sans Abidjan,2012,FE_FRTR_W_CBR,crudebr,rate,33.5,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2012,FE_FRTR_W_CBR,crudebr,rate,40.7,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2012,FE_FRTY_W_NPG,womenrepage,other,2440,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2012,FE_FRTY_W_NPG,womenrepage,other,636,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Est,2012,FE_FRTY_W_NPG,womenrepage,other,250,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2012,FE_FRTY_W_NPG,womenrepage,other,751,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre-Ouest,2012,FE_FRTY_W_NPG,womenrepage,other,1379,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2012,FE_FRTY_W_NPG,womenrepage,other,506,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2012,FE_FRTY_W_NPG,womenrepage,other,392,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2012,FE_FRTY_W_NPG,womenrepage,other,426,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2012,FE_FRTY_W_NPG,womenrepage,other,1069,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sud sans Abidjan,2012,FE_FRTY_W_NPG,womenrepage,other,1392,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2012,FE_FRTY_W_NPG,womenrepage,other,819,DHS Sub-national,CI2012DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2021,FE_FRTR_W_CBR,crudebr,rate,30.3,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2021,FE_FRTR_W_CBR,crudebr,rate,30,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Yamoussoukro,2021,FE_FRTR_W_CBR,crudebr,rate,26.3,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Lacs,2021,FE_FRTR_W_CBR,crudebr,rate,31.2,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Comoé,2021,FE_FRTR_W_CBR,crudebr,rate,28.4,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2021,FE_FRTR_W_CBR,crudebr,rate,31.5,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sassandra-Marahoué,2021,FE_FRTR_W_CBR,crudebr,rate,34.1,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2021,FE_FRTR_W_CBR,crudebr,rate,36.1,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2021,FE_FRTR_W_CBR,crudebr,rate,34.5,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2021,FE_FRTR_W_CBR,crudebr,rate,38.1,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Denguélé,2021,FE_FRTR_W_CBR,crudebr,rate,41.1,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Woroba,2021,FE_FRTR_W_CBR,crudebr,rate,37.2,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2021,FE_FRTR_W_CBR,crudebr,rate,36.4,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2021,FE_FRTR_W_CBR,crudebr,rate,34,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Goh-Djiboua,2021,FE_FRTR_W_CBR,crudebr,rate,31.6,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Lagunes,2021,FE_FRTR_W_CBR,crudebr,rate,27.4,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Abidjan,2021,FE_FRTY_W_NPG,womenrepage,other,4194,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Centre,2021,FE_FRTY_W_NPG,womenrepage,other,897,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Yamoussoukro,2021,FE_FRTY_W_NPG,womenrepage,other,238,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Lacs,2021,FE_FRTY_W_NPG,womenrepage,other,659,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Comoé,2021,FE_FRTY_W_NPG,womenrepage,other,669,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Vallée du Bandama,2021,FE_FRTY_W_NPG,womenrepage,other,896,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Sassandra-Marahoué,2021,FE_FRTY_W_NPG,womenrepage,other,1471,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Savanes,2021,FE_FRTY_W_NPG,womenrepage,other,1018,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Zanzan,2021,FE_FRTY_W_NPG,womenrepage,other,603,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Nord-Ouest,2021,FE_FRTY_W_NPG,womenrepage,other,737,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Denguélé,2021,FE_FRTY_W_NPG,womenrepage,other,181,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Woroba,2021,FE_FRTY_W_NPG,womenrepage,other,555,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Montagnes,2021,FE_FRTY_W_NPG,womenrepage,other,1181,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Bas Sassandra,2021,FE_FRTY_W_NPG,womenrepage,other,1328,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Goh-Djiboua,2021,FE_FRTY_W_NPG,womenrepage,other,976,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
+Côte d'Ivoire,Lagunes,2021,FE_FRTY_W_NPG,womenrepage,other,907,DHS Sub-national,CI2021DHS,household,Côte d'Ivoire,CI,CIV
