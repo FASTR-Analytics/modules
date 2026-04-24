@@ -20853,7 +20853,7 @@ Mauritanie,Zone Sud (G1),2000,CH_VACC_C_MSL,measles1,percent,0.604,DHS Sub-natio
 Mauritanie,Zone Fleuve (G2),2000,CH_VACC_C_MSL,measles1,percent,0.534,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Nord (G3),2000,CH_VACC_C_MSL,measles1,percent,0.669,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Centre (G4),2000,CH_VACC_C_MSL,measles1,percent,0.5329999999999999,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott,2000,CH_VACC_C_BAS,fully_immunized,percent,0.36200000000000004,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott,2000,CH_VACC_C_BAS,fully_immunized,percent,0.362,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Sud (G1),2000,CH_VACC_C_BAS,fully_immunized,percent,0.326,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Fleuve (G2),2000,CH_VACC_C_BAS,fully_immunized,percent,0.307,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
 Mauritanie,Zone Nord (G3),2000,CH_VACC_C_BAS,fully_immunized,percent,0.34600000000000003,DHS Sub-national,MR2000DHS,household,Mauritanie,MR,MRT
@@ -20889,20 +20889,20 @@ Mauritanie,Nouakchott Sud,2020,CM_PNMR_C_NSB,stillbirth,number,13,DHS Sub-nation
 Mauritanie,Hodh Chargui,2020,RH_ANCC_W_IRN,iron_anc,percent,0.62,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,RH_ANCC_W_IRN,iron_anc,percent,0.753,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Assaba,2020,RH_ANCC_W_IRN,iron_anc,percent,0.758,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Gorgol,2020,RH_ANCC_W_IRN,iron_anc,percent,0.9309999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Gorgol,2020,RH_ANCC_W_IRN,iron_anc,percent,0.931,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Brakna,2020,RH_ANCC_W_IRN,iron_anc,percent,0.863,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Trarza,2020,RH_ANCC_W_IRN,iron_anc,percent,0.9059999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,RH_ANCC_W_IRN,iron_anc,percent,0.906,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Adrar,2020,RH_ANCC_W_IRN,iron_anc,percent,0.851,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Dakhlet Nouadhibou,2020,RH_ANCC_W_IRN,iron_anc,percent,0.938,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tagant,2020,RH_ANCC_W_IRN,iron_anc,percent,0.805,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Guidimagha,2020,RH_ANCC_W_IRN,iron_anc,percent,0.847,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Tiris Zemmour,2020,RH_ANCC_W_IRN,iron_anc,percent,0.9009999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,RH_ANCC_W_IRN,iron_anc,percent,0.901,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Ouest,2020,RH_ANCC_W_IRN,iron_anc,percent,0.96,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,RH_ANCC_W_IRN,iron_anc,percent,0.905,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,RH_ANCC_W_IRN,iron_anc,percent,0.92,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh Chargui,2020,CH_VACC_C_RT1,rotavirus1,percent,0.5539999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_RT1,rotavirus1,percent,0.81,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Assaba,2020,CH_VACC_C_RT1,rotavirus1,percent,0.9259999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,CH_VACC_C_RT1,rotavirus1,percent,0.926,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Gorgol,2020,CH_VACC_C_RT1,rotavirus1,percent,0.818,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Brakna,2020,CH_VACC_C_RT1,rotavirus1,percent,0.8859999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Trarza,2020,CH_VACC_C_RT1,rotavirus1,percent,0.889,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -20912,7 +20912,7 @@ Mauritanie,Tagant,2020,CH_VACC_C_RT1,rotavirus1,percent,0.868,DHS Sub-national,M
 Mauritanie,Guidimagha,2020,CH_VACC_C_RT1,rotavirus1,percent,0.893,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tiris Zemmour,2020,CH_VACC_C_RT1,rotavirus1,percent,0.8390000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_RT1,rotavirus1,percent,0.7509999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_RT1,rotavirus1,percent,0.9059999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_RT1,rotavirus1,percent,0.906,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,CH_VACC_C_RT1,rotavirus1,percent,0.818,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh Chargui,2020,CH_VACC_C_RT2,rotavirus2,percent,0.486,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,CH_VACC_C_RT2,rotavirus2,percent,0.762,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -20928,7 +20928,7 @@ Mauritanie,Tiris Zemmour,2020,CH_VACC_C_RT2,rotavirus2,percent,0.736,DHS Sub-nat
 Mauritanie,Nouakchott Ouest,2020,CH_VACC_C_RT2,rotavirus2,percent,0.713,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,CH_VACC_C_RT2,rotavirus2,percent,0.845,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,CH_VACC_C_RT2,rotavirus2,percent,0.785,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Hodh Chargui,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.027000000000000003,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.027,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.062,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Assaba,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.065,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Gorgol,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.071,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -20941,7 +20941,7 @@ Mauritanie,Tiris Zemmour,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.085,DHS Sub-natio
 Mauritanie,Nouakchott Ouest,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.341,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.017,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,CH_DIAT_C_ORZ,ors_zinc,percent,0.042,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Hodh Chargui,2020,CN_MIAC_C_MMN,micronutrient,percent,0.10300000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Hodh Chargui,2020,CN_MIAC_C_MMN,micronutrient,percent,0.103,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,CN_MIAC_C_MMN,micronutrient,percent,0.09,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Assaba,2020,CN_MIAC_C_MMN,micronutrient,percent,0.092,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Gorgol,2020,CN_MIAC_C_MMN,micronutrient,percent,0.062,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -20980,8 +20980,8 @@ Mauritanie,Dakhlet Nouadhibou,2020,CN_MIAC_C_DWM,deworming,percent,0.585,DHS Sub
 Mauritanie,Tagant,2020,CN_MIAC_C_DWM,deworming,percent,0.601,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Guidimagha,2020,CN_MIAC_C_DWM,deworming,percent,0.478,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tiris Zemmour,2020,CN_MIAC_C_DWM,deworming,percent,0.6609999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott Ouest,2020,CN_MIAC_C_DWM,deworming,percent,0.46799999999999997,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott  Nord,2020,CN_MIAC_C_DWM,deworming,percent,0.39799999999999996,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,CN_MIAC_C_DWM,deworming,percent,0.468,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott  Nord,2020,CN_MIAC_C_DWM,deworming,percent,0.398,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,CN_MIAC_C_DWM,deworming,percent,0.452,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh Chargui,2020,ML_IPTP_W_SPF,iptp1,percent,0.278,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh El Gharbi,2020,ML_IPTP_W_SPF,iptp1,percent,0.509,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -20993,13 +20993,13 @@ Mauritanie,Adrar,2020,ML_IPTP_W_SPF,iptp1,percent,0.153,DHS Sub-national,MR2020D
 Mauritanie,Dakhlet Nouadhibou,2020,ML_IPTP_W_SPF,iptp1,percent,0.1,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tagant,2020,ML_IPTP_W_SPF,iptp1,percent,0.365,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Guidimagha,2020,ML_IPTP_W_SPF,iptp1,percent,0.802,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Tiris Zemmour,2020,ML_IPTP_W_SPF,iptp1,percent,0.22699999999999998,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,ML_IPTP_W_SPF,iptp1,percent,0.227,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Ouest,2020,ML_IPTP_W_SPF,iptp1,percent,0.7879999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,ML_IPTP_W_SPF,iptp1,percent,0.45,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,ML_IPTP_W_SPF,iptp1,percent,0.5920000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh Chargui,2020,ML_IPTP_W_2SP,iptp2,percent,0.102,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Hodh El Gharbi,2020,ML_IPTP_W_2SP,iptp2,percent,0.19899999999999998,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Assaba,2020,ML_IPTP_W_2SP,iptp2,percent,0.21600000000000003,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,ML_IPTP_W_2SP,iptp2,percent,0.199,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Assaba,2020,ML_IPTP_W_2SP,iptp2,percent,0.21600000000000005,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Gorgol,2020,ML_IPTP_W_2SP,iptp2,percent,0.276,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Brakna,2020,ML_IPTP_W_2SP,iptp2,percent,0.4,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Trarza,2020,ML_IPTP_W_2SP,iptp2,percent,0.231,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
@@ -21008,20 +21008,37 @@ Mauritanie,Dakhlet Nouadhibou,2020,ML_IPTP_W_2SP,iptp2,percent,0.03,DHS Sub-nati
 Mauritanie,Tagant,2020,ML_IPTP_W_2SP,iptp2,percent,0.1,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Guidimagha,2020,ML_IPTP_W_2SP,iptp2,percent,0.37200000000000005,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tiris Zemmour,2020,ML_IPTP_W_2SP,iptp2,percent,0.14400000000000002,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott Ouest,2020,ML_IPTP_W_2SP,iptp2,percent,0.38799999999999996,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Ouest,2020,ML_IPTP_W_2SP,iptp2,percent,0.388,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,ML_IPTP_W_2SP,iptp2,percent,0.222,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Sud,2020,ML_IPTP_W_2SP,iptp2,percent,0.233,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Hodh Chargui,2020,ML_IPTP_W_3SP,iptp3,percent,0.04,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Hodh El Gharbi,2020,ML_IPTP_W_3SP,iptp3,percent,0.052000000000000005,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Hodh El Gharbi,2020,ML_IPTP_W_3SP,iptp3,percent,0.052,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Assaba,2020,ML_IPTP_W_3SP,iptp3,percent,0.11,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Gorgol,2020,ML_IPTP_W_3SP,iptp3,percent,0.08900000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Brakna,2020,ML_IPTP_W_3SP,iptp3,percent,0.29600000000000004,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Trarza,2020,ML_IPTP_W_3SP,iptp3,percent,0.027999999999999997,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Trarza,2020,ML_IPTP_W_3SP,iptp3,percent,0.02799999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Adrar,2020,ML_IPTP_W_3SP,iptp3,percent,0.039,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Dakhlet Nouadhibou,2020,ML_IPTP_W_3SP,iptp3,percent,0.001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Tagant,2020,ML_IPTP_W_3SP,iptp3,percent,0.06,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Guidimagha,2020,ML_IPTP_W_3SP,iptp3,percent,0.11699999999999999,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Tiris Zemmour,2020,ML_IPTP_W_3SP,iptp3,percent,0.10800000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Guidimagha,2020,ML_IPTP_W_3SP,iptp3,percent,0.117,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Tiris Zemmour,2020,ML_IPTP_W_3SP,iptp3,percent,0.108,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott Ouest,2020,ML_IPTP_W_3SP,iptp3,percent,0.184,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
 Mauritanie,Nouakchott  Nord,2020,ML_IPTP_W_3SP,iptp3,percent,0.11,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
-Mauritanie,Nouakchott Sud,2020,ML_IPTP_W_3SP,iptp3,percent,0.11800000000000001,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,Nouakchott Sud,2020,ML_IPTP_W_3SP,iptp3,percent,0.118,DHS Sub-national,MR2020DHS,household,Mauritanie,MR,MRT
+Mauritanie,NATIONAL,2001,MNCH_ANC1,anc1,percent,0.639,DHS,Demographic and Health Survey 2000-2001,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2007,MNCH_ANC1,anc1,percent,0.754,MICS,Multiple Indicator Cluster Survey 2007,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2011,MNCH_ANC1,anc1,percent,0.8420000000000001,MICS,Multiple Indicator Cluster Survey 2011,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2015,MNCH_ANC1,anc1,percent,0.8690000000000001,MICS,Multiple Indicator Cluster Survey 2015,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2021,MNCH_ANC1,anc1,percent,0.85,DHS,2019-21 Demographic and Health Survey,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2001,MNCH_ANC4,anc4,percent,0.16399999999999998,DHS,Demographic and Health Survey 2000-2001,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2011,MNCH_ANC4,anc4,percent,0.484,MICS,Multiple Indicator Cluster Survey 2011,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2015,MNCH_ANC4,anc4,percent,0.63,MICS,Multiple Indicator Cluster Survey 2015,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2021,MNCH_ANC4,anc4,percent,0.385,DHS,Demographic and Health Survey 2021,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2001,MNCH_INSTDEL,delivery,percent,0.485,DHS,Demographic and Health Survey 2000-2001,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2007,MNCH_INSTDEL,delivery,percent,0.484,MICS,Multiple Indicator Cluster Survey 2007,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2011,MNCH_INSTDEL,delivery,percent,0.645,MICS,Multiple Indicator Cluster Survey 2011,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2015,MNCH_INSTDEL,delivery,percent,0.693,MICS,Multiple Indicator Cluster Survey 2015,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2021,MNCH_INSTDEL,delivery,percent,0.7,DHS,2019-21 Demographic and Health Survey,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2011,MNCH_PNCMOM,pnc1,percent,0.091,MICS,Multiple Indicator Cluster Survey 2011,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2015,MNCH_PNCMOM,pnc1,percent,0.573,MICS,Multiple Indicator Cluster Survey 2015,household,Mauritanie,MRT,MRT
+Mauritanie,NATIONAL,2021,MNCH_PNCMOM,pnc1,percent,0.43,DHS,Demographic and Health Survey 2021,household,Mauritanie,MRT,MRT
