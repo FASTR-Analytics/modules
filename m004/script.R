@@ -256,9 +256,13 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
     left_join(nummonth_data, by = group_vars) %>%
     arrange(across(all_of(group_vars)))
   
-  # Extract ISO3 code if available
+  # Extract ISO3 code — from data if available, else from COUNTRY_ISO3 parameter
   hmis_iso3 <- if ("iso3_code" %in% names(adjusted_volume_data)) {
     unique(adjusted_volume_data$iso3_code)
+  } else if (exists("COUNTRY_ISO3")) {
+    # Inject iso3_code into annual_hmis for downstream joins
+    annual_hmis <- annual_hmis %>% mutate(iso3_code = COUNTRY_ISO3)
+    COUNTRY_ISO3
   } else {
     NULL
   }
@@ -959,12 +963,14 @@ evaluate_coverage_by_denominator <- function(data) {
   # Determine if this is national-level data
   has_admin_area_2 <- "admin_area_2" %in% names(data)
   is_national_level <- has_admin_area_2 && all(data$admin_area_2 == "NATIONAL")
-  
+  has_iso3 <- "iso3_code" %in% names(data)
+
   geo_keys <- if (has_admin_area_2) {
     c("admin_area_1", "admin_area_2", "year")
   } else {
     c("admin_area_1", "year")
   }
+  if (has_iso3) geo_keys <- c("iso3_code", geo_keys)
   
   # Numerators
   numerator_long <- data %>%
@@ -1107,11 +1113,16 @@ project_coverage_from_all <- function(ranked_coverage, survey_raw_long = NULL) {
   }
 
   has_admin_area_2 <- "admin_area_2" %in% names(ranked_coverage)
+  has_iso3 <- "iso3_code" %in% names(ranked_coverage)
+
+  # Use iso3_code for baseline joins (survey admin_area_1 may differ from HMIS)
+  geo_id <- if (has_iso3) "iso3_code" else "admin_area_1"
   geo_keys <- if (has_admin_area_2) {
     c("admin_area_1", "admin_area_2", "indicator_common_id", "denominator")
   } else {
     c("admin_area_1", "indicator_common_id", "denominator")
   }
+  if (has_iso3) geo_keys <- c("iso3_code", geo_keys)
 
   # Compute year-on-year deltas
   ranked_with_delta <- ranked_coverage %>%
@@ -1122,11 +1133,11 @@ project_coverage_from_all <- function(ranked_coverage, survey_raw_long = NULL) {
     ) %>%
     ungroup()
 
-  # Find baseline: last survey year OVERALL (matching m006 pattern)
-  baseline_join_keys <- intersect(c("admin_area_1", "admin_area_2", "indicator_common_id"), names(ranked_coverage))
+  # Find baseline: use iso3_code for join when available (admin_area_1 may differ between HMIS and survey)
+  baseline_join_keys <- c(geo_id, if (has_admin_area_2) "admin_area_2", "indicator_common_id")
 
   if (!is.null(survey_raw_long) && nrow(survey_raw_long) > 0) {
-    survey_baseline_keys <- c(intersect(c("admin_area_1", "admin_area_2"), names(survey_raw_long)), "indicator_common_id")
+    survey_baseline_keys <- c(intersect(c(geo_id, if(has_admin_area_2) "admin_area_2"), names(survey_raw_long)), "indicator_common_id")
     baseline_info <- survey_raw_long %>%
       group_by(across(all_of(survey_baseline_keys))) %>%
       filter(year == max(year, na.rm = TRUE)) %>%
@@ -1373,6 +1384,19 @@ prepare_combined_coverage_from_projected <- function(projected_data, raw_survey_
   if (!"survey_source" %in% names(combined)) combined$survey_source <- NA_character_
   if (!"survey_source_detail" %in% names(combined)) combined$survey_source_detail <- NA_character_
 
+  # Coalesce admin_area_1 suffixed columns from full_join
+  a1_cols <- grep("^admin_area_1", names(combined), value = TRUE)
+  if (length(a1_cols) > 1) {
+    combined <- combined %>%
+      mutate(admin_area_1 = coalesce(!!!syms(a1_cols))) %>%
+      select(-any_of(setdiff(a1_cols, "admin_area_1")))
+  }
+  # Fill remaining NA admin_area_1
+  if ("admin_area_1" %in% names(combined) && any(is.na(combined$admin_area_1))) {
+    fill_val <- combined$admin_area_1[!is.na(combined$admin_area_1)][1]
+    if (!is.na(fill_val)) combined$admin_area_1[is.na(combined$admin_area_1)] <- fill_val
+  }
+
   combined <- combined %>%
     transmute(
       across(any_of("iso3_code")),
@@ -1564,6 +1588,16 @@ combined_national_export <- bind_rows(
 )
 
 
+  # Drop indicators that have no survey reference at all (match m006 behaviour)
+if (nrow(combined_national_export) > 0 && "coverage_original_estimate" %in% names(combined_national_export)) {
+  indicators_with_survey <- combined_national_export %>%
+    filter(!is.na(coverage_original_estimate)) %>%
+    distinct(indicator_common_id) %>%
+    pull(indicator_common_id)
+  combined_national_export <- combined_national_export %>%
+    filter(indicator_common_id %in% indicators_with_survey)
+}
+
 message("✓ Step 2/6 completed: National data processing finished!")
 
 message("✓ Step 3/6: Finalizing national results")
@@ -1621,22 +1655,29 @@ combined_national_export_fixed <- combined_national_export %>%
     }
 
     # Get coverage_cov at last survey year (for delta calculation)
+    # If no coverage_cov at last survey year, use first available coverage_cov
     baseline_cov <- NA_real_
+    baseline_year_for_proj <- last_survey_year
     if (!is.na(last_survey_year)) {
       last_survey_idx <- which(df$year == last_survey_year)[1]
       if (length(last_survey_idx) > 0) {
         baseline_cov <- df$coverage_cov[last_survey_idx]
       }
+      # Fallback: if no coverage at survey year, use first year with coverage
+      if (is.na(baseline_cov)) {
+        first_cov_idx <- which(!is.na(df$coverage_cov))[1]
+        if (!is.na(first_cov_idx)) {
+          baseline_cov <- df$coverage_cov[first_cov_idx]
+          baseline_year_for_proj <- df$year[first_cov_idx]
+        }
+      }
     }
 
     # Keep coverage_original_estimate as-is - preserve all actual survey values
 
-    # Use coverage_avgsurveyprojection if it already exists (from project_coverage_from_all)
-    # Otherwise calculate it here
-    if ("coverage_avgsurveyprojection" %in% names(df) && any(!is.na(df$coverage_avgsurveyprojection))) {
-      # Already calculated - just rename for consistency
-      df$avgsurveyprojection <- df$coverage_avgsurveyprojection
-    } else {
+    # Always recalculate projections here to handle cases where
+    # project_coverage_from_all failed due to admin_area_1 mismatches
+    {
       # Calculate projections starting FROM last survey year
       # At last survey year: copy survey value
       # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
@@ -1646,11 +1687,15 @@ combined_national_export_fixed <- combined_national_export %>%
         # At last survey year: copy survey value
         df$avgsurveyprojection[df$year == last_survey_year] <- last_survey_value
 
-        # After last survey year: additive projection
-        after_survey <- df$year > last_survey_year
-        df$avgsurveyprojection[after_survey] <- ifelse(
-          !is.na(df$coverage_cov[after_survey]),
-          last_survey_value + (df$coverage_cov[after_survey] - baseline_cov),
+        # Carry forward through gap years (between survey and first HMIS)
+        gap_years <- df$year > last_survey_year & df$year < baseline_year_for_proj
+        df$avgsurveyprojection[gap_years] <- last_survey_value
+
+        # After baseline year: additive projection
+        after_baseline <- df$year >= baseline_year_for_proj
+        df$avgsurveyprojection[after_baseline] <- ifelse(
+          !is.na(df$coverage_cov[after_baseline]),
+          last_survey_value + (df$coverage_cov[after_baseline] - baseline_cov),
           NA_real_
         )
       }
