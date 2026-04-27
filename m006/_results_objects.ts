@@ -3,7 +3,6 @@ import type { ResultsObjectDefinitionGithub } from "../.validation/_module_defin
 export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M6_coverage_estimation_national.csv",
-    description: "Coverage estimates (National)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       year: "INTEGER NOT NULL",
@@ -18,7 +17,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M6_coverage_estimation_admin2.csv",
-    description: "Coverage results (Admin area 2)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_2: "TEXT NOT NULL",
@@ -34,7 +32,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M6_coverage_estimation_admin3.csv",
-    description: "Coverage results (Admin area 3)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_3: "TEXT NOT NULL",

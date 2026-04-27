@@ -2,5 +2,10 @@
   "nodeModulesDir": "none",
   "imports": {
     "zod": "npm:zod@^3.22.4"
+  },
+  "tasks": {
+    "check": "deno task typecheck && deno task crosscheck",
+    "typecheck": "deno check build_definitions.ts .validation/validate_definitions.ts cross_check_metrics.ts",
+    "crosscheck": "deno run --allow-read cross_check_metrics.ts"
   }
 }

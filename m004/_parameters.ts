@@ -2,7 +2,10 @@ import type { ModuleParameter } from "../.validation/_module_definition_github.t
 
 export const parameters: ModuleParameter[] = [
   {
-    description: "Count value to use",
+    description: {
+      en: "Count value to use",
+      fr: "Valeur de comptage à utiliser",
+    },
     replacementString: "SELECTED_COUNT_VARIABLE",
     input: {
       inputType: "select",
@@ -29,7 +32,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Level to calculate coverage for",
+    description: {
+      en: "Level to calculate coverage for",
+      fr: "Niveau pour calculer la couverture",
+    },
     replacementString: "ANALYSIS_LEVEL",
     input: {
       inputType: "select",
@@ -52,7 +58,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Pregnancy loss rate",
+    description: {
+      en: "Pregnancy loss rate",
+      fr: "Taux de perte de grossesse",
+    },
     replacementString: "PREGNANCY_LOSS_RATE",
     input: {
       inputType: "number",
@@ -60,7 +69,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Twin rate",
+    description: {
+      en: "Twin rate",
+      fr: "Taux de jumeaux",
+    },
     replacementString: "TWIN_RATE",
     input: {
       inputType: "number",
@@ -68,7 +80,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Stillbirth rate",
+    description: {
+      en: "Stillbirth rate",
+      fr: "Taux de mortinatalité",
+    },
     replacementString: "STILLBIRTH_RATE",
     input: {
       inputType: "number",
@@ -76,7 +91,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Neonatal mortality rate",
+    description: {
+      en: "Neonatal mortality rate",
+      fr: "Taux de mortalité néonatale",
+    },
     replacementString: "P1_NMR",
     input: {
       inputType: "number",
@@ -84,7 +102,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Postneonatal mortality rate",
+    description: {
+      en: "Postneonatal mortality rate",
+      fr: "Taux de mortalité postnéonatale",
+    },
     replacementString: "P2_PNMR",
     input: {
       inputType: "number",
@@ -92,7 +113,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Infant mortality rate",
+    description: {
+      en: "Infant mortality rate",
+      fr: "Taux de mortalité infantile",
+    },
     replacementString: "INFANT_MORTALITY_RATE",
     input: {
       inputType: "number",
@@ -100,7 +124,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Under 5 mortality rate",
+    description: {
+      en: "Under 5 mortality rate",
+      fr: "Taux de mortalité des moins de 5 ans",
+    },
     replacementString: "UNDER5_MORTALITY_RATE",
     input: {
       inputType: "number",

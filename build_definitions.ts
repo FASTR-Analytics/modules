@@ -1,4 +1,7 @@
-import { ModuleDefinitionJSONSchema } from "./.validation/_module_definition_github.ts";
+import {
+  ModuleDefinitionJSONSchema,
+  type ModuleDefinitionGithub,
+} from "./.validation/_module_definition_github.ts";
 
 const root = new URL(".", import.meta.url);
 const moduleDirs: string[] = [];
@@ -10,6 +13,7 @@ for await (const entry of Deno.readDir(root)) {
 moduleDirs.sort();
 
 let hadError = false;
+const allModules: { dir: string; def: ModuleDefinitionGithub }[] = [];
 
 for (const dir of moduleDirs) {
   const corePath = `./${dir}/_core.ts`;
@@ -54,6 +58,55 @@ for (const dir of moduleDirs) {
     JSON.stringify(result.data, null, 2) + "\n",
   );
   console.log(`build ${dir}`);
+  allModules.push({ dir, def: result.data });
+}
+
+if (hadError) Deno.exit(1);
+
+// Check for duplicate IDs across all modules
+const resultsObjectIds = new Map<string, string>();
+const metricIds = new Map<string, string>();
+const defaultVizIds = new Map<string, string>();
+
+for (const { dir, def } of allModules) {
+  for (const ro of def.resultsObjects) {
+    if (resultsObjectIds.has(ro.id)) {
+      console.error(`DUPLICATE resultsObjectId "${ro.id}" in ${dir} (first seen in ${resultsObjectIds.get(ro.id)})`);
+      hadError = true;
+    } else {
+      resultsObjectIds.set(ro.id, dir);
+    }
+  }
+
+  for (const metric of def.metrics) {
+    if (metricIds.has(metric.id)) {
+      console.error(`DUPLICATE metricId "${metric.id}" in ${dir} (first seen in ${metricIds.get(metric.id)})`);
+      hadError = true;
+    } else {
+      metricIds.set(metric.id, dir);
+    }
+
+    const vizPresetIdsInMetric = new Set<string>();
+    for (const preset of metric.vizPresets) {
+      const location = `${dir}:${metric.id}:${preset.id}`;
+      if (vizPresetIdsInMetric.has(preset.id)) {
+        console.error(`DUPLICATE vizPresetId "${preset.id}" within metric ${metric.id} (${dir})`);
+        hadError = true;
+      } else {
+        vizPresetIdsInMetric.add(preset.id);
+      }
+
+      if (preset.createDefaultVisualizationOnInstall) {
+        const uuid = preset.createDefaultVisualizationOnInstall;
+        if (defaultVizIds.has(uuid)) {
+          console.error(`DUPLICATE createDefaultVisualizationOnInstall "${uuid}" in ${location} (first seen in ${defaultVizIds.get(uuid)})`);
+          hadError = true;
+        } else {
+          defaultVizIds.set(uuid, location);
+        }
+      }
+    }
+  }
 }
 
 if (hadError) Deno.exit(1);

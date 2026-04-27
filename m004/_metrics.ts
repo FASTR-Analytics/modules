@@ -47,26 +47,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Denominator selection is critical - inappropriate denominators can produce implausible coverage >100%. Projection assumes HMIS trends reflect true coverage changes. Survey timing and HMIS data quality affect comparability.",
         fr: "La sélection du dénominateur est critique - les dénominateurs inappropriés peuvent produire une couverture >100%. La projection suppose que les tendances HMIS reflètent les vrais changements.",
       },
-      useCases: [
-        {
-          en: "Monitor annual coverage trends between surveys",
-          fr: "Surveiller les tendances de couverture annuelles entre enquêtes",
-        },
-        {
-          en: "Validate HMIS data against survey benchmarks",
-          fr: "Valider les données HMIS contre les repères d'enquête",
-        },
-        {
-          en: "Assess denominator quality and selection",
-          fr: "Évaluer la qualité et sélection du dénominateur",
-        },
-      ],
-      relatedMetrics: ["m4-02-01", "m4-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and year (both required). Compare the three coverage types to assess HMIS-survey concordance. Time series reveals coverage trends and data quality evolution.",
         fr: "Toujours désagréger par indicator_common_id et year (tous deux requis). Comparer les trois types de couverture pour évaluer la concordance HMIS-enquête.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -81,7 +65,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "3e3230cb-ad9e-48b9-b3ce-7bd01255d20b",
-        needsReplicant: true,
         allowedFilters: [],
         config: {
           d: {
@@ -169,26 +152,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Subnational denominators may be less reliable than national. Migration and population estimates affect accuracy. Some denominators only available at national level.",
         fr: "Les dénominateurs sous-nationaux peuvent être moins fiables que nationaux. Les estimations de migration et population affectent la précision.",
       },
-      useCases: [
-        {
-          en: "Assess regional coverage equity",
-          fr: "Évaluer l'équité de couverture régionale",
-        },
-        {
-          en: "Target low-coverage areas for improvement",
-          fr: "Cibler les zones de faible couverture pour amélioration",
-        },
-        {
-          en: "Monitor subnational performance",
-          fr: "Surveiller la performance sous-nationale",
-        },
-      ],
-      relatedMetrics: ["m4-01-01", "m4-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Map visualization effectively shows geographic coverage patterns. Time series reveals regional improvement or deterioration.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). La visualisation cartographique montre efficacement les modèles de couverture géographique.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -245,7 +212,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "coverage-bar",
@@ -259,7 +225,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "d452dfcf-2cc9-4c7f-bfb0-bf5b8ab6433d",
-        needsReplicant: true,
         allowedFilters: ["admin_area_2"],
         config: {
           d: {
@@ -356,26 +321,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "District-level denominators may have substantial uncertainty. Population mobility and small sample sizes increase volatility. Only available when ANALYSIS_LEVEL includes admin_area_3.",
         fr: "Les dénominateurs au niveau du district peuvent avoir une incertitude substantielle. Disponible uniquement lorsque ANALYSIS_LEVEL inclut admin_area_3.",
       },
-      useCases: [
-        {
-          en: "District-level operational planning",
-          fr: "Planification opérationnelle au niveau du district",
-        },
-        {
-          en: "Identify micro-level coverage gaps",
-          fr: "Identifier les lacunes de couverture au micro-niveau",
-        },
-        {
-          en: "Support targeted facility supervision",
-          fr: "Soutenir la supervision ciblée des établissements",
-        },
-      ],
-      relatedMetrics: ["m4-01-01", "m4-02-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Consider aggregating to admin_area_2 if district-level estimates appear unstable.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Considérer l'agrégation à admin_area_2 si les estimations au niveau district semblent instables.",
       },
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,

@@ -12,7 +12,7 @@
 ~$*
 
 # Local schema vendoring script (has hardcoded path)
-vendor_schema
+# vendor_schema
 
 # Local documentation (not for repo)
 CLAUDE.md

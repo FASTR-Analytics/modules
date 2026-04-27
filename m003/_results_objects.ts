@@ -3,8 +3,6 @@ import type { ResultsObjectDefinitionGithub } from "../.validation/_module_defin
 export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M3_service_utilization.csv",
-    description:
-      "Service utilization data with adjusted volumes for all adjustment scenarios",
     createTableStatementPossibleColumns: {
       facility_id: "TEXT NOT NULL",
       admin_area_4: "TEXT NOT NULL",
@@ -22,7 +20,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M3_disruptions_analysis_admin_area_1.csv",
-    description: "National-level disruption analysis results",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       indicator_common_id: "TEXT NOT NULL",
@@ -36,7 +33,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M3_disruptions_analysis_admin_area_2.csv",
-    description: "Admin area 2 level disruption analysis results",
     createTableStatementPossibleColumns: {
       admin_area_2: "TEXT NOT NULL",
       indicator_common_id: "TEXT NOT NULL",
@@ -50,7 +46,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M3_disruptions_analysis_admin_area_3.csv",
-    description: "Admin area 3 level disruption analysis results",
     createTableStatementPossibleColumns: {
       admin_area_2: "TEXT NOT NULL",
       admin_area_3: "TEXT NOT NULL",
@@ -65,7 +60,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M3_disruptions_analysis_admin_area_4.csv",
-    description: "Admin area 4 level disruption analysis results",
     createTableStatementPossibleColumns: {
       admin_area_2: "TEXT NOT NULL",
       admin_area_3: "TEXT NOT NULL",
@@ -81,31 +75,22 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M3_chartout.csv",
-    description: "Control chart analysis results with tagged anomalies",
     createTableStatementPossibleColumns: false,
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_1.csv",
-    description:
-      "Shortfall and surplus calculations for all indicators (Admin area 1)",
     createTableStatementPossibleColumns: false,
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_2.csv",
-    description:
-      "Shortfall and surplus calculations for all indicators (Admin area 2)",
     createTableStatementPossibleColumns: false,
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_3.csv",
-    description:
-      "Shortfall and surplus calculations for all indicators (Admin area 3)",
     createTableStatementPossibleColumns: false,
   },
   {
     id: "M3_all_indicators_shortfalls_admin_area_4.csv",
-    description:
-      "Shortfall and surplus calculations for all indicators (Admin area 4)",
     createTableStatementPossibleColumns: false,
   },
 ];

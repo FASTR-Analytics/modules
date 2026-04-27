@@ -2,7 +2,10 @@ import type { ModuleParameter } from "../.validation/_module_definition_github.t
 
 export const parameters: ModuleParameter[] = [
   {
-    description: "Proportion threshold for outlier detection",
+    description: {
+      en: "Proportion threshold for outlier detection",
+      fr: "Seuil de proportion pour la détection des valeurs aberrantes",
+    },
     replacementString: "OUTLIER_PROPORTION_THRESHOLD",
     input: {
       inputType: "number",
@@ -10,7 +13,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Minimum count threshold for consideration",
+    description: {
+      en: "Minimum count threshold for consideration",
+      fr: "Seuil de comptage minimum pour considération",
+    },
     replacementString: "MINIMUM_COUNT_THRESHOLD",
     input: {
       inputType: "number",
@@ -18,7 +24,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Number of MADs",
+    description: {
+      en: "Number of MADs",
+      fr: "Nombre de MADs",
+    },
     replacementString: "MADS",
     input: {
       inputType: "number",
@@ -26,7 +35,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Indicators subjected to DQA",
+    description: {
+      en: "Indicators subjected to DQA",
+      fr: "Indicateurs soumis à l'AQD",
+    },
     replacementString: "DQA_INDICATORS",
     input: {
       inputType: "select",
@@ -65,7 +77,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Consistency pairs used",
+    description: {
+      en: "Consistency pairs used",
+      fr: "Paires de cohérence utilisées",
+    },
     replacementString: "CONSISTENCY_PAIRS_USED",
     input: {
       inputType: "select",
@@ -112,8 +127,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description:
-      "Admin level used to join facilities to corresponding geo-consistency",
+    description: {
+      en: "Admin level used to join facilities to corresponding geo-consistency",
+      fr: "Niveau administratif utilisé pour joindre les établissements à la cohérence géographique correspondante",
+    },
     replacementString: "GEOLEVEL",
     input: {
       inputType: "select",

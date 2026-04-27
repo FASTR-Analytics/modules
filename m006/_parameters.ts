@@ -2,7 +2,10 @@ import type { ModuleParameter } from "../.validation/_module_definition_github.t
 
 export const parameters: ModuleParameter[] = [
   {
-    description: "Denominator to use for all coverage calculations",
+    description: {
+      en: "Denominator to use for all coverage calculations",
+      fr: "Dénominateur à utiliser pour tous les calculs de couverture",
+    },
     replacementString: "DENOMINATOR_CHAIN",
     input: {
       inputType: "select",

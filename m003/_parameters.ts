@@ -2,7 +2,10 @@ import type { ModuleParameter } from "../.validation/_module_definition_github.t
 
 export const parameters: ModuleParameter[] = [
   {
-    description: "Count variable to use for modeling",
+    description: {
+      en: "Count variable to use for modeling",
+      fr: "Variable de comptage à utiliser pour la modélisation",
+    },
     replacementString: "SELECTEDCOUNT",
     input: {
       inputType: "select",
@@ -29,7 +32,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Count variable to use for visualization",
+    description: {
+      en: "Count variable to use for visualization",
+      fr: "Variable de comptage à utiliser pour la visualisation",
+    },
     replacementString: "VISUALIZATIONCOUNT",
     input: {
       inputType: "select",
@@ -56,7 +62,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Run district-level model (admin_area_3)",
+    description: {
+      en: "Run district-level model (admin_area_3)",
+      fr: "Exécuter le modèle au niveau du district (admin_area_3)",
+    },
     replacementString: "RUN_DISTRICT_MODEL",
     input: {
       inputType: "select",
@@ -75,7 +84,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Run admin_area_4 analysis",
+    description: {
+      en: "Run admin_area_4 analysis",
+      fr: "Exécuter l'analyse admin_area_4",
+    },
     replacementString: "RUN_ADMIN_AREA_4_ANALYSIS",
     input: {
       inputType: "select",
@@ -94,7 +106,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Threshold for MAD-based control limits",
+    description: {
+      en: "Threshold for MAD-based control limits",
+      fr: "Seuil pour les limites de contrôle basées sur MAD",
+    },
     replacementString: "MADS_THRESHOLD",
     input: {
       inputType: "number",
@@ -102,7 +117,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Smoothing window (k)",
+    description: {
+      en: "Smoothing window (k)",
+      fr: "Fenêtre de lissage (k)",
+    },
     replacementString: "SMOOTH_K",
     input: {
       inputType: "number",
@@ -110,7 +128,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Dip threshold (proportion of expected)",
+    description: {
+      en: "Dip threshold (proportion of expected)",
+      fr: "Seuil de baisse (proportion de l'attendu)",
+    },
     replacementString: "DIP_THRESHOLD",
     input: {
       inputType: "number",
@@ -118,7 +139,10 @@ export const parameters: ModuleParameter[] = [
     },
   },
   {
-    description: "Difference percent threshold for visualization",
+    description: {
+      en: "Difference percent threshold for visualization",
+      fr: "Seuil de pourcentage de différence pour la visualisation",
+    },
     replacementString: "DIFFPERCENT",
     input: {
       inputType: "number",

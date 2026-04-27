@@ -47,30 +47,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Projection method assumes HMIS trends accurately reflect true coverage changes. Denominator selection (via module parameters) critically affects results - inappropriate denominators produce implausible coverage. Survey timing and data quality affect baseline accuracy.",
         fr: "La méthode de projection suppose que les tendances HMIS reflètent avec précision les vrais changements de couverture. La sélection du dénominateur affecte de manière critique les résultats.",
       },
-      useCases: [
-        {
-          en: "Official coverage reporting and monitoring",
-          fr: "Déclaration et surveillance officielle de la couverture",
-        },
-        {
-          en: "Track progress toward health coverage targets",
-          fr: "Suivre les progrès vers les objectifs de couverture sanitaire",
-        },
-        {
-          en: "Validate HMIS-survey concordance",
-          fr: "Valider la concordance HMIS-enquête",
-        },
-        {
-          en: "Generate annual coverage time series",
-          fr: "Générer des séries temporelles de couverture annuelles",
-        },
-      ],
-      relatedMetrics: ["m6-02-01", "m6-03-01", "m4a-02-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and year (both required). Compare the three coverage types to assess data quality - they should show consistent trends if both HMIS and denominators are reliable. Time series reveals coverage evolution and inter-survey projection accuracy.",
         fr: "Toujours désagréger par indicator_common_id et year (tous deux requis). Comparer les trois types de couverture pour évaluer la qualité des données.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -85,7 +65,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "2a74f737-78e5-41a1-8f6d-7a3f59be2d19",
-        needsReplicant: true,
         allowedFilters: [],
         config: {
           d: {
@@ -178,23 +157,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Regional variation expected; remote areas typically have lower coverage.",
         fr: "0-100%. Variation régionale attendue; zones éloignées ont généralement une couverture plus faible.",
       },
-      useCases: [
-        {
-          en: "Regional coverage equity monitoring",
-          fr: "Surveillance de l'équité de couverture régionale",
-        },
-        {
-          en: "Geographic targeting of health interventions",
-          fr: "Ciblage géographique des interventions sanitaires",
-        },
-      ],
-      relatedMetrics: ["m6-02-02", "m6-01-01", "m6-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Compare three coverage types for regional data quality validation.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Comparer trois types de couverture pour la validation de la qualité des données régionales.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -209,7 +176,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "e5f8740b-a690-4a84-a0cd-05d529676f26",
-        needsReplicant: true,
         allowedFilters: ["admin_area_2"],
         config: {
           d: {
@@ -268,7 +234,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "9d4977b4-0d87-44e1-b2bd-3eddcba623f4",
-        needsReplicant: true,
         allowedFilters: ["admin_area_2"],
         config: {
           d: {
@@ -359,19 +324,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Should align with full coverage metric (m6-02-01) but may differ from survey estimates.",
         fr: "0-100%. Devrait s'aligner avec la métrique de couverture complète (m6-02-01) mais peut différer des estimations d'enquête.",
       },
-      useCases: [
-        {
-          en: "Operational performance dashboards",
-          fr: "Tableaux de bord de performance opérationnelle",
-        },
-      ],
-      relatedMetrics: ["m6-02-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Use for regional operational monitoring.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Utiliser pour la surveillance opérationnelle régionale.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,
@@ -424,19 +381,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Greater variation expected at district level; interpret with caution.",
         fr: "0-100%. Plus grande variation attendue au niveau du district; interpréter avec prudence.",
       },
-      useCases: [
-        {
-          en: "District-level health planning",
-          fr: "Planification sanitaire au niveau du district",
-        },
-      ],
-      relatedMetrics: ["m6-03-02", "m6-02-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Compare with admin area 2 for context.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Comparer avec la zone administrative 2 pour le contexte.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -451,7 +400,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "e5f8740b-a690-4a84-a0cd-05d529676f27",
-        needsReplicant: true,
         allowedFilters: ["admin_area_3"],
         config: {
           d: {
@@ -510,7 +458,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "9d4977b4-0d87-44e1-b2bd-3eddcba623f5",
-        needsReplicant: true,
         allowedFilters: ["admin_area_3"],
         config: {
           d: {
@@ -601,19 +548,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Highest variation expected at this level; use for operational monitoring only.",
         fr: "0-100%. Variation la plus élevée attendue à ce niveau; utiliser uniquement pour la surveillance opérationnelle.",
       },
-      useCases: [
-        {
-          en: "District health management dashboards",
-          fr: "Tableaux de bord de gestion sanitaire de district",
-        },
-      ],
-      relatedMetrics: ["m6-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Simplified metric for district operations.",
         fr: "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Métrique simplifiée pour les opérations de district.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,

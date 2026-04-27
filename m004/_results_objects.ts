@@ -3,7 +3,6 @@ import type { ResultsObjectDefinitionGithub } from "../.validation/_module_defin
 export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M4_coverage_estimation.csv",
-    description: "Coverage estimates (National)",
     createTableStatementPossibleColumns: {
       indicator_common_id: "TEXT NOT NULL",
       year: "INTEGER NOT NULL",
@@ -14,7 +13,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M4_coverage_estimation_admin_area_2.csv",
-    description: "Coverage results (sub-national level)",
     createTableStatementPossibleColumns: {
       admin_area_2: "TEXT NOT NULL",
       indicator_common_id: "TEXT NOT NULL",
@@ -24,7 +22,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M4_coverage_estimation_admin_area_3.csv",
-    description: "Coverage results (sub-national level)",
     createTableStatementPossibleColumns: {
       admin_area_3: "TEXT NOT NULL",
       indicator_common_id: "TEXT NOT NULL",
@@ -34,7 +31,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M4_selected_denominator_per_indicator.csv",
-    description: "Selected denominators",
     createTableStatementPossibleColumns: {
       indicator_common_id: "TEXT NOT NULL",
       denominator_national: "TEXT NOT NULL",

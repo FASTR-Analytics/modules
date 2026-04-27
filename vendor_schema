@@ -1,0 +1,26 @@
+#!/bin/sh
+# Vendor the module definition schema from wb-fastr into this repo.
+# Single source of truth lives in wb-fastr; this script keeps the copies aligned.
+
+set -e
+
+SRC_DIR="$HOME/projects/apps/wb-fastr/lib/types"
+DST_DIR=".validation"
+
+FILES="_module_definition_github.ts conditional_formatting_standalone.ts disaggregation_options.ts"
+
+for f in $FILES; do
+  src="$SRC_DIR/$f"
+  dst="$DST_DIR/$f"
+  if [ ! -f "$src" ]; then
+    echo "ERROR: source not found at $src"
+    exit 1
+  fi
+  cp "$src" "$dst"
+  echo "Copied $src -> $dst"
+done
+
+if command -v deno >/dev/null 2>&1; then
+  echo "Typechecking..."
+  deno check "$DST_DIR/_module_definition_github.ts" "$DST_DIR/validate_definitions.ts" build_definitions.ts
+fi

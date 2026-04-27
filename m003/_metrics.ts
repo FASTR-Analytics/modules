@@ -47,26 +47,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "The appropriate adjustment type depends on analytical goals. Conservative analyses may prefer minimal adjustment; comprehensive coverage estimates may require full adjustment. Maternal/neonatal/under-5 deaths are excluded from all adjustments.",
         fr: "Le type d'ajustement approprié dépend des objectifs analytiques. Les analyses conservatrices peuvent préférer un ajustement minimal; les estimations de couverture complète peuvent nécessiter un ajustement complet. Les décès maternels/néonatals/moins de 5 ans sont exclus de tous les ajustements.",
       },
-      useCases: [
-        {
-          en: "Compare impact of different adjustment approaches",
-          fr: "Comparer l'impact de différentes approches d'ajustement",
-        },
-        {
-          en: "Select appropriate data version for analysis",
-          fr: "Sélectionner la version de données appropriée pour l'analyse",
-        },
-        {
-          en: "Document data processing decisions",
-          fr: "Documenter les décisions de traitement des données",
-        },
-      ],
-      relatedMetrics: ["m2-01-01", "m2-01-02", "m2-01-03"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id (required) to see adjustment impact per service. Time series reveals if data quality improves over time. Regional disaggregation shows geographic variation in adjustment needs.",
         fr: "Toujours désagréger par indicator_common_id (requis) pour voir l'impact de l'ajustement par service. Les séries temporelles révèlent si la qualité des données s'améliore au fil du temps. La désagrégation régionale montre la variation géographique des besoins d'ajustement.",
       },
-      importantNotes: null,
     },
     importantNotes: {
       en: "The intention of the first four visualization presets (volume-monthly, volume-quarterly, volume-annual, volume-subnational) is that only one of the values is selected: count_final_none, count_final_outliers, count_final_completeness, or count_final_both. You should use valuesFilter to select it (i.e. filter so it is only one value). To determine which to use, run get_module_settings for module id 'm003' and see what value is set for 'Count variable to use for visualization', which should be the default value that you use (although the user may ask for a different one, which you can use instead). If the user wants to compare different adjustments, you should use preset dq-comparison.",
@@ -122,7 +106,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "volume-quarterly",
@@ -134,8 +117,7 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Bar chart showing quarterly volume with quarter-on-quarter change",
           fr: "Diagramme à barres montrant le volume trimestriel avec variation trimestre par trimestre",
         },
-        createDefaultVisualizationOnInstall:
-          "7196a784-8665-41ad-b563-965c59937def",
+        createDefaultVisualizationOnInstall: null,
         allowedFilters: ["indicator_common_id"],
         config: {
           d: {
@@ -175,7 +157,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "volume-annual",
@@ -187,8 +168,7 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Bar chart showing annual volume with year-on-year change",
           fr: "Diagramme à barres montrant le volume annuel avec variation d'une année sur l'autre",
         },
-        createDefaultVisualizationOnInstall:
-          "cfc11e32-5102-484c-b242-892bb132c410",
+        createDefaultVisualizationOnInstall: null,
         allowedFilters: ["indicator_common_id"],
         config: {
           d: {
@@ -227,7 +207,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "volume-subnational",
@@ -284,7 +263,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "dq-comparison",
@@ -354,7 +332,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -401,26 +378,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Model quality depends on sufficient historical data and stable baseline periods. Expected values are only shown when difference exceeds the configured DIFFPERCENT threshold (default 10%), so small deviations are filtered out.",
         fr: "La qualité du modèle dépend de données historiques suffisantes et de périodes de référence stables. Les valeurs attendues ne sont affichées que lorsque la différence dépasse le seuil DIFFPERCENT configuré (10% par défaut), donc les petits écarts sont filtrés.",
       },
-      useCases: [
-        {
-          en: "Identify service delivery disruptions",
-          fr: "Identifier les perturbations de la prestation de services",
-        },
-        {
-          en: "Validate data quality during specific periods",
-          fr: "Valider la qualité des données pendant des périodes spécifiques",
-        },
-        {
-          en: "Track service recovery after emergencies",
-          fr: "Suivre la récupération des services après les urgences",
-        },
-      ],
-      relatedMetrics: ["m3-02-02", "m3-03-01", "m3-04-01", "m3-05-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id (required) to see service-specific patterns. Time series visualization is essential for identifying disruption periods and recovery trends.",
         fr: "Toujours désagréger par indicator_common_id (requis) pour voir les modèles spécifiques au service. La visualisation en séries temporelles est essentielle pour identifier les périodes de perturbation et les tendances de récupération.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -473,7 +434,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     postAggregationExpression: null,
@@ -532,26 +492,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Percentage differences can be misleading for indicators with small absolute volumes. Model predictions assume stable baseline patterns - structural changes in the health system may appear as disruptions.",
         fr: "Les différences en pourcentage peuvent être trompeuses pour les indicateurs avec de petits volumes absolus. Les prédictions du modèle supposent des modèles de base stables - les changements structurels du système de santé peuvent apparaître comme des perturbations.",
       },
-      useCases: [
-        {
-          en: "Quantify severity of service disruptions",
-          fr: "Quantifier la gravité des perturbations de services",
-        },
-        {
-          en: "Prioritize geographic areas for intervention",
-          fr: "Prioriser les zones géographiques pour l'intervention",
-        },
-        {
-          en: "Track service restoration progress",
-          fr: "Suivre les progrès de restauration des services",
-        },
-      ],
-      relatedMetrics: ["m3-02-01", "m3-03-02", "m3-04-02", "m3-05-02"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id (required). Time series shows disruption evolution and recovery patterns. Consider using absolute differences (m3-02-01) alongside percentages for low-volume indicators.",
         fr: "Toujours désagréger par indicator_common_id (requis). Les séries temporelles montrent l'évolution de la perturbation et les modèles de récupération. Considérer l'utilisation des différences absolues (m3-02-01) aux côtés des pourcentages pour les indicateurs à faible volume.",
       },
-      importantNotes: null,
     },
     vizPresets: [],
     importantNotes: null,
@@ -597,26 +541,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Smaller geographic areas may have more volatile patterns, making model predictions less reliable. Consider aggregating to higher levels if area-specific models perform poorly.",
         fr: "Les zones géographiques plus petites peuvent avoir des modèles plus volatils, rendant les prédictions du modèle moins fiables. Considérer l'agrégation à des niveaux supérieurs si les modèles spécifiques aux zones fonctionnent mal.",
       },
-      useCases: [
-        {
-          en: "Identify regions with service disruptions",
-          fr: "Identifier les régions avec des perturbations de services",
-        },
-        {
-          en: "Allocate resources to underperforming areas",
-          fr: "Allouer des ressources aux zones sous-performantes",
-        },
-        {
-          en: "Compare disruption patterns across regions",
-          fr: "Comparer les modèles de perturbation entre régions",
-        },
-      ],
-      relatedMetrics: ["m3-03-02", "m3-02-01", "m3-04-01", "m3-05-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals when and where disruptions occurred. Map visualization effectively shows geographic distribution of service gaps.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent quand et où les perturbations se sont produites. La visualisation cartographique montre efficacement la distribution géographique des écarts de services.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -672,7 +600,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "disruption-chart-single-admin-area-2",
@@ -685,7 +612,6 @@ export const metrics: MetricDefinitionGithub[] = [
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 2 et plusieurs indicateurs",
         },
         allowedFilters: ["indicator_common_id"],
-        needsReplicant: true,
         config: {
           d: {
             type: "timeseries",
@@ -718,7 +644,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "dee25984-afe7-4643-a823-fd0e26b3cbc0",
       },
       {
         id: "disruption-chart-single-indicator",
@@ -731,7 +657,6 @@ export const metrics: MetricDefinitionGithub[] = [
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour un unique indicateur et plusieurs Zones administratives 2",
         },
         allowedFilters: ["admin_area_2"],
-        needsReplicant: true,
         config: {
           d: {
             type: "timeseries",
@@ -764,7 +689,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "d95a382e-557c-44da-92e9-63a7abd1c7df",
       },
     ],
     postAggregationExpression: null,
@@ -819,23 +744,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "±10-30% variation common; >30% deviation warrants investigation.",
         fr: "Variation de ±10-30% commune; écart >30% nécessite investigation.",
       },
-      useCases: [
-        {
-          en: "Quantify regional service gaps",
-          fr: "Quantifier les écarts de services régionaux",
-        },
-        {
-          en: "Target interventions to specific areas",
-          fr: "Cibler les interventions vers des zones spécifiques",
-        },
-      ],
-      relatedMetrics: ["m3-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals disruption patterns over time.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent les modèles de perturbation au fil du temps.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -880,8 +793,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "b93b6411-9c6a-410c-93d1-f878f866b5c1",
       },
       {
         id: "disruption-differences-map",
@@ -912,8 +824,10 @@ export const metrics: MetricDefinitionGithub[] = [
             filterBy: [],
           },
           s: {
-            mapColorFrom: "#fee0d2",
-            mapColorTo: "#de2d26",
+            cfMode: "scale",
+            cfScalePaletteKind: "custom",
+            cfScaleCustomFrom: "#fee0d2",
+            cfScaleCustomTo: "#de2d26",
           },
           t: {
             caption: null,
@@ -925,8 +839,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "5780650b-22e7-4d92-8239-8a1c51dbf0a5",
       },
     ],
     importantNotes: null,
@@ -968,19 +881,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Varies by district size. Expect similar patterns to admin area 2 but with more volatility.",
         fr: "Varie selon la taille du district. S'attendre à des modèles similaires à la zone administrative 2 mais avec plus de volatilité.",
       },
-      useCases: [
-        {
-          en: "District-level operational planning",
-          fr: "Planification opérationnelle au niveau du district",
-        },
-      ],
-      relatedMetrics: ["m3-04-02", "m3-03-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_3 (both required). Time series and maps reveal district-level patterns.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Les séries temporelles et cartes révèlent les modèles au niveau du district.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -993,7 +898,6 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Area chart showing actual vs expected service volume, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs",
         },
-        needsReplicant: true,
         allowedFilters: ["indicator_common_id", "admin_area_3"],
         config: {
           d: {
@@ -1030,16 +934,10 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "68e1b077-eb96-427e-9254-ea6b4a871b5d",
       },
       {
         id: "disruption-chart-single-admin-area-3",
-            caption: null,
-            captionRelFontSize: null,
-            subCaption: null,
-            subCaptionRelFontSize: null,
-            footnote: null,
-            footnoteRelFontSize: null,
         label: {
           en: "Disruptions and surpluses (single Admin Area 3, multiple indicators)",
           fr: "Perturbations et excédents (unique Zone administrative 3, plusieurs indicateurs)",
@@ -1049,7 +947,6 @@ export const metrics: MetricDefinitionGithub[] = [
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3 et plusieurs indicateurs",
         },
         allowedFilters: ["indicator_common_id"],
-        needsReplicant: true,
         config: {
           d: {
             type: "timeseries",
@@ -1082,7 +979,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "1870d8fa-b7ff-453f-8974-184282643bee",
       },
     ],
     postAggregationExpression: null,
@@ -1137,19 +1034,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "±10-40% variation common at district level; >40% deviation warrants investigation.",
         fr: "Variation de ±10-40% commune au niveau du district; écart >40% nécessite investigation.",
       },
-      useCases: [
-        {
-          en: "District performance monitoring",
-          fr: "Surveillance de la performance du district",
-        },
-      ],
-      relatedMetrics: ["m3-04-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_3 (both required). Compare with admin area 2 for context.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Comparer avec la zone administrative 2 pour le contexte.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1162,7 +1051,6 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
           fr: "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs",
         },
-        needsReplicant: true,
         allowedFilters: ["indicator_common_id", "admin_area_3"],
         config: {
           d: {
@@ -1199,7 +1087,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "82a91435-b090-4bfe-8477-fe864095155e",
       },
       {
         id: "disruption-differences-map",
@@ -1230,8 +1118,10 @@ export const metrics: MetricDefinitionGithub[] = [
             filterBy: [],
           },
           s: {
-            mapColorFrom: "#fee0d2",
-            mapColorTo: "#de2d26",
+            cfMode: "scale",
+            cfScalePaletteKind: "custom",
+            cfScaleCustomFrom: "#fee0d2",
+            cfScaleCustomTo: "#de2d26",
           },
           t: {
             caption: null,
@@ -1243,8 +1133,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "732d4f78-e53c-4c44-ac9f-234f616baa2c",
       },
     ],
     importantNotes: null,
@@ -1286,19 +1175,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Highly variable by sub-district. Expect greater volatility than higher geographic levels.",
         fr: "Très variable selon le sous-district. S'attendre à plus de volatilité que les niveaux géographiques supérieurs.",
       },
-      useCases: [
-        {
-          en: "Facility-catchment area analysis",
-          fr: "Analyse de la zone de desserte de l'établissement",
-        },
-      ],
-      relatedMetrics: ["m3-05-02"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_4 (both required). Only available when RUN_ADMIN_AREA_4_ANALYSIS enabled.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Disponible uniquement si RUN_ADMIN_AREA_4_ANALYSIS activé.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1311,7 +1192,6 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Area chart showing actual vs expected service volume, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs",
         },
-        needsReplicant: true,
         allowedFilters: ["indicator_common_id", "admin_area_4"],
         config: {
           d: {
@@ -1348,16 +1228,10 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "d4e1fad8-d7f4-46b3-8d56-7ca6b42a5cad",
       },
       {
         id: "disruption-chart-single-admin-area-4",
-            caption: null,
-            captionRelFontSize: null,
-            subCaption: null,
-            subCaptionRelFontSize: null,
-            footnote: null,
-            footnoteRelFontSize: null,
         label: {
           en: "Disruptions and surpluses (single Admin Area 4, multiple indicators)",
           fr: "Perturbations et excédents (unique Zone administrative 4, plusieurs indicateurs)",
@@ -1367,7 +1241,6 @@ export const metrics: MetricDefinitionGithub[] = [
           fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 4 et plusieurs indicateurs",
         },
         allowedFilters: ["indicator_common_id"],
-        needsReplicant: true,
         config: {
           d: {
             type: "timeseries",
@@ -1400,7 +1273,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "8eb6e1d5-8bb7-48a1-a91a-9e6573ef8640",
       },
     ],
     postAggregationExpression: null,
@@ -1455,19 +1328,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "±20-50% variation common; high volatility expected at this granular level.",
         fr: "Variation de ±20-50% commune; forte volatilité attendue à ce niveau granulaire.",
       },
-      useCases: [
-        {
-          en: "Facility-specific performance tracking",
-          fr: "Suivi de la performance spécifique à l'établissement",
-        },
-      ],
-      relatedMetrics: ["m3-05-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by indicator_common_id and admin_area_4 (both required). Interpret with caution due to small sample sizes.",
         fr: "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Interpréter avec prudence en raison de petites tailles d'échantillon.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -1480,7 +1345,6 @@ export const metrics: MetricDefinitionGithub[] = [
           en: "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
           fr: "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs",
         },
-        needsReplicant: true,
         allowedFilters: ["indicator_common_id", "admin_area_4"],
         config: {
           d: {
@@ -1517,7 +1381,7 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        createDefaultVisualizationOnInstall: null,
+        createDefaultVisualizationOnInstall: "45735c34-5dd4-43ee-baad-346c74751d4d",
       },
     ],
     importantNotes: null,

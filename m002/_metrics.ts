@@ -51,26 +51,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Percentage change reflects magnitude but not direction. Large changes may be appropriate if outliers were genuine data errors, but could also indicate over-correction if flagged values were valid.",
         fr: "Le changement en pourcentage reflète l'ampleur mais pas la direction. Les grands changements peuvent être appropriés si les aberrants étaient des erreurs.",
       },
-      useCases: [
-        {
-          en: "Assess impact of outlier correction on totals",
-          fr: "Évaluer l'impact de la correction des aberrants sur les totaux",
-        },
-        {
-          en: "Identify indicators most affected by outliers",
-          fr: "Identifier les indicateurs les plus affectés par les aberrants",
-        },
-        {
-          en: "Justify use of adjusted vs unadjusted data",
-          fr: "Justifier l'utilisation de données ajustées vs non ajustées",
-        },
-      ],
-      relatedMetrics: ["m2-01-02", "m2-01-03", "m1-01-01"],
       disaggregationGuidance: {
         en: "Disaggregate by indicator_common_id to identify which services are most affected by outlier adjustment. Use admin_area to find regions where outliers have larger impact. Time series analysis shows if adjustment impact changes over time.",
         fr: "Désagréger par indicator_common_id pour identifier quels services sont les plus affectés. Utiliser admin_area pour trouver les régions où l'impact est plus important.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -128,7 +112,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -184,26 +167,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Completeness adjustment assumes missing facilities have similar service volumes to reporting facilities. If non-reporting facilities systematically differ (e.g., closed or low-functioning), imputation may over- or under-estimate totals.",
         fr: "L'ajustement de complétude suppose que les établissements manquants ont des volumes similaires. Si les établissements non déclarants diffèrent systématiquement, l'imputation peut surestimer.",
       },
-      useCases: [
-        {
-          en: "Assess impact of incomplete reporting on totals",
-          fr: "Évaluer l'impact de la déclaration incomplète sur les totaux",
-        },
-        {
-          en: "Identify periods with major reporting gaps",
-          fr: "Identifier les périodes avec des lacunes de déclaration majeures",
-        },
-        {
-          en: "Compare adjusted vs unadjusted trend analysis",
-          fr: "Comparer l'analyse de tendance ajustée vs non ajustée",
-        },
-      ],
-      relatedMetrics: ["m2-01-01", "m2-01-03", "m1-02-02"],
       disaggregationGuidance: {
         en: "Disaggregate by indicator_common_id to see which services have most missing data. Use time periods to identify when reporting completeness deteriorated. Admin_area disaggregation reveals geographic reporting patterns.",
         fr: "Désagréger par indicator_common_id pour voir quels services ont le plus de données manquantes. Utiliser les périodes pour identifier quand la complétude s'est détériorée.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -261,7 +228,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -317,26 +283,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Combined adjustment effect is not simply additive - outlier and completeness adjustments interact. Large combined changes may indicate the need to verify that adjustments are appropriate rather than over-correcting.",
         fr: "L'effet d'ajustement combiné n'est pas simplement additif - les ajustements interagissent. Les grands changements combinés peuvent indiquer la nécessité de vérifier les ajustements.",
       },
-      useCases: [
-        {
-          en: "Assess overall data quality correction needs",
-          fr: "Évaluer les besoins globaux de correction de la qualité des données",
-        },
-        {
-          en: "Compare fully-adjusted vs raw data trends",
-          fr: "Comparer les tendances ajustées vs données brutes",
-        },
-        {
-          en: "Document magnitude of data cleaning for transparency",
-          fr: "Documenter l'ampleur du nettoyage des données pour la transparence",
-        },
-      ],
-      relatedMetrics: ["m2-01-01", "m2-01-02"],
       disaggregationGuidance: {
         en: "Disaggregate by indicator_common_id to identify indicators requiring most adjustment. Time series shows if data quality improves over time (decreasing adjustment percentages). Regional disaggregation reveals geographic patterns in data quality.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs nécessitant le plus d'ajustement. Les séries temporelles montrent si la qualité s'améliore.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -394,7 +344,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,

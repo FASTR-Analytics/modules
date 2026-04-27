@@ -2,6 +2,18 @@ import type { MetricDefinitionGithub } from "../.validation/_module_definition_g
 import { CF_01_03, CF_80_70, CF_90_80 } from "../.validation/cf_presets.ts";
 
 export const metrics: MetricDefinitionGithub[] = [
+  /////////////////////////////////////////////////////////////////////
+  //  __       __         ______     __           ______    ______   //
+  // /  \     /  |       /      \  _/  |         /      \  /      \  //
+  // $$  \   /$$ |      /$$$$$$  |/ $$ |        /$$$$$$  |/$$$$$$  | //
+  // $$$  \ /$$$ |      $$$  \$$ |$$$$ | ______ $$$  \$$ |$$$  \$$ | //
+  // $$$$  /$$$$ |      $$$$  $$ |  $$ |/      |$$$$  $$ |$$$$  $$ | //
+  // $$ $$ $$/$$ |      $$ $$ $$ |  $$ |$$$$$$/ $$ $$ $$ |$$ $$ $$ | //
+  // $$ |$$$/ $$ |      $$ \$$$$ | _$$ |_       $$ \$$$$ |$$ \$$$$ | //
+  // $$ | $/  $$ |      $$   $$$/ / $$   |      $$   $$$/ $$   $$$/  //
+  // $$/      $$/        $$$$$$/  $$$$$$/        $$$$$$/   $$$$$$/   //
+  //                                                                 //
+  /////////////////////////////////////////////////////////////////////
   {
     id: "m1-01-00",
     hide: true,
@@ -32,33 +44,29 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Varies by country size and time period selected.",
         fr: "Varie selon la taille du pays et la période sélectionnée.",
       },
-      useCases: [
-        {
-          en: "Assess data completeness",
-          fr: "Évaluer la complétude des données",
-        },
-        {
-          en: "Calculate reporting rates",
-          fr: "Calculer les taux de déclaration",
-        },
-        {
-          en: "Identify data gaps",
-          fr: "Identifier les lacunes de données",
-        },
-      ],
-      relatedMetrics: ["m1-02-02"],
       disaggregationGuidance: {
         en: "Disaggregate by admin_area to compare regional completeness. Use indicator_common_id to see which services have better reporting.",
         fr: "Désagréger par zone administrative pour comparer la complétude régionale.",
       },
       caveats: null,
-      importantNotes: null,
     },
     variantLabel: null,
     postAggregationExpression: null,
     importantNotes: null,
     vizPresets: [],
   },
+  ///////////////////////////////////////////////////////////////////
+  //  __       __         ______     __           ______     __    //
+  // /  \     /  |       /      \  _/  |         /      \  _/  |   //
+  // $$  \   /$$ |      /$$$$$$  |/ $$ |        /$$$$$$  |/ $$ |   //
+  // $$$  \ /$$$ |      $$$  \$$ |$$$$ | ______ $$$  \$$ |$$$$ |   //
+  // $$$$  /$$$$ |      $$$$  $$ |  $$ |/      |$$$$  $$ |  $$ |   //
+  // $$ $$ $$/$$ |      $$ $$ $$ |  $$ |$$$$$$/ $$ $$ $$ |  $$ |   //
+  // $$ |$$$/ $$ |      $$ \$$$$ | _$$ |_       $$ \$$$$ | _$$ |_  //
+  // $$ | $/  $$ |      $$   $$$/ / $$   |      $$   $$$/ / $$   | //
+  // $$/      $$/        $$$$$$/  $$$$$$/        $$$$$$/  $$$$$$/  //
+  //                                                               //
+  ///////////////////////////////////////////////////////////////////
   {
     id: "m1-01-01",
     resultsObjectId: "M1_output_outliers.csv",
@@ -94,27 +102,15 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Threshold is configurable in module parameters. Compare results using consistent thresholds. Low reporting may mask outliers.",
         fr: "Le seuil est configurable. Comparez les résultats avec des seuils cohérents.",
       },
-      useCases: [
-        {
-          en: "Assess overall data quality",
-          fr: "Évaluer la qualité globale des données",
-        },
-        {
-          en: "Identify facilities with reporting issues",
-          fr: "Identifier les établissements ayant des problèmes de déclaration",
-        },
-        {
-          en: "Track data quality improvements over time",
-          fr: "Suivre les améliorations de la qualité des données",
-        },
-      ],
-      relatedMetrics: ["m1-02-02", "m1-04-01"],
       disaggregationGuidance: {
         en: "Disaggregate by indicator_common_id to identify problem indicators. Use admin_area_2 for regional patterns. Combine with facility_type to see if certain facility types have more issues.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs problématiques. Utiliser admin_area_2 pour les tendances régionales.",
       },
-      importantNotes: null,
     },
+    variantLabel: null,
+    postAggregationExpression: null,
+    importantNotes: null,
+    hide: false,
     vizPresets: [
       {
         id: "outlier-table",
@@ -171,13 +167,62 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
+      },
+      {
+        id: "outlier-map",
+        label: {
+          en: "Outlier proportion map",
+          fr: "Carte de proportion de valeurs aberrantes",
+        },
+        description: {
+          en: "Map showing proportion of outliers by indicator and region",
+          fr: "Carte montrant la proportion de valeurs aberrantes par indicateur et région",
+        },
+        createDefaultVisualizationOnInstall:
+          "efc60afb-0b25-4e5e-95e4-e97754d3af83",
+        allowedFilters: [],
+        config: {
+          d: {
+            type: "map",
+            valuesDisDisplayOpt: "mapArea",
+            disaggregateBy: [
+              {
+                disOpt: "indicator_common_id",
+                disDisplayOpt: "replicant",
+              },
+              {
+                disOpt: "admin_area_2",
+                disDisplayOpt: "mapArea",
+              },
+            ],
+            filterBy: [],
+            periodFilter: { filterType: "last_n_months", nMonths: 12 },
+          },
+          s: {
+            ...CF_01_03,
+            decimalPlaces: 1,
+          },
+          t: {
+            caption: {
+              en: "Outliers",
+              fr: "Valeurs aberrantes",
+            },
+            subCaption: {
+              en: "Percentage of facility-months that are outliers, DATE_RANGE",
+              fr: "Pourcentage de mois-établissements qui sont des valeurs aberrantes, DATE_RANGE",
+            },
+            footnote: {
+              en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period  is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100.",
+              fr: "Les valeurs aberrantes sont des rapports anormalement élevés par rapport au volume habituel déclaré par l'établissement au cours des autres mois. Elles sont identifiées en évaluant la variation intra-établissement des déclarations mensuelles pour chaque indicateur. Les valeurs aberrantes sont définies comme des observations supérieures à 10 fois l'écart absolu médian (MAD) par rapport à la valeur médiane mensuelle de l'indicateur pour chaque période, OU une valeur dont la contribution proportionnelle au volume pour un établissement, indicateur et période est supérieure à 80%. Les valeurs aberrantes ne sont identifiées que pour les indicateurs dont le volume est supérieur ou égal à la médiane, le volume n'est pas manquant, et le volume moyen est supérieur à 100.",
+            },
+            captionRelFontSize: null,
+            subCaptionRelFontSize: null,
+            footnoteRelFontSize: null,
+          },
+        },
+        importantNotes: null,
       },
     ],
-    variantLabel: null,
-    postAggregationExpression: null,
-    importantNotes: null,
-    hide: false,
   },
   {
     id: "m1-02-02",
@@ -215,26 +260,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Definition of completeness can vary. Check module parameters for specific criteria used.",
         fr: "La définition de complétude peut varier. Vérifiez les paramètres du module.",
       },
-      useCases: [
-        {
-          en: "Monitor reporting compliance",
-          fr: "Surveiller la conformité des déclarations",
-        },
-        {
-          en: "Identify facilities needing support",
-          fr: "Identifier les établissements nécessitant un soutien",
-        },
-        {
-          en: "Assess data reliability for analysis",
-          fr: "Évaluer la fiabilité des données pour l'analyse",
-        },
-      ],
-      relatedMetrics: ["m1-01-01"],
       disaggregationGuidance: {
         en: "Disaggregate by admin_area to identify regions with reporting challenges. Use indicator_common_id to see if specific services have lower compliance.",
         fr: "Désagréger par zone administrative pour identifier les régions avec des défis de déclaration.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -292,7 +321,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
       {
         id: "completeness-timeseries",
@@ -343,7 +371,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -390,26 +417,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Different ratio types have different expected pass rates. Some inconsistency may be clinically valid (e.g., vaccine stock-outs).",
         fr: "Différents types de ratios ont différents taux de réussite attendus.",
       },
-      useCases: [
-        {
-          en: "Identify data quality issues",
-          fr: "Identifier les problèmes de qualité des données",
-        },
-        {
-          en: "Validate reporting accuracy",
-          fr: "Valider la précision des déclarations",
-        },
-        {
-          en: "Target training for facilities with issues",
-          fr: "Cibler la formation pour les établissements ayant des problèmes",
-        },
-      ],
-      relatedMetrics: ["m1-01-01"],
       disaggregationGuidance: {
         en: "Always disaggregate by ratio_type as each consistency check has different implications. Use admin_area to find regions with systematic issues.",
         fr: "Toujours désagréger par ratio_type car chaque contrôle de cohérence a des implications différentes.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -467,7 +478,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -510,26 +520,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Composite score weights may need adjustment based on local context. Consider individual components for detailed diagnosis.",
         fr: "Les poids du score composite peuvent nécessiter un ajustement selon le contexte local.",
       },
-      useCases: [
-        {
-          en: "Overall data quality monitoring",
-          fr: "Suivi global de la qualité des données",
-        },
-        {
-          en: "Identify priority facilities for support",
-          fr: "Identifier les établissements prioritaires pour le soutien",
-        },
-        {
-          en: "Track quality improvement programs",
-          fr: "Suivre les programmes d'amélioration de la qualité",
-        },
-      ],
-      relatedMetrics: ["m1-04-02", "m1-01-01", "m1-02-02"],
       disaggregationGuidance: {
         en: "Disaggregate by admin_area to identify regions needing quality improvement support. Use facility_type to see if certain facility levels have more challenges.",
         fr: "Désagréger par zone administrative pour identifier les régions nécessitant un soutien.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -586,7 +580,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -625,27 +618,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0.7-1.0 is good; 0.5-0.7 moderate; <0.5 indicates significant issues.",
         fr: "0.7-1.0 est bon; 0.5-0.7 modéré; <0.5 indique des problèmes significatifs.",
       },
-      useCases: [
-        {
-          en: "Track data quality trends",
-          fr: "Suivre les tendances de qualité des données",
-        },
-        {
-          en: "Compare regions or facility types",
-          fr: "Comparer les régions ou types d'établissements",
-        },
-        {
-          en: "Evaluate quality improvement interventions",
-          fr: "Évaluer les interventions d'amélioration de la qualité",
-        },
-      ],
-      relatedMetrics: ["m1-04-01"],
       disaggregationGuidance: {
         en: "Disaggregate by admin_area for regional comparison. Use time series to track improvement over time.",
         fr: "Désagréger par zone administrative pour comparaison régionale.",
       },
       caveats: null,
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -702,7 +679,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     variantLabel: null,
@@ -746,26 +722,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Absolute counts are less informative than proportions when comparing across different time periods or regions with varying reporting volumes.",
         fr: "Les comptes absolus sont moins informatifs que les proportions lors de comparaisons entre différentes périodes ou régions.",
       },
-      useCases: [
-        {
-          en: "Track total outlier burden over time",
-          fr: "Suivre le fardeau total des valeurs aberrantes au fil du temps",
-        },
-        {
-          en: "Identify indicators with most quality issues",
-          fr: "Identifier les indicateurs avec le plus de problèmes de qualité",
-        },
-        {
-          en: "Prioritize data quality improvement efforts",
-          fr: "Prioriser les efforts d'amélioration de la qualité des données",
-        },
-      ],
-      relatedMetrics: ["m1-01-01"],
       disaggregationGuidance: {
         en: "Disaggregate by indicator_common_id to identify problem indicators. Use admin_area to find regions with highest outlier counts. Combine with m1-01-01 for context.",
         fr: "Désagréger par indicator_common_id pour identifier les indicateurs problématiques. Utiliser admin_area pour trouver les régions avec le plus de valeurs aberrantes.",
       },
-      importantNotes: null,
     },
     variantLabel: null,
     postAggregationExpression: null,

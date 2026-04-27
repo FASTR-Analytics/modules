@@ -120,26 +120,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Denominator quality is critical for coverage estimation. Different sources use different assumptions (mortality rates, fertility rates, etc.). UNWPP denominators only available at national level. Survey-based denominators depend on survey coverage accuracy.",
         fr: "La qualité du dénominateur est critique pour l'estimation de couverture. Les dénominateurs UNWPP sont uniquement disponibles au niveau national.",
       },
-      useCases: [
-        {
-          en: "Assess population estimate uncertainty",
-          fr: "Évaluer l'incertitude de l'estimation de la population",
-        },
-        {
-          en: "Compare alternative denominator sources",
-          fr: "Comparer les sources de dénominateur alternatives",
-        },
-        {
-          en: "Select appropriate denominators for coverage calculation",
-          fr: "Sélectionner les dénominateurs appropriés pour le calcul de couverture",
-        },
-      ],
-      relatedMetrics: ["m4a-02-01", "m4a-01-02", "m4a-01-03"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
         fr: "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -189,7 +173,6 @@ export const metrics: MetricDefinitionGithub[] = [
           },
         },
         importantNotes: null,
-        needsReplicant: false,
       },
     ],
     postAggregationExpression: null,
@@ -311,23 +294,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Varies by region size and population. Proportional to national denominators.",
         fr: "Varie selon la taille de la région et la population. Proportionnel aux dénominateurs nationaux.",
       },
-      useCases: [
-        {
-          en: "Regional coverage calculation",
-          fr: "Calcul de couverture régionale",
-        },
-        {
-          en: "Assess subnational population estimate quality",
-          fr: "Évaluer la qualité des estimations de population sous-nationale",
-        },
-      ],
-      relatedMetrics: ["m4a-01-01", "m4a-02-02"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator, admin_area_2, and year (all required). Compare denominator sources to assess regional data quality.",
         fr: "Toujours désagréger par denominator, admin_area_2 et year (tous requis). Comparer les sources de dénominateur pour évaluer la qualité des données régionales.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,
@@ -449,19 +420,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Varies by district size. Smaller than admin area 2 denominators, proportional to population.",
         fr: "Varie selon la taille du district. Plus petit que les dénominateurs de zone administrative 2, proportionnel à la population.",
       },
-      useCases: [
-        {
-          en: "District-level coverage calculation",
-          fr: "Calcul de couverture au niveau du district",
-        },
-      ],
-      relatedMetrics: ["m4a-01-01", "m4a-02-03"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator, admin_area_3, and year (all required). Interpret with caution due to denominator uncertainty at this level.",
         fr: "Toujours désagréger par denominator, admin_area_3 et year (tous requis). Interpréter avec prudence en raison de l'incertitude du dénominateur à ce niveau.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,
@@ -591,26 +554,10 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "Denominator selection is subjective and affects results. The 'best' denominator minimizes squared error against surveys but may not be appropriate for all analytical purposes.",
         fr: "La sélection du dénominateur est subjective et affecte les résultats. Le 'meilleur' dénominateur minimise l'erreur quadratique mais peut ne pas être approprié pour tous les objectifs.",
       },
-      useCases: [
-        {
-          en: "Assess sensitivity to denominator choice",
-          fr: "Évaluer la sensibilité au choix du dénominateur",
-        },
-        {
-          en: "Validate HMIS data against survey benchmarks",
-          fr: "Valider les données HMIS contre les repères d'enquête",
-        },
-        {
-          en: "Select appropriate denominator for final coverage estimation",
-          fr: "Sélectionner le dénominateur approprié pour l'estimation de couverture finale",
-        },
-      ],
-      relatedMetrics: ["m4a-01-01", "m4a-02-02", "m4a-02-03"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator_best_or_survey, indicator_common_id, and year (all required). Compare 'best' vs 'survey' to validate denominator selection. Visualize all denominator types to assess range of plausible coverage estimates.",
         fr: "Toujours désagréger par denominator_best_or_survey, indicator_common_id et year (tous requis). Comparer 'meilleur' vs 'enquête' pour valider la sélection du dénominateur.",
       },
-      importantNotes: null,
     },
     vizPresets: [
       {
@@ -625,7 +572,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         createDefaultVisualizationOnInstall:
           "15ca88bd-6183-4e71-bb26-3277dd8eb02f",
-        needsReplicant: true,
         allowedFilters: ["denominator_best_or_survey"],
         config: {
           d: {
@@ -791,19 +737,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Variation across denominators indicates uncertainty in regional coverage estimates.",
         fr: "0-100%. La variation entre dénominateurs indique une incertitude dans les estimations de couverture régionale.",
       },
-      useCases: [
-        {
-          en: "Regional coverage sensitivity analysis",
-          fr: "Analyse de sensibilité de la couverture régionale",
-        },
-      ],
-      relatedMetrics: ["m4a-02-01", "m4a-01-02"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator_best_or_survey, admin_area_2, indicator_common_id, and year (all required). Compare denominator types to assess regional estimate uncertainty.",
         fr: "Toujours désagréger par denominator_best_or_survey, admin_area_2, indicator_common_id et year (tous requis). Comparer les types de dénominateur pour évaluer l'incertitude des estimations régionales.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,
@@ -930,19 +868,11 @@ export const metrics: MetricDefinitionGithub[] = [
         en: "0-100%. Wide variation across denominators common due to small sample sizes and denominator uncertainty.",
         fr: "0-100%. Variation large entre dénominateurs commune en raison de petites tailles d'échantillon et incertitude du dénominateur.",
       },
-      useCases: [
-        {
-          en: "District-level coverage sensitivity analysis",
-          fr: "Analyse de sensibilité de la couverture au niveau du district",
-        },
-      ],
-      relatedMetrics: ["m4a-02-01", "m4a-01-03"],
       disaggregationGuidance: {
         en: "Always disaggregate by denominator_best_or_survey, admin_area_3, indicator_common_id, and year (all required). High uncertainty at this level - consider aggregating to admin area 2.",
         fr: "Toujours désagréger par denominator_best_or_survey, admin_area_3, indicator_common_id et year (tous requis). Incertitude élevée à ce niveau - considérer l'agrégation à la zone administrative 2.",
       },
       caveats: null,
-      importantNotes: null,
     },
     postAggregationExpression: null,
     importantNotes: null,

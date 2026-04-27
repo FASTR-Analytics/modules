@@ -3,7 +3,6 @@ import type { ResultsObjectDefinitionGithub } from "../.validation/_module_defin
 export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   {
     id: "M5_denominators_national.csv",
-    description: "Selected denominators (National)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       year: "INTEGER NOT NULL",
@@ -15,7 +14,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_denominators_admin2.csv",
-    description: "Selected denominators (Admin area 2)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_2: "TEXT NOT NULL",
@@ -28,7 +26,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_denominators_admin3.csv",
-    description: "Selected denominators (Admin area 3)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_3: "TEXT NOT NULL",
@@ -41,7 +38,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_combined_results_national.csv",
-    description: "Selected denominators (National)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       year: "INTEGER NOT NULL",
@@ -52,7 +48,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_combined_results_admin2.csv",
-    description: "Selected denominators (National)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_2: "TEXT NOT NULL",
@@ -64,7 +59,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_combined_results_admin3.csv",
-    description: "Selected denominators (National)",
     createTableStatementPossibleColumns: {
       admin_area_1: "TEXT NOT NULL",
       admin_area_3: "TEXT NOT NULL",
@@ -76,7 +70,6 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
   },
   {
     id: "M5_selected_denominator_per_indicator.csv",
-    description: "Selected denominators",
     createTableStatementPossibleColumns: {
       indicator_common_id: "TEXT NOT NULL",
       denominator_national: "TEXT NOT NULL",

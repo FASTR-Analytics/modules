@@ -2,7 +2,10 @@ import type { ModuleParameter } from "../.validation/_module_definition_github.t
 
 export const parameters: ModuleParameter[] = [
   {
-    description: "Count value to use",
+    description: {
+      en: "Count value to use",
+      fr: "Valeur de comptage à utiliser",
+    },
     replacementString: "SELECTED_COUNT_VARIABLE",
     input: {
       inputType: "select",
@@ -27,8 +30,10 @@ export const parameters: ModuleParameter[] = [
   },
   {
     replacementString: "BIRTHS_PCT",
-    description:
-      "Quarterly births as proportion of total population (annual rate x 0.25)",
+    description: {
+      en: "Quarterly births as proportion of total population (annual rate x 0.25)",
+      fr: "Naissances trimestrielles en proportion de la population totale (taux annuel x 0,25)",
+    },
     input: {
       inputType: "number",
       defaultValue: "0.01",
@@ -36,8 +41,10 @@ export const parameters: ModuleParameter[] = [
   },
   {
     replacementString: "WOMEN_15_49_PCT",
-    description:
-      "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
+    description: {
+      en: "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
+      fr: "Femmes trimestrielles 15-49 ans en proportion de la population totale (taux annuel x 0,25)",
+    },
     input: {
       inputType: "number",
       defaultValue: "0.055",
@@ -45,7 +52,10 @@ export const parameters: ModuleParameter[] = [
   },
   {
     replacementString: "INTERPOLATE_POPULATION",
-    description: "Use smoothed (interpolated) population or raw annual values",
+    description: {
+      en: "Use smoothed (interpolated) population or raw annual values",
+      fr: "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes",
+    },
     input: {
       inputType: "select",
       valueType: "number",
