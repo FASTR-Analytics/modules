@@ -1,0 +1,148 @@
+import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";
+
+export const vizPresets: VizPreset[] = [
+  {
+    id: "values-table",
+    label: {
+      en: "Denominator values table",
+      fr: "Tableau des valeurs de dénominateur",
+    },
+    description: {
+      en: "Table of denominator values by source and year",
+      fr: "Tableau des valeurs de dénominateur par source et année",
+    },
+    createDefaultVisualizationOnInstall: "1f8d2940-803c-43f0-b17b-278b271d34a7",
+    allowedFilters: ["denominator", "source_indicator"],
+    config: {
+      d: {
+        type: "table",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "col",
+        disaggregateBy: [
+          {
+            disOpt: "denominator",
+            disDisplayOpt: "row",
+          },
+          {
+            disOpt: "year",
+            disDisplayOpt: "col",
+          },
+          {
+            disOpt: "source_indicator",
+            disDisplayOpt: "rowGroup",
+          },
+        ],
+        filterBy: [],
+      },
+      s: {
+        showDataLabels: true,
+      },
+      t: {
+        caption: null,
+        captionRelFontSize: null,
+        subCaption: null,
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+];
+
+export const metric: MetricDefinitionGithub = {
+  id: "m4a-01-01",
+  resultsObjectId: "M5_denominators_national.csv",
+  valueProps: ["value"],
+  valueFunc: "AVG",
+  valueLabelReplacements: {
+    best: "Best",
+    survey: "Survey",
+    danc1_birth: "Estimated number of total births (live + stillbirths) derived from HMIS data on ANC 1st visits.",
+    danc1_delivery: "Estimated number of deliveries derived from HMIS data on ANC 1st visits.",
+    danc1_dpt: "Estimated number of infants eligible for DPT1 derived from HMIS data on ANC 1st visits.",
+    danc1_livebirth: "Estimated number of live births derived from HMIS data on ANC 1st visits.",
+    danc1_measles1: "Estimated number of children eligible for measles dose 1 (MCV1) derived from HMIS data on ANC 1st visits.",
+    danc1_measles2: "Estimated number of children eligible for measles dose 2 (MCV2) derived from HMIS data on ANC 1st visits.",
+    danc1_pregnancy: "Estimated number of pregnancies derived from HMIS data on ANC 1st visits.",
+    dbcg_dpt: "Estimated number of infants eligible for DPT1 derived from HMIS data on BCG doses.",
+    dbcg_livebirth: "Estimated number of live births derived from HMIS data on BCG doses.",
+    dbcg_pregnancy: "Estimated number of pregnancies derived from HMIS data on BCG doses.",
+    ddelivery_birth: "Estimated number of total births (live + stillbirths) derived from HMIS data on institutional deliveries.",
+    ddelivery_dpt: "Estimated number of infants eligible for DPT1 derived from HMIS data on institutional deliveries.",
+    ddelivery_livebirth: "Estimated number of live births derived from HMIS data on institutional deliveries.",
+    ddelivery_measles1: "Estimated number of children eligible for measles dose 1 (MCV1) derived from HMIS data on institutional deliveries.",
+    ddelivery_measles2: "Estimated number of children eligible for measles dose 2 (MCV2) derived from HMIS data on institutional deliveries.",
+    ddelivery_pregnancy: "Estimated number of pregnancies derived from HMIS data on institutional deliveries.",
+    dlivebirths_birth: "Estimated number of total births (live + stillbirths) derived from HMIS data on live births.",
+    dlivebirths_delivery: "Estimated number of deliveries derived from HMIS data on live births.",
+    dlivebirths_dpt: "Estimated number of infants eligible for DPT1 derived from HMIS data on live births.",
+    dlivebirths_livebirth: "Estimated number of live births derived from HMIS data on live births.",
+    dlivebirths_measles1: "Estimated number of children eligible for measles dose 1 (MCV1) derived from HMIS data on live births.",
+    dlivebirths_measles2: "Estimated number of children eligible for measles dose 2 (MCV2) derived from HMIS data on live births.",
+    dlivebirths_pregnancy: "Estimated number of pregnancies derived from HMIS data on live births.",
+    dpenta1_dpt: "Estimated number of infants eligible for DPT1 derived from HMIS data on Penta-1 doses.",
+    dpenta1_measles1: "Estimated number of children eligible for measles dose 1 (MCV1) derived from HMIS data on Penta-1 doses.",
+    dpenta1_measles2: "Estimated number of children eligible for measles dose 2 (MCV2) derived from HMIS data on Penta-1 doses.",
+    dwpp_dpt: "Estimated number of infants eligible for DPT1 based on UN WPP estimates.",
+    dwpp_livebirth: "Estimated number of live births based on UN WPP estimates.",
+    dwpp_measles1: "Estimated number of children eligible for measles dose 1 (MCV1) based on UN WPP estimates.",
+    dwpp_measles2: "Estimated number of children eligible for measles dose 2 (MCV2) based on UN WPP estimates.",
+    dwpp_pregnancy: "Estimated number of pregnancies based on UN WPP estimates.",
+    source_anc1: "HMIS data on ANC 1st visits",
+    source_delivery: "HMIS data on institutional deliveries",
+    source_bcg: "HMIS data on BCG doses",
+    source_penta1: "HMIS data on Penta-1 doses",
+    source_wpp: "UN WPP estimates",
+    source_livebirths: "HMIS data on live births",
+    target_pregnancy: "Pregnancies",
+    target_delivery: "Deliveries",
+    target_birth: "Total births (live + stillbirths)",
+    target_livebirth: "Live births",
+    target_dpt: "Infants eligible for DPT1",
+    target_measles1: "Children eligible for measles dose 1 (MCV1)",
+    target_measles2: "Children eligible for measles dose 2 (MCV2)",
+    target_vitaminA: "Children aged 6-59 months eligible for Vitamin A supplementation",
+    target_fully_immunized: "Children under 1 year eligible for full immunization",
+  },
+  label: {
+    en: "Denominator values",
+    fr: "Valeurs de dénominateur",
+  },
+  variantLabel: {
+    en: "National",
+    fr: "National",
+  },
+  requiredDisaggregationOptions: ["denominator", "year"],
+  formatAs: "number",
+  aiDescription: {
+    summary: {
+      en: "Population denominators for coverage calculation at national level, derived from multiple sources and methods.",
+      fr: "Dénominateurs de population pour le calcul de couverture au niveau national, dérivés de multiples sources et méthodes.",
+    },
+    methodology: {
+      en: "AVG of denominator values from different sources: HMIS-derived (from ANC1, delivery, BCG, Penta1), UNWPP-based, and survey-based. Each denominator type represents a different method for estimating target populations (pregnancies, births, infants eligible for vaccination, etc.).",
+      fr: "Moyenne des valeurs de dénominateur de différentes sources: dérivées du HMIS (de ANC1, accouchement, BCG, Penta1), basées sur UNWPP, et basées sur enquête.",
+    },
+    interpretation: {
+      en: "Compare denominator values from different sources to assess consistency. Large discrepancies indicate uncertainty in population estimates. The 'best' denominator is selected to minimize error against survey coverage benchmarks. Use source_indicator and target_population disaggregation to understand denominator derivation.",
+      fr: "Comparer les valeurs de dénominateur de différentes sources pour évaluer la cohérence. Les grandes divergences indiquent une incertitude dans les estimations de population.",
+    },
+    typicalRange: {
+      en: "Varies by country size and indicator type. Pregnancy denominators typically 2-5% of total population; infant denominators 2-4%.",
+      fr: "Varie selon la taille du pays et le type d'indicateur. Dénominateurs de grossesse généralement 2-5% de la population totale; dénominateurs de nourrissons 2-4%.",
+    },
+    caveats: {
+      en: "Denominator quality is critical for coverage estimation. Different sources use different assumptions (mortality rates, fertility rates, etc.). UNWPP denominators only available at national level. Survey-based denominators depend on survey coverage accuracy.",
+      fr: "La qualité du dénominateur est critique pour l'estimation de couverture. Les dénominateurs UNWPP sont uniquement disponibles au niveau national.",
+    },
+    disaggregationGuidance: {
+      en: "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
+      fr: "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête.",
+    },
+  },
+  postAggregationExpression: null,
+  importantNotes: null,
+  hide: false,
+  vizPresets,
+};

@@ -669,7 +669,7 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
+              "content": "lines-area",
               "decimalPlaces": 1
             },
             "t": {

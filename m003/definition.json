@@ -718,8 +718,6 @@
               "filterBy": []
             },
             "s": {
-              "scale": 2.5,
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -897,7 +895,6 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -953,7 +950,6 @@
               "selectedReplicantValue": ""
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -997,10 +993,9 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": ""
+              "selectedReplicantValue": "anc1"
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -1180,7 +1175,8 @@
                   "disDisplayOpt": "replicant"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": "anc1"
             },
             "s": {
               "cfMode": "scale",
@@ -1290,7 +1286,6 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -1334,10 +1329,9 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": ""
+              "selectedReplicantValue": "anc1"
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -1449,7 +1443,8 @@
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": ""
             },
             "s": {
               "decimalPlaces": 0,
@@ -1521,7 +1516,8 @@
                   "disDisplayOpt": "replicant"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "selectedReplicantValue": "anc1"
             },
             "s": {
               "cfMode": "scale",
@@ -1631,7 +1627,6 @@
               "filterBy": []
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {
@@ -1675,10 +1670,9 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": ""
+              "selectedReplicantValue": "anc1"
             },
             "s": {
-              "content": "areas",
               "specialDisruptionsChart": true
             },
             "t": {

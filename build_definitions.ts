@@ -1,6 +1,7 @@
 import {
   ModuleDefinitionJSONSchema,
   type ModuleDefinitionGithub,
+  type MetricDefinitionGithub,
 } from "./.validation/_module_definition_github.ts";
 
 const root = new URL(".", import.meta.url);
@@ -12,12 +13,39 @@ for await (const entry of Deno.readDir(root)) {
 }
 moduleDirs.sort();
 
+async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGithub[]; errors: string[] }> {
+  const metricsFolderPath = new URL(`${dir}/_metrics/`, root);
+  try {
+    await Deno.stat(metricsFolderPath);
+  } catch {
+    const metricsMod = await import(`./${dir}/_metrics.ts`);
+    return { metrics: metricsMod.metrics, errors: [] };
+  }
+  const metrics: MetricDefinitionGithub[] = [];
+  const errors: string[] = [];
+  const files: string[] = [];
+  for await (const entry of Deno.readDir(metricsFolderPath)) {
+    if (entry.isFile && entry.name.endsWith(".ts")) {
+      files.push(entry.name);
+    }
+  }
+  files.sort();
+  for (const file of files) {
+    const expectedId = file.replace(/\.ts$/, "");
+    const mod = await import(`./${dir}/_metrics/${file}`);
+    if (mod.metric.id !== expectedId) {
+      errors.push(`${dir}/_metrics/${file}: metric.id "${mod.metric.id}" does not match filename "${expectedId}"`);
+    }
+    metrics.push(mod.metric);
+  }
+  return { metrics, errors };
+}
+
 let hadError = false;
 const allModules: { dir: string; def: ModuleDefinitionGithub }[] = [];
 
 for (const dir of moduleDirs) {
   const corePath = `./${dir}/_core.ts`;
-  const metricsPath = `./${dir}/_metrics.ts`;
   const resultsPath = `./${dir}/_results_objects.ts`;
   const parametersPath = `./${dir}/_parameters.ts`;
 
@@ -28,17 +56,25 @@ for (const dir of moduleDirs) {
     continue;
   }
 
-  const [coreMod, metricsMod, resultsMod, parametersMod] = await Promise.all([
+  const [coreMod, metricsResult, resultsMod, parametersMod] = await Promise.all([
     import(corePath),
-    import(metricsPath),
+    loadMetrics(dir),
     import(resultsPath),
     import(parametersPath),
   ]);
 
+  if (metricsResult.errors.length > 0) {
+    hadError = true;
+    for (const err of metricsResult.errors) {
+      console.error(`FAIL  ${err}`);
+    }
+    continue;
+  }
+
   const definition = {
     ...coreMod.core,
     resultsObjects: resultsMod.resultsObjects,
-    metrics: metricsMod.metrics,
+    metrics: metricsResult.metrics,
     configRequirements: { parameters: parametersMod.parameters },
   };
 
@@ -94,6 +130,29 @@ for (const { dir, def } of allModules) {
         hadError = true;
       } else {
         vizPresetIdsInMetric.add(preset.id);
+      }
+
+      // Check requiredDisaggregationOptions are in disaggregateBy
+      // Skip time-related options for timeseries type or if periodFilter is set
+      const disaggregateByOpts = new Set(preset.config.d.disaggregateBy.map(d => d.disOpt));
+      const timeOpts = new Set(["year", "period_id", "quarter_id"]);
+      const isTimeseries = preset.config.d.type === "timeseries";
+      const hasPeriodFilter = !!preset.config.d.periodFilter;
+      for (const required of metric.requiredDisaggregationOptions) {
+        if ((isTimeseries || hasPeriodFilter) && timeOpts.has(required)) continue;
+        if (!disaggregateByOpts.has(required)) {
+          console.error(`MISSING requiredDisaggregationOption "${required}" in ${location} disaggregateBy`);
+          hadError = true;
+        }
+      }
+
+      // Check replicant requires selectedReplicantValue (except for admin_area_* replicants)
+      const replicantDis = preset.config.d.disaggregateBy.find(d => d.disDisplayOpt === "replicant");
+      if (replicantDis && !replicantDis.disOpt.startsWith("admin_area_")) {
+        if (!preset.config.d.selectedReplicantValue) {
+          console.error(`MISSING selectedReplicantValue in ${location} (has replicant on ${replicantDis.disOpt})`);
+          hadError = true;
+        }
       }
 
       if (preset.createDefaultVisualizationOnInstall) {
