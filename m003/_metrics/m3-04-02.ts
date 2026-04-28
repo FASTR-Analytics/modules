@@ -2,6 +2,7 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
+import { CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
   {
@@ -38,32 +39,7 @@ export const vizPresets: VizPreset[] = [
         filterBy: [],
       },
       s: {
-        cfMode: "thresholds",
-        cfThresholdCutoffs: [-0.1, 0.1],
-        cfThresholdBuckets: [
-          {
-            color: "#F18989",
-          },
-          {
-            color: "#e0e0e0",
-          },
-          {
-            color: "#68C690",
-          },
-        ],
-        cfThresholdDirection: "higher-is-better",
-        cfThresholdNoDataColor: "#ffffff",
-        cfScalePaletteKind: "preset",
-        cfScalePalettePreset: "",
-        cfScaleCustomFrom: "",
-        cfScaleCustomMid: "",
-        cfScaleCustomTo: "",
-        cfScaleReverse: false,
-        cfScaleSteps: 0,
-        cfScaleDomainKind: "auto",
-        cfScaleDomainMin: 0,
-        cfScaleDomainMax: 1,
-        cfScaleNoDataColor: "",
+        ...CF_NEG10_POS10,
         decimalPlaces: 0,
       },
       t: {

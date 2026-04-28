@@ -2,6 +2,7 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
+import { CF_90_80 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
   ///////////////////////////////////////////////
@@ -51,32 +52,79 @@ export const vizPresets: VizPreset[] = [
       },
       s: {
         content: "lines",
-        cfMode: "thresholds",
-        cfThresholdCutoffs: [0.8, 0.9],
-        cfThresholdBuckets: [
+        ...CF_90_80,
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Internal consistency",
+          fr: "Cohérence interne",
+        },
+        subCaption: {
+          en: "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
+          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE",
+        },
+        footnote: {
+          en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
+          fr: "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
+        },
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  ///////////////////////////////////////
+  //  __       __                      //
+  // /  \     /  |                     //
+  // $$  \   /$$ |  ______    ______   //
+  // $$$  \ /$$$ | /      \  /      \  //
+  // $$$$  /$$$$ | $$$$$$  |/$$$$$$  | //
+  // $$ $$ $$/$$ | /    $$ |$$ |  $$ | //
+  // $$ |$$$/ $$ |/$$$$$$$ |$$ |__$$ | //
+  // $$ | $/  $$ |$$    $$ |$$    $$/  //
+  // $$/      $$/  $$$$$$$/ $$$$$$$/   //
+  //                        $$ |       //
+  //                        $$ |       //
+  //                        $$/        //
+  //                                   //
+  ///////////////////////////////////////
+  {
+    id: "consistency-map",
+    label: {
+      en: "Internal consistency map",
+      fr: "Carte de cohérence interne",
+    },
+    description: {
+      en: "Map showing consistency by ratio type and region",
+      fr: "Carte montrant la cohérence par type de ratio et région",
+    },
+    createDefaultVisualizationOnInstall: "a6c091c0-8df5-4dc9-aa5f-857c697310d1",
+    allowedFilters: [],
+    config: {
+      d: {
+        type: "map",
+        valuesDisDisplayOpt: "mapArea",
+        disaggregateBy: [
           {
-            color: "#F18989",
+            disOpt: "ratio_type",
+            disDisplayOpt: "replicant",
           },
           {
-            color: "#F6D982",
-          },
-          {
-            color: "#68C690",
+            disOpt: "admin_area_2",
+            disDisplayOpt: "mapArea",
           },
         ],
-        cfThresholdDirection: "higher-is-better",
-        cfThresholdNoDataColor: "#ffffff",
-        cfScalePaletteKind: "preset",
-        cfScalePalettePreset: "",
-        cfScaleCustomFrom: "",
-        cfScaleCustomMid: "",
-        cfScaleCustomTo: "",
-        cfScaleReverse: false,
-        cfScaleSteps: 0,
-        cfScaleDomainKind: "auto",
-        cfScaleDomainMin: 0,
-        cfScaleDomainMax: 1,
-        cfScaleNoDataColor: "",
+        selectedReplicantValue: "anc1_anc4",
+        filterBy: [],
+        periodFilter: {
+          filterType: "last_n_months",
+          nMonths: 12,
+        },
+      },
+      s: {
+        ...CF_90_80,
         decimalPlaces: 1,
       },
       t: {

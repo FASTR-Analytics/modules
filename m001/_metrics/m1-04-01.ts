@@ -2,6 +2,7 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
+import { CF_80_70 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
   ///////////////////////////////////////////////
@@ -26,7 +27,7 @@ export const vizPresets: VizPreset[] = [
       en: "Table showing DQA scores by region and year",
       fr: "Tableau montrant les scores EQD par région et année",
     },
-    createDefaultVisualizationOnInstall: "d46e1957-09dd-41c3-b7dc-b4409da23bbe",
+    createDefaultVisualizationOnInstall: "MAKE THIS FOR ME",
     allowedFilters: ["admin_area_2"],
     config: {
       d: {
@@ -47,32 +48,7 @@ export const vizPresets: VizPreset[] = [
       },
       s: {
         content: "lines",
-        cfMode: "thresholds",
-        cfThresholdCutoffs: [0.7, 0.8],
-        cfThresholdBuckets: [
-          {
-            color: "#F18989",
-          },
-          {
-            color: "#F6D982",
-          },
-          {
-            color: "#68C690",
-          },
-        ],
-        cfThresholdDirection: "higher-is-better",
-        cfThresholdNoDataColor: "#ffffff",
-        cfScalePaletteKind: "preset",
-        cfScalePalettePreset: "",
-        cfScaleCustomFrom: "",
-        cfScaleCustomMid: "",
-        cfScaleCustomTo: "",
-        cfScaleReverse: false,
-        cfScaleSteps: 0,
-        cfScaleDomainKind: "auto",
-        cfScaleDomainMin: 0,
-        cfScaleDomainMax: 1,
-        cfScaleNoDataColor: "",
+        ...CF_80_70,
         decimalPlaces: 1,
       },
       t: {
@@ -83,6 +59,73 @@ export const vizPresets: VizPreset[] = [
         subCaption: {
           en: "Percentage of facility-months with adequate data quality over time",
           fr: "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps",
+        },
+        footnote: {
+          en: "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",
+          fr: "La qualité adéquate des données est définie comme : 1) Pas de données manquantes ou de valeurs aberrantes pour OPD, Penta1 et ANC1, lorsque disponibles 2) Déclaration cohérente entre Penta1/Penta3 et ANC1/ANC4.",
+        },
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  ///////////////////////////////////////
+  //  __       __                      //
+  // /  \     /  |                     //
+  // $$  \   /$$ |  ______    ______   //
+  // $$$  \ /$$$ | /      \  /      \  //
+  // $$$$  /$$$$ | $$$$$$  |/$$$$$$  | //
+  // $$ $$ $$/$$ | /    $$ |$$ |  $$ | //
+  // $$ |$$$/ $$ |/$$$$$$$ |$$ |__$$ | //
+  // $$ | $/  $$ |$$    $$ |$$    $$/  //
+  // $$/      $$/  $$$$$$$/ $$$$$$$/   //
+  //                        $$ |       //
+  //                        $$ |       //
+  //                        $$/        //
+  //                                   //
+  ///////////////////////////////////////
+  {
+    id: "dqa-score-map",
+    label: {
+      en: "Overall DQA score map",
+      fr: "Carte du score EQD global",
+    },
+    description: {
+      en: "Map showing DQA scores by region",
+      fr: "Carte montrant les scores EQD par région",
+    },
+    createDefaultVisualizationOnInstall: "7f08fbde-48e6-44d3-b1db-8771d96120c6",
+    allowedFilters: [],
+    config: {
+      d: {
+        type: "map",
+        valuesDisDisplayOpt: "mapArea",
+        disaggregateBy: [
+          {
+            disOpt: "admin_area_2",
+            disDisplayOpt: "mapArea",
+          },
+        ],
+        filterBy: [],
+        periodFilter: {
+          filterType: "last_n_months",
+          nMonths: 12,
+        },
+      },
+      s: {
+        ...CF_80_70,
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Overall DQA score",
+          fr: "Score EQD global",
+        },
+        subCaption: {
+          en: "Percentage of facility-months with adequate data quality, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec une qualité des données adéquate, DATE_RANGE",
         },
         footnote: {
           en: "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",

@@ -1,4 +1,5 @@
 import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";
+import { CF_01_03, CF_05_10, CF_10_20, CF_80_70, CF_90_80, CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
   {
@@ -34,32 +35,7 @@ export const vizPresets: VizPreset[] = [
         filterBy: [],
       },
       s: {
-        cfMode: "thresholds",
-        cfThresholdCutoffs: [-0.1, 0.1],
-        cfThresholdBuckets: [
-          {
-            color: "#F18989",
-          },
-          {
-            color: "#e0e0e0",
-          },
-          {
-            color: "#68C690",
-          },
-        ],
-        cfThresholdDirection: "higher-is-better",
-        cfThresholdNoDataColor: "#ffffff",
-        cfScalePaletteKind: "preset",
-        cfScalePalettePreset: "",
-        cfScaleCustomFrom: "",
-        cfScaleCustomMid: "",
-        cfScaleCustomTo: "",
-        cfScaleReverse: false,
-        cfScaleSteps: 0,
-        cfScaleDomainKind: "auto",
-        cfScaleDomainMin: 0,
-        cfScaleDomainMax: 1,
-        cfScaleNoDataColor: "",
+        ...CF_NEG10_POS10,
         decimalPlaces: 0,
       },
       t: {

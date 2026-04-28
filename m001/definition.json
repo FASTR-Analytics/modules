@@ -690,6 +690,91 @@
               "footnoteRelFontSize": null
             }
           }
+        },
+        {
+          "id": "completeness-map",
+          "label": {
+            "en": "Completeness map by region",
+            "fr": "Carte de complétude par région"
+          },
+          "description": {
+            "en": "Map showing completeness by indicator and region",
+            "fr": "Carte montrant la complétude par indicateur et région"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "f9d926c9-e9d9-41b8-bca9-c3ae252ab259",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "mapArea",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "mapArea"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              },
+              "selectedReplicantValue": "anc1"
+            },
+            "s": {
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.8,
+                0.9
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#68C690"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Indicator Completeness",
+                "fr": "Complétude des indicateurs"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage of facility-months with complete data, DATE_RANGE",
+                "fr": "Pourcentage de mois-établissements avec des données complètes, DATE_RANGE"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",
+                "fr": "Une complétude élevée améliore la fiabilité des données, surtout lorsqu'elle est stable dans le temps. La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. Une complétude élevée n'indique pas que le HMIS est représentatif de toute la prestation de services dans le pays, car certains services peuvent ne pas être fournis dans les établissements, ou certains établissements peuvent ne pas déclarer."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
         }
       ],
       "hide": false
@@ -834,6 +919,91 @@
               "footnoteRelFontSize": null
             }
           }
+        },
+        {
+          "id": "consistency-map",
+          "label": {
+            "en": "Internal consistency map",
+            "fr": "Carte de cohérence interne"
+          },
+          "description": {
+            "en": "Map showing consistency by ratio type and region",
+            "fr": "Carte montrant la cohérence par type de ratio et région"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "a6c091c0-8df5-4dc9-aa5f-857c697310d1",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "mapArea",
+              "disaggregateBy": [
+                {
+                  "disOpt": "ratio_type",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "mapArea"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              },
+              "selectedReplicantValue": "anc1_anc4"
+            },
+            "s": {
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.8,
+                0.9
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#68C690"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Internal consistency",
+                "fr": "Cohérence interne"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
+                "fr": "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
+                "fr": "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
         }
       ],
       "hide": false
@@ -898,7 +1068,7 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "d46e1957-09dd-41c3-b7dc-b4409da23bbe",
+          "createDefaultVisualizationOnInstall": "MAKE THIS FOR ME",
           "config": {
             "d": {
               "type": "table",
@@ -958,6 +1128,86 @@
               "subCaption": {
                 "en": "Percentage of facility-months with adequate data quality over time",
                 "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",
+                "fr": "La qualité adéquate des données est définie comme : 1) Pas de données manquantes ou de valeurs aberrantes pour OPD, Penta1 et ANC1, lorsque disponibles 2) Déclaration cohérente entre Penta1/Penta3 et ANC1/ANC4."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "dqa-score-map",
+          "label": {
+            "en": "Overall DQA score map",
+            "fr": "Carte du score EQD global"
+          },
+          "description": {
+            "en": "Map showing DQA scores by region",
+            "fr": "Carte montrant les scores EQD par région"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "7f08fbde-48e6-44d3-b1db-8771d96120c6",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "mapArea",
+              "disaggregateBy": [
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "mapArea"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              }
+            },
+            "s": {
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.7,
+                0.8
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#68C690"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Overall DQA score",
+                "fr": "Score EQD global"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage of facility-months with adequate data quality, DATE_RANGE",
+                "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate, DATE_RANGE"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -1088,6 +1338,86 @@
               "subCaption": {
                 "en": "Average data quality score across facility-months",
                 "fr": "Score moyen de qualité des données à travers les mois-établissements"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",
+                "fr": "Les éléments inclus dans le score EQD comprennent : Pas de données manquantes pour 1) OPD, 2) Penta1 et 3) ANC1, lorsque disponibles ; Pas de valeurs aberrantes pour 4) OPD, 5) Penta1 et 6) ANC1, lorsque disponibles ; Déclaration cohérente entre 7) Penta1/Penta3, 8) ANC1/ANC4, 9) BCG/Accouchement, lorsque disponibles."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "mean-dqa-map",
+          "label": {
+            "en": "Mean DQA score map",
+            "fr": "Carte du score EQD moyen"
+          },
+          "description": {
+            "en": "Map showing mean DQA scores by region",
+            "fr": "Carte montrant les scores EQD moyens par région"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "0730bd53-f951-4286-83ef-5b299395912c",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "mapArea",
+              "disaggregateBy": [
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "mapArea"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              }
+            },
+            "s": {
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.7,
+                0.8
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#F6D982"
+                },
+                {
+                  "color": "#68C690"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Mean DQA score",
+                "fr": "Score EQD moyen"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Average data quality score across facility-months, DATE_RANGE",
+                "fr": "Score moyen de qualité des données à travers les mois-établissements, DATE_RANGE"
               },
               "subCaptionRelFontSize": null,
               "footnote": {

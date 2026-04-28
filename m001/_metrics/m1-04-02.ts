@@ -2,6 +2,7 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
+import { CF_80_70 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
   ///////////////////////////////////////////////
@@ -47,32 +48,7 @@ export const vizPresets: VizPreset[] = [
       },
       s: {
         content: "lines",
-        cfMode: "thresholds",
-        cfThresholdCutoffs: [0.7, 0.8],
-        cfThresholdBuckets: [
-          {
-            color: "#F18989",
-          },
-          {
-            color: "#F6D982",
-          },
-          {
-            color: "#68C690",
-          },
-        ],
-        cfThresholdDirection: "higher-is-better",
-        cfThresholdNoDataColor: "#ffffff",
-        cfScalePaletteKind: "preset",
-        cfScalePalettePreset: "",
-        cfScaleCustomFrom: "",
-        cfScaleCustomMid: "",
-        cfScaleCustomTo: "",
-        cfScaleReverse: false,
-        cfScaleSteps: 0,
-        cfScaleDomainKind: "auto",
-        cfScaleDomainMin: 0,
-        cfScaleDomainMax: 1,
-        cfScaleNoDataColor: "",
+        ...CF_80_70,
         decimalPlaces: 1,
       },
       t: {
@@ -83,6 +59,73 @@ export const vizPresets: VizPreset[] = [
         subCaption: {
           en: "Average data quality score across facility-months",
           fr: "Score moyen de qualité des données à travers les mois-établissements",
+        },
+        footnote: {
+          en: "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",
+          fr: "Les éléments inclus dans le score EQD comprennent : Pas de données manquantes pour 1) OPD, 2) Penta1 et 3) ANC1, lorsque disponibles ; Pas de valeurs aberrantes pour 4) OPD, 5) Penta1 et 6) ANC1, lorsque disponibles ; Déclaration cohérente entre 7) Penta1/Penta3, 8) ANC1/ANC4, 9) BCG/Accouchement, lorsque disponibles.",
+        },
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  ///////////////////////////////////////
+  //  __       __                      //
+  // /  \     /  |                     //
+  // $$  \   /$$ |  ______    ______   //
+  // $$$  \ /$$$ | /      \  /      \  //
+  // $$$$  /$$$$ | $$$$$$  |/$$$$$$  | //
+  // $$ $$ $$/$$ | /    $$ |$$ |  $$ | //
+  // $$ |$$$/ $$ |/$$$$$$$ |$$ |__$$ | //
+  // $$ | $/  $$ |$$    $$ |$$    $$/  //
+  // $$/      $$/  $$$$$$$/ $$$$$$$/   //
+  //                        $$ |       //
+  //                        $$ |       //
+  //                        $$/        //
+  //                                   //
+  ///////////////////////////////////////
+  {
+    id: "mean-dqa-map",
+    label: {
+      en: "Mean DQA score map",
+      fr: "Carte du score EQD moyen",
+    },
+    description: {
+      en: "Map showing mean DQA scores by region",
+      fr: "Carte montrant les scores EQD moyens par région",
+    },
+    createDefaultVisualizationOnInstall: "0730bd53-f951-4286-83ef-5b299395912c",
+    allowedFilters: [],
+    config: {
+      d: {
+        type: "map",
+        valuesDisDisplayOpt: "mapArea",
+        disaggregateBy: [
+          {
+            disOpt: "admin_area_2",
+            disDisplayOpt: "mapArea",
+          },
+        ],
+        filterBy: [],
+        periodFilter: {
+          filterType: "last_n_months",
+          nMonths: 12,
+        },
+      },
+      s: {
+        ...CF_80_70,
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Mean DQA score",
+          fr: "Score EQD moyen",
+        },
+        subCaption: {
+          en: "Average data quality score across facility-months, DATE_RANGE",
+          fr: "Score moyen de qualité des données à travers les mois-établissements, DATE_RANGE",
         },
         footnote: {
           en: "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",
