@@ -448,7 +448,8 @@
               "periodFilter": {
                 "filterType": "last_n_months",
                 "nMonths": 12
-              }
+              },
+              "selectedReplicantValue": "anc1"
             },
             "s": {
               "decimalPlaces": 1,

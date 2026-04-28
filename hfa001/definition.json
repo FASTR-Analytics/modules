@@ -24,7 +24,7 @@
         "admin_area_1": "TEXT NOT NULL",
         "hfa_indicator": "TEXT NOT NULL",
         "hfa_category": "TEXT NOT NULL",
-        "time_point": "INTEGER NOT NULL",
+        "time_point": "TEXT NOT NULL",
         "facility_ownership": "TEXT NOT NULL",
         "facility_type": "TEXT NOT NULL",
         "facility_custom_1": "TEXT NOT NULL",
@@ -40,19 +40,14 @@
     {
       "id": "hfa001-percentage",
       "resultsObjectId": "HFA001_results.csv",
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "AVG",
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (percentage/proportion) - use for binary indicators",
         "fr": "Indicateurs HFA (pourcentage/proportion) - utiliser pour les indicateurs binaires"
       },
-      "requiredDisaggregationOptions": [
-        "hfa_indicator",
-        "time_point"
-      ],
+      "requiredDisaggregationOptions": ["hfa_indicator", "time_point"],
       "formatAs": "percent",
       "aiDescription": {
         "summary": {
@@ -89,9 +84,7 @@
             "fr": "Identifier les lacunes dans la capacit\u00e9 de prestation de services"
           }
         ],
-        "relatedMetrics": [
-          "hfa001-count"
-        ],
+        "relatedMetrics": ["hfa001-count"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point (both required). Use admin_area to compare regional readiness. Disaggregate by facility_type or facility_ownership to identify disparities between facility levels or public/private sectors.",
           "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point (tous deux requis). Utiliser admin_area pour comparer la pr\u00e9paration r\u00e9gionale."
@@ -107,19 +100,14 @@
     {
       "id": "hfa001-average",
       "resultsObjectId": "HFA001_results.csv",
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "AVG",
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (mean/average value) - use for averaging numeric indicators",
         "fr": "Indicateurs HFA (valeur moyenne) - utiliser pour les indicateurs num\u00e9riques moyens"
       },
-      "requiredDisaggregationOptions": [
-        "hfa_indicator",
-        "time_point"
-      ],
+      "requiredDisaggregationOptions": ["hfa_indicator", "time_point"],
       "formatAs": "number",
       "aiDescription": {
         "summary": {
@@ -156,10 +144,7 @@
             "fr": "Surveiller l'\u00e9quit\u00e9 de la distribution des ressources"
           }
         ],
-        "relatedMetrics": [
-          "hfa001-total",
-          "hfa001-count"
-        ],
+        "relatedMetrics": ["hfa001-total", "hfa001-count"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point. Disaggregate by facility_type to avoid misleading averages that mix hospitals with health posts. Use admin_area for regional comparisons.",
           "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point. D\u00e9sagr\u00e9ger par facility_type pour \u00e9viter des moyennes trompeuses."
@@ -175,19 +160,14 @@
     {
       "id": "hfa001-total",
       "resultsObjectId": "HFA001_results.csv",
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "SUM",
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (total/sum) - use for summing numeric values",
         "fr": "Indicateurs HFA (total/somme) - utiliser pour additionner les valeurs num\u00e9riques"
       },
-      "requiredDisaggregationOptions": [
-        "hfa_indicator",
-        "time_point"
-      ],
+      "requiredDisaggregationOptions": ["hfa_indicator", "time_point"],
       "formatAs": "number",
       "aiDescription": {
         "summary": {
@@ -224,10 +204,7 @@
             "fr": "Planifier l'allocation et la distribution des ressources"
           }
         ],
-        "relatedMetrics": [
-          "hfa001-average",
-          "hfa001-count"
-        ],
+        "relatedMetrics": ["hfa001-average", "hfa001-count"],
         "disaggregationGuidance": {
           "en": "Always disaggregate by hfa_indicator and time_point. Use admin_area for regional totals. Combine with population data to calculate per-capita resource availability. Disaggregate by facility_type to understand resource concentration.",
           "fr": "Toujours d\u00e9sagr\u00e9ger par hfa_indicator et time_point. Utiliser admin_area pour les totaux r\u00e9gionaux."
@@ -243,19 +220,14 @@
     {
       "id": "hfa001-count",
       "resultsObjectId": "HFA001_results.csv",
-      "valueProps": [
-        "value"
-      ],
+      "valueProps": ["value"],
       "valueFunc": "COUNT",
       "valueLabelReplacements": {},
       "label": {
         "en": "HFA indicators (record count) - useful for data quality checks",
         "fr": "Indicateurs HFA (nombre d'enregistrements) - utile pour les contr\u00f4les de qualit\u00e9 des donn\u00e9es"
       },
-      "requiredDisaggregationOptions": [
-        "hfa_indicator",
-        "time_point"
-      ],
+      "requiredDisaggregationOptions": ["hfa_indicator", "time_point"],
       "formatAs": "number",
       "aiDescription": {
         "summary": {

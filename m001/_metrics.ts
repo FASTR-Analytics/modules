@@ -197,6 +197,7 @@ export const metrics: MetricDefinitionGithub[] = [
             ],
             filterBy: [],
             periodFilter: { filterType: "last_n_months", nMonths: 12 },
+            selectedReplicantValue: "anc1",
           },
           s: {
             ...CF_01_03,
