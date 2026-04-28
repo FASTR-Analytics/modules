@@ -57,12 +57,12 @@ export const vizPresets: VizPreset[] = [
   {
     id: "disruption-differences-map",
     label: {
-      en: "Disruption map by admin area",
-      fr: "Carte des perturbations par zone administrative",
+      en: "Service disruption map",
+      fr: "Carte des perturbations de services",
     },
     description: {
-      en: "Map showing disruption levels by admin area for a single indicator and time period",
-      fr: "Carte montrant les niveaux de perturbation par zone administrative pour un indicateur et une période unique",
+      en: "Map showing difference between actual and expected service volume by district",
+      fr: "Carte montrant la différence entre le volume de services réel et attendu par district",
     },
     allowedFilters: [],
     config: {
@@ -90,11 +90,20 @@ export const vizPresets: VizPreset[] = [
         cfScaleCustomTo: "#de2d26",
       },
       t: {
-        caption: null,
+        caption: {
+          en: "Service disruption",
+          fr: "Perturbation des services",
+        },
+        subCaption: {
+          en: "Percentage difference between actual and expected service volume by district",
+          fr: "Différence en pourcentage entre le volume de services réel et attendu par district",
+        },
+        footnote: {
+          en: "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
+          fr: "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes.",
+        },
         captionRelFontSize: null,
-        subCaption: null,
         subCaptionRelFontSize: null,
-        footnote: null,
         footnoteRelFontSize: null,
       },
     },

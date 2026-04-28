@@ -1150,12 +1150,12 @@
         {
           "id": "disruption-differences-map",
           "label": {
-            "en": "Disruption map by admin area",
-            "fr": "Carte des perturbations par zone administrative"
+            "en": "Service disruption map",
+            "fr": "Carte des perturbations de services"
           },
           "description": {
-            "en": "Map showing disruption levels by admin area for a single indicator and time period",
-            "fr": "Carte montrant les niveaux de perturbation par zone administrative pour un indicateur et une période unique"
+            "en": "Map showing difference between actual and expected service volume by region",
+            "fr": "Carte montrant la différence entre le volume de services réel et attendu par région"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1185,11 +1185,20 @@
               "cfScaleCustomTo": "#de2d26"
             },
             "t": {
-              "caption": null,
+              "caption": {
+                "en": "Service disruption",
+                "fr": "Perturbation des services"
+              },
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "Percentage difference between actual and expected service volume by region",
+                "fr": "Différence en pourcentage entre le volume de services réel et attendu par région"
+              },
               "subCaptionRelFontSize": null,
-              "footnote": null,
+              "footnote": {
+                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
+                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes."
+              },
               "footnoteRelFontSize": null
             }
           }
@@ -1491,12 +1500,12 @@
         {
           "id": "disruption-differences-map",
           "label": {
-            "en": "Disruption map by admin area",
-            "fr": "Carte des perturbations par zone administrative"
+            "en": "Service disruption map",
+            "fr": "Carte des perturbations de services"
           },
           "description": {
-            "en": "Map showing disruption levels by admin area for a single indicator and time period",
-            "fr": "Carte montrant les niveaux de perturbation par zone administrative pour un indicateur et une période unique"
+            "en": "Map showing difference between actual and expected service volume by district",
+            "fr": "Carte montrant la différence entre le volume de services réel et attendu par district"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1526,11 +1535,20 @@
               "cfScaleCustomTo": "#de2d26"
             },
             "t": {
-              "caption": null,
+              "caption": {
+                "en": "Service disruption",
+                "fr": "Perturbation des services"
+              },
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "Percentage difference between actual and expected service volume by district",
+                "fr": "Différence en pourcentage entre le volume de services réel et attendu par district"
+              },
               "subCaptionRelFontSize": null,
-              "footnote": null,
+              "footnote": {
+                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
+                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes."
+              },
               "footnoteRelFontSize": null
             }
           }

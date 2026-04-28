@@ -356,14 +356,12 @@
           },
           "importantNotes": null,
           "allowedFilters": [
-            "denominator",
-            "source_indicator"
+            "denominator"
           ],
           "createDefaultVisualizationOnInstall": "1f8d2940-803c-43f0-b17b-278b271d34a7",
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -373,10 +371,6 @@
                 {
                   "disOpt": "year",
                   "disDisplayOpt": "col"
-                },
-                {
-                  "disOpt": "source_indicator",
-                  "disDisplayOpt": "rowGroup"
                 }
               ],
               "filterBy": []

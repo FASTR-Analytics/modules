@@ -952,7 +952,7 @@
                 "filterType": "last_n_months",
                 "nMonths": 12
               },
-              "selectedReplicantValue": "anc1_anc4"
+              "selectedReplicantValue": "pair_anc"
             },
             "s": {
               "decimalPlaces": 1,

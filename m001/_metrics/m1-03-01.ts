@@ -116,7 +116,7 @@ export const vizPresets: VizPreset[] = [
             disDisplayOpt: "mapArea",
           },
         ],
-        selectedReplicantValue: "anc1_anc4",
+        selectedReplicantValue: "pair_anc",
         filterBy: [],
         periodFilter: {
           filterType: "last_n_months",
