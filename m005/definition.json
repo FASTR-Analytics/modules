@@ -356,7 +356,8 @@
           },
           "importantNotes": null,
           "allowedFilters": [
-            "denominator"
+            "denominator",
+            "source_indicator"
           ],
           "createDefaultVisualizationOnInstall": "1f8d2940-803c-43f0-b17b-278b271d34a7",
           "config": {
@@ -371,6 +372,10 @@
                 {
                   "disOpt": "year",
                   "disDisplayOpt": "col"
+                },
+                {
+                  "disOpt": "source_indicator",
+                  "disDisplayOpt": "rowGroup"
                 }
               ],
               "filterBy": []

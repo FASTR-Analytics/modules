@@ -12,7 +12,7 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau des valeurs de dénominateur par source et année",
     },
     createDefaultVisualizationOnInstall: "1f8d2940-803c-43f0-b17b-278b271d34a7",
-    allowedFilters: ["denominator"],
+    allowedFilters: ["denominator", "source_indicator"],
     config: {
       d: {
         type: "table",
@@ -25,6 +25,10 @@ export const vizPresets: VizPreset[] = [
           {
             disOpt: "year",
             disDisplayOpt: "col",
+          },
+          {
+            disOpt: "source_indicator",
+            disDisplayOpt: "rowGroup",
           },
         ],
         filterBy: [],
