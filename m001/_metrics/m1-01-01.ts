@@ -24,8 +24,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau de proportion de valeurs aberrantes",
     },
     description: {
-      en: "Table showing proportion of outliers by indicator and region",
-      fr: "Tableau montrant la proportion de valeurs aberrantes par indicateur et région",
+      en: "Table showing proportion of outliers by indicator and Admin Area 2",
+      fr: "Tableau montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "c3cb0cc9-4352-4b27-8532-f18e465faec8",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
@@ -62,7 +62,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months that are outliers, DATE_RANGE",
-          fr: "Pourcentage de mois-établissements qui sont des valeurs aberrantes, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements qui sont des valeurs aberrantes, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period  is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100.",
@@ -97,8 +97,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte de proportion de valeurs aberrantes",
     },
     description: {
-      en: "Map showing proportion of outliers by indicator and region",
-      fr: "Carte montrant la proportion de valeurs aberrantes par indicateur et région",
+      en: "Map showing proportion of outliers by indicator and Admin Area 2",
+      fr: "Carte montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "efc60afb-0b25-4e5e-95e4-e97754d3af83",
     allowedFilters: [],
@@ -134,7 +134,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months that are outliers, DATE_RANGE",
-          fr: "Pourcentage de mois-établissements qui sont des valeurs aberrantes, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements qui sont des valeurs aberrantes, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period  is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100.",

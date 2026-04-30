@@ -36,9 +36,11 @@ const CF_BASE_SCALE_FIELDS: Pick<
   cfScaleNoDataColor: "",
 };
 
+type ColorKeyOrString = string | { key: string };
+
 function thresholds(
   cutoffs: number[],
-  buckets: Array<{ color: string }>,
+  buckets: Array<{ color: ColorKeyOrString }>,
   direction: "higher-is-better" | "lower-is-better" = "higher-is-better",
 ): CfStorage {
   return {
@@ -85,4 +87,19 @@ export const CF_10_20 = thresholds(
 export const CF_NEG10_POS10 = thresholds(
   [-0.1, 0.1],
   [{ color: CF_LIGHTER_RED }, { color: "#e0e0e0" }, { color: CF_LIGHTER_GREEN }],
+);
+
+// Diverging 7-bucket: matches app preset "fmt-thresholds-5-10-20"
+// Colors from getAdjustedColor(CF_LIGHTER_*, darken/brighten)
+export const CF_DIVERGING_5_10_20 = thresholds(
+  [-0.2, -0.1, -0.05, 0.05, 0.1, 0.2],
+  [
+    { color: "#e73535" },
+    { color: CF_LIGHTER_RED },
+    { color: "#f8c4c4" },
+    { color: { key: "base200" } },
+    { color: "#b4e3c8" },
+    { color: CF_LIGHTER_GREEN },
+    { color: "#3ea46a" },
+  ],
 );

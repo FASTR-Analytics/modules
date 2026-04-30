@@ -1,16 +1,31 @@
-import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";
-import { CF_01_03, CF_05_10, CF_10_20, CF_80_70, CF_90_80, CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";
+import type {
+  MetricDefinitionGithub,
+  VizPreset,
+} from "../../.validation/_module_definition_github.ts";
+import { CF_DIVERGING_5_10_20 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
+  ///////////////////////////////////////////////
+  //  ________         __        __            //
+  // /        |       /  |      /  |           //
+  // $$$$$$$$/______  $$ |____  $$ |  ______   //
+  //    $$ | /      \ $$      \ $$ | /      \  //
+  //    $$ | $$$$$$  |$$$$$$$  |$$ |/$$$$$$  | //
+  //    $$ | /    $$ |$$ |  $$ |$$ |$$    $$ | //
+  //    $$ |/$$$$$$$ |$$ |__$$ |$$ |$$$$$$$$/  //
+  //    $$ |$$    $$ |$$    $$/ $$ |$$       | //
+  //    $$/  $$$$$$$/ $$$$$$$/  $$/  $$$$$$$/  //
+  //                                           //
+  ///////////////////////////////////////////////
   {
     id: "disruption-differences-table-single-admin-area-3-multiple-admin-area-4",
     label: {
-      en: "Difference between actual and expected service volume (single Admin Area 3, multiple Admin Area 4, multiple indicators)",
-      fr: "Différence entre le volume de services réel et attendu (unique Zone administrative 3, plusieurs Zones administratives 4, plusieurs indicateurs)",
+      en: "Service disruption by Admin Area 4",
+      fr: "Perturbation des services par Zone administrative 4",
     },
     description: {
-      en: "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
-      fr: "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs",
+      en: "Table showing percentage difference between actual vs expected service volume for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
+      fr: "Tableau montrant la différence en pourcentage entre le volume de services réel et attendu pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs",
     },
     allowedFilters: ["indicator_common_id", "admin_area_4"],
     config: {
@@ -32,16 +47,23 @@ export const vizPresets: VizPreset[] = [
             disDisplayOpt: "row",
           },
         ],
+        selectedReplicantValue: "",
         filterBy: [],
+        periodFilter: {
+          filterType: "last_n_calendar_quarters",
+          nQuarters: 1,
+        },
       },
       s: {
-        ...CF_NEG10_POS10,
-        decimalPlaces: 0,
+        ...CF_DIVERGING_5_10_20,
       },
       t: {
         caption: null,
         captionRelFontSize: null,
-        subCaption: null,
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+        },
         subCaptionRelFontSize: null,
         footnote: null,
         footnoteRelFontSize: null,

@@ -335,8 +335,8 @@
             "fr": "Tableau de proportion de valeurs aberrantes"
           },
           "description": {
-            "en": "Table showing proportion of outliers by indicator and region",
-            "fr": "Tableau montrant la proportion de valeurs aberrantes par indicateur et région"
+            "en": "Table showing proportion of outliers by indicator and Admin Area 2",
+            "fr": "Tableau montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -406,7 +406,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months that are outliers, DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements qui sont des valeurs aberrantes, DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements qui sont des valeurs aberrantes, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -424,8 +424,8 @@
             "fr": "Carte de proportion de valeurs aberrantes"
           },
           "description": {
-            "en": "Map showing proportion of outliers by indicator and region",
-            "fr": "Carte montrant la proportion de valeurs aberrantes par indicateur et région"
+            "en": "Map showing proportion of outliers by indicator and Admin Area 2",
+            "fr": "Carte montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -491,7 +491,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months that are outliers, DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements qui sont des valeurs aberrantes, DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements qui sont des valeurs aberrantes, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -554,8 +554,8 @@
         {
           "id": "completeness-table",
           "label": {
-            "en": "Completeness table by region",
-            "fr": "Tableau de complétude par région"
+            "en": "Completeness table by Admin Area 2",
+            "fr": "Tableau de complétude par Zone administrative 2"
           },
           "description": {
             "en": "Table showing completeness by indicator and region",
@@ -629,7 +629,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months with complete data, DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements avec des données complètes, DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements avec des données complètes, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -680,7 +680,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months with complete data DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements avec des données complètes DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements avec des données complètes PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -694,8 +694,8 @@
         {
           "id": "completeness-map",
           "label": {
-            "en": "Completeness map by region",
-            "fr": "Carte de complétude par région"
+            "en": "Completeness map by Admin Area 2",
+            "fr": "Carte de complétude par Zone administrative 2"
           },
           "description": {
             "en": "Map showing completeness by indicator and region",
@@ -765,7 +765,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months with complete data, DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements avec des données complètes, DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements avec des données complètes, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -838,8 +838,8 @@
             "fr": "Tableau de cohérence interne"
           },
           "description": {
-            "en": "Table showing consistency by ratio type and region",
-            "fr": "Tableau montrant la cohérence par type de ratio et région"
+            "en": "Table showing consistency by ratio type and Admin Area 2",
+            "fr": "Tableau montrant la cohérence par type de ratio et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -909,7 +909,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-                "fr": "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE"
+                "fr": "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -927,8 +927,8 @@
             "fr": "Carte de cohérence interne"
           },
           "description": {
-            "en": "Map showing consistency by ratio type and region",
-            "fr": "Carte montrant la cohérence par type de ratio et région"
+            "en": "Map showing consistency by ratio type and Admin Area 2",
+            "fr": "Carte montrant la cohérence par type de ratio et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -994,7 +994,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-                "fr": "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE"
+                "fr": "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -1061,14 +1061,14 @@
             "fr": "Tableau du score EQD global"
           },
           "description": {
-            "en": "Table showing DQA scores by region and year",
-            "fr": "Tableau montrant les scores EQD par région et année"
+            "en": "Table showing DQA scores by Admin Area 2 and year",
+            "fr": "Tableau montrant les scores EQD par Zone administrative 2 et année"
           },
           "importantNotes": null,
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "MAKE THIS FOR ME",
+          "createDefaultVisualizationOnInstall": "f0badea8-367a-46fb-97f3-2b64b746a047",
           "config": {
             "d": {
               "type": "table",
@@ -1126,8 +1126,8 @@
               },
               "captionRelFontSize": null,
               "subCaption": {
-                "en": "Percentage of facility-months with adequate data quality over time",
-                "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps"
+                "en": "Percentage of facility-months with adequate data quality over time, DATE_RANGE",
+                "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -1145,8 +1145,8 @@
             "fr": "Carte du score EQD global"
           },
           "description": {
-            "en": "Map showing DQA scores by region",
-            "fr": "Carte montrant les scores EQD par région"
+            "en": "Map showing DQA scores by Admin Area 2",
+            "fr": "Carte montrant les scores EQD par Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1207,7 +1207,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percentage of facility-months with adequate data quality, DATE_RANGE",
-                "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate, DATE_RANGE"
+                "fr": "Pourcentage de mois-établissements avec une qualité des données adéquate, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -1271,8 +1271,8 @@
             "fr": "Tableau du score EQD moyen"
           },
           "description": {
-            "en": "Table showing mean DQA scores by region and year",
-            "fr": "Tableau montrant les scores EQD moyens par région et année"
+            "en": "Table showing mean DQA scores by Admin Area 2 and year",
+            "fr": "Tableau montrant les scores EQD moyens par Zone administrative 2 et année"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -1336,8 +1336,8 @@
               },
               "captionRelFontSize": null,
               "subCaption": {
-                "en": "Average data quality score across facility-months",
-                "fr": "Score moyen de qualité des données à travers les mois-établissements"
+                "en": "Average data quality score across facility-months, DATE_RANGE",
+                "fr": "Score moyen de qualité des données à travers les mois-établissements, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -1355,8 +1355,8 @@
             "fr": "Carte du score EQD moyen"
           },
           "description": {
-            "en": "Map showing mean DQA scores by region",
-            "fr": "Carte montrant les scores EQD moyens par région"
+            "en": "Map showing mean DQA scores by Admin Area 2",
+            "fr": "Carte montrant les scores EQD moyens par Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1417,7 +1417,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Average data quality score across facility-months, DATE_RANGE",
-                "fr": "Score moyen de qualité des données à travers les mois-établissements, DATE_RANGE"
+                "fr": "Score moyen de qualité des données à travers les mois-établissements, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {

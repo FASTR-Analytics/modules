@@ -24,8 +24,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau de cohérence interne",
     },
     description: {
-      en: "Table showing consistency by ratio type and region",
-      fr: "Tableau montrant la cohérence par type de ratio et région",
+      en: "Table showing consistency by ratio type and Admin Area 2",
+      fr: "Tableau montrant la cohérence par type de ratio et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
     allowedFilters: ["ratio_type", "admin_area_2"],
@@ -62,7 +62,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE",
+          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
@@ -97,8 +97,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte de cohérence interne",
     },
     description: {
-      en: "Map showing consistency by ratio type and region",
-      fr: "Carte montrant la cohérence par type de ratio et région",
+      en: "Map showing consistency by ratio type and Admin Area 2",
+      fr: "Carte montrant la cohérence par type de ratio et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "a6c091c0-8df5-4dc9-aa5f-857c697310d1",
     allowedFilters: [],
@@ -134,7 +134,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, DATE_RANGE",
+          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",

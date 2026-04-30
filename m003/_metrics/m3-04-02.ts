@@ -2,18 +2,30 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
-import { CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";
+import { CF_DIVERGING_5_10_20 } from "../../.validation/cf_presets.ts";
 
 export const vizPresets: VizPreset[] = [
+  ///////////////////////////////////////////////
+  //  ________         __        __            //
+  // /        |       /  |      /  |           //
+  // $$$$$$$$/______  $$ |____  $$ |  ______   //
+  //    $$ | /      \ $$      \ $$ | /      \  //
+  //    $$ | $$$$$$  |$$$$$$$  |$$ |/$$$$$$  | //
+  //    $$ | /    $$ |$$ |  $$ |$$ |$$    $$ | //
+  //    $$ |/$$$$$$$ |$$ |__$$ |$$ |$$$$$$$$/  //
+  //    $$ |$$    $$ |$$    $$/ $$ |$$       | //
+  //    $$/  $$$$$$$/ $$$$$$$/  $$/  $$$$$$$/  //
+  //                                           //
+  ///////////////////////////////////////////////
   {
     id: "disruption-differences-table-single-admin-area-2-multiple-admin-area-3",
     label: {
-      en: "Difference between actual and expected service volume (single Admin Area 2, multiple Admin Area 3, multiple indicators)",
-      fr: "Différence entre le volume de services réel et attendu (unique Zone administrative 2, plusieurs Zones administratives 3, plusieurs indicateurs)",
+      en: "Service disruption by Admin Area 3",
+      fr: "Perturbation des services par Zone administrative 3",
     },
     description: {
-      en: "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
-      fr: "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs",
+      en: "Table showing percentage difference between actual vs expected service volume for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
+      fr: "Tableau montrant la différence en pourcentage entre le volume de services réel et attendu pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs",
     },
     allowedFilters: ["indicator_common_id", "admin_area_3"],
     config: {
@@ -37,15 +49,21 @@ export const vizPresets: VizPreset[] = [
         ],
         selectedReplicantValue: "",
         filterBy: [],
+        periodFilter: {
+          filterType: "last_n_calendar_quarters",
+          nQuarters: 1,
+        },
       },
       s: {
-        ...CF_NEG10_POS10,
-        decimalPlaces: 0,
+        ...CF_DIVERGING_5_10_20,
       },
       t: {
         caption: null,
         captionRelFontSize: null,
-        subCaption: null,
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+        },
         subCaptionRelFontSize: null,
         footnote: null,
         footnoteRelFontSize: null,
@@ -54,15 +72,30 @@ export const vizPresets: VizPreset[] = [
     importantNotes: null,
     createDefaultVisualizationOnInstall: "82a91435-b090-4bfe-8477-fe864095155e",
   },
+  ///////////////////////////////////////
+  //  __       __                      //
+  // /  \     /  |                     //
+  // $$  \   /$$ |  ______    ______   //
+  // $$$  \ /$$$ | /      \  /      \  //
+  // $$$$  /$$$$ | $$$$$$  |/$$$$$$  | //
+  // $$ $$ $$/$$ | /    $$ |$$ |  $$ | //
+  // $$ |$$$/ $$ |/$$$$$$$ |$$ |__$$ | //
+  // $$ | $/  $$ |$$    $$ |$$    $$/  //
+  // $$/      $$/  $$$$$$$/ $$$$$$$/   //
+  //                        $$ |       //
+  //                        $$ |       //
+  //                        $$/        //
+  //                                   //
+  ///////////////////////////////////////
   {
-    id: "disruption-differences-map",
+    id: "disruption-differences-map-admin-area-3",
     label: {
-      en: "Service disruption map",
-      fr: "Carte des perturbations de services",
+      en: "Service disruption map by Admin Area 3",
+      fr: "Carte des perturbations par Zone administrative 3",
     },
     description: {
-      en: "Map showing difference between actual and expected service volume by district",
-      fr: "Carte montrant la différence entre le volume de services réel et attendu par district",
+      en: "Map showing percentage difference between actual vs expected service volume by Admin Area 3",
+      fr: "Carte montrant la différence en pourcentage entre le volume de services réel et attendu par Zone administrative 3",
     },
     allowedFilters: [],
     config: {
@@ -82,12 +115,13 @@ export const vizPresets: VizPreset[] = [
         ],
         selectedReplicantValue: "anc1",
         filterBy: [],
+        periodFilter: {
+          filterType: "last_n_calendar_quarters",
+          nQuarters: 1,
+        },
       },
       s: {
-        cfMode: "scale",
-        cfScalePaletteKind: "custom",
-        cfScaleCustomFrom: "#fee0d2",
-        cfScaleCustomTo: "#de2d26",
+        ...CF_DIVERGING_5_10_20,
       },
       t: {
         caption: {
@@ -95,12 +129,12 @@ export const vizPresets: VizPreset[] = [
           fr: "Perturbation des services",
         },
         subCaption: {
-          en: "Percentage difference between actual and expected service volume by district",
-          fr: "Différence en pourcentage entre le volume de services réel et attendu par district",
+          en: "Percentage difference between actual and expected service volume by Admin Area 3, DATE_RANGE",
+          fr: "Différence en pourcentage entre le volume de services réel et attendu par Zone administrative 3, PLAGE_DE_DATES",
         },
         footnote: {
-          en: "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
-          fr: "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes.",
+          en: "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends.",
+          fr: "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation.",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,
@@ -111,6 +145,19 @@ export const vizPresets: VizPreset[] = [
     createDefaultVisualizationOnInstall: "732d4f78-e53c-4c44-ac9f-234f616baa2c",
   },
 ];
+
+///////////////////////////////////////////////////////////////
+//  __       __              __                __            //
+// /  \     /  |            /  |              /  |           //
+// $$  \   /$$ |  ______   _$$ |_     ______  $$/   _______  //
+// $$$  \ /$$$ | /      \ / $$   |   /      \ /  | /       | //
+// $$$$  /$$$$ |/$$$$$$  |$$$$$$/   /$$$$$$  |$$ |/$$$$$$$/  //
+// $$ $$ $$/$$ |$$    $$ |  $$ | __ $$ |  $$/ $$ |$$ |       //
+// $$ |$$$/ $$ |$$$$$$$$/   $$ |/  |$$ |      $$ |$$ \_____  //
+// $$ | $/  $$ |$$       |  $$  $$/ $$ |      $$ |$$       | //
+// $$/      $$/  $$$$$$$/    $$$$/  $$/       $$/  $$$$$$$/  //
+//                                                           //
+///////////////////////////////////////////////////////////////
 
 export const metric: MetricDefinitionGithub = {
   id: "m3-04-02",

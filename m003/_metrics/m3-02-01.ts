@@ -39,7 +39,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         footnote: {
           en: "This graph quantifies changes in service volume compared to historical trends and accounting for seasonality. These signals should be triangulated to other data and contextual knowledge to determine if the results are an artifact of data quality. Unexpected volume changes are estimated by comparing the observed volume to the expected volume based on historical trends and seasonality. Previous large unexpected changes in the historical data are removed. This analysis is an interrupted time series regression with facility-level fixed effects.",

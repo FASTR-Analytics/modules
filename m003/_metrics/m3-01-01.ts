@@ -40,7 +40,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         footnote: {
           en: "Yearly volume is adjusted for both outliers and completeness.",
@@ -94,7 +94,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         footnote: {
           en: "Service volume is adjusted for outliers.",
@@ -144,7 +144,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         footnote: {
           en: "Service volume is adjusted for outliers.",
@@ -160,8 +160,8 @@ export const vizPresets: VizPreset[] = [
   {
     id: "volume-subnational",
     label: {
-      en: "Volume annual change by region",
-      fr: "Variation annuelle du volume par région",
+      en: "Volume annual change by Admin Area 2",
+      fr: "Variation annuelle du volume par Zone administrative 2",
     },
     description: {
       en: "Bar chart showing annual volume change by indicator and admin area",
@@ -199,7 +199,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         footnote: {
           en: "Yearly volume is adjusted for outliers.",
@@ -270,7 +270,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,

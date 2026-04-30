@@ -380,7 +380,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -438,7 +438,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -492,7 +492,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -506,8 +506,8 @@
         {
           "id": "volume-subnational",
           "label": {
-            "en": "Volume annual change by region",
-            "fr": "Variation annuelle du volume par région"
+            "en": "Volume annual change by Admin Area 2",
+            "fr": "Variation annuelle du volume par Zone administrative 2"
           },
           "description": {
             "en": "Bar chart showing annual volume change by indicator and admin area",
@@ -552,7 +552,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -625,7 +625,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,
@@ -728,7 +728,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -905,7 +905,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -955,7 +955,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1001,7 +1004,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1075,12 +1081,12 @@
         {
           "id": "disruption-differences-table",
           "label": {
-            "en": "Difference between actual and expected service volume (multiple Admin Area 2, multiple indicators)",
-            "fr": "Différence entre le volume de services réel et attendu (plusieurs Zones administratives 2, plusieurs indicateurs)"
+            "en": "Service disruption by Admin Area 2",
+            "fr": "Perturbation des services par Zone administrative 2"
           },
           "description": {
-            "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, with multiple Admin Areas 2 and multiple indicators",
-            "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, avec plusieurs Zones administratives 2 et plusieurs indicateurs"
+            "en": "Table showing percentage difference between actual vs expected service volume, with multiple Admin Areas 2 and multiple indicators",
+            "fr": "Tableau montrant la différence en pourcentage entre le volume de services réel et attendu, avec plusieurs Zones administratives 2 et plusieurs indicateurs"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -1103,10 +1109,13 @@
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              }
             },
             "s": {
-              "decimalPlaces": 0,
               "cfMode": "thresholds",
               "cfScalePaletteKind": "preset",
               "cfScalePalettePreset": "",
@@ -1120,18 +1129,36 @@
               "cfScaleDomainMax": 1,
               "cfScaleNoDataColor": "",
               "cfThresholdCutoffs": [
+                -0.2,
                 -0.1,
-                0.1
+                -0.05,
+                0.05,
+                0.1,
+                0.2
               ],
               "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
                 {
                   "color": "#F18989"
                 },
                 {
-                  "color": "#e0e0e0"
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
                 },
                 {
                   "color": "#68C690"
+                },
+                {
+                  "color": "#3ea46a"
                 }
               ],
               "cfThresholdDirection": "higher-is-better",
@@ -1140,7 +1167,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1148,14 +1178,14 @@
           }
         },
         {
-          "id": "disruption-differences-map",
+          "id": "disruption-differences-map-admin-area-2",
           "label": {
-            "en": "Service disruption map",
-            "fr": "Carte des perturbations de services"
+            "en": "Service disruption map by Admin Area 2",
+            "fr": "Carte des perturbations par Zone administrative 2"
           },
           "description": {
-            "en": "Map showing difference between actual and expected service volume by region",
-            "fr": "Carte montrant la différence entre le volume de services réel et attendu par région"
+            "en": "Map showing percentage difference between actual vs expected service volume by Admin Area 2",
+            "fr": "Carte montrant la différence en pourcentage entre le volume de services réel et attendu par Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1176,13 +1206,60 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
               "selectedReplicantValue": "anc1"
             },
             "s": {
-              "cfMode": "scale",
-              "cfScalePaletteKind": "custom",
-              "cfScaleCustomFrom": "#fee0d2",
-              "cfScaleCustomTo": "#de2d26"
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#68C690"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
             },
             "t": {
               "caption": {
@@ -1191,13 +1268,13 @@
               },
               "captionRelFontSize": null,
               "subCaption": {
-                "en": "Percentage difference between actual and expected service volume by region",
-                "fr": "Différence en pourcentage entre le volume de services réel et attendu par région"
+                "en": "Percentage difference between actual and expected service volume by Admin Area 2, DATE_RANGE",
+                "fr": "Différence en pourcentage entre le volume de services réel et attendu par Zone administrative 2, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
-                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
-                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes."
+                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends.",
+                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation."
               },
               "footnoteRelFontSize": null
             }
@@ -1300,7 +1377,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1346,7 +1426,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1420,12 +1503,12 @@
         {
           "id": "disruption-differences-table-single-admin-area-2-multiple-admin-area-3",
           "label": {
-            "en": "Difference between actual and expected service volume (single Admin Area 2, multiple Admin Area 3, multiple indicators)",
-            "fr": "Différence entre le volume de services réel et attendu (unique Zone administrative 2, plusieurs Zones administratives 3, plusieurs indicateurs)"
+            "en": "Service disruption by Admin Area 3",
+            "fr": "Perturbation des services par Zone administrative 3"
           },
           "description": {
-            "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
-            "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs"
+            "en": "Table showing percentage difference between actual vs expected service volume for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators",
+            "fr": "Tableau montrant la différence en pourcentage entre le volume de services réel et attendu pour une unique Zone administrative 2, avec plusieurs Zones administratives 3 et plusieurs indicateurs"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -1453,10 +1536,13 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
               "selectedReplicantValue": ""
             },
             "s": {
-              "decimalPlaces": 0,
               "cfMode": "thresholds",
               "cfScalePaletteKind": "preset",
               "cfScalePalettePreset": "",
@@ -1470,18 +1556,36 @@
               "cfScaleDomainMax": 1,
               "cfScaleNoDataColor": "",
               "cfThresholdCutoffs": [
+                -0.2,
                 -0.1,
-                0.1
+                -0.05,
+                0.05,
+                0.1,
+                0.2
               ],
               "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
                 {
                   "color": "#F18989"
                 },
                 {
-                  "color": "#e0e0e0"
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
                 },
                 {
                   "color": "#68C690"
+                },
+                {
+                  "color": "#3ea46a"
                 }
               ],
               "cfThresholdDirection": "higher-is-better",
@@ -1490,7 +1594,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1498,14 +1605,14 @@
           }
         },
         {
-          "id": "disruption-differences-map",
+          "id": "disruption-differences-map-admin-area-3",
           "label": {
-            "en": "Service disruption map",
-            "fr": "Carte des perturbations de services"
+            "en": "Service disruption map by Admin Area 3",
+            "fr": "Carte des perturbations par Zone administrative 3"
           },
           "description": {
-            "en": "Map showing difference between actual and expected service volume by district",
-            "fr": "Carte montrant la différence entre le volume de services réel et attendu par district"
+            "en": "Map showing percentage difference between actual vs expected service volume by Admin Area 3",
+            "fr": "Carte montrant la différence en pourcentage entre le volume de services réel et attendu par Zone administrative 3"
           },
           "importantNotes": null,
           "allowedFilters": [],
@@ -1526,13 +1633,60 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
               "selectedReplicantValue": "anc1"
             },
             "s": {
-              "cfMode": "scale",
-              "cfScalePaletteKind": "custom",
-              "cfScaleCustomFrom": "#fee0d2",
-              "cfScaleCustomTo": "#de2d26"
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F18989"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#68C690"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
             },
             "t": {
               "caption": {
@@ -1541,13 +1695,13 @@
               },
               "captionRelFontSize": null,
               "subCaption": {
-                "en": "Percentage difference between actual and expected service volume by district",
-                "fr": "Différence en pourcentage entre le volume de services réel et attendu par district"
+                "en": "Percentage difference between actual and expected service volume by Admin Area 3, DATE_RANGE",
+                "fr": "Différence en pourcentage entre le volume de services réel et attendu par Zone administrative 3, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
-                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends. Darker colors indicate larger disruptions.",
-                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation. Les couleurs plus foncées indiquent des perturbations plus importantes."
+                "en": "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends.",
+                "fr": "Les valeurs négatives indiquent une prestation de services inférieure aux niveaux attendus. Les valeurs attendues sont basées sur les tendances pré-perturbation."
               },
               "footnoteRelFontSize": null
             }
@@ -1650,7 +1804,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1696,7 +1853,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -1770,12 +1930,12 @@
         {
           "id": "disruption-differences-table-single-admin-area-3-multiple-admin-area-4",
           "label": {
-            "en": "Difference between actual and expected service volume (single Admin Area 3, multiple Admin Area 4, multiple indicators)",
-            "fr": "Différence entre le volume de services réel et attendu (unique Zone administrative 3, plusieurs Zones administratives 4, plusieurs indicateurs)"
+            "en": "Service disruption by Admin Area 4",
+            "fr": "Perturbation des services par Zone administrative 4"
           },
           "description": {
-            "en": "Table showing percentage differences between actual vs expected service volume, with conditional formatting, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
-            "fr": "Tableau montrant les différences en pourcentage entre le volume de services réel et attendu, avec mise en forme conditionnelle, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs"
+            "en": "Table showing percentage difference between actual vs expected service volume for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
+            "fr": "Tableau montrant la différence en pourcentage entre le volume de services réel et attendu pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -1802,10 +1962,14 @@
                   "disDisplayOpt": "row"
                 }
               ],
-              "filterBy": []
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
+              "selectedReplicantValue": ""
             },
             "s": {
-              "decimalPlaces": 0,
               "cfMode": "thresholds",
               "cfScalePaletteKind": "preset",
               "cfScalePalettePreset": "",
@@ -1819,18 +1983,36 @@
               "cfScaleDomainMax": 1,
               "cfScaleNoDataColor": "",
               "cfThresholdCutoffs": [
+                -0.2,
                 -0.1,
-                0.1
+                -0.05,
+                0.05,
+                0.1,
+                0.2
               ],
               "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
                 {
                   "color": "#F18989"
                 },
                 {
-                  "color": "#e0e0e0"
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
                 },
                 {
                   "color": "#68C690"
+                },
+                {
+                  "color": "#3ea46a"
                 }
               ],
               "cfThresholdDirection": "higher-is-better",
@@ -1839,7 +2021,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null

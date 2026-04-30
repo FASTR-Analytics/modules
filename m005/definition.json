@@ -386,7 +386,10 @@
             "t": {
               "caption": null,
               "captionRelFontSize": null,
-              "subCaption": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
               "subCaptionRelFontSize": null,
               "footnote": null,
               "footnoteRelFontSize": null
@@ -733,13 +736,13 @@
             },
             "t": {
               "caption": {
-                "en": "Coverage based of different denominators, REPLICANT",
-                "fr": "Couverture selon différents dénominateurs, REPLICANT"
+                "en": "Coverage based on different denominators",
+                "fr": "Couverture selon différents dénominateurs"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,

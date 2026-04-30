@@ -130,8 +130,8 @@
             "fr": "Tableau d'impact de l'ajustement des valeurs aberrantes"
           },
           "description": {
-            "en": "Table showing percent change due to outlier adjustment by indicator and region",
-            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et région"
+            "en": "Table showing percent change due to outlier adjustment by indicator and Admin Area 2",
+            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -201,7 +201,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to outlier adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, DATE_RANGE"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -280,8 +280,8 @@
             "fr": "Tableau d'impact de l'ajustement de complétude"
           },
           "description": {
-            "en": "Table showing percent change due to completeness adjustment by indicator and region",
-            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et région"
+            "en": "Table showing percent change due to completeness adjustment by indicator and Admin Area 2",
+            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et Zone administrative 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -351,7 +351,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to completeness adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude, DATE_RANGE"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -430,7 +430,7 @@
             "fr": "Tableau d'impact de l'ajustement combiné"
           },
           "description": {
-            "en": "Table showing percent change due to combined outlier and completeness adjustment by indicator and region",
+            "en": "Table showing percent change due to combined outlier and completeness adjustment by indicator and Admin Area 2",
             "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région"
           },
           "importantNotes": null,
@@ -501,12 +501,12 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to both outlier and completeness adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude, DATE_RANGE"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
-                "en": "TBD",
-                "fr": "TBD"
+                "en": "Combined adjustment applies both outlier removal and completeness imputation. Outliers are suspiciously high values identified using median absolute deviation. Completeness adjustment imputes missing data from non-reporting facilities. The deviance shows the total change in volume after both adjustments. High levels of deviance indicate substantial data quality issues.",
+                "fr": "L'ajustement combiné applique à la fois la suppression des valeurs aberrantes et l'imputation de la complétude. Les valeurs aberrantes sont des valeurs suspectement élevées identifiées à l'aide de l'écart absolu médian. L'ajustement de complétude impute les données manquantes des établissements non déclarants. La déviance montre le changement total de volume après les deux ajustements. Des niveaux élevés de déviance indiquent des problèmes substantiels de qualité des données."
               },
               "footnoteRelFontSize": null
             }

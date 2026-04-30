@@ -9,8 +9,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau d'impact de l'ajustement des valeurs aberrantes",
     },
     description: {
-      en: "Table showing percent change due to outlier adjustment by indicator and region",
-      fr: "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et région",
+      en: "Table showing percent change due to outlier adjustment by indicator and Admin Area 2",
+      fr: "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "e5edce68-369c-498e-a4b0-03ba73d31d6c",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
@@ -47,7 +47,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percent change in volume due to outlier adjustment, DATE_RANGE",
-          fr: "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, DATE_RANGE",
+          fr: "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100. The deviance is the difference in volume after removing the outlier. High levels of deviance can affect the plausiability of the data.",

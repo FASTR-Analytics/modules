@@ -24,10 +24,10 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau du score EQD global",
     },
     description: {
-      en: "Table showing DQA scores by region and year",
-      fr: "Tableau montrant les scores EQD par région et année",
+      en: "Table showing DQA scores by Admin Area 2 and year",
+      fr: "Tableau montrant les scores EQD par Zone administrative 2 et année",
     },
-    createDefaultVisualizationOnInstall: "MAKE THIS FOR ME",
+    createDefaultVisualizationOnInstall: "f0badea8-367a-46fb-97f3-2b64b746a047",
     allowedFilters: ["admin_area_2"],
     config: {
       d: {
@@ -57,8 +57,8 @@ export const vizPresets: VizPreset[] = [
           fr: "Score EQD global",
         },
         subCaption: {
-          en: "Percentage of facility-months with adequate data quality over time",
-          fr: "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps",
+          en: "Percentage of facility-months with adequate data quality over time, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec une qualité des données adéquate dans le temps, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",
@@ -93,8 +93,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte du score EQD global",
     },
     description: {
-      en: "Map showing DQA scores by region",
-      fr: "Carte montrant les scores EQD par région",
+      en: "Map showing DQA scores by Admin Area 2",
+      fr: "Carte montrant les scores EQD par Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "7f08fbde-48e6-44d3-b1db-8771d96120c6",
     allowedFilters: [],
@@ -125,7 +125,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months with adequate data quality, DATE_RANGE",
-          fr: "Pourcentage de mois-établissements avec une qualité des données adéquate, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec une qualité des données adéquate, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Adequate data quality is defined as: 1) No missing data or outliers for OPD, Penta1, and ANC1, where available 2) Consistent reporting between Penta1/Penta3 and ANC1/ANC4.",

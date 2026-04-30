@@ -24,8 +24,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau du score EQD moyen",
     },
     description: {
-      en: "Table showing mean DQA scores by region and year",
-      fr: "Tableau montrant les scores EQD moyens par région et année",
+      en: "Table showing mean DQA scores by Admin Area 2 and year",
+      fr: "Tableau montrant les scores EQD moyens par Zone administrative 2 et année",
     },
     createDefaultVisualizationOnInstall: "4dc02c21-29da-4a01-9812-469deedaaac8",
     allowedFilters: ["admin_area_2"],
@@ -57,8 +57,8 @@ export const vizPresets: VizPreset[] = [
           fr: "Score EQD moyen",
         },
         subCaption: {
-          en: "Average data quality score across facility-months",
-          fr: "Score moyen de qualité des données à travers les mois-établissements",
+          en: "Average data quality score across facility-months, DATE_RANGE",
+          fr: "Score moyen de qualité des données à travers les mois-établissements, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",
@@ -93,8 +93,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte du score EQD moyen",
     },
     description: {
-      en: "Map showing mean DQA scores by region",
-      fr: "Carte montrant les scores EQD moyens par région",
+      en: "Map showing mean DQA scores by Admin Area 2",
+      fr: "Carte montrant les scores EQD moyens par Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "0730bd53-f951-4286-83ef-5b299395912c",
     allowedFilters: [],
@@ -125,7 +125,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Average data quality score across facility-months, DATE_RANGE",
-          fr: "Score moyen de qualité des données à travers les mois-établissements, DATE_RANGE",
+          fr: "Score moyen de qualité des données à travers les mois-établissements, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Items included in the DQA score include: No missing data for 1) OPD, 2) Penta1, and 3) ANC1, where available; No outliers for 4) OPD, 5) Penta1, and 6) ANC1, where available; Consistent reporting between 7) Penta1/Penta3, 8) ANC1/ANC4, 9)BCG/Delivery, where available.",

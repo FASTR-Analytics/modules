@@ -20,8 +20,8 @@ export const vizPresets: VizPreset[] = [
   {
     id: "completeness-table",
     label: {
-      en: "Completeness table by region",
-      fr: "Tableau de complétude par région",
+      en: "Completeness table by Admin Area 2",
+      fr: "Tableau de complétude par Zone administrative 2",
     },
     description: {
       en: "Table showing completeness by indicator and region",
@@ -62,7 +62,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months with complete data, DATE_RANGE",
-          fr: "Pourcentage de mois-établissements avec des données complètes, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec des données complètes, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",
@@ -123,7 +123,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months with complete data DATE_RANGE",
-          fr: "Pourcentage de mois-établissements avec des données complètes DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec des données complètes PLAGE_DE_DATES",
         },
         footnote: {
           en: "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",
@@ -154,8 +154,8 @@ export const vizPresets: VizPreset[] = [
   {
     id: "completeness-map",
     label: {
-      en: "Completeness map by region",
-      fr: "Carte de complétude par région",
+      en: "Completeness map by Admin Area 2",
+      fr: "Carte de complétude par Zone administrative 2",
     },
     description: {
       en: "Map showing completeness by indicator and region",
@@ -195,7 +195,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percentage of facility-months with complete data, DATE_RANGE",
-          fr: "Pourcentage de mois-établissements avec des données complètes, DATE_RANGE",
+          fr: "Pourcentage de mois-établissements avec des données complètes, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Higher completeness improves the reliability of the data, especially when completeness is stable over time. Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. A high completeness does not indicate that the HMIS is representative of all service delivery in the country, as some services may not be delivered in facilities, or some facilities may not report.",

@@ -9,8 +9,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau d'impact de l'ajustement de complétude",
     },
     description: {
-      en: "Table showing percent change due to completeness adjustment by indicator and region",
-      fr: "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et région",
+      en: "Table showing percent change due to completeness adjustment by indicator and Admin Area 2",
+      fr: "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et Zone administrative 2",
     },
     createDefaultVisualizationOnInstall: "b4750223-9ffd-43f6-958b-0ba9c0412df4",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
@@ -47,7 +47,7 @@ export const vizPresets: VizPreset[] = [
         },
         subCaption: {
           en: "Percent change in volume due to completeness adjustment, DATE_RANGE",
-          fr: "Changement en pourcentage du volume dû à l'ajustement de complétude, DATE_RANGE",
+          fr: "Changement en pourcentage du volume dû à l'ajustement de complétude, PLAGE_DE_DATES",
         },
         footnote: {
           en: "Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. The deviance is the difference in volume after imputing incomplete data. High levels of deviance can affect the plausiability of the data.",

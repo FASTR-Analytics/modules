@@ -40,12 +40,12 @@ export const vizPresets: VizPreset[] = [
       },
       t: {
         caption: {
-          en: "Coverage based of different denominators, REPLICANT",
-          fr: "Couverture selon différents dénominateurs, REPLICANT",
+          en: "Coverage based on different denominators",
+          fr: "Couverture selon différents dénominateurs",
         },
         subCaption: {
           en: "DATE_RANGE",
-          fr: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,

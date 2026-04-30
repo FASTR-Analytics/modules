@@ -39,7 +39,10 @@ export const vizPresets: VizPreset[] = [
       t: {
         caption: null,
         captionRelFontSize: null,
-        subCaption: null,
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+        },
         subCaptionRelFontSize: null,
         footnote: null,
         footnoteRelFontSize: null,

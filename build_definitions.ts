@@ -99,7 +99,36 @@ for (const dir of moduleDirs) {
 
 if (hadError) Deno.exit(1);
 
-// Check for duplicate IDs across all modules
+// Build column lookup for cross-checks
+const resultsObjectColumns = new Map<string, Set<string>>();
+for (const { def } of allModules) {
+  for (const ro of def.resultsObjects) {
+    if (ro.createTableStatementPossibleColumns !== false) {
+      resultsObjectColumns.set(
+        ro.id,
+        new Set(Object.keys(ro.createTableStatementPossibleColumns))
+      );
+    }
+  }
+}
+
+// Standard disaggregation options (not columns)
+const standardDisOpts = new Set([
+  "period_id",
+  "quarter_id",
+  "year",
+  "indicator_common_id",
+  "admin_area_1",
+  "admin_area_2",
+  "admin_area_3",
+  "admin_area_4",
+  "facility_id",
+  "facility_type",
+  "facility_ownership",
+  "urbanicity",
+]);
+
+// Check for duplicate IDs and run all validations
 const resultsObjectIds = new Map<string, string>();
 const metricIds = new Map<string, string>();
 const defaultVizIds = new Map<string, string>();
@@ -122,6 +151,28 @@ for (const { dir, def } of allModules) {
       metricIds.set(metric.id, dir);
     }
 
+    const roColumns = resultsObjectColumns.get(metric.resultsObjectId);
+
+    // Check valueProps reference valid columns (skip if postAggregationExpression)
+    if (roColumns && !metric.postAggregationExpression) {
+      for (const prop of metric.valueProps) {
+        if (!roColumns.has(prop)) {
+          console.error(`INVALID valueProps "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          hadError = true;
+        }
+      }
+    }
+
+    // Check postAggregationExpression ingredientValues reference valid columns
+    if (metric.postAggregationExpression && roColumns) {
+      for (const ingredient of metric.postAggregationExpression.ingredientValues) {
+        if (!roColumns.has(ingredient.prop)) {
+          console.error(`INVALID ingredientValue "${ingredient.prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          hadError = true;
+        }
+      }
+    }
+
     const vizPresetIdsInMetric = new Set<string>();
     for (const preset of metric.vizPresets) {
       const location = `${dir}:${metric.id}:${preset.id}`;
@@ -133,7 +184,6 @@ for (const { dir, def } of allModules) {
       }
 
       // Check requiredDisaggregationOptions are in disaggregateBy
-      // Skip time-related options for timeseries type or if periodFilter is set
       const disaggregateByOpts = new Set(preset.config.d.disaggregateBy.map(d => d.disOpt));
       const timeOpts = new Set(["year", "period_id", "quarter_id"]);
       const isTimeseries = preset.config.d.type === "timeseries";
@@ -155,8 +205,35 @@ for (const { dir, def } of allModules) {
         }
       }
 
+      // Check valuesFilter references valid valueProps
+      const valuesFilter = preset.config.d.valuesFilter;
+      if (valuesFilter && valuesFilter.length > 0) {
+        const valuePropSet = new Set(metric.valueProps);
+        for (const filterValue of valuesFilter) {
+          if (!valuePropSet.has(filterValue)) {
+            console.error(`INVALID valuesFilter "${filterValue}" in ${location} - not in metric valueProps`);
+            hadError = true;
+          }
+        }
+      }
+
+      // Check disaggregateBy disOpt references valid columns (non-standard options)
+      if (roColumns) {
+        for (const dis of preset.config.d.disaggregateBy) {
+          if (!standardDisOpts.has(dis.disOpt) && !roColumns.has(dis.disOpt)) {
+            console.error(`INVALID disaggregateBy "${dis.disOpt}" in ${location} - not standard and not in resultsObject columns`);
+            hadError = true;
+          }
+        }
+      }
+
+      // Check createDefaultVisualizationOnInstall UUID
       if (preset.createDefaultVisualizationOnInstall) {
         const uuid = preset.createDefaultVisualizationOnInstall;
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) {
+          console.error(`INVALID UUID "${uuid}" in ${location} - not a valid UUID format`);
+          hadError = true;
+        }
         if (defaultVizIds.has(uuid)) {
           console.error(`DUPLICATE createDefaultVisualizationOnInstall "${uuid}" in ${location} (first seen in ${defaultVizIds.get(uuid)})`);
           hadError = true;
@@ -164,8 +241,46 @@ for (const { dir, def } of allModules) {
           defaultVizIds.set(uuid, location);
         }
       }
+
+      // Convention: subCaption must include DATE_RANGE/PLAGE_DE_DATES
+      const subCaption = preset.config.t?.subCaption;
+      if (subCaption && typeof subCaption === "object") {
+        if (subCaption.en && !subCaption.en.includes("DATE_RANGE")) {
+          console.error(`CONVENTION subCaption.en missing DATE_RANGE in ${location}`);
+          hadError = true;
+        }
+        if (subCaption.fr && subCaption.fr.includes("DATE_RANGE")) {
+          console.error(`CONVENTION subCaption.fr uses DATE_RANGE instead of PLAGE_DE_DATES in ${location}`);
+          hadError = true;
+        }
+        if (subCaption.fr && !subCaption.fr.includes("PLAGE_DE_DATES")) {
+          console.error(`CONVENTION subCaption.fr missing PLAGE_DE_DATES in ${location}`);
+          hadError = true;
+        }
+      }
+
+      // Convention: labels/descriptions should use "Admin Area N" not "region"/"district"
+      const label = preset.label;
+      if (label && typeof label === "object") {
+        if (label.en && /\b(region|district)\b/i.test(label.en)) {
+          console.error(`CONVENTION label.en uses "region" or "district" instead of "Admin Area N" in ${location}`);
+          hadError = true;
+        }
+      }
+      const description = preset.description;
+      if (description && typeof description === "object") {
+        if (description.en && /\b(regions|districts)\b/i.test(description.en)) {
+          console.error(`CONVENTION description.en uses "regions" or "districts" instead of "Admin Areas N" in ${location}`);
+          hadError = true;
+        }
+      }
     }
   }
 }
 
-if (hadError) Deno.exit(1);
+if (hadError) {
+  console.error("\nBuild failed with errors.");
+  Deno.exit(1);
+} else {
+  console.log(`\nBuilt ${allModules.length} modules successfully.`);
+}

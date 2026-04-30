@@ -210,7 +210,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE\nDISCLAIMER: These results use routine data to provide rigorous, but not official estimates. They should be interpreted considering any data quality or representation limitations, including data quality findings and any other country specific factors.",
-                "fr": "DATE_RANGE\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
+                "fr": "PLAGE_DE_DATES\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -281,8 +281,8 @@
         {
           "id": "coverage-timeseries",
           "label": {
-            "en": "Coverage timeseries by region",
-            "fr": "Séries temporelles de couverture par région"
+            "en": "Coverage timeseries by Admin Area 2",
+            "fr": "Séries temporelles de couverture par Zone administrative 2"
           },
           "description": {
             "en": "Coverage trends over time by admin area 2",
@@ -326,7 +326,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE\nDISCLAIMER: These results use routine data to provide rigorous, but not official estimates. They should be interpreted considering any data quality or representation limitations, including data quality findings and any other country specific factors.",
-                "fr": "DATE_RANGE\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
+                "fr": "PLAGE_DE_DATES\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -340,12 +340,12 @@
         {
           "id": "coverage-bar",
           "label": {
-            "en": "Coverage bar chart by region",
-            "fr": "Diagramme à barres de couverture par région"
+            "en": "Coverage bar chart by Admin Area 2",
+            "fr": "Diagramme à barres de couverture par Zone administrative 2"
           },
           "description": {
-            "en": "Bar chart comparing coverage across regions",
-            "fr": "Diagramme à barres comparant la couverture entre régions"
+            "en": "Bar chart comparing coverage across Admin Areas 2",
+            "fr": "Diagramme à barres comparant la couverture entre Zones administratives 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -390,7 +390,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -513,8 +513,8 @@
         {
           "id": "coverage-timeseries",
           "label": {
-            "en": "Coverage timeseries by district",
-            "fr": "Séries temporelles de couverture par district"
+            "en": "Coverage timeseries by Admin Area 3",
+            "fr": "Séries temporelles de couverture par Zone administrative 3"
           },
           "description": {
             "en": "Coverage trends over time by admin area 3",
@@ -558,7 +558,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE\nDISCLAIMER: These results use routine data to provide rigorous, but not official estimates. They should be interpreted considering any data quality or representation limitations, including data quality findings and any other country specific factors.",
-                "fr": "DATE_RANGE\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
+                "fr": "PLAGE_DE_DATES\nAVERTISSEMENT : Ces résultats utilisent des données de routine pour fournir des estimations rigoureuses mais non officielles. Ils doivent être interprétés en tenant compte des limitations de qualité des données ou de représentativité, y compris les résultats d'évaluation de la qualité des données et tout autre facteur spécifique au pays."
               },
               "subCaptionRelFontSize": null,
               "footnote": {
@@ -572,12 +572,12 @@
         {
           "id": "coverage-bar",
           "label": {
-            "en": "Coverage bar chart by district",
-            "fr": "Diagramme à barres de couverture par district"
+            "en": "Coverage bar chart by Admin Area 3",
+            "fr": "Diagramme à barres de couverture par Zone administrative 3"
           },
           "description": {
-            "en": "Bar chart comparing coverage across districts",
-            "fr": "Diagramme à barres comparant la couverture entre districts"
+            "en": "Bar chart comparing coverage across Admin Areas 3",
+            "fr": "Diagramme à barres comparant la couverture entre Zones administratives 3"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -621,7 +621,7 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "DATE_RANGE"
+                "fr": "PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
