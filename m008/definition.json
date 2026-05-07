@@ -143,7 +143,63 @@
         }
       },
       "importantNotes": null,
-      "vizPresets": [],
+      "vizPresets": [
+        {
+          "id": "scorecard-table",
+          "label": {
+            "en": "Scorecard table",
+            "fr": "Tableau de bord"
+          },
+          "description": {
+            "en": "Table showing calculated indicators with threshold-based coloring",
+            "fr": "Tableau montrant les indicateurs calculés avec coloration basée sur les seuils"
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id",
+            "admin_area_2",
+            "admin_area_3"
+          ],
+          "createDefaultVisualizationOnInstall": "b8c128c6-31e9-4481-8253-8cda7bc2bd74",
+          "config": {
+            "d": {
+              "type": "table",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "col"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_months",
+                "nMonths": 12
+              }
+            },
+            "s": {
+              "specialScorecardTable": true
+            },
+            "t": {
+              "caption": {
+                "en": "Health Sector Scorecard",
+                "fr": "Tableau de bord du secteur santé"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Calculated indicators by area, DATE_RANGE",
+                "fr": "Indicateurs calculés par zone, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "",
+                "fr": ""
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        }
+      ],
       "hide": false
     }
   ]

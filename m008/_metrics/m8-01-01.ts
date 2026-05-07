@@ -3,7 +3,59 @@ import type {
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
 
-export const vizPresets: VizPreset[] = [];
+export const vizPresets: VizPreset[] = [
+  {
+    id: "scorecard-table",
+    label: {
+      en: "Scorecard table",
+      fr: "Tableau de bord",
+    },
+    description: {
+      en: "Table showing calculated indicators with threshold-based coloring",
+      fr: "Tableau montrant les indicateurs calculés avec coloration basée sur les seuils",
+    },
+    createDefaultVisualizationOnInstall: "b8c128c6-31e9-4481-8253-8cda7bc2bd74",
+    allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
+    config: {
+      d: {
+        type: "table",
+        valuesDisDisplayOpt: "col",
+        disaggregateBy: [
+          {
+            disOpt: "indicator_common_id",
+            disDisplayOpt: "col",
+          },
+        ],
+        filterBy: [],
+        periodFilter: {
+          filterType: "last_n_months",
+          nMonths: 12,
+        },
+      },
+      s: {
+        specialScorecardTable: true,
+      },
+      t: {
+        caption: {
+          en: "Health Sector Scorecard",
+          fr: "Tableau de bord du secteur santé",
+        },
+        subCaption: {
+          en: "Calculated indicators by area, DATE_RANGE",
+          fr: "Indicateurs calculés par zone, PLAGE_DE_DATES",
+        },
+        footnote: {
+          en: "",
+          fr: "",
+        },
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+];
 
 export const metric: MetricDefinitionGithub = {
   id: "m8-01-01",
