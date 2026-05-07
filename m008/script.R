@@ -75,12 +75,22 @@ if (nrow(available_periods) == 0) {
 message(sprintf("Found %d period(s) with indicator and population data", nrow(available_periods)))
 
 # Helper functions -----------------------------------------------------------------------------------------
-# Determine geo columns dynamically based on what exists in the data
+# Determine geo columns dynamically based on what exists in BOTH datasets
 all_possible_geo_cols <- c("admin_area_2", "admin_area_3", "admin_area_4")
-geo_cols <- intersect(all_possible_geo_cols, names(adjusted_data))
+geo_cols_in_adjusted <- intersect(all_possible_geo_cols, names(adjusted_data))
+geo_cols_in_population <- intersect(all_possible_geo_cols, names(population))
+
 message(sprintf("Adjusted data columns: %s", paste(names(adjusted_data), collapse=", ")))
 message(sprintf("Population columns: %s", paste(names(population), collapse=", ")))
-message(sprintf("Using geo_cols: %s", paste(geo_cols, collapse=", ")))
+message(sprintf("Geo cols in adjusted data: %s", paste(geo_cols_in_adjusted, collapse=", ")))
+message(sprintf("Geo cols in population: %s", paste(geo_cols_in_population, collapse=", ")))
+
+# Use the common geo columns (population may be at coarser level than adjusted data)
+geo_cols <- intersect(geo_cols_in_adjusted, geo_cols_in_population)
+if (length(geo_cols) == 0) {
+  stop("ERROR: No common geographic columns between adjusted data and population data!")
+}
+message(sprintf("Using common geo_cols for aggregation: %s", paste(geo_cols, collapse=", ")))
 
 aggregate_to_period <- function(data, target_period_id) {
   data %>%
@@ -91,12 +101,7 @@ aggregate_to_period <- function(data, target_period_id) {
 }
 
 finest_geo_col <- geo_cols[length(geo_cols)]
-message(sprintf("Finest geo column: %s", finest_geo_col))
-
-# Make sure population has the finest_geo_col
-if (!(finest_geo_col %in% names(population))) {
-  stop(sprintf("ERROR: Population data missing required column '%s'", finest_geo_col))
-}
+message(sprintf("Finest common geo column: %s", finest_geo_col))
 
 get_population_for_period <- function(pop_data, target_period_id, area_data) {
   area_names <- unique(area_data[[finest_geo_col]])
