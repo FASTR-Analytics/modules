@@ -1,0 +1,150 @@
+{
+  "label": {
+    "en": "M8. National Health Sector Scorecard (Catalog-Driven)",
+    "fr": "M8. Tableau de bord du secteur national de la santé (piloté par catalogue)"
+  },
+  "prerequisites": [
+    "m002"
+  ],
+  "scriptGenerationType": "calculated_indicators",
+  "dataSources": [
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data.csv",
+      "resultsObjectId": "M2_adjusted_data.csv",
+      "moduleId": "m002"
+    }
+  ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTED_COUNT_VARIABLE",
+        "description": {
+          "en": "Count value to use",
+          "fr": "Valeur de comptage à utiliser"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            },
+            {
+              "value": "count_final_completeness",
+              "label": "Count (adjusted for completeness)"
+            },
+            {
+              "value": "count_final_both",
+              "label": "Count (adjusted for outliers and completeness)"
+            }
+          ],
+          "defaultValue": "count_final_none"
+        }
+      },
+      {
+        "replacementString": "INTERPOLATE_POPULATION",
+        "description": {
+          "en": "Use smoothed (interpolated) population or raw annual values",
+          "fr": "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "FALSE",
+              "label": "Raw (annual step)"
+            },
+            {
+              "value": "TRUE",
+              "label": "Smoothed (interpolated)"
+            }
+          ],
+          "defaultValue": "FALSE"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [
+    "population.csv"
+  ],
+  "resultsObjects": [
+    {
+      "id": "M8_output_scorecard.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "admin_area_4": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "numerator": "NUMERIC",
+        "denominator": "NUMERIC"
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "id": "m8-01-01",
+      "label": {
+        "en": "Scorecard",
+        "fr": "Scorecard"
+      },
+      "variantLabel": null,
+      "valueProps": [
+        "value"
+      ],
+      "valueFunc": "identity",
+      "formatAs": "percent",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {},
+      "postAggregationExpression": {
+        "ingredientValues": [
+          {
+            "prop": "numerator",
+            "func": "SUM"
+          },
+          {
+            "prop": "denominator",
+            "func": "SUM"
+          }
+        ],
+        "expression": "value = numerator / denominator"
+      },
+      "resultsObjectId": "M8_output_scorecard.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Health sector scorecard indicators computed from the calculated indicators catalog.",
+          "fr": "Indicateurs de scorecard du secteur santé calculés à partir du catalogue des indicateurs calculés."
+        },
+        "methodology": {
+          "en": "Each indicator is computed as numerator/denominator. Denominators are either other HMIS indicators or population-based (annual population fraction scaled to monthly).",
+          "fr": "Chaque indicateur est calculé comme numérateur/dénominateur. Les dénominateurs sont soit d'autres indicateurs HMIS, soit basés sur la population (fraction annuelle de population mise à l'échelle mensuelle)."
+        },
+        "interpretation": {
+          "en": "Values represent coverage rates or ratios. Thresholds for traffic-light coloring come from the calculated indicators catalog.",
+          "fr": "Les valeurs représentent des taux de couverture ou des ratios. Les seuils pour la coloration feu tricolore proviennent du catalogue des indicateurs calculés."
+        },
+        "typicalRange": {
+          "en": "Varies by indicator - see catalog for thresholds.",
+          "fr": "Varie selon l'indicateur - voir le catalogue pour les seuils."
+        },
+        "caveats": null,
+        "disaggregationGuidance": {
+          "en": "Can be disaggregated by admin area (2, 3, or 4) and time period (month, quarter, year). Aggregation uses SUM(numerator)/SUM(denominator).",
+          "fr": "Peut être désagrégé par zone administrative (2, 3 ou 4) et période de temps (mois, trimestre, année). L'agrégation utilise SUM(numérateur)/SUM(dénominateur)."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
+    }
+  ]
+}
