@@ -25,6 +25,10 @@ export const vizPresets: VizPreset[] = [
             disOpt: "indicator_common_id",
             disDisplayOpt: "col",
           },
+          {
+            disOpt: "admin_area_2",
+            disDisplayOpt: "row",
+          },
         ],
         filterBy: [],
         periodFilter: {
