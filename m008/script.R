@@ -103,6 +103,9 @@ aggregate_to_period <- function(data, target_period_id) {
 finest_geo_col <- geo_cols[length(geo_cols)]
 message(sprintf("Finest common geo column: %s", finest_geo_col))
 
+# Period fraction for scaling annual population to monthly (1/12)
+PERIOD_FRACTION <- 1/12
+
 get_population_for_period <- function(pop_data, target_period_id, area_data) {
   area_names <- unique(area_data[[finest_geo_col]])
   message(sprintf("  Looking for %d unique areas in %s", length(area_names), finest_geo_col))
