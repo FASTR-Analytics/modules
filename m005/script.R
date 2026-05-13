@@ -1726,6 +1726,17 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         pull(admin_area_2)
 
       matching_regions_admin2 <- intersect(hmis_admin2_regions, survey_admin2_regions)
+      only_in_hmis <- setdiff(hmis_admin2_regions, survey_admin2_regions)
+      only_in_survey <- setdiff(survey_admin2_regions, hmis_admin2_regions)
+
+      message(sprintf("✓ admin_area_2 validation passed: %d/%d regions match",
+                       length(matching_regions_admin2), length(hmis_admin2_regions)))
+      if (length(only_in_hmis) > 0) {
+        message("  ⚠ HMIS regions NOT in survey: ", paste(only_in_hmis, collapse = ", "))
+      }
+      if (length(only_in_survey) > 0) {
+        message("  ℹ Survey regions NOT in HMIS (old boundaries?): ", paste(only_in_survey, collapse = ", "))
+      }
     }
 
     if (length(matching_regions_admin2) == 0 && ANALYSIS_LEVEL != "NATIONAL_ONLY") {
@@ -1775,8 +1786,6 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
       }
       message("================================================================================")
     } else if (length(matching_regions_admin2) > 0) {
-      message("✓ admin_area_2 validation passed: ", length(matching_regions_admin2), "/", length(hmis_admin2_regions), " regions match")
-
       # ONLY proceed if validation passed
       denominators_admin2 <- calculate_denominators(
         hmis_data   = hmis_processed_admin2$annual_hmis,
