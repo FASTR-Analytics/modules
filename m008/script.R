@@ -31,12 +31,19 @@ adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE) %>%
 
 message("Loading population data...")
 population_raw <- read_csv(POPULATION_FILE, show_col_types = FALSE)
-if ("admin_area_1" %in% names(population_raw)) {
-  population_raw <- population_raw %>% select(-admin_area_1)
+HAS_POPULATION <- nrow(population_raw) > 0
+
+if (HAS_POPULATION) {
+  if ("admin_area_1" %in% names(population_raw)) {
+    population_raw <- population_raw %>% select(-admin_area_1)
+  }
+  population <- population_raw %>%
+    pivot_wider(names_from = population_type, values_from = count)
+  message(sprintf("  Loaded %d population records", nrow(population)))
+} else {
+  message("  No population data - population-based denominators will not be available")
+  population <- NULL
 }
-# Pivot so each population_type becomes a column (total_population, u5, wra, etc.)
-population <- population_raw %>%
-  pivot_wider(names_from = population_type, values_from = count)
 
 # Derive nhmis_timely_and_data: on-time reports that also contain data
 content_indicators <- intersect(c("gnl_attendance", "opd", "penta3"), unique(adjusted_data$indicator_common_id))
@@ -62,35 +69,38 @@ available_periods <- adjusted_data %>%
   distinct(period_id, year) %>%
   arrange(period_id)
 
-pop_years <- unique(as.integer(substr(as.character(population$period_id), 1, 4)))
-
-# Filter to periods where population is available (same year or previous year as fallback)
-available_periods <- available_periods %>%
-  filter(year %in% pop_years | (year - 1) %in% pop_years)
-
-if (nrow(available_periods) == 0) {
-  stop("ERROR: No periods found with both indicator data and population data!")
+if (HAS_POPULATION) {
+  pop_years <- unique(as.integer(substr(as.character(population$period_id), 1, 4)))
+  available_periods <- available_periods %>%
+    filter(year %in% pop_years | (year - 1) %in% pop_years)
+  if (nrow(available_periods) == 0) {
+    stop("ERROR: No periods found with both indicator data and population data!")
+  }
+  message(sprintf("Found %d period(s) with indicator and population data", nrow(available_periods)))
+} else {
+  message(sprintf("Found %d period(s) with indicator data", nrow(available_periods)))
 }
-
-message(sprintf("Found %d period(s) with indicator and population data", nrow(available_periods)))
 
 # Helper functions -----------------------------------------------------------------------------------------
-# Determine geo columns dynamically based on what exists in BOTH datasets
 all_possible_geo_cols <- c("admin_area_2", "admin_area_3", "admin_area_4")
 geo_cols_in_adjusted <- intersect(all_possible_geo_cols, names(adjusted_data))
-geo_cols_in_population <- intersect(all_possible_geo_cols, names(population))
 
 message(sprintf("Adjusted data columns: %s", paste(names(adjusted_data), collapse=", ")))
-message(sprintf("Population columns: %s", paste(names(population), collapse=", ")))
 message(sprintf("Geo cols in adjusted data: %s", paste(geo_cols_in_adjusted, collapse=", ")))
-message(sprintf("Geo cols in population: %s", paste(geo_cols_in_population, collapse=", ")))
 
-# Use the common geo columns (population may be at coarser level than adjusted data)
-geo_cols <- intersect(geo_cols_in_adjusted, geo_cols_in_population)
-if (length(geo_cols) == 0) {
-  stop("ERROR: No common geographic columns between adjusted data and population data!")
+if (HAS_POPULATION) {
+  geo_cols_in_population <- intersect(all_possible_geo_cols, names(population))
+  message(sprintf("Population columns: %s", paste(names(population), collapse=", ")))
+  message(sprintf("Geo cols in population: %s", paste(geo_cols_in_population, collapse=", ")))
+  geo_cols <- intersect(geo_cols_in_adjusted, geo_cols_in_population)
+  if (length(geo_cols) == 0) {
+    stop("ERROR: No common geographic columns between adjusted data and population data!")
+  }
+  message(sprintf("Using common geo_cols for aggregation: %s", paste(geo_cols, collapse=", ")))
+} else {
+  geo_cols <- geo_cols_in_adjusted
+  message(sprintf("Using geo_cols from adjusted data: %s", paste(geo_cols, collapse=", ")))
 }
-message(sprintf("Using common geo_cols for aggregation: %s", paste(geo_cols, collapse=", ")))
 
 aggregate_to_period <- function(data, target_period_id) {
   data %>%
@@ -106,59 +116,55 @@ message(sprintf("Finest common geo column: %s", finest_geo_col))
 # Period fraction for scaling annual population to monthly (1/12)
 PERIOD_FRACTION <- 1/12
 
-get_population_for_period <- function(pop_data, target_period_id, area_data) {
-  area_names <- unique(area_data[[finest_geo_col]])
-  message(sprintf("  Looking for %d unique areas in %s", length(area_names), finest_geo_col))
-  target_year <- as.integer(substr(as.character(target_period_id), 1, 4))
+if (HAS_POPULATION) {
+  get_population_for_period <- function(pop_data, target_period_id, area_data) {
+    area_names <- unique(area_data[[finest_geo_col]])
+    message(sprintf("  Looking for %d unique areas in %s", length(area_names), finest_geo_col))
+    target_year <- as.integer(substr(as.character(target_period_id), 1, 4))
 
-  # Population data is already wide-format with columns like total_population, u5, wra, etc.
-  # Find matching period (try current year, then fallback to previous year)
-  current_year_periods <- sprintf("%04d%02d", target_year, 12:1)
-  pop_result <- NULL
+    current_year_periods <- sprintf("%04d%02d", target_year, 12:1)
+    pop_result <- NULL
 
-  for (period in current_year_periods) {
-    pop_result <- pop_data %>%
-      filter(period_id == period, .data[[finest_geo_col]] %in% area_names)
-    if (nrow(pop_result) > 0) {
-      break
-    }
-  }
-
-  # Fallback to previous year if needed
-  if (is.null(pop_result) || nrow(pop_result) == 0) {
-    prev_periods <- sprintf("%04d%02d", target_year - 1, 12:1)
-    for (period in prev_periods) {
+    for (period in current_year_periods) {
       pop_result <- pop_data %>%
         filter(period_id == period, .data[[finest_geo_col]] %in% area_names)
       if (nrow(pop_result) > 0) {
         break
       }
     }
-  }
 
-  if (is.null(pop_result) || nrow(pop_result) == 0) {
-    # Check if it's a geographic mismatch
-    pop_areas <- unique(pop_data[[finest_geo_col]])
-    matching <- intersect(area_names, pop_areas)
-    if (length(matching) == 0) {
-      stop(sprintf(
-        "ERROR: No matching areas between indicator data and population data!\n  Indicator data %s values (sample): %s\n  Population data %s values (sample): %s\n  This usually means the datasets are from different countries or have mismatched admin area names.",
-        finest_geo_col, paste(head(area_names, 3), collapse=", "),
-        finest_geo_col, paste(head(pop_areas, 3), collapse=", ")
-      ))
+    if (is.null(pop_result) || nrow(pop_result) == 0) {
+      prev_periods <- sprintf("%04d%02d", target_year - 1, 12:1)
+      for (period in prev_periods) {
+        pop_result <- pop_data %>%
+          filter(period_id == period, .data[[finest_geo_col]] %in% area_names)
+        if (nrow(pop_result) > 0) {
+          break
+        }
+      }
     }
-    stop(sprintf("ERROR: No population data found for period %s or fallback (year %d or %d)!",
-                 target_period_id, target_year, target_year - 1))
-  }
 
-  # Return only finest_geo_col + population type columns (avoid duplicate geo cols in join)
-  pop_type_cols <- setdiff(names(pop_result), c(geo_cols, "period_id"))
-  pop_result %>% select(all_of(c(finest_geo_col, pop_type_cols)))
+    if (is.null(pop_result) || nrow(pop_result) == 0) {
+      pop_areas <- unique(pop_data[[finest_geo_col]])
+      matching <- intersect(area_names, pop_areas)
+      if (length(matching) == 0) {
+        stop(sprintf(
+          "ERROR: No matching areas between indicator data and population data!\n  Indicator data %s values (sample): %s\n  Population data %s values (sample): %s\n  This usually means the datasets are from different countries or have mismatched admin area names.",
+          finest_geo_col, paste(head(area_names, 3), collapse=", "),
+          finest_geo_col, paste(head(pop_areas, 3), collapse=", ")
+        ))
+      }
+      stop(sprintf("ERROR: No population data found for period %s or fallback (year %d or %d)!",
+                   target_period_id, target_year, target_year - 1))
+    }
+
+    pop_type_cols <- setdiff(names(pop_result), c(geo_cols, "period_id"))
+    pop_result %>% select(all_of(c(finest_geo_col, pop_type_cols)))
+  }
 }
 
 # Build scorecard rows for one period ----------------------------------------------------------------------
 build_scorecard_for_period <- function(data, target_period_id) {
-  # Aggregate to finest geo level × period and pivot wide
   agg <- aggregate_to_period(data, target_period_id)
 
   if (nrow(agg) == 0) {
@@ -166,11 +172,15 @@ build_scorecard_for_period <- function(data, target_period_id) {
     return(tibble())
   }
 
-  # Merge population and add period_id back (lost during pivot)
-  pop <- get_population_for_period(population, target_period_id, agg)
-  data <- agg %>%
-    left_join(pop, by = finest_geo_col) %>%
-    mutate(period_id = target_period_id)
+  if (HAS_POPULATION) {
+    pop <- get_population_for_period(population, target_period_id, agg)
+    data <- agg %>%
+      left_join(pop, by = finest_geo_col) %>%
+      mutate(period_id = target_period_id)
+  } else {
+    data <- agg %>%
+      mutate(period_id = target_period_id)
+  }
 
   # Apply calculated indicator blocks (generated by codegen)
   __CALCULATED_INDICATOR_BLOCKS__
@@ -194,7 +204,6 @@ for (i in seq_len(nrow(available_periods))) {
 
 if (length(all_results) == 0) {
   message("WARNING: No results produced!")
-  # Create empty tibble with dynamic geo columns
   empty_cols <- setNames(
     lapply(c(geo_cols, "period_id", "indicator_common_id", "numerator", "denominator"),
            function(x) if (x %in% c("numerator", "denominator")) numeric() else if (x == "period_id") integer() else character()),
