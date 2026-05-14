@@ -1,5 +1,4 @@
 SELECTED_COUNT_VARIABLE <- "count_final_none"
-INTERPOLATE_POPULATION <- FALSE
 
 #-------------------------------------------------------------------------------------------------------------
 # M8: Catalog-Driven Scorecard Module
@@ -37,12 +36,20 @@ if (HAS_POPULATION) {
   if ("admin_area_1" %in% names(population_raw)) {
     population_raw <- population_raw %>% select(-admin_area_1)
   }
+  if ("period_id" %in% names(population_raw) && !"year" %in% names(population_raw)) {
+    population_raw <- population_raw %>%
+      mutate(year = as.integer(substr(as.character(period_id), 1, 4))) %>%
+      select(-period_id)
+  }
   population <- population_raw %>%
     pivot_wider(names_from = population_type, values_from = count)
   message(sprintf("  Loaded %d population records", nrow(population)))
+  pop_years <- sort(unique(population$year))
+  message(sprintf("  Population years available: %s", paste(pop_years, collapse=", ")))
 } else {
   message("  No population data - population-based denominators will not be available")
   population <- NULL
+  pop_years <- integer(0)
 }
 
 # Derive nhmis_timely_and_data: on-time reports that also contain data
@@ -66,17 +73,19 @@ if (length(content_indicators) > 0 && "nhmis_actual_reports_ontime" %in% unique(
 
 # Detect available periods (monthly) -----------------------------------------------------------------------
 available_periods <- adjusted_data %>%
-  distinct(period_id, year) %>%
+  distinct(period_id, year, month) %>%
   arrange(period_id)
 
 if (HAS_POPULATION) {
-  pop_years <- unique(as.integer(substr(as.character(population$period_id), 1, 4)))
+  min_pop_year <- min(pop_years)
+  max_pop_year <- max(pop_years)
   available_periods <- available_periods %>%
-    filter(year %in% pop_years | (year - 1) %in% pop_years)
+    filter(year >= min_pop_year - 1, year <= max_pop_year + 1)
   if (nrow(available_periods) == 0) {
-    stop("ERROR: No periods found with both indicator data and population data!")
+    stop("ERROR: No periods found within range of population data!")
   }
-  message(sprintf("Found %d period(s) with indicator and population data", nrow(available_periods)))
+  message(sprintf("Found %d period(s) within population year range (%d-%d +/- 1 year extrapolation)",
+                  nrow(available_periods), min_pop_year, max_pop_year))
 } else {
   message(sprintf("Found %d period(s) with indicator data", nrow(available_periods)))
 }
@@ -113,53 +122,113 @@ aggregate_to_period <- function(data, target_period_id) {
 finest_geo_col <- geo_cols[length(geo_cols)]
 message(sprintf("Finest common geo column: %s", finest_geo_col))
 
-# Period fraction for scaling annual population to monthly (1/12)
 PERIOD_FRACTION <- 1/12
 
 if (HAS_POPULATION) {
-  get_population_for_period <- function(pop_data, target_period_id, area_data) {
-    area_names <- unique(area_data[[finest_geo_col]])
-    message(sprintf("  Looking for %d unique areas in %s", length(area_names), finest_geo_col))
-    target_year <- as.integer(substr(as.character(target_period_id), 1, 4))
+  pop_type_cols <- setdiff(names(population), c(geo_cols, "year"))
 
-    current_year_periods <- sprintf("%04d%02d", target_year, 12:1)
-    pop_result <- NULL
+  get_interpolated_population <- function(pop_data, target_year, target_month, area_names) {
+    month_fraction <- (target_month - 1) / 12
 
-    for (period in current_year_periods) {
-      pop_result <- pop_data %>%
-        filter(period_id == period, .data[[finest_geo_col]] %in% area_names)
-      if (nrow(pop_result) > 0) {
-        break
-      }
+    years_available <- sort(unique(pop_data$year))
+    if (length(years_available) == 0) {
+      stop("ERROR: No population years available!")
     }
 
-    if (is.null(pop_result) || nrow(pop_result) == 0) {
-      prev_periods <- sprintf("%04d%02d", target_year - 1, 12:1)
-      for (period in prev_periods) {
-        pop_result <- pop_data %>%
-          filter(period_id == period, .data[[finest_geo_col]] %in% area_names)
-        if (nrow(pop_result) > 0) {
-          break
+    year_before <- max(years_available[years_available <= target_year], default = NA)
+    year_after <- min(years_available[years_available > target_year], default = NA)
+
+    if (is.na(year_before) && is.na(year_after)) {
+      stop(sprintf("ERROR: No population data available for interpolation (target year: %d)", target_year))
+    }
+
+    pop_for_areas <- pop_data %>%
+      filter(.data[[finest_geo_col]] %in% area_names)
+
+    if (is.na(year_before)) {
+      y1 <- year_after
+      y2 <- min(years_available[years_available > y1], default = NA)
+      if (is.na(y2)) {
+        return(pop_for_areas %>% filter(year == y1) %>% select(all_of(c(finest_geo_col, pop_type_cols))))
+      }
+      pop_y1 <- pop_for_areas %>% filter(year == y1)
+      pop_y2 <- pop_for_areas %>% filter(year == y2)
+      years_back <- y1 - target_year + month_fraction
+
+      result <- pop_y1 %>%
+        left_join(pop_y2, by = finest_geo_col, suffix = c("_y1", "_y2"))
+      for (col in pop_type_cols) {
+        col_y1 <- paste0(col, "_y1")
+        col_y2 <- paste0(col, "_y2")
+        if (col_y1 %in% names(result) && col_y2 %in% names(result)) {
+          annual_growth <- (result[[col_y2]] / result[[col_y1]]) ^ (1 / (y2 - y1))
+          result[[col]] <- result[[col_y1]] / (annual_growth ^ years_back)
         }
       }
+      return(result %>% select(all_of(c(finest_geo_col, pop_type_cols))))
     }
 
-    if (is.null(pop_result) || nrow(pop_result) == 0) {
-      pop_areas <- unique(pop_data[[finest_geo_col]])
-      matching <- intersect(area_names, pop_areas)
-      if (length(matching) == 0) {
-        stop(sprintf(
-          "ERROR: No matching areas between indicator data and population data!\n  Indicator data %s values (sample): %s\n  Population data %s values (sample): %s\n  This usually means the datasets are from different countries or have mismatched admin area names.",
-          finest_geo_col, paste(head(area_names, 3), collapse=", "),
-          finest_geo_col, paste(head(pop_areas, 3), collapse=", ")
-        ))
+    if (is.na(year_after)) {
+      y1 <- max(years_available[years_available < year_before], default = NA)
+      y2 <- year_before
+      if (is.na(y1)) {
+        return(pop_for_areas %>% filter(year == y2) %>% select(all_of(c(finest_geo_col, pop_type_cols))))
       }
-      stop(sprintf("ERROR: No population data found for period %s or fallback (year %d or %d)!",
-                   target_period_id, target_year, target_year - 1))
+      pop_y1 <- pop_for_areas %>% filter(year == y1)
+      pop_y2 <- pop_for_areas %>% filter(year == y2)
+      years_forward <- target_year - y2 + month_fraction
+
+      result <- pop_y1 %>%
+        left_join(pop_y2, by = finest_geo_col, suffix = c("_y1", "_y2"))
+      for (col in pop_type_cols) {
+        col_y1 <- paste0(col, "_y1")
+        col_y2 <- paste0(col, "_y2")
+        if (col_y1 %in% names(result) && col_y2 %in% names(result)) {
+          annual_growth <- (result[[col_y2]] / result[[col_y1]]) ^ (1 / (y2 - y1))
+          result[[col]] <- result[[col_y2]] * (annual_growth ^ years_forward)
+        }
+      }
+      return(result %>% select(all_of(c(finest_geo_col, pop_type_cols))))
     }
 
-    pop_type_cols <- setdiff(names(pop_result), c(geo_cols, "period_id"))
-    pop_result %>% select(all_of(c(finest_geo_col, pop_type_cols)))
+    pop_before <- pop_for_areas %>% filter(year == year_before)
+    pop_after <- pop_for_areas %>% filter(year == year_after)
+
+    total_years <- year_after - year_before
+    years_from_before <- target_year - year_before + month_fraction
+    weight_after <- years_from_before / total_years
+    weight_before <- 1 - weight_after
+
+    result <- pop_before %>%
+      left_join(pop_after, by = finest_geo_col, suffix = c("_before", "_after"))
+
+    for (col in pop_type_cols) {
+      col_before <- paste0(col, "_before")
+      col_after <- paste0(col, "_after")
+      if (col_before %in% names(result) && col_after %in% names(result)) {
+        result[[col]] <- result[[col_before]] * weight_before + result[[col_after]] * weight_after
+      }
+    }
+
+    result %>% select(all_of(c(finest_geo_col, pop_type_cols)))
+  }
+
+  get_population_for_period <- function(pop_data, target_period_id, area_data) {
+    area_names <- unique(area_data[[finest_geo_col]])
+    target_year <- as.integer(substr(as.character(target_period_id), 1, 4))
+    target_month <- as.integer(substr(as.character(target_period_id), 5, 6))
+
+    pop_areas <- unique(pop_data[[finest_geo_col]])
+    matching <- intersect(area_names, pop_areas)
+    if (length(matching) == 0) {
+      stop(sprintf(
+        "ERROR: No matching areas between indicator data and population data!\n  Indicator data %s values (sample): %s\n  Population data %s values (sample): %s\n  This usually means the datasets are from different countries or have mismatched admin area names.",
+        finest_geo_col, paste(head(area_names, 3), collapse=", "),
+        finest_geo_col, paste(head(pop_areas, 3), collapse=", ")
+      ))
+    }
+
+    get_interpolated_population(pop_data, target_year, target_month, area_names)
   }
 }
 
@@ -182,7 +251,6 @@ build_scorecard_for_period <- function(data, target_period_id) {
       mutate(period_id = target_period_id)
   }
 
-  # Apply calculated indicator blocks (generated by codegen)
   __CALCULATED_INDICATOR_BLOCKS__
 }
 

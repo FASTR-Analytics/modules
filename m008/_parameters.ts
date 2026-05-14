@@ -28,20 +28,4 @@ export const parameters: ModuleParameter[] = [
       ],
     },
   },
-  {
-    replacementString: "INTERPOLATE_POPULATION",
-    description: {
-      en: "Use smoothed (interpolated) population or raw annual values",
-      fr: "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes",
-    },
-    input: {
-      inputType: "select",
-      valueType: "number",
-      defaultValue: "FALSE",
-      options: [
-        { value: "FALSE", label: "Raw (annual step)" },
-        { value: "TRUE", label: "Smoothed (interpolated)" },
-      ],
-    },
-  },
 ];
