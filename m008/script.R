@@ -127,6 +127,9 @@ PERIOD_FRACTION <- 1/12
 if (HAS_POPULATION) {
   pop_type_cols <- setdiff(names(population), c(geo_cols, "year"))
 
+  safe_max <- function(x) if (length(x) == 0) NA_integer_ else max(x)
+  safe_min <- function(x) if (length(x) == 0) NA_integer_ else min(x)
+
   get_interpolated_population <- function(pop_data, target_year, target_month, area_names) {
     month_fraction <- (target_month - 1) / 12
 
@@ -135,8 +138,8 @@ if (HAS_POPULATION) {
       stop("ERROR: No population years available!")
     }
 
-    year_before <- max(years_available[years_available <= target_year], default = NA)
-    year_after <- min(years_available[years_available > target_year], default = NA)
+    year_before <- safe_max(years_available[years_available <= target_year])
+    year_after <- safe_min(years_available[years_available > target_year])
 
     if (is.na(year_before) && is.na(year_after)) {
       stop(sprintf("ERROR: No population data available for interpolation (target year: %d)", target_year))
@@ -147,7 +150,7 @@ if (HAS_POPULATION) {
 
     if (is.na(year_before)) {
       y1 <- year_after
-      y2 <- min(years_available[years_available > y1], default = NA)
+      y2 <- safe_min(years_available[years_available > y1])
       if (is.na(y2)) {
         return(pop_for_areas %>% filter(year == y1) %>% select(all_of(c(finest_geo_col, pop_type_cols))))
       }
@@ -169,7 +172,7 @@ if (HAS_POPULATION) {
     }
 
     if (is.na(year_after)) {
-      y1 <- max(years_available[years_available < year_before], default = NA)
+      y1 <- safe_max(years_available[years_available < year_before])
       y2 <- year_before
       if (is.na(y1)) {
         return(pop_for_areas %>% filter(year == y2) %>% select(all_of(c(finest_geo_col, pop_type_cols))))
