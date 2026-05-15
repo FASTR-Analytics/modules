@@ -33,7 +33,7 @@ export const parameters: ModuleParameter[] = [
       en: "Skip indicators with missing data instead of failing",
       fr: "Ignorer les indicateurs avec données manquantes au lieu d'échouer",
     },
-    replacementString: "SKIP_MISSING_INDICATORS",
+    replacementString: "__SKIP_MISSING_INDICATORS_VALUE__",
     input: {
       inputType: "select",
       valueType: "number",

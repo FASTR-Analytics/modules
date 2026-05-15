@@ -1,5 +1,5 @@
 SELECTED_COUNT_VARIABLE <- "count_final_none"
-SKIP_MISSING_INDICATORS <- TRUE
+__SKIP_MISSING_INDICATORS_VALUE__ <- TRUE
 
 #-------------------------------------------------------------------------------------------------------------
 # M8: Catalog-Driven Scorecard Module
@@ -21,6 +21,7 @@ library(tidyr)
 # Load Data ------------------------------------------------------------------------------------------------
 ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
 POPULATION_FILE <- "population.csv"
+SKIP_MISSING_INDICATORS <- __SKIP_MISSING_INDICATORS_VALUE__
 
 message("Loading adjusted data from M2...")
 adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE) %>%

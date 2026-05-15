@@ -48,7 +48,7 @@
         }
       },
       {
-        "replacementString": "SKIP_MISSING_INDICATORS",
+        "replacementString": "__SKIP_MISSING_INDICATORS_VALUE__",
         "description": {
           "en": "Skip indicators with missing data instead of failing",
           "fr": "Ignorer les indicateurs avec données manquantes au lieu d'échouer"
