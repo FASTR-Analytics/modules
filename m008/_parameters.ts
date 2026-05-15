@@ -36,7 +36,7 @@ export const parameters: ModuleParameter[] = [
     replacementString: "SKIP_MISSING_INDICATORS",
     input: {
       inputType: "select",
-      valueType: "string",
+      valueType: "number",
       defaultValue: "TRUE",
       options: [
         { value: "TRUE", label: "Skip missing (recommended)" },

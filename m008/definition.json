@@ -55,7 +55,7 @@
         },
         "input": {
           "inputType": "select",
-          "valueType": "string",
+          "valueType": "number",
           "options": [
             {
               "value": "TRUE",
