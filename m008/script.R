@@ -1,4 +1,5 @@
 SELECTED_COUNT_VARIABLE <- "count_final_none"
+SKIP_MISSING_INDICATORS <- TRUE
 
 #-------------------------------------------------------------------------------------------------------------
 # M8: Catalog-Driven Scorecard Module

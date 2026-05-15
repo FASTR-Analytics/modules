@@ -46,6 +46,28 @@
           ],
           "defaultValue": "count_final_none"
         }
+      },
+      {
+        "replacementString": "SKIP_MISSING_INDICATORS",
+        "description": {
+          "en": "Skip indicators with missing data instead of failing",
+          "fr": "Ignorer les indicateurs avec données manquantes au lieu d'échouer"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "TRUE",
+              "label": "Skip missing (recommended)"
+            },
+            {
+              "value": "FALSE",
+              "label": "Fail on missing"
+            }
+          ],
+          "defaultValue": "TRUE"
+        }
       }
     ]
   },
