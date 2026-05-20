@@ -11,7 +11,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jan 06
+# Last edit: 2026 May 20
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -177,16 +177,23 @@ outlier_analysis <- function(data, geo_cols, outlier_params) {
     ) %>%
     ungroup()
   
-  # proportional contribution within calendar year (derived from period_id)
+  # proportional contribution within a rolling (trailing) 12-month window per
+  # facility x indicator: each row's denominator is the sum of counts in the
+  # 12 months ending at that row's period. Replaces the calendar-year
+  # denominator, which falsely flagged facilities whose only reporting fell
+  # early in a calendar year.
   data <- data %>%
-    mutate(year_key = period_id %/% 100L) %>%  # transient
-    group_by(facility_id, indicator_common_id, year_key) %>%
+    mutate(yearmon_key = (period_id %/% 100L) * 12L + (period_id %% 100L)) %>%
+    group_by(facility_id, indicator_common_id) %>%
     mutate(
-      pc = count / sum(count, na.rm = TRUE),
-      outlier_pc = ifelse(!is.na(pc) & pc > outlier_params$outlier_pc_threshold, 1L, 0L)
+      window_total = vapply(yearmon_key, function(ym) {
+        sum(count[yearmon_key >= ym - 11L & yearmon_key <= ym], na.rm = TRUE)
+      }, numeric(1)),
+      pc           = ifelse(window_total > 0, count / window_total, NA_real_),
+      outlier_pc   = ifelse(!is.na(pc) & pc > outlier_params$outlier_pc_threshold, 1L, 0L)
     ) %>%
     ungroup() %>%
-    select(-year_key)
+    select(-yearmon_key, -window_total)
   
   # combine flags
   data <- data %>%
