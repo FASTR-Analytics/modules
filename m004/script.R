@@ -274,8 +274,7 @@ process_hmis_adjusted_volume <- function(adjusted_volume_data, count_col = SELEC
 }
 
 # Part 2 - prepare survey data - UPDATED HARMONIZATION
-process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR,
-                                national_reference = NULL) {
+process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, min_year = MIN_YEAR, max_year = CURRENT_YEAR) {
 
   # Filter by ISO3 if available, otherwise use admin_area_1
   if (!is.null(hmis_iso3) && "iso3_code" %in% names(survey_data)) {
@@ -527,40 +526,27 @@ process_survey_data <- function(survey_data, hmis_countries, hmis_iso3 = NULL, m
     survey_carried$sbacarry <- survey_carried$deliverycarry
   }
 
-  # defaults for subnational when missing - use national coverage estimate
-  # If no national reference is available, leave as NA (no coverage calculation)
-  if (!is_national && !is.null(national_reference)) {
-    # Extract national coverage values by year for vaccination indicators
-    for (ind in c("anc1","anc4","delivery","sba","bcg","penta1","penta3",
-                  "measles1","measles2","opv1","opv2","opv3","rota1","rota2",
-                  "pnc1","vitaminA","fully_immunized")) {
-      carry_col <- paste0(ind, "carry")
-      nat_col <- paste0("avgsurvey_", ind)
-
-      # If national reference data is provided, join and use national values as defaults
-      if (nat_col %in% names(national_reference)) {
-        national_vals <- national_reference %>%
-          select(year, national_value = all_of(nat_col)) %>%
-          distinct()
-
-        survey_carried <- survey_carried %>%
-          left_join(national_vals, by = "year")
-
-        # Only fill missing values with national estimates; if national is also NA, leave as NA
-        if (!(carry_col %in% names(survey_carried))) {
-          survey_carried[[carry_col]] <- survey_carried$national_value
-        } else {
-          survey_carried[[carry_col]] <- ifelse(is.na(survey_carried[[carry_col]]),
-                                                survey_carried$national_value,
-                                                survey_carried[[carry_col]])
+  # Report subnational survey coverage gaps (left as NA — no national fallback)
+  if (!is_national) {
+    carry_cols <- grep("carry$", names(survey_carried), value = TRUE)
+    if (length(carry_cols) > 0) {
+      n_rows <- nrow(survey_carried)
+      gap_summary <- sapply(carry_cols, function(col) sum(is.na(survey_carried[[col]])))
+      gap_summary <- gap_summary[gap_summary > 0]
+      if (length(gap_summary) > 0) {
+        message("  → Subnational survey coverage gaps (left as NA, ", n_rows, " region-year rows):")
+        for (col in names(gap_summary)) {
+          ind <- sub("carry$", "", col)
+          message(sprintf("      %-20s %d/%d NA (%.0f%%)",
+                          ind, gap_summary[[col]], n_rows,
+                          100 * gap_summary[[col]] / n_rows))
         }
-
-        # Clean up temporary column
-        survey_carried <- survey_carried %>% select(-national_value)
+      } else {
+        message("  → Subnational survey: all carry columns fully populated")
       }
     }
   }
-  
+
   if (is_national) {
     survey_carried <- survey_carried %>% mutate(admin_area_2 = "NATIONAL")
     raw_survey_values <- raw_survey_values %>% mutate(admin_area_2 = "NATIONAL")
@@ -1763,8 +1749,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
     # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
     survey_processed_admin2 <- tryCatch({
       process_survey_data(survey_data_subnational, hmis_processed_admin2$hmis_countries,
-                          hmis_iso3 = hmis_processed_admin2$hmis_iso3,
-                          national_reference = survey_processed_national$carried)
+                          hmis_iso3 = hmis_processed_admin2$hmis_iso3)
     }, error = function(e) {
       message("================================================================================")
       warning("⚠️  MISMATCH: HMIS admin_area_2 does not match survey admin_area_2")
@@ -1914,8 +1899,7 @@ if (!is.null(hmis_data_subnational) && !is.null(survey_data_subnational)) {
         # SAFEGUARD: Wrap survey processing in tryCatch to handle mismatched data
         survey_processed_admin3 <- tryCatch({
           process_survey_data(survey_data_subnational, hmis_processed_admin3$hmis_countries,
-                              hmis_iso3 = hmis_processed_admin3$hmis_iso3,
-                              national_reference = survey_processed_national$carried)
+                              hmis_iso3 = hmis_processed_admin3$hmis_iso3)
         }, error = function(e) {
           message("================================================================================")
           warning("⚠️  MISMATCH DETECTED: admin_area_3 names differ between HMIS and survey data")
