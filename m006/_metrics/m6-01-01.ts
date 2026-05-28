@@ -1,4 +1,7 @@
-import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";
+import type {
+  MetricDefinitionGithub,
+  VizPreset,
+} from "../../.validation/_module_definition_github.ts";
 import {
   FOOTNOTE_COVERAGE_WITH_CURRENT_YEAR,
   SUBCAPTION_DISCLAIMER,
@@ -64,7 +67,8 @@ export const metric: MetricDefinitionGithub = {
   valueFunc: "AVG",
   valueLabelReplacements: {
     coverage_original_estimate: "Survey-based estimate (when available)",
-    coverage_avgsurveyprojection: "Projected survey estimate (when survey data is missing)",
+    coverage_avgsurveyprojection:
+      "Projected survey estimate (when survey data is missing)",
     coverage_cov: "Coverage calculated from HMIS data",
   },
   label: {
