@@ -1,5 +1,6 @@
 SELECTED_COUNT_VARIABLE <- "count_final_none"
 __SKIP_MISSING_INDICATORS_VALUE__ <- TRUE
+__NEEDS_POPULATION_VALUE__ <- FALSE
 
 #-------------------------------------------------------------------------------------------------------------
 # M8: Catalog-Driven Scorecard Module
@@ -32,7 +33,11 @@ adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE) %>%
 
 message("Loading population data...")
 population_raw <- read_csv(POPULATION_FILE, show_col_types = FALSE)
-HAS_POPULATION <- nrow(population_raw) > 0
+NEEDS_POPULATION <- __NEEDS_POPULATION_VALUE__
+if (!NEEDS_POPULATION) {
+  message("  No calculated indicators use a population denominator - population.csv will be ignored")
+}
+HAS_POPULATION <- NEEDS_POPULATION && nrow(population_raw) > 0
 
 if (HAS_POPULATION) {
   if ("admin_area_1" %in% names(population_raw)) {
@@ -49,7 +54,9 @@ if (HAS_POPULATION) {
   pop_years <- sort(unique(population$year))
   message(sprintf("  Population years available: %s", paste(pop_years, collapse=", ")))
 } else {
-  message("  No population data - population-based denominators will not be available")
+  if (NEEDS_POPULATION) {
+    message("  No population data - population-based denominators will not be available")
+  }
   population <- NULL
   pop_years <- integer(0)
 }
