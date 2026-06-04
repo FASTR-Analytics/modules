@@ -81,3 +81,81 @@ survey_data_fetcher
 
 # Nigeria-specific data
 nigeria_disruption_database_template.*
+
+# =====================================================================
+#  CATCH-ALL HYGIENE RULES (added 2026 Jun) — keep local junk out.
+#
+#  WHAT BELONGS IN THE REPO (everything else is local-only / invisible):
+#    - module folders  m001/ … m010/  (and new mXXX/ you intend to push)
+#    - _shared/  .validation/  .github/  .githooks/
+#    - the TS/Deno build files (deno.json, build_definitions.ts, etc.)
+#    - DOC_*.md
+#    - the two CSV backbones: population_estimates_only.csv,
+#      survey_data_unified.csv
+#
+#  Anything matched below is LOCAL-ONLY on purpose. If you make a new file
+#  that you DO want pushed and it's hidden, `git add -f <file>` to override.
+# =====================================================================
+
+# --- Backups & temp copies ---
+*.bak
+*.bak-*
+*.orig
+*~
+
+# --- Big data / geospatial / model caches ---
+*.tif
+*.tiff
+*.geojson
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.prj
+*.rds
+*.nc
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# --- Documents / reports / binaries ---
+*.pdf
+*.xlsm
+*.html
+*.py
+
+# --- Data CSVs: ONLY the two backbones are committed ---
+*.csv
+!population_estimates_only.csv
+!survey_data_unified.csv
+
+# --- Local notes at repo root (committed docs are DOC_*.md / README.md) ---
+/*.md
+!/DOC_*.md
+!/README.md
+
+# --- Local working & output folders ---
+# Any NN_-numbered folder is a local pipeline/tool dir (06_, 08_, …)
+[0-9][0-9]_*/
+ARCHIVE/
+results/
+count_down/
+**/cache/
+
+# --- Nested repos that live here but push to their OWN remotes ---
+# (kept out so the parent repo never swallows them as embedded gitlinks)
+06_survey_data_fetcher/
+count_down/cd2030/
+disruption_mapping/
+
+# --- Personal runner / scratch scripts at repo root ---
+/run_*.R
+/test_*.R
+/fetch_*.R
+/plot_*.R
+/Dockerfile
+/run_in_docker.sh
+
+# --- Personal Shiny viewers inside module folders (local-only) ---
+m007/shiny_scorecard.R
