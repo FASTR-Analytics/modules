@@ -540,7 +540,6 @@
               "filterBy": []
             },
             "s": {
-              "scale": 1.7,
               "specialBarChart": true,
               "specialBarChartDataLabels": "all-values"
             },
@@ -592,7 +591,6 @@
               "filterBy": []
             },
             "s": {
-              "scale": 1.8,
               "colorScale": "custom",
               "customSeriesStyles": [
                 {

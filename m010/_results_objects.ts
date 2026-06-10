@@ -12,6 +12,7 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       hfa_indicator: "TEXT NOT NULL",
       hfa_category: "TEXT",
       hfa_sub_category: "TEXT",
+      hfa_service_category: "TEXT",
       time_point: "TEXT NOT NULL",
       facility_ownership: "TEXT NOT NULL",
       facility_type: "TEXT NOT NULL",

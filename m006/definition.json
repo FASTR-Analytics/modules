@@ -197,7 +197,6 @@
               "selectedReplicantValue": "anc1"
             },
             "s": {
-              "scale": 2.7,
               "content": "lines",
               "showDataLabels": true,
               "specialCoverageChart": true
@@ -309,11 +308,9 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": "anc1",
-              "includeNationalForAdminArea2": true
+              "selectedReplicantValue": "anc1"
             },
             "s": {
-              "scale": 1.7,
               "content": "lines",
               "showDataLabels": true,
               "specialCoverageChart": true
@@ -541,11 +538,9 @@
                 }
               ],
               "filterBy": [],
-              "selectedReplicantValue": "anc1",
-              "includeNationalForAdminArea2": true
+              "selectedReplicantValue": "anc1"
             },
             "s": {
-              "scale": 1.7,
               "content": "lines",
               "showDataLabels": true,
               "specialCoverageChart": true

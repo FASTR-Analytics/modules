@@ -50,7 +50,6 @@ export const vizPresets: VizPreset[] = [
         filterBy: [],
       },
       s: {
-        scale: 1.9,
         content: "lines",
         decimalPlaces: 1,
       },

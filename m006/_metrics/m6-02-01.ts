@@ -48,11 +48,9 @@ export const vizPresets: VizPreset[] = [
           },
         ],
         filterBy: [],
-        includeNationalForAdminArea2: true,
         selectedReplicantValue: "anc1",
       },
       s: {
-        scale: 1.7,
         content: "lines",
         showDataLabels: true,
         specialCoverageChart: true,

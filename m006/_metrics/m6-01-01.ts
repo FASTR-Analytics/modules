@@ -35,7 +35,6 @@ export const vizPresets: VizPreset[] = [
         selectedReplicantValue: "anc1",
       },
       s: {
-        scale: 2.7,
         content: "lines",
         showDataLabels: true,
         specialCoverageChart: true,

@@ -188,7 +188,6 @@ export const vizPresets: VizPreset[] = [
         valuesFilter: ["count_final_outliers"],
       },
       s: {
-        scale: 1.7,
         specialBarChart: true,
         specialBarChartDataLabels: "all-values",
       },
@@ -238,7 +237,6 @@ export const vizPresets: VizPreset[] = [
         filterBy: [],
       },
       s: {
-        scale: 1.8,
         colorScale: "custom",
         customSeriesStyles: [
           {

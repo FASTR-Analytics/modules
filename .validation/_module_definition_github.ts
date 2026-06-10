@@ -6,10 +6,13 @@ import { ALL_DISAGGREGATION_OPTIONS } from "./disaggregation_options.ts";
 // Module Definition — GITHUB SHAPE.
 //
 // Strict schema for module definitions as authored in GitHub repos. Validated
-// at fetch time by load_module.ts. Strict-all-the-way-down: NO preprocess,
-// NO drift tolerance, NO defaults for missing fields. Authored definition.json
-// files must match this shape exactly — incomplete or legacy shapes get
-// rejected with clear error paths.
+// at fetch time by load_module.ts. NO preprocess, NO drift tolerance, NO
+// defaults for missing fields: incomplete shapes get rejected with clear error
+// paths. CAVEAT: zod's default strip mode silently DROPS unknown keys rather
+// than rejecting them — a definition.json carrying a renamed-away legacy key
+// (e.g. includeNationalForAdminArea2) loads with that setting silently lost.
+// Field renames must therefore land in the authored definition.json files at
+// the same time as here.
 //
 // MUST NOT import from _module_definition_installed.ts or _metric_installed.ts.
 // GitHub and installed schemas are independent — shared atoms live in
@@ -99,7 +102,6 @@ const disaggregationDisplayOptionGithub = z.enum([
 
 // Strict period filter schema — each filterType has exactly the fields it requires
 const boundedFilterBaseGithub = z.object({
-  periodOption: periodOptionGithub,
   min: z.number().int(),
   max: z.number().int(),
 });
@@ -157,8 +159,8 @@ const configDGithubStrict = z
     ),
     periodFilter: periodFilterGithub,
     selectedReplicantValue: z.string().optional(),
-    includeNationalForAdminArea2: z.boolean().optional(),
-    includeNationalPosition: z.enum(["bottom", "top"]).optional(),
+    includeAdminAreaRollup: z.boolean().optional(),
+    adminAreaRollupPosition: z.enum(["bottom", "top"]).optional(),
   });
   // Note: Duplicate disDisplayOpt/disOpt entries are allowed — UI handles gracefully.
 
@@ -169,7 +171,6 @@ const configDGithubStrict = z
 // configSStrict in _module_definition_installed.ts in lockstep.
 const configSGithubStrict = z
   .object({
-    scale: z.number(),
     content: z.enum(["bars", "lines", "points", "lines-area", "lines-points"]),
     allowIndividualRowLimits: z.boolean(),
     colorScale: z.enum([
