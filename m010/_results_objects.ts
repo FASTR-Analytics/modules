@@ -21,10 +21,9 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       facility_custom_3: "TEXT NOT NULL",
       facility_custom_4: "TEXT NOT NULL",
       facility_custom_5: "TEXT NOT NULL",
-      numeric_sum: "NUMERIC",
-      numeric_avg: "NUMERIC",
-      boolean_sum: "NUMERIC",
-      boolean_avg: "NUMERIC",
+      sum_val: "NUMERIC",
+      avg_num: "NUMERIC",
+      avg_weight: "NUMERIC",
     },
   },
 ];

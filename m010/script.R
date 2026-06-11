@@ -19,6 +19,10 @@ __WARNING_PRINTS__
 
 # Read and pivot data to wide format
 data <- read.csv(PROJECT_DATA_HFA)
+
+# Sampling weight column (added by newer exports; tolerate its absence)
+if (!"weight" %in% names(data)) data$weight <- NA_real_
+
 data_wide <- data %>%
   pivot_wider(names_from = var_name, values_from = value)
 
@@ -28,6 +32,15 @@ facility_cols <- names(data_wide)[grepl("^(facility_|admin_area_|time_point)", n
 # Convert pivoted variable columns to numeric (they may be character after pivot)
 data_wide <- data_wide %>%
   mutate(across(-all_of(facility_cols), as.numeric))
+
+# Resolve sampling weights: weights off, or a facility with no weight row,
+# means weight 1 — the weighted formulas then reduce exactly to unweighted ones
+if (USE_SAMPLE_WEIGHTS) {
+  n_no_weight <- sum(is.na(data_wide$weight))
+  print(paste0("Facility/time-point rows without a sampling weight (fallback to weight 1): ", n_no_weight))
+}
+data_wide <- data_wide %>%
+  mutate(weight_final = if (USE_SAMPLE_WEIGHTS) coalesce(weight, 1) else 1)
 
 # Calculate indicators
 results <- data_wide %>%
@@ -48,6 +61,7 @@ facility_info <- data_wide %>%
   select(all_of(facility_cols))
 
 results_long <- facility_info %>%
+  bind_cols(data_wide %>% select(weight_final)) %>%
   bind_cols(results_final) %>%
   pivot_longer(
     cols = all_of(indicator_cols),
@@ -57,12 +71,11 @@ results_long <- facility_info %>%
   left_join(indicator_metadata, by = "hfa_indicator") %>%
   filter(!is.na(raw_value)) %>%
   mutate(
-    numeric_sum = ifelse(ind_type == "numeric" & ind_aggregation == "sum", raw_value, NA_real_),
-    numeric_avg = ifelse(ind_type == "numeric" & ind_aggregation == "avg", raw_value, NA_real_),
-    boolean_sum = ifelse(ind_type == "binary" & ind_aggregation == "sum", raw_value, NA_real_),
-    boolean_avg = ifelse(ind_type == "binary" & ind_aggregation == "avg", raw_value, NA_real_)
+    sum_val    = ifelse(ind_aggregation == "sum", raw_value * weight_final, NA_real_),
+    avg_num    = ifelse(ind_aggregation == "avg", raw_value * weight_final, NA_real_),
+    avg_weight = ifelse(ind_aggregation == "avg", weight_final, NA_real_)
   ) %>%
-  select(-raw_value, -hfa_short_label, -ind_type, -ind_aggregation)
+  select(-raw_value, -weight_final, -hfa_short_label, -ind_type, -ind_aggregation)
 
 if (nrow(results_long) == 0) {
   stop("No results generated - all indicator values are NA. Check that HFA indicators have been configured with R code.")

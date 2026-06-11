@@ -20,13 +20,13 @@ export const metric: MetricDefinitionGithub = {
   formatAs: "number",
   postAggregationExpression: {
     ingredientValues: [
-      { prop: "numeric_sum", func: "SUM" },
-      { prop: "numeric_avg", func: "AVG" },
-      { prop: "boolean_sum", func: "SUM" },
-      { prop: "boolean_avg", func: "AVG" },
+      { prop: "sum_val", func: "SUM" },
+      { prop: "avg_num", func: "SUM" },
+      { prop: "avg_weight", func: "SUM" },
     ],
-    expression:
-      "value = COALESCE(numeric_sum, numeric_avg, boolean_sum, boolean_avg)",
+    // Bare division only: the PO query evaluator auto-wraps "/column" in a
+    // NULLIF guard; writing NULLIF here would be double-wrapped into bad SQL
+    expression: "value = COALESCE(sum_val, avg_num / avg_weight)",
   },
   aiDescription: {
     summary: {
@@ -46,8 +46,8 @@ export const metric: MetricDefinitionGithub = {
       fr: "Varie selon le type d'indicateur: les indicateurs binaires moyens varient de 0 à 1 (pourcentage), les autres varient selon ce qui est mesuré.",
     },
     caveats: {
-      en: "HFA data is typically cross-sectional and may not reflect temporal trends. Survey timing and facility sampling affect comparability across assessments.",
-      fr: "Les données HFA sont généralement transversales et peuvent ne pas refléter les tendances temporelles.",
+      en: "HFA data is typically cross-sectional and may not reflect temporal trends. Survey timing and facility sampling affect comparability across assessments. When sampling weights are enabled, sums are weighted population-total estimates (non-integer) and may be unreliable at fine admin-area disaggregation if the weights were designed for national or stratum-level estimates.",
+      fr: "Les données HFA sont généralement transversales et peuvent ne pas refléter les tendances temporelles. Lorsque les pondérations d'échantillonnage sont activées, les sommes sont des estimations pondérées de totaux de population (non entières) et peuvent être peu fiables à une désagrégation administrative fine si les pondérations ont été conçues pour des estimations nationales ou par strate.",
     },
     disaggregationGuidance: {
       en: "Always disaggregate by hfa_indicator and time_point (both required). Use admin_area to compare regional results. Disaggregate by facility_type or facility_ownership to identify disparities.",
