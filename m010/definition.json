@@ -129,7 +129,92 @@
         }
       },
       "importantNotes": null,
-      "vizPresets": [],
+      "vizPresets": [
+        {
+          "id": "hfa-category-indicator-table",
+          "label": {
+            "en": "Indicators by time point (per service category)",
+            "fr": "Indicateurs par point temporel (par catégorie de service)"
+          },
+          "description": {
+            "en": "Table of HFA indicator values for a selected service category, with indicators as rows and time points as columns. Switch the category using the replicant selector.",
+            "fr": "Tableau des valeurs des indicateurs HFA pour une catégorie de service sélectionnée, avec les indicateurs en lignes et les points temporels en colonnes. Changez de catégorie à l'aide du sélecteur de réplicant."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "hfa_category",
+            "hfa_sub_category",
+            "hfa_indicator",
+            "time_point"
+          ],
+          "createDefaultVisualizationOnInstall": "82617c89-803b-4139-b000-ebddf2469dfd",
+          "config": {
+            "d": {
+              "type": "table",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "hfa_category",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "hfa_indicator",
+                  "disDisplayOpt": "row"
+                },
+                {
+                  "disOpt": "time_point",
+                  "disDisplayOpt": "col"
+                }
+              ],
+              "filterBy": [],
+              "selectedReplicantValue": "financing"
+            },
+            "s": {
+              "decimalPlaces": 1,
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                0.7,
+                0.8
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#FAE9B7"
+                },
+                {
+                  "color": "#A9DFBF"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "HFA indicators",
+                "fr": "Indicateurs HFA"
+              },
+              "captionRelFontSize": null,
+              "subCaption": null,
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
+        }
+      ],
       "hide": false
     }
   ]

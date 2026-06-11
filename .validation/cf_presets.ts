@@ -3,9 +3,9 @@ import { cfStorageSchema } from "./conditional_formatting_standalone.ts";
 
 type CfStorage = z.infer<typeof cfStorageSchema>;
 
-const CF_LIGHTER_GREEN = "#68C690";
-const CF_LIGHTER_YELLOW = "#F6D982";
-const CF_LIGHTER_RED = "#F18989";
+const CF_LIGHTER_GREEN = "#A9DFBF";
+const CF_LIGHTER_YELLOW = "#FAE9B7";
+const CF_LIGHTER_RED = "#F7BCBC";
 const CF_NO_DATA = "#ffffff";
 
 // Base with all scale fields defaulted (required by schema)

@@ -181,13 +181,13 @@
               ],
               "cfThresholdBuckets": [
                 {
-                  "color": "#68C690"
+                  "color": "#A9DFBF"
                 },
                 {
-                  "color": "#F6D982"
+                  "color": "#FAE9B7"
                 },
                 {
-                  "color": "#F18989"
+                  "color": "#F7BCBC"
                 }
               ],
               "cfThresholdDirection": "lower-is-better",
@@ -331,13 +331,13 @@
               ],
               "cfThresholdBuckets": [
                 {
-                  "color": "#68C690"
+                  "color": "#A9DFBF"
                 },
                 {
-                  "color": "#F6D982"
+                  "color": "#FAE9B7"
                 },
                 {
-                  "color": "#F18989"
+                  "color": "#F7BCBC"
                 }
               ],
               "cfThresholdDirection": "lower-is-better",
@@ -481,13 +481,13 @@
               ],
               "cfThresholdBuckets": [
                 {
-                  "color": "#68C690"
+                  "color": "#A9DFBF"
                 },
                 {
-                  "color": "#F6D982"
+                  "color": "#FAE9B7"
                 },
                 {
-                  "color": "#F18989"
+                  "color": "#F7BCBC"
                 }
               ],
               "cfThresholdDirection": "lower-is-better",

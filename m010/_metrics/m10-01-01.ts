@@ -2,8 +2,57 @@ import type {
   MetricDefinitionGithub,
   VizPreset,
 } from "../../.validation/_module_definition_github.ts";
+import { CF_80_70 } from "../../.validation/cf_presets.ts";
 
-export const vizPresets: VizPreset[] = [];
+export const vizPresets: VizPreset[] = [
+  {
+    id: "hfa-category-indicator-table",
+    label: {
+      en: "Indicators by time point (per service category)",
+      fr: "Indicateurs par point temporel (par catégorie de service)",
+    },
+    description: {
+      en: "Table of HFA indicator values for a selected service category, with indicators as rows and time points as columns. Switch the category using the replicant selector.",
+      fr: "Tableau des valeurs des indicateurs HFA pour une catégorie de service sélectionnée, avec les indicateurs en lignes et les points temporels en colonnes. Changez de catégorie à l'aide du sélecteur de réplicant.",
+    },
+    allowedFilters: [
+      "hfa_category",
+      "hfa_sub_category",
+      "hfa_indicator",
+      "time_point",
+    ],
+    createDefaultVisualizationOnInstall: "82617c89-803b-4139-b000-ebddf2469dfd",
+    config: {
+      d: {
+        type: "table",
+        valuesDisDisplayOpt: "col",
+        disaggregateBy: [
+          { disOpt: "hfa_category", disDisplayOpt: "replicant" },
+          { disOpt: "hfa_indicator", disDisplayOpt: "row" },
+          { disOpt: "time_point", disDisplayOpt: "col" },
+        ],
+        selectedReplicantValue: "financing",
+        filterBy: [],
+      },
+      s: {
+        ...CF_80_70,
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "HFA indicators",
+          fr: "Indicateurs HFA",
+        },
+        captionRelFontSize: null,
+        subCaption: null,
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+];
 
 export const metric: MetricDefinitionGithub = {
   id: "m10-01-01",
