@@ -2614,3 +2614,413 @@ MOH - Uganda,NATIONAL,2027,Annual population age 0-4,totu5pop,population_estimat
 MOH - Uganda,NATIONAL,2028,Annual population age 0-4,totu5pop,population_estimate,111065116,UNWPP,UNWPP - Under-5 population,modeled,MOH - Uganda,UG,UGA
 MOH - Uganda,NATIONAL,2029,Annual population age 0-4,totu5pop,population_estimate,113845580,UNWPP,UNWPP - Under-5 population,modeled,MOH - Uganda,UG,UGA
 MOH - Uganda,NATIONAL,2030,Annual population age 0-4,totu5pop,population_estimate,116625879,UNWPP,UNWPP - Under-5 population,modeled,MOH - Uganda,UG,UGA
+Zimbabwe,NATIONAL,1990,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.51,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1991,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.913,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1992,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.269,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1993,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.379,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1994,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.025,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1995,"Crude birth rate (births per 1,000 population)",crudebr,rate,31.665,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1996,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.405,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1997,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.372,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1998,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.47,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1999,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.615,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2000,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.128,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2001,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.463,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2002,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.539,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2003,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.613,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2004,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.326,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2005,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.803,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2006,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.203,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2007,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.651,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2008,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.361,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2009,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.518,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2010,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.869,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2011,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.142,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2012,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.805,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2013,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.975,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2014,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.407,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2015,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.918,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2016,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.704,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2017,"Crude birth rate (births per 1,000 population)",crudebr,rate,31.813,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2018,"Crude birth rate (births per 1,000 population)",crudebr,rate,31.327,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2019,"Crude birth rate (births per 1,000 population)",crudebr,rate,31.121,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2020,"Crude birth rate (births per 1,000 population)",crudebr,rate,30.988,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2021,"Crude birth rate (births per 1,000 population)",crudebr,rate,30.932,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2022,"Crude birth rate (births per 1,000 population)",crudebr,rate,30.882,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2023,"Crude birth rate (births per 1,000 population)",crudebr,rate,30.41,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2024,"Crude birth rate (births per 1,000 population)",crudebr,rate,29.891,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2025,"Crude birth rate (births per 1,000 population)",crudebr,rate,29.54,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2026,"Crude birth rate (births per 1,000 population)",crudebr,rate,29.253,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2027,"Crude birth rate (births per 1,000 population)",crudebr,rate,29.04,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2028,"Crude birth rate (births per 1,000 population)",crudebr,rate,28.913,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2029,"Crude birth rate (births per 1,000 population)",crudebr,rate,28.776,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2030,"Crude birth rate (births per 1,000 population)",crudebr,rate,28.645,UNWPP,UNWPP - Crude birth rate,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1990,Total population by sex,poptot,population_estimate,10137281.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1991,Total population by sex,poptot,population_estimate,10404815.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1992,Total population by sex,poptot,population_estimate,10702699.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1993,Total population by sex,poptot,population_estimate,10860287.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1994,Total population by sex,poptot,population_estimate,10873148.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1995,Total population by sex,poptot,population_estimate,10974598.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1996,Total population by sex,poptot,population_estimate,11158359.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1997,Total population by sex,poptot,population_estimate,11369827.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1998,Total population by sex,poptot,population_estimate,11594297,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1999,Total population by sex,poptot,population_estimate,11783457.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2000,Total population by sex,poptot,population_estimate,11892055,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2001,Total population by sex,poptot,population_estimate,11971901.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2002,Total population by sex,poptot,population_estimate,12087653,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2003,Total population by sex,poptot,population_estimate,12232322.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2004,Total population by sex,poptot,population_estimate,12365896,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2005,Total population by sex,poptot,population_estimate,12483431.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2006,Total population by sex,poptot,population_estimate,12636445,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2007,Total population by sex,poptot,population_estimate,12804058,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2008,Total population by sex,poptot,population_estimate,12959149.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2009,Total population by sex,poptot,population_estimate,13142789.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2010,Total population by sex,poptot,population_estimate,13356547.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2011,Total population by sex,poptot,population_estimate,13595424,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2012,Total population by sex,poptot,population_estimate,13817887,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2013,Total population by sex,poptot,population_estimate,14013808.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2014,Total population by sex,poptot,population_estimate,14207358.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2015,Total population by sex,poptot,population_estimate,14399013,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2016,Total population by sex,poptot,population_estimate,14600294,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2017,Total population by sex,poptot,population_estimate,14812482,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2018,Total population by sex,poptot,population_estimate,15034452,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2019,Total population by sex,poptot,population_estimate,15271367.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2020,Total population by sex,poptot,population_estimate,15526888.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2021,Total population by sex,poptot,population_estimate,15797210,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2022,Total population by sex,poptot,population_estimate,16069055.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2023,Total population by sex,poptot,population_estimate,16340821.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2024,Total population by sex,poptot,population_estimate,16634372.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2025,Total population by sex,poptot,population_estimate,16950795,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2026,Total population by sex,poptot,population_estimate,17273580,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2027,Total population by sex,poptot,population_estimate,17600613,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2028,Total population by sex,poptot,population_estimate,17932008.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2029,Total population by sex,poptot,population_estimate,18268955,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2030,Total population by sex,poptot,population_estimate,18610348.5,UNWPP,UNWPP - Total population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1990,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2334137,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1991,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2428522,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1992,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2481025,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1993,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2501550,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1994,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2545260.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1995,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2622056,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1996,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2732566,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1997,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2853497.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1998,Female population of reproductive age (15-49 years),womenrepage,population_estimate,2974744,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1999,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3075759,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2000,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3140117.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2001,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3188798,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2002,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3231453.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2003,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3265893,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2004,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3292069,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2005,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3312329.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2006,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3345918.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2007,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3383968,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2008,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3412895,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2009,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3444809,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2010,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3482289,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2011,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3528840,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2012,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3574736.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2013,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3613364,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2014,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3655807.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2015,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3707482.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2016,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3769512,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2017,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3839406,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2018,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3913973,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2019,Female population of reproductive age (15-49 years),womenrepage,population_estimate,3992354,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2020,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4073736.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2021,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4155812,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2022,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4232846,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2023,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4309145,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2024,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4403481,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2025,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4513167,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2026,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4624946.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2027,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4736862.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2028,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4845109.5,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2029,Female population of reproductive age (15-49 years),womenrepage,population_estimate,4946528,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2030,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5038223,UNWPP,UNWPP - Female reproductive age population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1990,Annual population age 0,totu1pop,population_estimate,344355,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1991,Annual population age 0,totu1pop,population_estimate,346166,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1992,Annual population age 0,totu1pop,population_estimate,346493,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1993,Annual population age 0,totu1pop,population_estimate,338956.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1994,Annual population age 0,totu1pop,population_estimate,331295.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1995,Annual population age 0,totu1pop,population_estimate,330524,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1996,Annual population age 0,totu1pop,population_estimate,337983.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1997,Annual population age 0,totu1pop,population_estimate,353465,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1998,Annual population age 0,totu1pop,population_estimate,371703.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1999,Annual population age 0,totu1pop,population_estimate,390347,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2000,Annual population age 0,totu1pop,population_estimate,403534,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2001,Annual population age 0,totu1pop,population_estimate,411372.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2002,Annual population age 0,totu1pop,population_estimate,417737.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2003,Annual population age 0,totu1pop,population_estimate,423552,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2004,Annual population age 0,totu1pop,population_estimate,426999.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2005,Annual population age 0,totu1pop,population_estimate,426284,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2006,Annual population age 0,totu1pop,population_estimate,424697,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2007,Annual population age 0,totu1pop,population_estimate,429405,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2008,Annual population age 0,totu1pop,population_estimate,441665,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2009,Annual population age 0,totu1pop,population_estimate,459485,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2010,Annual population age 0,totu1pop,population_estimate,476679,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2011,Annual population age 0,totu1pop,population_estimate,489663.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2012,Annual population age 0,totu1pop,population_estimate,497961,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2013,Annual population age 0,totu1pop,population_estimate,498002.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2014,Annual population age 0,totu1pop,population_estimate,489361,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2015,Annual population age 0,totu1pop,population_estimate,475834.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2016,Annual population age 0,totu1pop,population_estimate,464373,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2017,Annual population age 0,totu1pop,population_estimate,456820.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2018,Annual population age 0,totu1pop,population_estimate,454263.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2019,Annual population age 0,totu1pop,population_estimate,456759.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,462237.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2021,Annual population age 0,totu1pop,population_estimate,469293,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2022,Annual population age 0,totu1pop,population_estimate,476772,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2023,Annual population age 0,totu1pop,population_estimate,480881.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2024,Annual population age 0,totu1pop,population_estimate,481791.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2025,Annual population age 0,totu1pop,population_estimate,484102.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2026,Annual population age 0,totu1pop,population_estimate,488419,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2027,Annual population age 0,totu1pop,population_estimate,493764,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2028,Annual population age 0,totu1pop,population_estimate,500427,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2029,Annual population age 0,totu1pop,population_estimate,507815.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2030,Annual population age 0,totu1pop,population_estimate,515191.5,UNWPP,UNWPP - Under-1 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1990,Annual population age 0-4,totu5pop,population_estimate,20274563,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1991,Annual population age 0-4,totu5pop,population_estimate,20809631,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1992,Annual population age 0-4,totu5pop,population_estimate,21405399,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1993,Annual population age 0-4,totu5pop,population_estimate,21720575,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1994,Annual population age 0-4,totu5pop,population_estimate,21746297,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1995,Annual population age 0-4,totu5pop,population_estimate,21949197,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1996,Annual population age 0-4,totu5pop,population_estimate,22316719,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1997,Annual population age 0-4,totu5pop,population_estimate,22739655,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1998,Annual population age 0-4,totu5pop,population_estimate,23188594,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,1999,Annual population age 0-4,totu5pop,population_estimate,23566915,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2000,Annual population age 0-4,totu5pop,population_estimate,23784110,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2001,Annual population age 0-4,totu5pop,population_estimate,23943803,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2002,Annual population age 0-4,totu5pop,population_estimate,24175306,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2003,Annual population age 0-4,totu5pop,population_estimate,24464645,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2004,Annual population age 0-4,totu5pop,population_estimate,24731792,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2005,Annual population age 0-4,totu5pop,population_estimate,24966863,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2006,Annual population age 0-4,totu5pop,population_estimate,25272890,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2007,Annual population age 0-4,totu5pop,population_estimate,25608116,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2008,Annual population age 0-4,totu5pop,population_estimate,25918299,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2009,Annual population age 0-4,totu5pop,population_estimate,26285579,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2010,Annual population age 0-4,totu5pop,population_estimate,26713095,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2011,Annual population age 0-4,totu5pop,population_estimate,27190848,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2012,Annual population age 0-4,totu5pop,population_estimate,27635774,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2013,Annual population age 0-4,totu5pop,population_estimate,28027617,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2014,Annual population age 0-4,totu5pop,population_estimate,28414717,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2015,Annual population age 0-4,totu5pop,population_estimate,28798026,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2016,Annual population age 0-4,totu5pop,population_estimate,29200588,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2017,Annual population age 0-4,totu5pop,population_estimate,29624964,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2018,Annual population age 0-4,totu5pop,population_estimate,30068904,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2019,Annual population age 0-4,totu5pop,population_estimate,30542735,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2020,Annual population age 0-4,totu5pop,population_estimate,31053777,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2021,Annual population age 0-4,totu5pop,population_estimate,31594420,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2022,Annual population age 0-4,totu5pop,population_estimate,32138111,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2023,Annual population age 0-4,totu5pop,population_estimate,32681643,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2024,Annual population age 0-4,totu5pop,population_estimate,33268745,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2025,Annual population age 0-4,totu5pop,population_estimate,33901590,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2026,Annual population age 0-4,totu5pop,population_estimate,34547160,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2027,Annual population age 0-4,totu5pop,population_estimate,35201226,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2028,Annual population age 0-4,totu5pop,population_estimate,35864017,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2029,Annual population age 0-4,totu5pop,population_estimate,36537910,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Zimbabwe,NATIONAL,2030,Annual population age 0-4,totu5pop,population_estimate,37220697,UNWPP,UNWPP - Under-5 population,modeled,Zimbabwe,ZW,ZWE
+Tanzania,NATIONAL,1990,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.996,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1991,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.68,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1992,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.317,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1993,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.727,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1994,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.522,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1995,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.897,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1996,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.349,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1997,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.054,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1998,"Crude birth rate (births per 1,000 population)",crudebr,rate,42.143,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1999,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.804,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2000,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.528,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2001,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.398,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2002,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.171,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2003,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.335,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2004,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.527,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2005,"Crude birth rate (births per 1,000 population)",crudebr,rate,41.465,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2006,"Crude birth rate (births per 1,000 population)",crudebr,rate,40.973,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2007,"Crude birth rate (births per 1,000 population)",crudebr,rate,40.168,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2008,"Crude birth rate (births per 1,000 population)",crudebr,rate,39.579,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2009,"Crude birth rate (births per 1,000 population)",crudebr,rate,39.162,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2010,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.756,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2011,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.108,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2012,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.102,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2013,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.408,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2014,"Crude birth rate (births per 1,000 population)",crudebr,rate,38.355,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2015,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.622,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2016,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.632,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2017,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.611,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2018,"Crude birth rate (births per 1,000 population)",crudebr,rate,37.335,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2019,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.883,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2020,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.437,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2021,"Crude birth rate (births per 1,000 population)",crudebr,rate,36.015,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2022,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.637,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2023,"Crude birth rate (births per 1,000 population)",crudebr,rate,35.222,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2024,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.801,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2025,"Crude birth rate (births per 1,000 population)",crudebr,rate,34.294,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2026,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.895,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2027,"Crude birth rate (births per 1,000 population)",crudebr,rate,33.436,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2028,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.985,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2029,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.593,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2030,"Crude birth rate (births per 1,000 population)",crudebr,rate,32.194,UNWPP,UNWPP - Crude birth rate,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1990,Total population by sex,poptot,population_estimate,26110206.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1991,Total population by sex,poptot,population_estimate,26780436,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1992,Total population by sex,poptot,population_estimate,27457587.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1993,Total population by sex,poptot,population_estimate,28332691.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1994,Total population by sex,poptot,population_estimate,29442356,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1995,Total population by sex,poptot,population_estimate,30383497,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1996,Total population by sex,poptot,population_estimate,30945762,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1997,Total population by sex,poptot,population_estimate,31578089,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1998,Total population by sex,poptot,population_estimate,32420458,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1999,Total population by sex,poptot,population_estimate,33300330.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2000,Total population by sex,poptot,population_estimate,34260138.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2001,Total population by sex,poptot,population_estimate,35198299,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2002,Total population by sex,poptot,population_estimate,36121303.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2003,Total population by sex,poptot,population_estimate,37089555,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2004,Total population by sex,poptot,population_estimate,38109668.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2005,Total population by sex,poptot,population_estimate,39182076,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2006,Total population by sex,poptot,population_estimate,40294902.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2007,Total population by sex,poptot,population_estimate,41435512.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2008,Total population by sex,poptot,population_estimate,42570728,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2009,Total population by sex,poptot,population_estimate,43633981.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2010,Total population by sex,poptot,population_estimate,44758487.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2011,Total population by sex,poptot,population_estimate,46029367,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2012,Total population by sex,poptot,population_estimate,47374260.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2013,Total population by sex,poptot,population_estimate,48824128.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2014,Total population by sex,poptot,population_estimate,50351511.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2015,Total population by sex,poptot,population_estimate,52020962,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2016,Total population by sex,poptot,population_estimate,53824013,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2017,Total population by sex,poptot,population_estimate,55652890,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2018,Total population by sex,poptot,population_estimate,57437144.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2019,Total population by sex,poptot,population_estimate,59174891,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2020,Total population by sex,poptot,population_estimate,60972797.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2021,Total population by sex,poptot,population_estimate,62830412,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2022,Total population by sex,poptot,population_estimate,64711821,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2023,Total population by sex,poptot,population_estimate,66617606.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2024,Total population by sex,poptot,population_estimate,68560157,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2025,Total population by sex,poptot,population_estimate,70545865,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2026,Total population by sex,poptot,population_estimate,72563780.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2027,Total population by sex,poptot,population_estimate,74604808,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2028,Total population by sex,poptot,population_estimate,76670491.5,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2029,Total population by sex,poptot,population_estimate,78773195,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2030,Total population by sex,poptot,population_estimate,80913124,UNWPP,UNWPP - Total population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1990,Female population of reproductive age (15-49 years),womenrepage,population_estimate,5876031,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1991,Female population of reproductive age (15-49 years),womenrepage,population_estimate,6060725,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1992,Female population of reproductive age (15-49 years),womenrepage,population_estimate,6249278,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1993,Female population of reproductive age (15-49 years),womenrepage,population_estimate,6495982.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1994,Female population of reproductive age (15-49 years),womenrepage,population_estimate,6806917.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1995,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7059981.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1996,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7192916.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1997,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7339823,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1998,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7544285.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1999,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7757250,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2000,Female population of reproductive age (15-49 years),womenrepage,population_estimate,7990021.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2001,Female population of reproductive age (15-49 years),womenrepage,population_estimate,8209422.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2002,Female population of reproductive age (15-49 years),womenrepage,population_estimate,8417283,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2003,Female population of reproductive age (15-49 years),womenrepage,population_estimate,8632303.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2004,Female population of reproductive age (15-49 years),womenrepage,population_estimate,8854296,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2005,Female population of reproductive age (15-49 years),womenrepage,population_estimate,9082862,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2006,Female population of reproductive age (15-49 years),womenrepage,population_estimate,9319942.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2007,Female population of reproductive age (15-49 years),womenrepage,population_estimate,9567725,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2008,Female population of reproductive age (15-49 years),womenrepage,population_estimate,9818389,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2009,Female population of reproductive age (15-49 years),womenrepage,population_estimate,10055461,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2010,Female population of reproductive age (15-49 years),womenrepage,population_estimate,10322538.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2011,Female population of reproductive age (15-49 years),womenrepage,population_estimate,10646332,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2012,Female population of reproductive age (15-49 years),womenrepage,population_estimate,10998184.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2013,Female population of reproductive age (15-49 years),womenrepage,population_estimate,11379678,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2014,Female population of reproductive age (15-49 years),womenrepage,population_estimate,11782610,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2015,Female population of reproductive age (15-49 years),womenrepage,population_estimate,12229242,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2016,Female population of reproductive age (15-49 years),womenrepage,population_estimate,12715231.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2017,Female population of reproductive age (15-49 years),womenrepage,population_estimate,13202616,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2018,Female population of reproductive age (15-49 years),womenrepage,population_estimate,13675300.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2019,Female population of reproductive age (15-49 years),womenrepage,population_estimate,14139586,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2020,Female population of reproductive age (15-49 years),womenrepage,population_estimate,14626312.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2021,Female population of reproductive age (15-49 years),womenrepage,population_estimate,15129825.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2022,Female population of reproductive age (15-49 years),womenrepage,population_estimate,15629547.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2023,Female population of reproductive age (15-49 years),womenrepage,population_estimate,16123372.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2024,Female population of reproductive age (15-49 years),womenrepage,population_estimate,16618435,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2025,Female population of reproductive age (15-49 years),womenrepage,population_estimate,17120727.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2026,Female population of reproductive age (15-49 years),womenrepage,population_estimate,17627847,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2027,Female population of reproductive age (15-49 years),womenrepage,population_estimate,18141172.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2028,Female population of reproductive age (15-49 years),womenrepage,population_estimate,18673510,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2029,Female population of reproductive age (15-49 years),womenrepage,population_estimate,19229911.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2030,Female population of reproductive age (15-49 years),womenrepage,population_estimate,19800056.5,UNWPP,UNWPP - Female reproductive age population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1990,Annual population age 0,totu1pop,population_estimate,1034380.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1991,Annual population age 0,totu1pop,population_estimate,1051667,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1992,Annual population age 0,totu1pop,population_estimate,1070684.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1993,Annual population age 0,totu1pop,population_estimate,1091927.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1994,Annual population age 0,totu1pop,population_estimate,1123555.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1995,Annual population age 0,totu1pop,population_estimate,1164764.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1996,Annual population age 0,totu1pop,population_estimate,1202686.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1997,Annual population age 0,totu1pop,population_estimate,1230655,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1998,Annual population age 0,totu1pop,population_estimate,1261056,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1999,Annual population age 0,totu1pop,population_estimate,1293974,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2000,Annual population age 0,totu1pop,population_estimate,1324288.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2001,Annual population age 0,totu1pop,population_estimate,1357924,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2002,Annual population age 0,totu1pop,population_estimate,1391694,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2003,Annual population age 0,totu1pop,population_estimate,1431614.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2004,Annual population age 0,totu1pop,population_estimate,1480122,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2005,Annual population age 0,totu1pop,population_estimate,1526395,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2006,Annual population age 0,totu1pop,population_estimate,1561734,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2007,Annual population age 0,totu1pop,population_estimate,1583419.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2008,Annual population age 0,totu1pop,population_estimate,1601996.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2009,Annual population age 0,totu1pop,population_estimate,1624793.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2010,Annual population age 0,totu1pop,population_estimate,1651564,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2011,Annual population age 0,totu1pop,population_estimate,1677090,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2012,Annual population age 0,totu1pop,population_estimate,1713711.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2013,Annual population age 0,totu1pop,population_estimate,1774826,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2014,Annual population age 0,totu1pop,population_estimate,1838030.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2015,Annual population age 0,totu1pop,population_estimate,1880815,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2016,Annual population age 0,totu1pop,population_estimate,1929464.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2017,Annual population age 0,totu1pop,population_estimate,1996948.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2018,Annual population age 0,totu1pop,population_estimate,2055564.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2019,Annual population age 0,totu1pop,population_estimate,2100039.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2020,Annual population age 0,totu1pop,population_estimate,2139855,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2021,Annual population age 0,totu1pop,population_estimate,2181313.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2022,Annual population age 0,totu1pop,population_estimate,2224406,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2023,Annual population age 0,totu1pop,population_estimate,2267010,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2024,Annual population age 0,totu1pop,population_estimate,2307499.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2025,Annual population age 0,totu1pop,population_estimate,2344375.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2026,Annual population age 0,totu1pop,population_estimate,2381505,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2027,Annual population age 0,totu1pop,population_estimate,2419210.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2028,Annual population age 0,totu1pop,population_estimate,2454290,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2029,Annual population age 0,totu1pop,population_estimate,2491541.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2030,Annual population age 0,totu1pop,population_estimate,2530333.5,UNWPP,UNWPP - Under-1 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1990,Annual population age 0-4,totu5pop,population_estimate,52220413,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1991,Annual population age 0-4,totu5pop,population_estimate,53560872,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1992,Annual population age 0-4,totu5pop,population_estimate,54915175,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1993,Annual population age 0-4,totu5pop,population_estimate,56665383,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1994,Annual population age 0-4,totu5pop,population_estimate,58884712,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1995,Annual population age 0-4,totu5pop,population_estimate,60766994,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1996,Annual population age 0-4,totu5pop,population_estimate,61891524,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1997,Annual population age 0-4,totu5pop,population_estimate,63156178,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1998,Annual population age 0-4,totu5pop,population_estimate,64840916,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,1999,Annual population age 0-4,totu5pop,population_estimate,66600661,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2000,Annual population age 0-4,totu5pop,population_estimate,68520277,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2001,Annual population age 0-4,totu5pop,population_estimate,70396598,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2002,Annual population age 0-4,totu5pop,population_estimate,72242607,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2003,Annual population age 0-4,totu5pop,population_estimate,74179110,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2004,Annual population age 0-4,totu5pop,population_estimate,76219337,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2005,Annual population age 0-4,totu5pop,population_estimate,78364152,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2006,Annual population age 0-4,totu5pop,population_estimate,80589805,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2007,Annual population age 0-4,totu5pop,population_estimate,82871025,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2008,Annual population age 0-4,totu5pop,population_estimate,85141456,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2009,Annual population age 0-4,totu5pop,population_estimate,87267963,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2010,Annual population age 0-4,totu5pop,population_estimate,89516975,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2011,Annual population age 0-4,totu5pop,population_estimate,92058734,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2012,Annual population age 0-4,totu5pop,population_estimate,94748521,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2013,Annual population age 0-4,totu5pop,population_estimate,97648257,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2014,Annual population age 0-4,totu5pop,population_estimate,100703023,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2015,Annual population age 0-4,totu5pop,population_estimate,104041924,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2016,Annual population age 0-4,totu5pop,population_estimate,107648026,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2017,Annual population age 0-4,totu5pop,population_estimate,111305780,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2018,Annual population age 0-4,totu5pop,population_estimate,114874289,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2019,Annual population age 0-4,totu5pop,population_estimate,118349782,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2020,Annual population age 0-4,totu5pop,population_estimate,121945595,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2021,Annual population age 0-4,totu5pop,population_estimate,125660824,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2022,Annual population age 0-4,totu5pop,population_estimate,129423642,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2023,Annual population age 0-4,totu5pop,population_estimate,133235213,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2024,Annual population age 0-4,totu5pop,population_estimate,137120314,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2025,Annual population age 0-4,totu5pop,population_estimate,141091730,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2026,Annual population age 0-4,totu5pop,population_estimate,145127561,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2027,Annual population age 0-4,totu5pop,population_estimate,149209616,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2028,Annual population age 0-4,totu5pop,population_estimate,153340983,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2029,Annual population age 0-4,totu5pop,population_estimate,157546390,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
+Tanzania,NATIONAL,2030,Annual population age 0-4,totu5pop,population_estimate,161826248,UNWPP,UNWPP - Under-5 population,modeled,Tanzania,TZ,TZA
