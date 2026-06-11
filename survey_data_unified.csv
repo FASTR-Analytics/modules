@@ -25512,3 +25512,6 @@
 "Zimbabwe Ministry of Health","mv Masvingo Province",2015,"CN_MIAC_C_DWM","deworming","percent",0.123,"DHS Sub-national","ZW2015DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
 "Zimbabwe Ministry of Health","ha Harare Metropolitan Province",2015,"CN_MIAC_C_DWM","deworming","percent",0.191,"DHS Sub-national","ZW2015DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
 "Zimbabwe Ministry of Health","bu Bulawayo Metropolitan Province",2015,"CN_MIAC_C_DWM","deworming","percent",0.127,"DHS Sub-national","ZW2015DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
+"Zimbabwe Ministry of Health","NATIONAL",2024,"RH_ANCP_W_SKP","anc1","percent",0.917,"DHS National","ZW2024DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
+"Zimbabwe Ministry of Health","NATIONAL",2024,"RH_ANCN_W_N4P","anc4","percent",0.71,"DHS National","ZW2024DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
+"Zimbabwe Ministry of Health","NATIONAL",2024,"RH_DELP_C_DHF","delivery","percent",0.836,"DHS National","ZW2024DHS","household","Zimbabwe Ministry of Health","ZW","ZWE"
