@@ -48,8 +48,8 @@
     {
       "id": "m9-01-01",
       "label": {
-        "en": "ICEH Estimate",
-        "fr": "Estimation ICEH"
+        "en": "ICEH survey estimate",
+        "fr": "Estimation d'enquête ICEH"
       },
       "variantLabel": null,
       "valueProps": [
@@ -100,8 +100,8 @@
             "fr": "Équigraphique ICEH"
           },
           "description": {
-            "en": "Chart of ICEH survey estimates, laid out as an equiplot",
-            "fr": "Graphique des estimations d'enquête ICEH, présenté sous forme d'équigraphique"
+            "en": "Coverage by subgroup as an equiplot: one row per indicator, one coloured dot per subgroup. Switch the stratifier with the replicant selector.",
+            "fr": "Couverture par sous-groupe sous forme d'équigraphique : une ligne par indicateur, un point coloré par sous-groupe. Changez le stratificateur avec le sélecteur de réplicant."
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -143,7 +143,7 @@
             },
             "t": {
               "caption": {
-                "en": "ICEH Survey Estimates",
+                "en": "ICEH survey estimates",
                 "fr": "Estimations d'enquête ICEH"
               },
               "captionRelFontSize": null,

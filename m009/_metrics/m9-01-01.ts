@@ -11,8 +11,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Équigraphique ICEH",
     },
     description: {
-      en: "Chart of ICEH survey estimates, laid out as an equiplot",
-      fr: "Graphique des estimations d'enquête ICEH, présenté sous forme d'équigraphique",
+      en: "Coverage by subgroup as an equiplot: one row per indicator, one coloured dot per subgroup. Switch the stratifier with the replicant selector.",
+      fr: "Couverture par sous-groupe sous forme d'équigraphique : une ligne par indicateur, un point coloré par sous-groupe. Changez le stratificateur avec le sélecteur de réplicant.",
     },
     createDefaultVisualizationOnInstall: "8cf07c58-5de6-4b48-b361-55b33b51de37",
     allowedFilters: ["iceh_indicator", "strat", "level", "year"],
@@ -48,7 +48,7 @@ export const vizPresets: VizPreset[] = [
       },
       t: {
         caption: {
-          en: "ICEH Survey Estimates",
+          en: "ICEH survey estimates",
           fr: "Estimations d'enquête ICEH",
         },
         subCaption: {
@@ -167,8 +167,8 @@ export const metric: MetricDefinitionGithub = {
   valueFunc: "identity",
   valueLabelReplacements: {},
   label: {
-    en: "ICEH Estimate",
-    fr: "Estimation ICEH",
+    en: "ICEH survey estimate",
+    fr: "Estimation d'enquête ICEH",
   },
   requiredDisaggregationOptions: ["iceh_indicator", "level", "year"],
   formatAs: "percent",
