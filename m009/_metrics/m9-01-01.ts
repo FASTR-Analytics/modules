@@ -21,6 +21,9 @@ export const vizPresets: VizPreset[] = [
         type: "chart",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "col",
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
         disaggregateBy: [
           {
             disOpt: "iceh_indicator",
@@ -44,7 +47,7 @@ export const vizPresets: VizPreset[] = [
       },
       s: {
         horizontal: true,
-        content: "points",
+        content: "points-connectors",
       },
       t: {
         caption: {
@@ -83,6 +86,9 @@ export const vizPresets: VizPreset[] = [
         type: "table",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "col",
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
         disaggregateBy: [
           { disOpt: "iceh_indicator", disDisplayOpt: "row" },
           { disOpt: "strat", disDisplayOpt: "replicant" },

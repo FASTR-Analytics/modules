@@ -21,6 +21,9 @@ export const vizPresets: VizPreset[] = [
         type: "table",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "col",
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
         disaggregateBy: [
           { disOpt: "iceh_indicator", disDisplayOpt: "row" },
           { disOpt: "strat", disDisplayOpt: "replicant" },
@@ -50,14 +53,14 @@ export const vizPresets: VizPreset[] = [
     importantNotes: null,
   },
   {
-    id: "iceh-inequality-bar",
+    id: "iceh-inequality-chart",
     label: {
-      en: "ICEH inequality bar chart",
-      fr: "Diagramme à barres d'inégalité ICEH",
+      en: "ICEH inequality chart",
+      fr: "Graphique d'inégalité ICEH",
     },
     description: {
-      en: "Bar chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
-      fr: "Diagramme à barres classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut).",
+      en: "Chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
+      fr: "Graphique classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut).",
     },
     allowedFilters: ["iceh_indicator", "strat", "year"],
     createDefaultVisualizationOnInstall: "f2a8d6c3-9b41-4e7a-8d52-3c1f6b9e04a7",
@@ -67,6 +70,9 @@ export const vizPresets: VizPreset[] = [
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "indicator",
         valuesFilter: ["cix"],
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
         disaggregateBy: [
           { disOpt: "iceh_indicator", disDisplayOpt: "indicator" },
           { disOpt: "strat", disDisplayOpt: "replicant" },
@@ -76,7 +82,7 @@ export const vizPresets: VizPreset[] = [
         selectedReplicantValue: "wealth_quintiles",
       },
       s: {
-        content: "bars",
+        content: "points",
         horizontal: true,
         colorScale: "single-grey",
         decimalPlaces: 1,

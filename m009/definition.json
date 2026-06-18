@@ -135,10 +135,13 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_calendar_year"
+              },
               "selectedReplicantValue": "wealth_quintiles"
             },
             "s": {
-              "content": "points",
+              "content": "points-connectors",
               "horizontal": true
             },
             "t": {
@@ -202,6 +205,9 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_calendar_year"
+              },
               "selectedReplicantValue": "wealth_quintiles"
             },
             "s": {
@@ -382,6 +388,9 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_calendar_year"
+              },
               "selectedReplicantValue": "wealth_quintiles"
             },
             "s": {
@@ -404,14 +413,14 @@
           }
         },
         {
-          "id": "iceh-inequality-bar",
+          "id": "iceh-inequality-chart",
           "label": {
-            "en": "ICEH inequality bar chart",
-            "fr": "Diagramme à barres d'inégalité ICEH"
+            "en": "ICEH inequality chart",
+            "fr": "Graphique d'inégalité ICEH"
           },
           "description": {
-            "en": "Bar chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
-            "fr": "Diagramme à barres classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut)."
+            "en": "Chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
+            "fr": "Graphique classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut)."
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -443,10 +452,13 @@
                 }
               ],
               "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_calendar_year"
+              },
               "selectedReplicantValue": "wealth_quintiles"
             },
             "s": {
-              "content": "bars",
+              "content": "points",
               "colorScale": "single-grey",
               "decimalPlaces": 1,
               "horizontal": true,
