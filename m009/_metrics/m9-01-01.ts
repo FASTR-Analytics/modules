@@ -66,6 +66,52 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "iceh-coverage-table",
+    label: {
+      en: "ICEH coverage table",
+      fr: "Tableau de couverture ICEH",
+    },
+    description: {
+      en: "Table of ICEH coverage estimates with indicators as rows and subgroup levels as columns. Switch the stratifier (wealth, area, education, region, ...) with the replicant selector.",
+      fr: "Tableau des estimations de couverture ICEH avec les indicateurs en lignes et les niveaux de sous-groupe en colonnes. Changez le stratificateur (richesse, zone, éducation, région, ...) avec le sélecteur de réplicant.",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "level", "year"],
+    createDefaultVisualizationOnInstall: "e7b3c1d4-5a82-4f9e-b6c3-2d8f1a7e90b5",
+    config: {
+      d: {
+        type: "table",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "col",
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "row" },
+          { disOpt: "strat", disDisplayOpt: "replicant" },
+          { disOpt: "level", disDisplayOpt: "col" },
+          { disOpt: "year", disDisplayOpt: "colGroup" },
+        ],
+        filterBy: [],
+        selectedReplicantValue: "wealth_quintiles",
+      },
+      s: {
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "ICEH coverage",
+          fr: "Couverture ICEH",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "Coverage by equity stratifier, by indicator, DATE_RANGE",
+          fr: "Couverture par stratificateur d'équité, par indicateur, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {

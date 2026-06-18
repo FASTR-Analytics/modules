@@ -159,6 +159,69 @@
               "footnoteRelFontSize": null
             }
           }
+        },
+        {
+          "id": "iceh-coverage-table",
+          "label": {
+            "en": "ICEH coverage table",
+            "fr": "Tableau de couverture ICEH"
+          },
+          "description": {
+            "en": "Table of ICEH coverage estimates with indicators as rows and subgroup levels as columns. Switch the stratifier (wealth, area, education, region, ...) with the replicant selector.",
+            "fr": "Tableau des estimations de couverture ICEH avec les indicateurs en lignes et les niveaux de sous-groupe en colonnes. Changez le stratificateur (richesse, zone, éducation, région, ...) avec le sélecteur de réplicant."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "iceh_indicator",
+            "strat",
+            "level",
+            "year"
+          ],
+          "createDefaultVisualizationOnInstall": "e7b3c1d4-5a82-4f9e-b6c3-2d8f1a7e90b5",
+          "config": {
+            "d": {
+              "type": "table",
+              "timeseriesGrouping": "year",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "iceh_indicator",
+                  "disDisplayOpt": "row"
+                },
+                {
+                  "disOpt": "strat",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "level",
+                  "disDisplayOpt": "col"
+                },
+                {
+                  "disOpt": "year",
+                  "disDisplayOpt": "colGroup"
+                }
+              ],
+              "filterBy": [],
+              "selectedReplicantValue": "wealth_quintiles"
+            },
+            "s": {
+              "decimalPlaces": 1
+            },
+            "t": {
+              "caption": {
+                "en": "ICEH coverage",
+                "fr": "Couverture ICEH"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Coverage by equity stratifier, by indicator, DATE_RANGE",
+                "fr": "Couverture par stratificateur d'équité, par indicateur, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
         }
       ],
       "hide": false
@@ -270,6 +333,71 @@
               "subCaption": {
                 "en": "Ratio (Q5/Q1), Difference (Q5−Q1, pp), CIX and SII by indicator, DATE_RANGE",
                 "fr": "Ratio (Q5/Q1), Différence (Q5−Q1, pp), CIX et SII par indicateur, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "iceh-inequality-bar",
+          "label": {
+            "en": "ICEH inequality bar chart",
+            "fr": "Diagramme à barres d'inégalité ICEH"
+          },
+          "description": {
+            "en": "Bar chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
+            "fr": "Diagramme à barres classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut)."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "iceh_indicator",
+            "strat",
+            "year"
+          ],
+          "createDefaultVisualizationOnInstall": "f2a8d6c3-9b41-4e7a-8d52-3c1f6b9e04a7",
+          "config": {
+            "d": {
+              "type": "chart",
+              "timeseriesGrouping": "year",
+              "valuesDisDisplayOpt": "indicator",
+              "valuesFilter": [
+                "cix"
+              ],
+              "disaggregateBy": [
+                {
+                  "disOpt": "iceh_indicator",
+                  "disDisplayOpt": "indicator"
+                },
+                {
+                  "disOpt": "strat",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "year",
+                  "disDisplayOpt": "cell"
+                }
+              ],
+              "filterBy": [],
+              "selectedReplicantValue": "wealth_quintiles"
+            },
+            "s": {
+              "content": "bars",
+              "colorScale": "single-grey",
+              "decimalPlaces": 1,
+              "horizontal": true,
+              "sortIndicatorValues": "descending"
+            },
+            "t": {
+              "caption": {
+                "en": "Wealth inequality by indicator",
+                "fr": "Inégalité de richesse par indicateur"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Concentration index (CIX) across wealth quintiles, DATE_RANGE",
+                "fr": "Indice de concentration (CIX) entre quintiles de richesse, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,

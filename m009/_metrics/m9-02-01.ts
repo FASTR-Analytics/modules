@@ -49,6 +49,56 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "iceh-inequality-bar",
+    label: {
+      en: "ICEH inequality bar chart",
+      fr: "Diagramme à barres d'inégalité ICEH",
+    },
+    description: {
+      en: "Bar chart ranking indicators by a wealth-inequality measure (concentration index by default; change the measure via the value filter). Stratifier set by the replicant selector (wealth quintiles by default).",
+      fr: "Diagramme à barres classant les indicateurs selon une mesure d'inégalité de richesse (indice de concentration par défaut ; changez la mesure via le filtre de valeurs). Stratificateur défini par le sélecteur de réplicant (quintiles de richesse par défaut).",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "year"],
+    createDefaultVisualizationOnInstall: "f2a8d6c3-9b41-4e7a-8d52-3c1f6b9e04a7",
+    config: {
+      d: {
+        type: "chart",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "indicator",
+        valuesFilter: ["cix"],
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "indicator" },
+          { disOpt: "strat", disDisplayOpt: "replicant" },
+          { disOpt: "year", disDisplayOpt: "cell" },
+        ],
+        filterBy: [],
+        selectedReplicantValue: "wealth_quintiles",
+      },
+      s: {
+        content: "bars",
+        horizontal: true,
+        colorScale: "single-grey",
+        decimalPlaces: 1,
+        sortIndicatorValues: "descending",
+      },
+      t: {
+        caption: {
+          en: "Wealth inequality by indicator",
+          fr: "Inégalité de richesse par indicateur",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "Concentration index (CIX) across wealth quintiles, DATE_RANGE",
+          fr: "Indice de concentration (CIX) entre quintiles de richesse, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {
