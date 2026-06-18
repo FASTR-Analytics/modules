@@ -222,6 +222,69 @@
               "footnoteRelFontSize": null
             }
           }
+        },
+        {
+          "id": "iceh-coverage-trend",
+          "label": {
+            "en": "ICEH coverage trend",
+            "fr": "Tendance de couverture ICEH"
+          },
+          "description": {
+            "en": "Coverage of a selected indicator over survey years, one line per wealth quintile (watch the rich–poor gap change over time). Switch the indicator with the replicant selector.",
+            "fr": "Couverture d'un indicateur sélectionné au fil des années d'enquête, une ligne par quintile de richesse. Changez l'indicateur avec le sélecteur de réplicant."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "iceh_indicator",
+            "strat",
+            "level",
+            "year"
+          ],
+          "createDefaultVisualizationOnInstall": "a3f8e1d7-6c24-4b9e-8a51-2f7d9c3b6e08",
+          "config": {
+            "d": {
+              "type": "timeseries",
+              "timeseriesGrouping": "year",
+              "valuesDisDisplayOpt": "series",
+              "disaggregateBy": [
+                {
+                  "disOpt": "iceh_indicator",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "level",
+                  "disDisplayOpt": "series"
+                }
+              ],
+              "filterBy": [
+                {
+                  "disOpt": "strat",
+                  "values": [
+                    "wealth_quintiles"
+                  ]
+                }
+              ],
+              "selectedReplicantValue": "vdpt"
+            },
+            "s": {
+              "content": "lines",
+              "decimalPlaces": 1
+            },
+            "t": {
+              "caption": {
+                "en": "Coverage trend",
+                "fr": "Tendance de couverture"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "By wealth quintile, DATE_RANGE",
+                "fr": "Par quintile de richesse, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
         }
       ],
       "hide": false
@@ -398,6 +461,64 @@
               "subCaption": {
                 "en": "Concentration index (CIX) across wealth quintiles, DATE_RANGE",
                 "fr": "Indice de concentration (CIX) entre quintiles de richesse, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "iceh-inequality-trend",
+          "label": {
+            "en": "ICEH inequality trend",
+            "fr": "Tendance d'inégalité ICEH"
+          },
+          "description": {
+            "en": "A wealth-inequality measure (concentration index by default; change via the value filter) over survey years, one line per indicator. Filtered to wealth quintiles via the replicant selector.",
+            "fr": "Une mesure d'inégalité de richesse (indice de concentration par défaut ; changez via le filtre de valeurs) au fil des années d'enquête, une ligne par indicateur. Filtré sur les quintiles de richesse via le sélecteur de réplicant."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "iceh_indicator",
+            "strat",
+            "year"
+          ],
+          "createDefaultVisualizationOnInstall": "b6d2c9a4-8e31-4f7a-9b62-1d4f8c2e07a3",
+          "config": {
+            "d": {
+              "type": "timeseries",
+              "timeseriesGrouping": "year",
+              "valuesDisDisplayOpt": "series",
+              "valuesFilter": [
+                "cix"
+              ],
+              "disaggregateBy": [
+                {
+                  "disOpt": "iceh_indicator",
+                  "disDisplayOpt": "series"
+                },
+                {
+                  "disOpt": "strat",
+                  "disDisplayOpt": "replicant"
+                }
+              ],
+              "filterBy": [],
+              "selectedReplicantValue": "wealth_quintiles"
+            },
+            "s": {
+              "content": "lines",
+              "decimalPlaces": 1
+            },
+            "t": {
+              "caption": {
+                "en": "Inequality trend",
+                "fr": "Tendance d'inégalité"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Concentration index (CIX) over time, DATE_RANGE",
+                "fr": "Indice de concentration (CIX) au fil du temps, PLAGE_DE_DATES"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,

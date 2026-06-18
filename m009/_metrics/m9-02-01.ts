@@ -99,6 +99,52 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "iceh-inequality-trend",
+    label: {
+      en: "ICEH inequality trend",
+      fr: "Tendance d'inégalité ICEH",
+    },
+    description: {
+      en: "A wealth-inequality measure (concentration index by default; change via the value filter) over survey years, one line per indicator. Filtered to wealth quintiles via the replicant selector.",
+      fr: "Une mesure d'inégalité de richesse (indice de concentration par défaut ; changez via le filtre de valeurs) au fil des années d'enquête, une ligne par indicateur. Filtré sur les quintiles de richesse via le sélecteur de réplicant.",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "year"],
+    createDefaultVisualizationOnInstall: "b6d2c9a4-8e31-4f7a-9b62-1d4f8c2e07a3",
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "series",
+        valuesFilter: ["cix"],
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "series" },
+          { disOpt: "strat", disDisplayOpt: "replicant" },
+        ],
+        filterBy: [],
+        selectedReplicantValue: "wealth_quintiles",
+      },
+      s: {
+        content: "lines",
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Inequality trend",
+          fr: "Tendance d'inégalité",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "Concentration index (CIX) over time, DATE_RANGE",
+          fr: "Indice de concentration (CIX) au fil du temps, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {

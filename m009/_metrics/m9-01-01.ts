@@ -112,6 +112,51 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "iceh-coverage-trend",
+    label: {
+      en: "ICEH coverage trend",
+      fr: "Tendance de couverture ICEH",
+    },
+    description: {
+      en: "Coverage of a selected indicator over survey years, one line per wealth quintile (watch the rich–poor gap change over time). Switch the indicator with the replicant selector.",
+      fr: "Couverture d'un indicateur sélectionné au fil des années d'enquête, une ligne par quintile de richesse. Changez l'indicateur avec le sélecteur de réplicant.",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "level", "year"],
+    createDefaultVisualizationOnInstall: "a3f8e1d7-6c24-4b9e-8a51-2f7d9c3b6e08",
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "replicant" },
+          { disOpt: "level", disDisplayOpt: "series" },
+        ],
+        filterBy: [{ disOpt: "strat", values: ["wealth_quintiles"] }],
+        selectedReplicantValue: "vdpt",
+      },
+      s: {
+        content: "lines",
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Coverage trend",
+          fr: "Tendance de couverture",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "By wealth quintile, DATE_RANGE",
+          fr: "Par quintile de richesse, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {
