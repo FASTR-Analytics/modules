@@ -14,4 +14,17 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       sample_size: "NUMERIC",
     },
   },
+  {
+    id: "M9_iceh_inequality.csv",
+    createTableStatementPossibleColumns: {
+      iceh_indicator: "TEXT NOT NULL",
+      year: "INTEGER NOT NULL",
+      source: "TEXT NOT NULL",
+      strat: "TEXT NOT NULL",
+      ratio: "NUMERIC",
+      difference: "NUMERIC",
+      cix: "NUMERIC",
+      sii: "NUMERIC",
+    },
+  },
 ];
