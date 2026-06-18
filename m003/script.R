@@ -26,7 +26,7 @@ RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysi
 PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2025 Oct 23
+# Last edit: 2026 Jun 18
 # Module: SERVICE UTILIZATION
 
 
@@ -481,7 +481,7 @@ for (indicator in indicators) {
 
     # Calculate predictions, removing the disruption effect
     indicator_data <- indicator_data %>%
-      mutate(expect_admin_area_1 = predict(model, newdata = .) - (tagged * disruption_effect))
+      mutate(expect_admin_area_1 = pmax(0, predict(model, newdata = .) - (tagged * disruption_effect)))
 
     # Calculate coefficients
     indicator_data <- indicator_data %>%
@@ -583,7 +583,7 @@ for (indicator in indicators) {
       disruption_effect <- if ("tagged" %in% names(coef(model_province))) coef(model_province)["tagged"] else 0
 
       province_data <- province_data %>%
-        mutate(expect_admin_area_2 = predict(model_province, newdata = .) - (tagged * disruption_effect))
+        mutate(expect_admin_area_2 = pmax(0, predict(model_province, newdata = .) - (tagged * disruption_effect)))
 
       province_data <- province_data %>%
         group_by(date) %>%
@@ -689,7 +689,7 @@ if (RUN_DISTRICT_MODEL) {
         disruption_effect <- if ("tagged" %in% names(coef(model_district))) coef(model_district)["tagged"] else 0
 
         district_data <- district_data %>%
-          mutate(expect_admin_area_3 = predict(model_district, newdata = .) - (tagged * disruption_effect))
+          mutate(expect_admin_area_3 = pmax(0, predict(model_district, newdata = .) - (tagged * disruption_effect)))
 
         district_data <- district_data %>%
           group_by(date) %>%
@@ -774,7 +774,7 @@ if (RUN_ADMIN_AREA_4_ANALYSIS) {
         disruption_effect <- if ("tagged" %in% names(coef(model_admin_area_4))) coef(model_admin_area_4)["tagged"] else 0
 
         admin_unit_data <- admin_unit_data %>%
-          mutate(expect_admin_area_4 = predict(model_admin_area_4, newdata = .) - (tagged * disruption_effect))
+          mutate(expect_admin_area_4 = pmax(0, predict(model_admin_area_4, newdata = .) - (tagged * disruption_effect)))
 
         admin_unit_data <- admin_unit_data %>%
           group_by(date) %>%
