@@ -107,8 +107,8 @@ export const metric: MetricDefinitionGithub = {
   id: "m3-04-01",
   resultsObjectId: "M3_disruptions_analysis_admin_area_3.csv",
   label: {
-    en: "Actual vs expected service volume",
-    fr: "Volume de services réel vs attendu",
+    en: "Disruptions and surpluses",
+    fr: "Perturbations et excédents",
   },
   variantLabel: {
     en: "Admin area 3",
