@@ -6,8 +6,8 @@ export const metric: MetricDefinitionGithub = {
   id: "m3-02-02",
   resultsObjectId: "M3_disruptions_analysis_admin_area_1.csv",
   label: {
-    en: "Difference between actual and expected service volume",
-    fr: "Différence entre le volume de services réel et attendu",
+    en: "Difference between actual and expected service volume (%)",
+    fr: "Différence entre le volume de services réel et attendu (%)",
   },
   variantLabel: {
     en: "National",

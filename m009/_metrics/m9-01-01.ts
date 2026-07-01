@@ -11,8 +11,8 @@ export const vizPresets: VizPreset[] = [
       fr: "Équigraphique ICEH",
     },
     description: {
-      en: "Chart of ICEH survey estimates, laid out as an equiplot",
-      fr: "Graphique des estimations d'enquête ICEH, présenté sous forme d'équigraphique",
+      en: "Coverage by subgroup as an equiplot: one row per indicator, one coloured dot per subgroup. Switch the stratifier with the replicant selector.",
+      fr: "Couverture par sous-groupe sous forme d'équigraphique : une ligne par indicateur, un point coloré par sous-groupe. Changez le stratificateur avec le sélecteur de réplicant.",
     },
     createDefaultVisualizationOnInstall: "8cf07c58-5de6-4b48-b361-55b33b51de37",
     allowedFilters: ["iceh_indicator", "strat", "level", "year"],
@@ -21,6 +21,9 @@ export const vizPresets: VizPreset[] = [
         type: "chart",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "col",
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
         disaggregateBy: [
           {
             disOpt: "iceh_indicator",
@@ -44,11 +47,11 @@ export const vizPresets: VizPreset[] = [
       },
       s: {
         horizontal: true,
-        content: "points",
+        content: "points-connectors",
       },
       t: {
         caption: {
-          en: "ICEH Survey Estimates",
+          en: "ICEH survey estimates",
           fr: "Estimations d'enquête ICEH",
         },
         subCaption: {
@@ -66,6 +69,100 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "iceh-coverage-table",
+    label: {
+      en: "ICEH coverage table",
+      fr: "Tableau de couverture ICEH",
+    },
+    description: {
+      en: "Table of ICEH coverage estimates with indicators as rows and subgroup levels as columns. Switch the stratifier (wealth, area, education, region, ...) with the replicant selector.",
+      fr: "Tableau des estimations de couverture ICEH avec les indicateurs en lignes et les niveaux de sous-groupe en colonnes. Changez le stratificateur (richesse, zone, éducation, région, ...) avec le sélecteur de réplicant.",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "level", "year"],
+    createDefaultVisualizationOnInstall: "e7b3c1d4-5a82-4f9e-b6c3-2d8f1a7e90b5",
+    config: {
+      d: {
+        type: "table",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "col",
+        periodFilter: {
+          filterType: "last_calendar_year",
+        },
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "row" },
+          { disOpt: "strat", disDisplayOpt: "replicant" },
+          { disOpt: "level", disDisplayOpt: "col" },
+          { disOpt: "year", disDisplayOpt: "colGroup" },
+        ],
+        filterBy: [],
+        selectedReplicantValue: "wealth_quintiles",
+      },
+      s: {
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "ICEH coverage",
+          fr: "Couverture ICEH",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "Coverage by equity stratifier, by indicator, DATE_RANGE",
+          fr: "Couverture par stratificateur d'équité, par indicateur, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  {
+    id: "iceh-coverage-trend",
+    label: {
+      en: "ICEH coverage trend",
+      fr: "Tendance de couverture ICEH",
+    },
+    description: {
+      en: "Coverage of a selected indicator over survey years, one line per wealth quintile (watch the rich–poor gap change over time). Switch the indicator with the replicant selector.",
+      fr: "Couverture d'un indicateur sélectionné au fil des années d'enquête, une ligne par quintile de richesse. Changez l'indicateur avec le sélecteur de réplicant.",
+    },
+    allowedFilters: ["iceh_indicator", "strat", "level", "year"],
+    createDefaultVisualizationOnInstall: "a3f8e1d7-6c24-4b9e-8a51-2f7d9c3b6e08",
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [
+          { disOpt: "iceh_indicator", disDisplayOpt: "replicant" },
+          { disOpt: "level", disDisplayOpt: "series" },
+        ],
+        filterBy: [{ disOpt: "strat", values: ["wealth_quintiles"] }],
+        selectedReplicantValue: "vdpt",
+      },
+      s: {
+        content: "lines",
+        decimalPlaces: 1,
+      },
+      t: {
+        caption: {
+          en: "Coverage trend",
+          fr: "Tendance de couverture",
+        },
+        captionRelFontSize: null,
+        subCaption: {
+          en: "By wealth quintile, DATE_RANGE",
+          fr: "Par quintile de richesse, PLAGE_DE_DATES",
+        },
+        subCaptionRelFontSize: null,
+        footnote: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {
@@ -76,8 +173,8 @@ export const metric: MetricDefinitionGithub = {
   valueFunc: "identity",
   valueLabelReplacements: {},
   label: {
-    en: "ICEH Estimate",
-    fr: "Estimation ICEH",
+    en: "ICEH survey estimate",
+    fr: "Estimation d'enquête ICEH",
   },
   requiredDisaggregationOptions: ["iceh_indicator", "level", "year"],
   formatAs: "percent",

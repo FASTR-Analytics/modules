@@ -637,8 +637,8 @@
     {
       "id": "m3-02-01",
       "label": {
-        "en": "Actual vs expected service volume",
-        "fr": "Volume de services réel vs attendu"
+        "en": "Disruptions and surpluses",
+        "fr": "Perturbations et excédents"
       },
       "variantLabel": {
         "en": "National",
@@ -743,8 +743,8 @@
     {
       "id": "m3-02-02",
       "label": {
-        "en": "Difference between actual and expected service volume",
-        "fr": "Différence entre le volume de services réel et attendu"
+        "en": "Difference between actual and expected service volume (%)",
+        "fr": "Différence entre le volume de services réel et attendu (%)"
       },
       "variantLabel": {
         "en": "National",
@@ -806,10 +806,65 @@
       "hide": false
     },
     {
-      "id": "m3-03-01",
+      "id": "m3-02-03",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
+      },
+      "variantLabel": {
+        "en": "National",
+        "fr": "National"
+      },
+      "valueProps": [
+        "count_sum",
+        "count_expect_sum"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expect_sum": "Expected service volume"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Comparison of actual reported service volumes against model-predicted expected volumes at national level.",
+          "fr": "Comparaison des volumes de services réels déclarés par rapport aux volumes attendus prédits par modèle au niveau national."
+        },
+        "methodology": {
+          "en": "SUM of actual reported counts vs SUM of expected counts from robust regression models. Expected volumes are calculated using panel regression with time trends, seasonal patterns, and disruption flags. The full expected series is reported for every period (no difference threshold is applied).",
+          "fr": "Somme des comptes réels déclarés vs somme des comptes attendus des modèles de régression robustes. Les volumes attendus sont calculés en utilisant la régression de panel avec des tendances temporelles, des modèles saisonniers et des indicateurs de perturbation. La série attendue complète est rapportée pour chaque période (aucun seuil de différence n'est appliqué)."
+        },
+        "interpretation": {
+          "en": "Deviations between actual and expected volumes indicate potential service disruptions or anomalies. Periods where actual falls below expected suggest service delivery problems; actual above expected may indicate data quality issues, campaigns, or genuine increases in demand.",
+          "fr": "Les écarts entre volumes réels et attendus indiquent des perturbations potentielles de services ou des anomalies. Les périodes où le réel est inférieur à l'attendu suggèrent des problèmes de prestation de services; le réel supérieur à l'attendu peut indiquer des problèmes de qualité des données, des campagnes ou de véritables augmentations de la demande."
+        },
+        "typicalRange": {
+          "en": "Expected volumes should closely track actual volumes in stable periods. Deviations during crises, campaigns, or data system changes are normal.",
+          "fr": "Les volumes attendus devraient suivre de près les volumes réels pendant les périodes stables. Les écarts pendant les crises, les campagnes ou les changements du système de données sont normaux."
+        },
+        "caveats": {
+          "en": "Model quality depends on sufficient historical data and stable baseline periods. Unlike the disruptions-and-surpluses chart metric, the expected value is reported for every period regardless of the size of the difference.",
+          "fr": "La qualité du modèle dépend de données historiques suffisantes et de périodes de référence stables. Contrairement à la métrique du graphique des perturbations et excédents, la valeur attendue est rapportée pour chaque période quelle que soit la taille de la différence."
+        },
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id (required) to see service-specific patterns. Time series visualization is essential for identifying disruption periods and recovery trends.",
+          "fr": "Toujours désagréger par indicator_common_id (requis) pour voir les modèles spécifiques au service. La visualisation en séries temporelles est essentielle pour identifier les périodes de perturbation et les tendances de récupération."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
+    },
+    {
+      "id": "m3-03-01",
+      "label": {
+        "en": "Disruptions and surpluses",
+        "fr": "Perturbations et excédents"
       },
       "variantLabel": {
         "en": "Admin area 2",
@@ -1018,8 +1073,8 @@
     {
       "id": "m3-03-02",
       "label": {
-        "en": "Difference between actual and expected service volume",
-        "fr": "Différence entre le volume de services réel et attendu"
+        "en": "Difference between actual and expected service volume (%)",
+        "fr": "Différence entre le volume de services réel et attendu (%)"
       },
       "variantLabel": {
         "en": "Admin area 2",
@@ -1282,10 +1337,66 @@
       "hide": false
     },
     {
-      "id": "m3-04-01",
+      "id": "m3-03-03",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
+      },
+      "variantLabel": {
+        "en": "Admin area 2",
+        "fr": "Zone administrative 2"
+      },
+      "valueProps": [
+        "count_sum",
+        "count_expect_sum"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_2"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expect_sum": "Expected service volume"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Comparison of actual reported service volumes against model-predicted expected volumes at admin area 2 (province/state) level.",
+          "fr": "Comparaison des volumes de services réels contre volumes attendus au niveau de la zone administrative 2 (province/état)."
+        },
+        "methodology": {
+          "en": "SUM of actual vs expected counts from area-specific robust regression models. Expected volumes account for local time trends and seasonal patterns. The full expected series is reported for every period (no difference threshold is applied).",
+          "fr": "Somme des comptes réels vs attendus des modèles de régression robustes spécifiques à la zone. Les volumes attendus tiennent compte des tendances temporelles locales et des modèles saisonniers. La série attendue complète est rapportée pour chaque période (aucun seuil de différence n'est appliqué)."
+        },
+        "interpretation": {
+          "en": "Enables subnational identification of service disruptions. Compare across admin areas to identify geographic hotspots of service delivery problems. Areas with persistent negative deviations need targeted support.",
+          "fr": "Permet l'identification sous-nationale des perturbations de services. Comparer entre les zones administratives pour identifier les points chauds géographiques de problèmes de prestation de services. Les zones avec des écarts négatifs persistants nécessitent un soutien ciblé."
+        },
+        "typicalRange": {
+          "en": "Expected to closely match actual in stable regions. Deviations indicate local disruptions, data issues, or demand changes.",
+          "fr": "Attendu pour correspondre étroitement au réel dans les régions stables. Les écarts indiquent des perturbations locales, des problèmes de données ou des changements de la demande."
+        },
+        "caveats": {
+          "en": "Smaller geographic areas may have more volatile patterns, making model predictions less reliable. Consider aggregating to higher levels if area-specific models perform poorly.",
+          "fr": "Les zones géographiques plus petites peuvent avoir des modèles plus volatils, rendant les prédictions du modèle moins fiables. Considérer l'agrégation à des niveaux supérieurs si les modèles spécifiques aux zones fonctionnent mal."
+        },
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id and admin_area_2 (both required). Time series reveals when and where disruptions occurred. Map visualization effectively shows geographic distribution of service gaps.",
+          "fr": "Toujours désagréger par indicator_common_id et admin_area_2 (tous deux requis). Les séries temporelles révèlent quand et où les perturbations se sont produites. La visualisation cartographique montre efficacement la distribution géographique des écarts de services."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
+    },
+    {
+      "id": "m3-04-01",
+      "label": {
+        "en": "Disruptions and surpluses",
+        "fr": "Perturbations et excédents"
       },
       "variantLabel": {
         "en": "Admin area 3",
@@ -1440,8 +1551,8 @@
     {
       "id": "m3-04-02",
       "label": {
-        "en": "Difference between actual and expected service volume",
-        "fr": "Différence entre le volume de services réel et attendu"
+        "en": "Difference between actual and expected service volume (%)",
+        "fr": "Différence entre le volume de services réel et attendu (%)"
       },
       "variantLabel": {
         "en": "Admin area 3",
@@ -1709,10 +1820,63 @@
       "hide": false
     },
     {
-      "id": "m3-05-01",
+      "id": "m3-04-03",
       "label": {
         "en": "Actual vs expected service volume",
         "fr": "Volume de services réel vs attendu"
+      },
+      "variantLabel": {
+        "en": "Admin area 3",
+        "fr": "Zone administrative 3"
+      },
+      "valueProps": [
+        "count_sum",
+        "count_expect_sum"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_3"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expect_sum": "Expected service volume"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Comparison of actual vs expected service volumes at admin area 3 (district) level.",
+          "fr": "Comparaison des volumes réels vs attendus au niveau de la zone administrative 3 (district)."
+        },
+        "methodology": {
+          "en": "District-level disruption analysis using robust regression models. Enables fine-grained geographic targeting.",
+          "fr": "Analyse de perturbation au niveau du district utilisant des modèles de régression robustes. Permet un ciblage géographique précis."
+        },
+        "interpretation": {
+          "en": "Identifies district-specific service delivery problems. Use for operational planning and targeted supervision.",
+          "fr": "Identifie les problèmes de prestation de services spécifiques au district. Utiliser pour la planification opérationnelle et la supervision ciblée."
+        },
+        "typicalRange": {
+          "en": "Varies by district size. Expect similar patterns to admin area 2 but with more volatility.",
+          "fr": "Varie selon la taille du district. S'attendre à des modèles similaires à la zone administrative 2 mais avec plus de volatilité."
+        },
+        "caveats": null,
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id and admin_area_3 (both required). Time series and maps reveal district-level patterns.",
+          "fr": "Toujours désagréger par indicator_common_id et admin_area_3 (tous deux requis). Les séries temporelles et cartes révèlent les modèles au niveau du district."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
+      "hide": false
+    },
+    {
+      "id": "m3-05-01",
+      "label": {
+        "en": "Disruptions and surpluses",
+        "fr": "Perturbations et excédents"
       },
       "variantLabel": {
         "en": "Admin area 4",
@@ -1867,8 +2031,8 @@
     {
       "id": "m3-05-02",
       "label": {
-        "en": "Difference between actual and expected service volume",
-        "fr": "Différence entre le volume de services réel et attendu"
+        "en": "Difference between actual and expected service volume (%)",
+        "fr": "Différence entre le volume de services réel et attendu (%)"
       },
       "variantLabel": {
         "en": "Admin area 4",
@@ -2030,6 +2194,59 @@
           }
         }
       ],
+      "hide": false
+    },
+    {
+      "id": "m3-05-03",
+      "label": {
+        "en": "Actual vs expected service volume",
+        "fr": "Volume de services réel vs attendu"
+      },
+      "variantLabel": {
+        "en": "Admin area 4",
+        "fr": "Zone administrative 4"
+      },
+      "valueProps": [
+        "count_sum",
+        "count_expect_sum"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_4"
+      ],
+      "valueLabelReplacements": {
+        "count_sum": "Actual service volume",
+        "count_expect_sum": "Expected service volume"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Comparison of actual vs expected service volumes at admin area 4 (sub-district) level.",
+          "fr": "Comparaison des volumes réels vs attendus au niveau de la zone administrative 4 (sous-district)."
+        },
+        "methodology": {
+          "en": "Sub-district level disruption analysis. Only generated when RUN_ADMIN_AREA_4_ANALYSIS parameter is enabled.",
+          "fr": "Analyse de perturbation au niveau sous-district. Généré uniquement si le paramètre RUN_ADMIN_AREA_4_ANALYSIS est activé."
+        },
+        "interpretation": {
+          "en": "Highest geographic resolution for disruption detection. Use for micro-level targeting and facility-level support.",
+          "fr": "Plus haute résolution géographique pour la détection de perturbations. Utiliser pour le ciblage micro-niveau et le soutien au niveau de l'établissement."
+        },
+        "typicalRange": {
+          "en": "Highly variable by sub-district. Expect greater volatility than higher geographic levels.",
+          "fr": "Très variable selon le sous-district. S'attendre à plus de volatilité que les niveaux géographiques supérieurs."
+        },
+        "caveats": null,
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id and admin_area_4 (both required). Only available when RUN_ADMIN_AREA_4_ANALYSIS enabled.",
+          "fr": "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Disponible uniquement si RUN_ADMIN_AREA_4_ANALYSIS activé."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
       "hide": false
     }
   ]
