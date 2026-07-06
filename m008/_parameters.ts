@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Count value to use",
       fr: "Valeur de comptage à utiliser",
+      pt: "Valor de contagem a utilizar",
     },
     replacementString: "SELECTED_COUNT_VARIABLE",
     input: {
@@ -32,6 +33,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Skip indicators with missing data instead of failing",
       fr: "Ignorer les indicateurs avec données manquantes au lieu d'échouer",
+      pt: "Ignorar indicadores com dados em falta em vez de falhar",
     },
     replacementString: "__SKIP_MISSING_INDICATORS_VALUE__",
     input: {

@@ -9,10 +9,12 @@ export const vizPresets: VizPreset[] = [
     label: {
       en: "Disruptions and surpluses (single Admin Area 3, multiple Admin Area 4, multiple indicators)",
       fr: "Perturbations et excédents (unique Zone administrative 3, plusieurs Zones administratives 4, plusieurs indicateurs)",
+      pt: "Perturbações e excedentes (uma única Área administrativa 3, várias Áreas administrativas 4, vários indicadores)",
     },
     description: {
       en: "Area chart showing actual vs expected service volume, for a single Admin Area 3, with multiple Admin Areas 4 and multiple indicators",
       fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 3, avec plusieurs Zones administratives 4 et plusieurs indicateurs",
+      pt: "Gráfico de áreas que mostra o volume de serviços real vs esperado, para uma única Área administrativa 3, com várias Áreas administrativas 4 e vários indicadores",
     },
     allowedFilters: ["indicator_common_id", "admin_area_4"],
     config: {
@@ -45,6 +47,7 @@ export const vizPresets: VizPreset[] = [
         subCaption: {
           en: "DATE_RANGE",
           fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
         },
         subCaptionRelFontSize: null,
         footnote: null,
@@ -59,10 +62,12 @@ export const vizPresets: VizPreset[] = [
     label: {
       en: "Disruptions and surpluses (single Admin Area 4, multiple indicators)",
       fr: "Perturbations et excédents (unique Zone administrative 4, plusieurs indicateurs)",
+      pt: "Perturbações e excedentes (uma única Área administrativa 4, vários indicadores)",
     },
     description: {
       en: "Area chart showing actual vs expected service volume, for a single Admin Area 4 and multiple indicators",
       fr: "Graphique en aires montrant le volume de services réel vs attendu, pour une unique Zone administrative 4 et plusieurs indicateurs",
+      pt: "Gráfico de áreas que mostra o volume de serviços real vs esperado, para uma única Área administrativa 4 e vários indicadores",
     },
     allowedFilters: ["indicator_common_id"],
     config: {
@@ -92,6 +97,7 @@ export const vizPresets: VizPreset[] = [
         subCaption: {
           en: "DATE_RANGE",
           fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
         },
         subCaptionRelFontSize: null,
         footnote: null,
@@ -109,10 +115,12 @@ export const metric: MetricDefinitionGithub = {
   label: {
     en: "Disruptions and surpluses",
     fr: "Perturbations et excédents",
+    pt: "Perturbações e excedentes",
   },
   variantLabel: {
     en: "Admin area 4",
     fr: "Zone administrative 4",
+    pt: "Área administrativa 4",
   },
   valueProps: ["count_sum", "count_expected_if_above_diff_threshold"],
   valueFunc: "SUM",
@@ -126,22 +134,27 @@ export const metric: MetricDefinitionGithub = {
     summary: {
       en: "Comparison of actual vs expected service volumes at admin area 4 (sub-district) level.",
       fr: "Comparaison des volumes réels vs attendus au niveau de la zone administrative 4 (sous-district).",
+      pt: "Comparação dos volumes de serviços reais vs esperados ao nível da área administrativa 4 (subdistrito).",
     },
     methodology: {
       en: "Sub-district level disruption analysis. Only generated when RUN_ADMIN_AREA_4_ANALYSIS parameter is enabled.",
       fr: "Analyse de perturbation au niveau sous-district. Généré uniquement si le paramètre RUN_ADMIN_AREA_4_ANALYSIS est activé.",
+      pt: "Análise de perturbação ao nível do subdistrito. Gerado apenas quando o parâmetro RUN_ADMIN_AREA_4_ANALYSIS está ativado.",
     },
     interpretation: {
       en: "Highest geographic resolution for disruption detection. Use for micro-level targeting and facility-level support.",
       fr: "Plus haute résolution géographique pour la détection de perturbations. Utiliser pour le ciblage micro-niveau et le soutien au niveau de l'établissement.",
+      pt: "Resolução geográfica mais elevada para a deteção de perturbações. Utilizar para o direcionamento ao micronível e o apoio ao nível do estabelecimento.",
     },
     typicalRange: {
       en: "Highly variable by sub-district. Expect greater volatility than higher geographic levels.",
       fr: "Très variable selon le sous-district. S'attendre à plus de volatilité que les niveaux géographiques supérieurs.",
+      pt: "Altamente variável consoante o subdistrito. Esperar maior volatilidade do que nos níveis geográficos superiores.",
     },
     disaggregationGuidance: {
       en: "Always disaggregate by indicator_common_id and admin_area_4 (both required). Only available when RUN_ADMIN_AREA_4_ANALYSIS enabled.",
       fr: "Toujours désagréger par indicator_common_id et admin_area_4 (tous deux requis). Disponible uniquement si RUN_ADMIN_AREA_4_ANALYSIS activé.",
+      pt: "Desagregar sempre por indicator_common_id e admin_area_4 (ambos obrigatórios). Disponível apenas quando RUN_ADMIN_AREA_4_ANALYSIS está ativado.",
     },
     caveats: null,
   },

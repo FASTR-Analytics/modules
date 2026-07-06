@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M1. Data quality assessment",
     fr: "M1. Évaluation de la qualité des données",
+    pt: "M1. Avaliação da qualidade dos dados",
   },
   prerequisites: [],
   scriptGenerationType: "template",

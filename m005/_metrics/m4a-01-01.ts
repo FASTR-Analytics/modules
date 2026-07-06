@@ -6,10 +6,12 @@ export const vizPresets: VizPreset[] = [
     label: {
       en: "Denominator values table",
       fr: "Tableau des valeurs de dénominateur",
+      pt: "Tabela de valores de denominador",
     },
     description: {
       en: "Table of denominator values by source and year",
       fr: "Tableau des valeurs de dénominateur par source et année",
+      pt: "Tabela de valores de denominador por fonte e ano",
     },
     createDefaultVisualizationOnInstall: "1f8d2940-803c-43f0-b17b-278b271d34a7",
     allowedFilters: ["denominator", "source_indicator"],
@@ -42,6 +44,7 @@ export const vizPresets: VizPreset[] = [
         subCaption: {
           en: "DATE_RANGE",
           fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
         },
         subCaptionRelFontSize: null,
         footnote: null,
@@ -110,10 +113,12 @@ export const metric: MetricDefinitionGithub = {
   label: {
     en: "Denominator values",
     fr: "Valeurs de dénominateur",
+    pt: "Valores de denominador",
   },
   variantLabel: {
     en: "National",
     fr: "National",
+    pt: "Nacional",
   },
   requiredDisaggregationOptions: ["denominator", "year"],
   formatAs: "number",
@@ -121,26 +126,32 @@ export const metric: MetricDefinitionGithub = {
     summary: {
       en: "Population denominators for coverage calculation at national level, derived from multiple sources and methods.",
       fr: "Dénominateurs de population pour le calcul de couverture au niveau national, dérivés de multiples sources et méthodes.",
+      pt: "Denominadores populacionais para o cálculo da cobertura ao nível nacional, derivados de múltiplas fontes e métodos.",
     },
     methodology: {
       en: "AVG of denominator values from different sources: HMIS-derived (from ANC1, delivery, BCG, Penta1), UNWPP-based, and survey-based. Each denominator type represents a different method for estimating target populations (pregnancies, births, infants eligible for vaccination, etc.).",
       fr: "Moyenne des valeurs de dénominateur de différentes sources: dérivées du HMIS (de ANC1, accouchement, BCG, Penta1), basées sur UNWPP, et basées sur enquête.",
+      pt: "Média (AVG) dos valores de denominador de diferentes fontes: derivados do HMIS (de ANC1, parto, BCG, Penta1), baseados no UNWPP e baseados em inquérito.",
     },
     interpretation: {
       en: "Compare denominator values from different sources to assess consistency. Large discrepancies indicate uncertainty in population estimates. The 'best' denominator is selected to minimize error against survey coverage benchmarks. Use source_indicator and target_population disaggregation to understand denominator derivation.",
       fr: "Comparer les valeurs de dénominateur de différentes sources pour évaluer la cohérence. Les grandes divergences indiquent une incertitude dans les estimations de population.",
+      pt: "Comparar os valores de denominador de diferentes fontes para avaliar a coerência. Grandes discrepâncias indicam incerteza nas estimativas populacionais.",
     },
     typicalRange: {
       en: "Varies by country size and indicator type. Pregnancy denominators typically 2-5% of total population; infant denominators 2-4%.",
       fr: "Varie selon la taille du pays et le type d'indicateur. Dénominateurs de grossesse généralement 2-5% de la population totale; dénominateurs de nourrissons 2-4%.",
+      pt: "Varia consoante a dimensão do país e o tipo de indicador. Os denominadores de gravidez situam-se geralmente entre 2-5% da população total; os denominadores de lactentes entre 2-4%.",
     },
     caveats: {
       en: "Denominator quality is critical for coverage estimation. Different sources use different assumptions (mortality rates, fertility rates, etc.). UNWPP denominators only available at national level. Survey-based denominators depend on survey coverage accuracy.",
       fr: "La qualité du dénominateur est critique pour l'estimation de couverture. Les dénominateurs UNWPP sont uniquement disponibles au niveau national.",
+      pt: "A qualidade do denominador é crítica para a estimativa de cobertura. Os denominadores UNWPP estão disponíveis apenas ao nível nacional.",
     },
     disaggregationGuidance: {
       en: "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
       fr: "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête.",
+      pt: "Desagregar sempre por denominator e year (ambos obrigatórios). Desagregar por source_indicator para ver as fontes derivadas do HMIS vs UNWPP vs inquérito.",
     },
   },
   postAggregationExpression: null,

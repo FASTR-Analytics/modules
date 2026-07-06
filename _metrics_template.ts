@@ -62,7 +62,9 @@ export const metrics: MetricDefinitionGithub[] = [
     //     { prop: "numerator", func: "SUM" },
     //     { prop: "denominator", func: "SUM" },
     //   ],
-    //   expression: "numerator / NULLIF(denominator, 0)",
+    //   // Must be "name = arithmetic" with exactly one "=". Division is
+    //   // NULLIF-guarded automatically — don't write NULLIF yourself.
+    //   expression: "value = numerator / denominator",
     // },
 
     formatAs: "percent",

@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M9. ICEH Survey Data Analysis",
     fr: "M9. Analyse des données d'enquête ICEH",
+    pt: "M9. Análise de Dados de Inquéritos ICEH",
   },
   prerequisites: [],
   scriptGenerationType: "template",

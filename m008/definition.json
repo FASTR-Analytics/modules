@@ -1,7 +1,8 @@
 {
   "label": {
     "en": "M8. National Health Sector Scorecard (Catalog-Driven)",
-    "fr": "M8. Tableau de bord du secteur national de la santé (piloté par catalogue)"
+    "fr": "M8. Tableau de bord du secteur national de la santé (piloté par catalogue)",
+    "pt": "M8. Painel de Indicadores do Sector Nacional da Saúde (Orientado por Catálogo)"
   },
   "prerequisites": [
     "m002"
@@ -21,7 +22,8 @@
         "replacementString": "SELECTED_COUNT_VARIABLE",
         "description": {
           "en": "Count value to use",
-          "fr": "Valeur de comptage à utiliser"
+          "fr": "Valeur de comptage à utiliser",
+          "pt": "Valor de contagem a utilizar"
         },
         "input": {
           "inputType": "select",
@@ -51,7 +53,8 @@
         "replacementString": "__SKIP_MISSING_INDICATORS_VALUE__",
         "description": {
           "en": "Skip indicators with missing data instead of failing",
-          "fr": "Ignorer les indicateurs avec données manquantes au lieu d'échouer"
+          "fr": "Ignorer les indicateurs avec données manquantes au lieu d'échouer",
+          "pt": "Ignorar indicadores com dados em falta em vez de falhar"
         },
         "input": {
           "inputType": "select",
@@ -93,7 +96,8 @@
       "id": "m8-01-01",
       "label": {
         "en": "Scorecard",
-        "fr": "Scorecard"
+        "fr": "Scorecard",
+        "pt": "Scorecard"
       },
       "variantLabel": null,
       "valueProps": [
@@ -122,24 +126,29 @@
       "aiDescription": {
         "summary": {
           "en": "Health sector scorecard indicators computed from the calculated indicators catalog.",
-          "fr": "Indicateurs de scorecard du secteur santé calculés à partir du catalogue des indicateurs calculés."
+          "fr": "Indicateurs de scorecard du secteur santé calculés à partir du catalogue des indicateurs calculés.",
+          "pt": "Indicadores do painel do sector da saúde calculados a partir do catálogo de indicadores calculados."
         },
         "methodology": {
           "en": "Each indicator is computed as numerator/denominator. Denominators are either other HMIS indicators or population-based (annual population fraction scaled to monthly).",
-          "fr": "Chaque indicateur est calculé comme numérateur/dénominateur. Les dénominateurs sont soit d'autres indicateurs HMIS, soit basés sur la population (fraction annuelle de population mise à l'échelle mensuelle)."
+          "fr": "Chaque indicateur est calculé comme numérateur/dénominateur. Les dénominateurs sont soit d'autres indicateurs HMIS, soit basés sur la population (fraction annuelle de population mise à l'échelle mensuelle).",
+          "pt": "Cada indicador é calculado como numerador/denominador. Os denominadores são outros indicadores do SIS ou baseados na população (fracção anual da população ajustada à escala mensal)."
         },
         "interpretation": {
           "en": "Values represent coverage rates or ratios. Thresholds for traffic-light coloring come from the calculated indicators catalog.",
-          "fr": "Les valeurs représentent des taux de couverture ou des ratios. Les seuils pour la coloration feu tricolore proviennent du catalogue des indicateurs calculés."
+          "fr": "Les valeurs représentent des taux de couverture ou des ratios. Les seuils pour la coloration feu tricolore proviennent du catalogue des indicateurs calculés.",
+          "pt": "Os valores representam taxas de cobertura ou rácios. Os limiares para a coloração tipo semáforo provêm do catálogo de indicadores calculados."
         },
         "typicalRange": {
           "en": "Varies by indicator - see catalog for thresholds.",
-          "fr": "Varie selon l'indicateur - voir le catalogue pour les seuils."
+          "fr": "Varie selon l'indicateur - voir le catalogue pour les seuils.",
+          "pt": "Varia consoante o indicador - ver o catálogo para os limiares."
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "Can be disaggregated by admin area (2, 3, or 4) and time period (month, quarter, year). Aggregation uses SUM(numerator)/SUM(denominator).",
-          "fr": "Peut être désagrégé par zone administrative (2, 3 ou 4) et période de temps (mois, trimestre, année). L'agrégation utilise SUM(numérateur)/SUM(dénominateur)."
+          "fr": "Peut être désagrégé par zone administrative (2, 3 ou 4) et période de temps (mois, trimestre, année). L'agrégation utilise SUM(numérateur)/SUM(dénominateur).",
+          "pt": "Pode ser desagregado por área administrativa (2, 3 ou 4) e período de tempo (mês, trimestre, ano). A agregação utiliza SUM(numerador)/SUM(denominador)."
         }
       },
       "importantNotes": null,
@@ -148,11 +157,13 @@
           "id": "scorecard-table",
           "label": {
             "en": "Scorecard table",
-            "fr": "Tableau de bord"
+            "fr": "Tableau de bord",
+            "pt": "Tabela de painel de indicadores"
           },
           "description": {
             "en": "Table showing calculated indicators with threshold-based coloring",
-            "fr": "Tableau montrant les indicateurs calculés avec coloration basée sur les seuils"
+            "fr": "Tableau montrant les indicateurs calculés avec coloration basée sur les seuils",
+            "pt": "Tabela que mostra os indicadores calculados com coloração baseada em limiares"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -188,17 +199,20 @@
             "t": {
               "caption": {
                 "en": "Health Sector Scorecard",
-                "fr": "Tableau de bord du secteur santé"
+                "fr": "Tableau de bord du secteur santé",
+                "pt": "Painel de Indicadores do Sector da Saúde"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Calculated indicators by area, DATE_RANGE",
-                "fr": "Indicateurs calculés par zone, PLAGE_DE_DATES"
+                "fr": "Indicateurs calculés par zone, PLAGE_DE_DATES",
+                "pt": "Indicadores calculados por área, INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "",
-                "fr": ""
+                "fr": "",
+                "pt": ""
               },
               "footnoteRelFontSize": null
             }

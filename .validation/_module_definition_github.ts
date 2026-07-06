@@ -26,6 +26,7 @@ import { ALL_DISAGGREGATION_OPTIONS } from "./disaggregation_options.ts";
 const translatableStringGithub = z.object({
   en: z.string(),
   fr: z.string(),
+  pt: z.string().optional(),
 });
 
 const scriptGenerationTypeGithub = z.enum(["template", "hfa", "calculated_indicators"]);

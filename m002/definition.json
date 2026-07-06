@@ -1,7 +1,8 @@
 {
   "label": {
     "en": "M2. Data quality adjustments",
-    "fr": "M2. Ajustements de la qualité des données"
+    "fr": "M2. Ajustements de la qualité des données",
+    "pt": "M2. Ajustes da qualidade dos dados"
   },
   "prerequisites": [
     "m001"
@@ -69,7 +70,8 @@
       "id": "m2-01-01",
       "label": {
         "en": "Percent change in volume due to outlier adjustment",
-        "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes"
+        "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes",
+        "pt": "Variação percentual do volume devida ao ajuste de valores atípicos"
       },
       "variantLabel": null,
       "valueProps": [
@@ -98,27 +100,33 @@
       "aiDescription": {
         "summary": {
           "en": "Magnitude of change in reported service volumes after removing or adjusting outlier values.",
-          "fr": "Ampleur du changement dans les volumes de services déclarés après suppression ou ajustement des valeurs aberrantes."
+          "fr": "Ampleur du changement dans les volumes de services déclarés après suppression ou ajustement des valeurs aberrantes.",
+          "pt": "Magnitude da variação nos volumes de serviços declarados após a remoção ou ajuste de valores atípicos."
         },
         "methodology": {
           "en": "Calculated as ABS(unadjusted - outlier_adjusted) / unadjusted. Outlier adjustment replaces flagged extreme values using rolling mean imputation (6-month centered, forward, or backward windows) or facility-level means.",
-          "fr": "Calculé comme ABS(non ajusté - ajusté pour aberrants) / non ajusté. L'ajustement des aberrants remplace les valeurs extrêmes par imputation par moyenne mobile."
+          "fr": "Calculé comme ABS(non ajusté - ajusté pour aberrants) / non ajusté. L'ajustement des aberrants remplace les valeurs extrêmes par imputation par moyenne mobile.",
+          "pt": "Calculado como ABS(não ajustado - ajustado para atípicos) / não ajustado. O ajuste de valores atípicos substitui os valores extremos sinalizados por imputação por média móvel."
         },
         "interpretation": {
           "en": "Higher percentages indicate that outliers had significant impact on reported volumes. Values above 10% suggest substantial data quality issues that could bias analysis if left unadjusted. Compare across indicators to identify those most affected.",
-          "fr": "Des pourcentages plus élevés indiquent que les aberrants ont eu un impact significatif. Les valeurs supérieures à 10% suggèrent des problèmes de qualité importants."
+          "fr": "Des pourcentages plus élevés indiquent que les aberrants ont eu un impact significatif. Les valeurs supérieures à 10% suggèrent des problèmes de qualité importants.",
+          "pt": "Percentagens mais elevadas indicam que os valores atípicos tiveram um impacto significativo. Os valores superiores a 10% sugerem problemas de qualidade importantes."
         },
         "typicalRange": {
           "en": "0-5% indicates minimal outlier impact; 5-15% moderate; >15% suggests major quality issues.",
-          "fr": "0-5% indique un impact aberrant minimal; 5-15% modéré; >15% suggère des problèmes majeurs."
+          "fr": "0-5% indique un impact aberrant minimal; 5-15% modéré; >15% suggère des problèmes majeurs.",
+          "pt": "0-5% indica um impacto atípico mínimo; 5-15% moderado; >15% sugere problemas graves."
         },
         "caveats": {
           "en": "Percentage change reflects magnitude but not direction. Large changes may be appropriate if outliers were genuine data errors, but could also indicate over-correction if flagged values were valid.",
-          "fr": "Le changement en pourcentage reflète l'ampleur mais pas la direction. Les grands changements peuvent être appropriés si les aberrants étaient des erreurs."
+          "fr": "Le changement en pourcentage reflète l'ampleur mais pas la direction. Les grands changements peuvent être appropriés si les aberrants étaient des erreurs.",
+          "pt": "A variação percentual reflete a magnitude mas não a direção. As grandes variações podem ser adequadas se os valores atípicos forem erros genuínos de dados, mas também podem indicar uma sobrecorreção se os valores sinalizados forem válidos."
         },
         "disaggregationGuidance": {
           "en": "Disaggregate by indicator_common_id to identify which services are most affected by outlier adjustment. Use admin_area to find regions where outliers have larger impact. Time series analysis shows if adjustment impact changes over time.",
-          "fr": "Désagréger par indicator_common_id pour identifier quels services sont les plus affectés. Utiliser admin_area pour trouver les régions où l'impact est plus important."
+          "fr": "Désagréger par indicator_common_id pour identifier quels services sont les plus affectés. Utiliser admin_area pour trouver les régions où l'impact est plus important.",
+          "pt": "Desagregar por indicator_common_id para identificar quais os serviços mais afetados pelo ajuste de valores atípicos. Utilizar admin_area para encontrar as regiões onde o impacto é maior."
         }
       },
       "importantNotes": null,
@@ -127,11 +135,13 @@
           "id": "adjustment-table",
           "label": {
             "en": "Outlier adjustment impact table",
-            "fr": "Tableau d'impact de l'ajustement des valeurs aberrantes"
+            "fr": "Tableau d'impact de l'ajustement des valeurs aberrantes",
+            "pt": "Tabela de impacto do ajuste de valores atípicos"
           },
           "description": {
             "en": "Table showing percent change due to outlier adjustment by indicator and Admin Area 2",
-            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et Zone administrative 2"
+            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et Zone administrative 2",
+            "pt": "Tabela que mostra a variação percentual devida ao ajuste de valores atípicos por indicador e Área Administrativa 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -196,17 +206,20 @@
             "t": {
               "caption": {
                 "en": "Deviance Due to Outliers",
-                "fr": "Déviance due aux valeurs aberrantes"
+                "fr": "Déviance due aux valeurs aberrantes",
+                "pt": "Desvio devido a valores atípicos"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to outlier adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, PLAGE_DE_DATES"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement des valeurs aberrantes, PLAGE_DE_DATES",
+                "pt": "Variação percentual do volume devida ao ajuste de valores atípicos, INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Outliers are reports which are suspiciously high compared to the usual volume reported by the facility in other months. Outliers are identified by assessing the within-facility variation in monthly reporting for each indicator. Outliers are defined observations which are greater than 10 times the median absolute deviation (MAD) from the monthly median value for the indicator in each time period, OR a value for which the proportional contribution in volume for a facility, indicator, and time period is greater than 80%. Outliers are only identified for indicators where the volume is greater than or equal to the median, the volume is not missing, and the average volume is greater than 100. The deviance is the difference in volume after removing the outlier. High levels of deviance can affect the plausiability of the data.",
-                "fr": "Les valeurs aberrantes sont des rapports anormalement élevés par rapport au volume habituel déclaré par l'établissement au cours des autres mois. Elles sont identifiées en évaluant la variation intra-établissement des déclarations mensuelles pour chaque indicateur. Les valeurs aberrantes sont définies comme des observations supérieures à 10 fois l'écart absolu médian (MAD) par rapport à la valeur médiane mensuelle de l'indicateur pour chaque période, OU une valeur dont la contribution proportionnelle au volume pour un établissement, indicateur et période est supérieure à 80%. Les valeurs aberrantes ne sont identifiées que pour les indicateurs dont le volume est supérieur ou égal à la médiane, le volume n'est pas manquant, et le volume moyen est supérieur à 100. La déviance est la différence de volume après suppression de la valeur aberrante. Des niveaux élevés de déviance peuvent affecter la plausibilité des données."
+                "fr": "Les valeurs aberrantes sont des rapports anormalement élevés par rapport au volume habituel déclaré par l'établissement au cours des autres mois. Elles sont identifiées en évaluant la variation intra-établissement des déclarations mensuelles pour chaque indicateur. Les valeurs aberrantes sont définies comme des observations supérieures à 10 fois l'écart absolu médian (MAD) par rapport à la valeur médiane mensuelle de l'indicateur pour chaque période, OU une valeur dont la contribution proportionnelle au volume pour un établissement, indicateur et période est supérieure à 80%. Les valeurs aberrantes ne sont identifiées que pour les indicateurs dont le volume est supérieur ou égal à la médiane, le volume n'est pas manquant, et le volume moyen est supérieur à 100. La déviance est la différence de volume après suppression de la valeur aberrante. Des niveaux élevés de déviance peuvent affecter la plausibilité des données.",
+                "pt": "Os valores atípicos são registos anormalmente elevados em comparação com o volume habitual declarado pela unidade sanitária noutros meses. Os valores atípicos são identificados avaliando a variação intraunidade nas declarações mensais de cada indicador. Os valores atípicos são definidos como observações superiores a 10 vezes o desvio absoluto mediano (MAD) em relação ao valor mediano mensal do indicador em cada período, OU um valor cuja contribuição proporcional para o volume de uma unidade sanitária, indicador e período é superior a 80%. Os valores atípicos só são identificados para indicadores cujo volume é superior ou igual à mediana, cujo volume não está em falta e cujo volume médio é superior a 100. O desvio é a diferença de volume após a remoção do valor atípico. Níveis elevados de desvio podem afetar a plausibilidade dos dados."
               },
               "footnoteRelFontSize": null
             }
@@ -219,7 +232,8 @@
       "id": "m2-01-02",
       "label": {
         "en": "Percent change in volume due to completeness adjustment",
-        "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude"
+        "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude",
+        "pt": "Variação percentual do volume devida ao ajuste de completude"
       },
       "variantLabel": null,
       "valueProps": [
@@ -248,27 +262,33 @@
       "aiDescription": {
         "summary": {
           "en": "Magnitude of change in reported service volumes after imputing missing facility reports.",
-          "fr": "Ampleur du changement dans les volumes de services déclarés après imputation des rapports d'établissement manquants."
+          "fr": "Ampleur du changement dans les volumes de services déclarés après imputation des rapports d'établissement manquants.",
+          "pt": "Magnitude da variação nos volumes de serviços declarados após a imputação dos relatórios de unidades sanitárias em falta."
         },
         "methodology": {
           "en": "Calculated as ABS(unadjusted - completeness_adjusted) / unadjusted. Completeness adjustment fills missing facility-period records using rolling mean imputation to account for non-reporting facilities.",
-          "fr": "Calculé comme ABS(non ajusté - ajusté pour complétude) / non ajusté. L'ajustement de complétude remplit les enregistrements manquants par imputation."
+          "fr": "Calculé comme ABS(non ajusté - ajusté pour complétude) / non ajusté. L'ajustement de complétude remplit les enregistrements manquants par imputation.",
+          "pt": "Calculado como ABS(não ajustado - ajustado para completude) / não ajustado. O ajuste de completude preenche os registos em falta por imputação."
         },
         "interpretation": {
           "en": "Higher percentages indicate significant missing data that affects totals. Values above 20% suggest incomplete reporting that could substantially underestimate service coverage. This adjustment increases volumes by filling gaps.",
-          "fr": "Des pourcentages plus élevés indiquent des données manquantes significatives. Les valeurs supérieures à 20% suggèrent une déclaration incomplète."
+          "fr": "Des pourcentages plus élevés indiquent des données manquantes significatives. Les valeurs supérieures à 20% suggèrent une déclaration incomplète.",
+          "pt": "Percentagens mais elevadas indicam dados em falta significativos. Os valores superiores a 20% sugerem uma declaração incompleta."
         },
         "typicalRange": {
           "en": "0-10% indicates good reporting completeness; 10-30% moderate gaps; >30% indicates major reporting issues.",
-          "fr": "0-10% indique une bonne complétude; 10-30% lacunes modérées; >30% indique des problèmes de déclaration majeurs."
+          "fr": "0-10% indique une bonne complétude; 10-30% lacunes modérées; >30% indique des problèmes de déclaration majeurs.",
+          "pt": "0-10% indica uma boa completude da declaração; 10-30% lacunas moderadas; >30% indica problemas graves de declaração."
         },
         "caveats": {
           "en": "Completeness adjustment assumes missing facilities have similar service volumes to reporting facilities. If non-reporting facilities systematically differ (e.g., closed or low-functioning), imputation may over- or under-estimate totals.",
-          "fr": "L'ajustement de complétude suppose que les établissements manquants ont des volumes similaires. Si les établissements non déclarants diffèrent systématiquement, l'imputation peut surestimer."
+          "fr": "L'ajustement de complétude suppose que les établissements manquants ont des volumes similaires. Si les établissements non déclarants diffèrent systématiquement, l'imputation peut surestimer.",
+          "pt": "O ajuste de completude pressupõe que as unidades sanitárias em falta têm volumes semelhantes. Se as unidades sanitárias não declarantes diferirem sistematicamente, a imputação pode sobrestimar."
         },
         "disaggregationGuidance": {
           "en": "Disaggregate by indicator_common_id to see which services have most missing data. Use time periods to identify when reporting completeness deteriorated. Admin_area disaggregation reveals geographic reporting patterns.",
-          "fr": "Désagréger par indicator_common_id pour voir quels services ont le plus de données manquantes. Utiliser les périodes pour identifier quand la complétude s'est détériorée."
+          "fr": "Désagréger par indicator_common_id pour voir quels services ont le plus de données manquantes. Utiliser les périodes pour identifier quand la complétude s'est détériorée.",
+          "pt": "Desagregar por indicator_common_id para ver quais os serviços com mais dados em falta. Utilizar os períodos para identificar quando a completude da declaração se deteriorou."
         }
       },
       "importantNotes": null,
@@ -277,11 +297,13 @@
           "id": "adjustment-table",
           "label": {
             "en": "Completeness adjustment impact table",
-            "fr": "Tableau d'impact de l'ajustement de complétude"
+            "fr": "Tableau d'impact de l'ajustement de complétude",
+            "pt": "Tabela de impacto do ajuste de completude"
           },
           "description": {
             "en": "Table showing percent change due to completeness adjustment by indicator and Admin Area 2",
-            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et Zone administrative 2"
+            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et Zone administrative 2",
+            "pt": "Tabela que mostra a variação percentual devida ao ajuste de completude por indicador e Área Administrativa 2"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -346,17 +368,20 @@
             "t": {
               "caption": {
                 "en": "Deviance Due to Incompleteness",
-                "fr": "Déviance due à l'incomplétude"
+                "fr": "Déviance due à l'incomplétude",
+                "pt": "Desvio devido à incompletude"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to completeness adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude, PLAGE_DE_DATES"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement de complétude, PLAGE_DE_DATES",
+                "pt": "Variação percentual do volume devida ao ajuste de completude, INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Completeness is defined as the percentage of reporting facilities each month out of the total number of facilities expected to report. A facility is expected to report if it has reported any volume for each indicator anytime within a year. The deviance is the difference in volume after imputing incomplete data. High levels of deviance can affect the plausiability of the data.",
-                "fr": "La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. La déviance est la différence de volume après imputation des données incomplètes. Des niveaux élevés de déviance peuvent affecter la plausibilité des données."
+                "fr": "La complétude est définie comme le pourcentage d'établissements déclarants chaque mois par rapport au nombre total d'établissements censés déclarer. Un établissement est censé déclarer s'il a déclaré un volume pour chaque indicateur à tout moment au cours de l'année. La déviance est la différence de volume après imputation des données incomplètes. Des niveaux élevés de déviance peuvent affecter la plausibilité des données.",
+                "pt": "A completude é definida como a percentagem de unidades sanitárias declarantes em cada mês relativamente ao número total de unidades sanitárias que se espera que declarem. Espera-se que uma unidade sanitária declare se tiver declarado algum volume para cada indicador em qualquer momento ao longo de um ano. O desvio é a diferença de volume após a imputação dos dados incompletos. Níveis elevados de desvio podem afetar a plausibilidade dos dados."
               },
               "footnoteRelFontSize": null
             }
@@ -369,7 +394,8 @@
       "id": "m2-01-03",
       "label": {
         "en": "Percent change in volume due to both outlier and completeness adjustment",
-        "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude"
+        "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude",
+        "pt": "Variação percentual do volume devida ao ajuste combinado de valores atípicos e completude"
       },
       "variantLabel": null,
       "valueProps": [
@@ -398,27 +424,33 @@
       "aiDescription": {
         "summary": {
           "en": "Combined magnitude of change in reported service volumes after both outlier removal and missing data imputation.",
-          "fr": "Ampleur combinée du changement dans les volumes après suppression des aberrants et imputation des données manquantes."
+          "fr": "Ampleur combinée du changement dans les volumes après suppression des aberrants et imputation des données manquantes.",
+          "pt": "Magnitude combinada da variação nos volumes de serviços declarados após a remoção de valores atípicos e a imputação dos dados em falta."
         },
         "methodology": {
           "en": "Calculated as ABS(unadjusted - both_adjusted) / unadjusted. Applies both outlier correction (replacing extreme values) and completeness adjustment (filling missing records) sequentially to produce fully-adjusted estimates.",
-          "fr": "Calculé comme ABS(non ajusté - ajusté pour les deux) / non ajusté. Applique à la fois la correction des aberrants et l'ajustement de complétude séquentiellement."
+          "fr": "Calculé comme ABS(non ajusté - ajusté pour les deux) / non ajusté. Applique à la fois la correction des aberrants et l'ajustement de complétude séquentiellement.",
+          "pt": "Calculado como ABS(não ajustado - ajustado para ambos) / não ajustado. Aplica sequencialmente a correção de valores atípicos e o ajuste de completude."
         },
         "interpretation": {
           "en": "Represents the total impact of data quality corrections on service volumes. Higher percentages indicate that raw data required substantial adjustment. Compare with individual adjustment metrics (m2-01-01, m2-01-02) to understand whether outliers or completeness drove the change.",
-          "fr": "Représente l'impact total des corrections de qualité des données. Des pourcentages plus élevés indiquent que les données brutes nécessitaient un ajustement substantiel."
+          "fr": "Représente l'impact total des corrections de qualité des données. Des pourcentages plus élevés indiquent que les données brutes nécessitaient un ajustement substantiel.",
+          "pt": "Representa o impacto total das correções de qualidade dos dados. Percentagens mais elevadas indicam que os dados brutos exigiram um ajuste substancial."
         },
         "typicalRange": {
           "en": "0-10% indicates minor corrections; 10-25% moderate adjustment; >25% indicates major data quality issues requiring substantial correction.",
-          "fr": "0-10% indique des corrections mineures; 10-25% ajustement modéré; >25% indique des problèmes majeurs nécessitant correction substantielle."
+          "fr": "0-10% indique des corrections mineures; 10-25% ajustement modéré; >25% indique des problèmes majeurs nécessitant correction substantielle.",
+          "pt": "0-10% indica correções menores; 10-25% ajuste moderado; >25% indica problemas graves de qualidade dos dados que exigem correção substancial."
         },
         "caveats": {
           "en": "Combined adjustment effect is not simply additive - outlier and completeness adjustments interact. Large combined changes may indicate the need to verify that adjustments are appropriate rather than over-correcting.",
-          "fr": "L'effet d'ajustement combiné n'est pas simplement additif - les ajustements interagissent. Les grands changements combinés peuvent indiquer la nécessité de vérifier les ajustements."
+          "fr": "L'effet d'ajustement combiné n'est pas simplement additif - les ajustements interagissent. Les grands changements combinés peuvent indiquer la nécessité de vérifier les ajustements.",
+          "pt": "O efeito do ajuste combinado não é simplesmente aditivo - os ajustes de valores atípicos e de completude interagem. As grandes variações combinadas podem indicar a necessidade de verificar se os ajustes são adequados em vez de sobrecorrigir."
         },
         "disaggregationGuidance": {
           "en": "Disaggregate by indicator_common_id to identify indicators requiring most adjustment. Time series shows if data quality improves over time (decreasing adjustment percentages). Regional disaggregation reveals geographic patterns in data quality.",
-          "fr": "Désagréger par indicator_common_id pour identifier les indicateurs nécessitant le plus d'ajustement. Les séries temporelles montrent si la qualité s'améliore."
+          "fr": "Désagréger par indicator_common_id pour identifier les indicateurs nécessitant le plus d'ajustement. Les séries temporelles montrent si la qualité s'améliore.",
+          "pt": "Desagregar por indicator_common_id para identificar os indicadores que exigem mais ajuste. As séries temporais mostram se a qualidade dos dados melhora ao longo do tempo (diminuição das percentagens de ajuste). A desagregação regional revela padrões geográficos na qualidade dos dados."
         }
       },
       "importantNotes": null,
@@ -427,11 +459,13 @@
           "id": "adjustment-table",
           "label": {
             "en": "Combined adjustment impact table",
-            "fr": "Tableau d'impact de l'ajustement combiné"
+            "fr": "Tableau d'impact de l'ajustement combiné",
+            "pt": "Tabela de impacto do ajuste combinado"
           },
           "description": {
             "en": "Table showing percent change due to combined outlier and completeness adjustment by indicator and Admin Area 2",
-            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région"
+            "fr": "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région",
+            "pt": "Tabela que mostra a variação percentual devida ao ajuste combinado de valores atípicos e completude por indicador e região"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -496,17 +530,20 @@
             "t": {
               "caption": {
                 "en": "Deviance Due to Incompleteness and Outliers",
-                "fr": "Déviance due à l'incomplétude et aux valeurs aberrantes"
+                "fr": "Déviance due à l'incomplétude et aux valeurs aberrantes",
+                "pt": "Desvio devido à incompletude e a valores atípicos"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "Percent change in volume due to both outlier and completeness adjustment, DATE_RANGE",
-                "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude, PLAGE_DE_DATES"
+                "fr": "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude, PLAGE_DE_DATES",
+                "pt": "Variação percentual do volume devida ao ajuste combinado de valores atípicos e completude, INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": {
                 "en": "Combined adjustment applies both outlier removal and completeness imputation. Outliers are suspiciously high values identified using median absolute deviation. Completeness adjustment imputes missing data from non-reporting facilities. The deviance shows the total change in volume after both adjustments. High levels of deviance indicate substantial data quality issues.",
-                "fr": "L'ajustement combiné applique à la fois la suppression des valeurs aberrantes et l'imputation de la complétude. Les valeurs aberrantes sont des valeurs suspectement élevées identifiées à l'aide de l'écart absolu médian. L'ajustement de complétude impute les données manquantes des établissements non déclarants. La déviance montre le changement total de volume après les deux ajustements. Des niveaux élevés de déviance indiquent des problèmes substantiels de qualité des données."
+                "fr": "L'ajustement combiné applique à la fois la suppression des valeurs aberrantes et l'imputation de la complétude. Les valeurs aberrantes sont des valeurs suspectement élevées identifiées à l'aide de l'écart absolu médian. L'ajustement de complétude impute les données manquantes des établissements non déclarants. La déviance montre le changement total de volume après les deux ajustements. Des niveaux élevés de déviance indiquent des problèmes substantiels de qualité des données.",
+                "pt": "O ajuste combinado aplica tanto a remoção de valores atípicos como a imputação de completude. Os valores atípicos são valores suspeitamente elevados identificados através do desvio absoluto mediano. O ajuste de completude imputa os dados em falta das unidades sanitárias não declarantes. O desvio mostra a variação total de volume após os dois ajustes. Níveis elevados de desvio indicam problemas substanciais de qualidade dos dados."
               },
               "footnoteRelFontSize": null
             }

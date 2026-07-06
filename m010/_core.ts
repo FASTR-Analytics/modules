@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M10. Health facility assessment",
     fr: "M10. Évaluation des établissements de santé",
+    pt: "M10. Avaliação de unidades sanitárias",
   },
   prerequisites: [],
   scriptGenerationType: "hfa",

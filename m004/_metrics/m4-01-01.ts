@@ -25,10 +25,12 @@ export const vizPresets: VizPreset[] = [
     label: {
       en: "Coverage timeseries (national)",
       fr: "Séries temporelles de couverture (national)",
+      pt: "Séries temporais de cobertura (nacional)",
     },
     description: {
       en: "National coverage timeseries with survey benchmarks",
       fr: "Séries temporelles de couverture nationale avec repères d'enquête",
+      pt: "Séries temporais de cobertura nacional com referências de inquérito",
     },
     createDefaultVisualizationOnInstall: "3e3230cb-ad9e-48b9-b3ce-7bd01255d20b",
     allowedFilters: [],
@@ -54,6 +56,7 @@ export const vizPresets: VizPreset[] = [
         caption: {
           en: "Coverage estimates for REPLICANT",
           fr: "Estimations de couverture pour REPLICANT",
+          pt: "Estimativas de cobertura para REPLICANT",
         },
         subCaption: SUBCAPTION_DISCLAIMER,
         footnote: FOOTNOTE_COVERAGE_BASE,
@@ -97,10 +100,12 @@ export const metric: MetricDefinitionGithub = {
   label: {
     en: "Coverage calculated from HMIS data",
     fr: "Couverture calculée à partir des données HMIS",
+    pt: "Cobertura calculada a partir dos dados do HMIS",
   },
   variantLabel: {
     en: "National",
     fr: "National",
+    pt: "Nacional",
   },
   requiredDisaggregationOptions: ["indicator_common_id", "year"],
   formatAs: "percent",
@@ -108,26 +113,32 @@ export const metric: MetricDefinitionGithub = {
     summary: {
       en: "Health service coverage estimates at national level, comparing HMIS-derived coverage with survey-based benchmarks.",
       fr: "Estimations de couverture des services de santé au niveau national, comparant la couverture dérivée du HMIS avec les repères d'enquête.",
+      pt: "Estimativas de cobertura dos serviços de saúde ao nível nacional, comparando a cobertura derivada do HMIS com as referências baseadas em inquéritos.",
     },
     methodology: {
       en: "AVG of three coverage types: (1) original survey estimates when available, (2) projected survey estimates using HMIS trends, (3) HMIS-derived coverage calculated as service volumes divided by population denominators. Denominators selected based on minimizing error against survey benchmarks.",
       fr: "Moyenne de trois types de couverture: (1) estimations d'enquête originales, (2) estimations d'enquête projetées utilisant les tendances HMIS, (3) couverture dérivée du HMIS.",
+      pt: "Média de três tipos de cobertura: (1) estimativas de inquérito originais quando disponíveis, (2) estimativas de inquérito projetadas utilizando as tendências do HMIS, (3) cobertura derivada do HMIS calculada como volumes de serviços divididos pelos denominadores da população. Os denominadores são selecionados de forma a minimizar o erro face às referências dos inquéritos.",
     },
     interpretation: {
       en: "Three values provide complementary perspectives: survey estimates are gold standard but sparse; projected estimates fill gaps using HMIS trends; HMIS-derived estimates enable annual monitoring. Large gaps between HMIS and survey coverage suggest data quality issues or denominator problems.",
       fr: "Trois valeurs fournissent des perspectives complémentaires: les estimations d'enquête sont l'étalon-or mais rares; les estimations projetées comblent les lacunes.",
+      pt: "Os três valores fornecem perspetivas complementares: as estimativas de inquérito são o padrão de referência mas escassas; as estimativas projetadas preenchem as lacunas utilizando as tendências do HMIS; as estimativas derivadas do HMIS permitem a monitorização anual. Grandes diferenças entre a cobertura do HMIS e a dos inquéritos sugerem problemas de qualidade dos dados ou problemas com os denominadores.",
     },
     typicalRange: {
       en: "0-100% for coverage. Maternal services typically 40-80%; vaccination 60-95%; varies by country context.",
       fr: "0-100% pour la couverture. Services maternels généralement 40-80%; vaccination 60-95%; varie selon le contexte.",
+      pt: "0-100% para a cobertura. Serviços maternos geralmente 40-80%; vacinação 60-95%; varia consoante o contexto do país.",
     },
     caveats: {
       en: "Denominator selection is critical - inappropriate denominators can produce implausible coverage >100%. Projection assumes HMIS trends reflect true coverage changes. Survey timing and HMIS data quality affect comparability.",
       fr: "La sélection du dénominateur est critique - les dénominateurs inappropriés peuvent produire une couverture >100%. La projection suppose que les tendances HMIS reflètent les vrais changements.",
+      pt: "A seleção do denominador é crítica - denominadores inadequados podem produzir uma cobertura implausível >100%. A projeção pressupõe que as tendências do HMIS refletem as verdadeiras alterações na cobertura. O momento dos inquéritos e a qualidade dos dados do HMIS afetam a comparabilidade.",
     },
     disaggregationGuidance: {
       en: "Always disaggregate by indicator_common_id and year (both required). Compare the three coverage types to assess HMIS-survey concordance. Time series reveals coverage trends and data quality evolution.",
       fr: "Toujours désagréger par indicator_common_id et year (tous deux requis). Comparer les trois types de couverture pour évaluer la concordance HMIS-enquête.",
+      pt: "Desagregar sempre por indicator_common_id e year (ambos obrigatórios). Comparar os três tipos de cobertura para avaliar a concordância entre o HMIS e os inquéritos. As séries temporais revelam as tendências de cobertura e a evolução da qualidade dos dados.",
     },
   },
   postAggregationExpression: null,

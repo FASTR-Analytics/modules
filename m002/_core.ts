@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M2. Data quality adjustments",
     fr: "M2. Ajustements de la qualité des données",
+    pt: "M2. Ajustes da qualidade dos dados",
   },
   prerequisites: ["m001"],
   scriptGenerationType: "template",

@@ -7,10 +7,12 @@ export const vizPresets: VizPreset[] = [
     label: {
       en: "Combined adjustment impact table",
       fr: "Tableau d'impact de l'ajustement combiné",
+      pt: "Tabela de impacto do ajuste combinado",
     },
     description: {
       en: "Table showing percent change due to combined outlier and completeness adjustment by indicator and Admin Area 2",
       fr: "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région",
+      pt: "Tabela que mostra a variação percentual devida ao ajuste combinado de valores atípicos e completude por indicador e região",
     },
     createDefaultVisualizationOnInstall: "5337d614-02b8-4de8-abcb-f390d2b7a714",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
@@ -44,14 +46,17 @@ export const vizPresets: VizPreset[] = [
         caption: {
           en: "Deviance Due to Incompleteness and Outliers",
           fr: "Déviance due à l'incomplétude et aux valeurs aberrantes",
+          pt: "Desvio devido à incompletude e a valores atípicos",
         },
         subCaption: {
           en: "Percent change in volume due to both outlier and completeness adjustment, DATE_RANGE",
           fr: "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude, PLAGE_DE_DATES",
+          pt: "Variação percentual do volume devida ao ajuste combinado de valores atípicos e completude, INTERVALO_DE_DATAS",
         },
         footnote: {
           en: "Combined adjustment applies both outlier removal and completeness imputation. Outliers are suspiciously high values identified using median absolute deviation. Completeness adjustment imputes missing data from non-reporting facilities. The deviance shows the total change in volume after both adjustments. High levels of deviance indicate substantial data quality issues.",
           fr: "L'ajustement combiné applique à la fois la suppression des valeurs aberrantes et l'imputation de la complétude. Les valeurs aberrantes sont des valeurs suspectement élevées identifiées à l'aide de l'écart absolu médian. L'ajustement de complétude impute les données manquantes des établissements non déclarants. La déviance montre le changement total de volume après les deux ajustements. Des niveaux élevés de déviance indiquent des problèmes substantiels de qualité des données.",
+          pt: "O ajuste combinado aplica tanto a remoção de valores atípicos como a imputação de completude. Os valores atípicos são valores suspeitamente elevados identificados através do desvio absoluto mediano. O ajuste de completude imputa os dados em falta das unidades sanitárias não declarantes. O desvio mostra a variação total de volume após os dois ajustes. Níveis elevados de desvio indicam problemas substanciais de qualidade dos dados.",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,
@@ -68,6 +73,7 @@ export const metric: MetricDefinitionGithub = {
   label: {
     en: "Percent change in volume due to both outlier and completeness adjustment",
     fr: "Changement en pourcentage du volume dû à l'ajustement combiné des valeurs aberrantes et de la complétude",
+    pt: "Variação percentual do volume devida ao ajuste combinado de valores atípicos e completude",
   },
   valueProps: ["pct_change"],
   valueFunc: "identity",
@@ -93,26 +99,32 @@ export const metric: MetricDefinitionGithub = {
     summary: {
       en: "Combined magnitude of change in reported service volumes after both outlier removal and missing data imputation.",
       fr: "Ampleur combinée du changement dans les volumes après suppression des aberrants et imputation des données manquantes.",
+      pt: "Magnitude combinada da variação nos volumes de serviços declarados após a remoção de valores atípicos e a imputação dos dados em falta.",
     },
     methodology: {
       en: "Calculated as ABS(unadjusted - both_adjusted) / unadjusted. Applies both outlier correction (replacing extreme values) and completeness adjustment (filling missing records) sequentially to produce fully-adjusted estimates.",
       fr: "Calculé comme ABS(non ajusté - ajusté pour les deux) / non ajusté. Applique à la fois la correction des aberrants et l'ajustement de complétude séquentiellement.",
+      pt: "Calculado como ABS(não ajustado - ajustado para ambos) / não ajustado. Aplica sequencialmente a correção de valores atípicos e o ajuste de completude.",
     },
     interpretation: {
       en: "Represents the total impact of data quality corrections on service volumes. Higher percentages indicate that raw data required substantial adjustment. Compare with individual adjustment metrics (m2-01-01, m2-01-02) to understand whether outliers or completeness drove the change.",
       fr: "Représente l'impact total des corrections de qualité des données. Des pourcentages plus élevés indiquent que les données brutes nécessitaient un ajustement substantiel.",
+      pt: "Representa o impacto total das correções de qualidade dos dados. Percentagens mais elevadas indicam que os dados brutos exigiram um ajuste substancial.",
     },
     typicalRange: {
       en: "0-10% indicates minor corrections; 10-25% moderate adjustment; >25% indicates major data quality issues requiring substantial correction.",
       fr: "0-10% indique des corrections mineures; 10-25% ajustement modéré; >25% indique des problèmes majeurs nécessitant correction substantielle.",
+      pt: "0-10% indica correções menores; 10-25% ajuste moderado; >25% indica problemas graves de qualidade dos dados que exigem correção substancial.",
     },
     caveats: {
       en: "Combined adjustment effect is not simply additive - outlier and completeness adjustments interact. Large combined changes may indicate the need to verify that adjustments are appropriate rather than over-correcting.",
       fr: "L'effet d'ajustement combiné n'est pas simplement additif - les ajustements interagissent. Les grands changements combinés peuvent indiquer la nécessité de vérifier les ajustements.",
+      pt: "O efeito do ajuste combinado não é simplesmente aditivo - os ajustes de valores atípicos e de completude interagem. As grandes variações combinadas podem indicar a necessidade de verificar se os ajustes são adequados em vez de sobrecorrigir.",
     },
     disaggregationGuidance: {
       en: "Disaggregate by indicator_common_id to identify indicators requiring most adjustment. Time series shows if data quality improves over time (decreasing adjustment percentages). Regional disaggregation reveals geographic patterns in data quality.",
       fr: "Désagréger par indicator_common_id pour identifier les indicateurs nécessitant le plus d'ajustement. Les séries temporelles montrent si la qualité s'améliore.",
+      pt: "Desagregar por indicator_common_id para identificar os indicadores que exigem mais ajuste. As séries temporais mostram se a qualidade dos dados melhora ao longo do tempo (diminuição das percentagens de ajuste). A desagregação regional revela padrões geográficos na qualidade dos dados.",
     },
   },
   variantLabel: null,

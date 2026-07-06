@@ -257,6 +257,14 @@ for (const { dir, def } of allModules) {
           console.error(`CONVENTION subCaption.fr missing PLAGE_DE_DATES in ${location}`);
           hadError = true;
         }
+        if (subCaption.pt && subCaption.pt.includes("DATE_RANGE")) {
+          console.error(`CONVENTION subCaption.pt uses DATE_RANGE instead of INTERVALO_DE_DATAS in ${location}`);
+          hadError = true;
+        }
+        if (subCaption.pt && !subCaption.pt.includes("INTERVALO_DE_DATAS")) {
+          console.error(`CONVENTION subCaption.pt missing INTERVALO_DE_DATAS in ${location}`);
+          hadError = true;
+        }
       }
 
       // Convention: labels/descriptions should use "Admin Area N" not "region"/"district"

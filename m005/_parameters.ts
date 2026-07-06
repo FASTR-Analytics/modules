@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Count value to use",
       fr: "Valeur de comptage à utiliser",
+      pt: "Valor de contagem a utilizar",
     },
     replacementString: "SELECTED_COUNT_VARIABLE",
     input: {
@@ -35,6 +36,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Level to calculate coverage for",
       fr: "Niveau pour calculer la couverture",
+      pt: "Nível para o qual calcular a cobertura",
     },
     replacementString: "ANALYSIS_LEVEL",
     input: {
@@ -61,6 +63,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Pregnancy loss rate",
       fr: "Taux de perte de grossesse",
+      pt: "Taxa de perda de gravidez",
     },
     replacementString: "PREGNANCY_LOSS_RATE",
     input: {
@@ -72,6 +75,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Twin rate",
       fr: "Taux de jumeaux",
+      pt: "Taxa de gémeos",
     },
     replacementString: "TWIN_RATE",
     input: {
@@ -83,6 +87,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Stillbirth rate",
       fr: "Taux de mortinatalité",
+      pt: "Taxa de nados-mortos",
     },
     replacementString: "STILLBIRTH_RATE",
     input: {
@@ -94,6 +99,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Neonatal mortality rate",
       fr: "Taux de mortalité néonatale",
+      pt: "Taxa de mortalidade neonatal",
     },
     replacementString: "P1_NMR",
     input: {
@@ -105,6 +111,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Postneonatal mortality rate",
       fr: "Taux de mortalité postnéonatale",
+      pt: "Taxa de mortalidade pós-neonatal",
     },
     replacementString: "P2_PNMR",
     input: {
@@ -116,6 +123,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Infant mortality rate",
       fr: "Taux de mortalité infantile",
+      pt: "Taxa de mortalidade infantil",
     },
     replacementString: "INFANT_MORTALITY_RATE",
     input: {
@@ -127,6 +135,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Under 5 mortality rate",
       fr: "Taux de mortalité des moins de 5 ans",
+      pt: "Taxa de mortalidade de menores de 5 anos",
     },
     replacementString: "UNDER5_MORTALITY_RATE",
     input: {

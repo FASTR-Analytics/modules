@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M6. Coverage estimates ~ new, part 2",
     fr: "M6. Estimations de couverture ~ nouveau, partie 2",
+    pt: "M6. Estimativas de cobertura ~ novo, parte 2",
   },
   prerequisites: ["m005"],
   scriptGenerationType: "template",

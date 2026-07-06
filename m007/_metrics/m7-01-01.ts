@@ -11,6 +11,7 @@ export const metric: MetricDefinitionGithub = {
   label: {
     en: "Scorecard (AA2)",
     fr: "Scorecard (AA2)",
+    pt: "Painel de Avaliação (AA2)",
   },
   valueProps: ["value"],
   valueFunc: "identity",
@@ -36,23 +37,28 @@ export const metric: MetricDefinitionGithub = {
     summary: {
       en: "xxx",
       fr: "xxx",
+      pt: "xxx",
     },
     methodology: {
       en: "xxx",
       fr: "xxx",
+      pt: "xxx",
     },
     interpretation: {
       en: "xxx",
       fr: "xxx",
+      pt: "xxx",
     },
     typicalRange: {
       en: "xxx",
       fr: "xxx",
+      pt: "xxx",
     },
     caveats: null,
     disaggregationGuidance: {
       en: "xxx",
       fr: "xxx",
+      pt: "xxx",
     },
   },
   variantLabel: null,

@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M7. National Health Sector Scorecard (NHSS)",
     fr: "M7. Tableau de bord du secteur national de la sante (NHSS)",
+    pt: "M7. Painel de Avaliação do Setor Nacional de Saúde (NHSS)",
   },
   prerequisites: ["m002"],
   scriptGenerationType: "template",

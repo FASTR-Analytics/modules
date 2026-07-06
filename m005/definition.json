@@ -1,7 +1,8 @@
 {
   "label": {
     "en": "M5. Coverage estimates ~ new, part 1",
-    "fr": "M5. Estimations de couverture ~ nouveau, partie 1"
+    "fr": "M5. Estimations de couverture ~ nouveau, partie 1",
+    "pt": "M5. Estimativas de cobertura ~ novo, parte 1"
   },
   "prerequisites": [
     "m002"
@@ -27,7 +28,8 @@
         "replacementString": "SELECTED_COUNT_VARIABLE",
         "description": {
           "en": "Count value to use",
-          "fr": "Valeur de comptage à utiliser"
+          "fr": "Valeur de comptage à utiliser",
+          "pt": "Valor de contagem a utilizar"
         },
         "input": {
           "inputType": "select",
@@ -57,7 +59,8 @@
         "replacementString": "ANALYSIS_LEVEL",
         "description": {
           "en": "Level to calculate coverage for",
-          "fr": "Niveau pour calculer la couverture"
+          "fr": "Niveau pour calculer la couverture",
+          "pt": "Nível para o qual calcular a cobertura"
         },
         "input": {
           "inputType": "select",
@@ -83,7 +86,8 @@
         "replacementString": "PREGNANCY_LOSS_RATE",
         "description": {
           "en": "Pregnancy loss rate",
-          "fr": "Taux de perte de grossesse"
+          "fr": "Taux de perte de grossesse",
+          "pt": "Taxa de perda de gravidez"
         },
         "input": {
           "inputType": "number",
@@ -94,7 +98,8 @@
         "replacementString": "TWIN_RATE",
         "description": {
           "en": "Twin rate",
-          "fr": "Taux de jumeaux"
+          "fr": "Taux de jumeaux",
+          "pt": "Taxa de gémeos"
         },
         "input": {
           "inputType": "number",
@@ -105,7 +110,8 @@
         "replacementString": "STILLBIRTH_RATE",
         "description": {
           "en": "Stillbirth rate",
-          "fr": "Taux de mortinatalité"
+          "fr": "Taux de mortinatalité",
+          "pt": "Taxa de nados-mortos"
         },
         "input": {
           "inputType": "number",
@@ -116,7 +122,8 @@
         "replacementString": "P1_NMR",
         "description": {
           "en": "Neonatal mortality rate",
-          "fr": "Taux de mortalité néonatale"
+          "fr": "Taux de mortalité néonatale",
+          "pt": "Taxa de mortalidade neonatal"
         },
         "input": {
           "inputType": "number",
@@ -127,7 +134,8 @@
         "replacementString": "P2_PNMR",
         "description": {
           "en": "Postneonatal mortality rate",
-          "fr": "Taux de mortalité postnéonatale"
+          "fr": "Taux de mortalité postnéonatale",
+          "pt": "Taxa de mortalidade pós-neonatal"
         },
         "input": {
           "inputType": "number",
@@ -138,7 +146,8 @@
         "replacementString": "INFANT_MORTALITY_RATE",
         "description": {
           "en": "Infant mortality rate",
-          "fr": "Taux de mortalité infantile"
+          "fr": "Taux de mortalité infantile",
+          "pt": "Taxa de mortalidade infantil"
         },
         "input": {
           "inputType": "number",
@@ -149,7 +158,8 @@
         "replacementString": "UNDER5_MORTALITY_RATE",
         "description": {
           "en": "Under 5 mortality rate",
-          "fr": "Taux de mortalité des moins de 5 ans"
+          "fr": "Taux de mortalité des moins de 5 ans",
+          "pt": "Taxa de mortalidade de menores de 5 anos"
         },
         "input": {
           "inputType": "number",
@@ -249,11 +259,13 @@
       "id": "m4a-01-01",
       "label": {
         "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
+        "fr": "Valeurs de dénominateur",
+        "pt": "Valores de denominador"
       },
       "variantLabel": {
         "en": "National",
-        "fr": "National"
+        "fr": "National",
+        "pt": "Nacional"
       },
       "valueProps": [
         "value"
@@ -319,27 +331,33 @@
       "aiDescription": {
         "summary": {
           "en": "Population denominators for coverage calculation at national level, derived from multiple sources and methods.",
-          "fr": "Dénominateurs de population pour le calcul de couverture au niveau national, dérivés de multiples sources et méthodes."
+          "fr": "Dénominateurs de population pour le calcul de couverture au niveau national, dérivés de multiples sources et méthodes.",
+          "pt": "Denominadores populacionais para o cálculo da cobertura ao nível nacional, derivados de múltiplas fontes e métodos."
         },
         "methodology": {
           "en": "AVG of denominator values from different sources: HMIS-derived (from ANC1, delivery, BCG, Penta1), UNWPP-based, and survey-based. Each denominator type represents a different method for estimating target populations (pregnancies, births, infants eligible for vaccination, etc.).",
-          "fr": "Moyenne des valeurs de dénominateur de différentes sources: dérivées du HMIS (de ANC1, accouchement, BCG, Penta1), basées sur UNWPP, et basées sur enquête."
+          "fr": "Moyenne des valeurs de dénominateur de différentes sources: dérivées du HMIS (de ANC1, accouchement, BCG, Penta1), basées sur UNWPP, et basées sur enquête.",
+          "pt": "Média (AVG) dos valores de denominador de diferentes fontes: derivados do HMIS (de ANC1, parto, BCG, Penta1), baseados no UNWPP e baseados em inquérito."
         },
         "interpretation": {
           "en": "Compare denominator values from different sources to assess consistency. Large discrepancies indicate uncertainty in population estimates. The 'best' denominator is selected to minimize error against survey coverage benchmarks. Use source_indicator and target_population disaggregation to understand denominator derivation.",
-          "fr": "Comparer les valeurs de dénominateur de différentes sources pour évaluer la cohérence. Les grandes divergences indiquent une incertitude dans les estimations de population."
+          "fr": "Comparer les valeurs de dénominateur de différentes sources pour évaluer la cohérence. Les grandes divergences indiquent une incertitude dans les estimations de population.",
+          "pt": "Comparar os valores de denominador de diferentes fontes para avaliar a coerência. Grandes discrepâncias indicam incerteza nas estimativas populacionais."
         },
         "typicalRange": {
           "en": "Varies by country size and indicator type. Pregnancy denominators typically 2-5% of total population; infant denominators 2-4%.",
-          "fr": "Varie selon la taille du pays et le type d'indicateur. Dénominateurs de grossesse généralement 2-5% de la population totale; dénominateurs de nourrissons 2-4%."
+          "fr": "Varie selon la taille du pays et le type d'indicateur. Dénominateurs de grossesse généralement 2-5% de la population totale; dénominateurs de nourrissons 2-4%.",
+          "pt": "Varia consoante a dimensão do país e o tipo de indicador. Os denominadores de gravidez situam-se geralmente entre 2-5% da população total; os denominadores de lactentes entre 2-4%."
         },
         "caveats": {
           "en": "Denominator quality is critical for coverage estimation. Different sources use different assumptions (mortality rates, fertility rates, etc.). UNWPP denominators only available at national level. Survey-based denominators depend on survey coverage accuracy.",
-          "fr": "La qualité du dénominateur est critique pour l'estimation de couverture. Les dénominateurs UNWPP sont uniquement disponibles au niveau national."
+          "fr": "La qualité du dénominateur est critique pour l'estimation de couverture. Les dénominateurs UNWPP sont uniquement disponibles au niveau national.",
+          "pt": "A qualidade do denominador é crítica para a estimativa de cobertura. Os denominadores UNWPP estão disponíveis apenas ao nível nacional."
         },
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator and year (both required). Disaggregate by source_indicator to see HMIS-derived vs UNWPP vs survey sources. Use target_population to understand which population group each denominator represents.",
-          "fr": "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête."
+          "fr": "Toujours désagréger par denominator et year (tous deux requis). Désagréger par source_indicator pour voir les sources dérivées du HMIS vs UNWPP vs enquête.",
+          "pt": "Desagregar sempre por denominator e year (ambos obrigatórios). Desagregar por source_indicator para ver as fontes derivadas do HMIS vs UNWPP vs inquérito."
         }
       },
       "importantNotes": null,
@@ -348,11 +366,13 @@
           "id": "values-table",
           "label": {
             "en": "Denominator values table",
-            "fr": "Tableau des valeurs de dénominateur"
+            "fr": "Tableau des valeurs de dénominateur",
+            "pt": "Tabela de valores de denominador"
           },
           "description": {
             "en": "Table of denominator values by source and year",
-            "fr": "Tableau des valeurs de dénominateur par source et année"
+            "fr": "Tableau des valeurs de dénominateur par source et année",
+            "pt": "Tabela de valores de denominador por fonte e ano"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -388,7 +408,8 @@
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "PLAGE_DE_DATES"
+                "fr": "PLAGE_DE_DATES",
+                "pt": "INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,
@@ -403,11 +424,13 @@
       "id": "m4a-01-02",
       "label": {
         "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
+        "fr": "Valeurs de dénominateur",
+        "pt": "Valores de denominador"
       },
       "variantLabel": {
         "en": "Admin area 2",
-        "fr": "Zone administrative 2"
+        "fr": "Zone administrative 2",
+        "pt": "Área administrativa 2"
       },
       "valueProps": [
         "value"
@@ -474,24 +497,29 @@
       "aiDescription": {
         "summary": {
           "en": "Subnational population denominators for coverage calculation at admin area 2 level.",
-          "fr": "Dénominateurs de population sous-nationaux pour le calcul de couverture au niveau de la zone administrative 2."
+          "fr": "Dénominateurs de population sous-nationaux pour le calcul de couverture au niveau de la zone administrative 2.",
+          "pt": "Denominadores populacionais subnacionais para o cálculo da cobertura ao nível da área administrativa 2."
         },
         "methodology": {
           "en": "AVG of denominators derived from subnational HMIS data and survey estimates. UNWPP denominators not available at this level. Uses national-level methodology adapted to subnational populations.",
-          "fr": "Moyenne des dénominateurs dérivés des données HMIS sous-nationales et estimations d'enquête. Dénominateurs UNWPP non disponibles à ce niveau."
+          "fr": "Moyenne des dénominateurs dérivés des données HMIS sous-nationales et estimations d'enquête. Dénominateurs UNWPP non disponibles à ce niveau.",
+          "pt": "Média (AVG) dos denominadores derivados dos dados HMIS subnacionais e das estimativas de inquérito. Os denominadores UNWPP não estão disponíveis a este nível."
         },
         "interpretation": {
           "en": "Subnational denominators enable regional coverage monitoring. Compare across admin areas to assess population estimate consistency. Larger regional variation suggests denominator uncertainty.",
-          "fr": "Les dénominateurs sous-nationaux permettent la surveillance de la couverture régionale. Comparer entre zones administratives pour évaluer la cohérence des estimations."
+          "fr": "Les dénominateurs sous-nationaux permettent la surveillance de la couverture régionale. Comparer entre zones administratives pour évaluer la cohérence des estimations.",
+          "pt": "Os denominadores subnacionais permitem a monitorização da cobertura regional. Comparar entre áreas administrativas para avaliar a coerência das estimativas populacionais."
         },
         "typicalRange": {
           "en": "Varies by region size and population. Proportional to national denominators.",
-          "fr": "Varie selon la taille de la région et la population. Proportionnel aux dénominateurs nationaux."
+          "fr": "Varie selon la taille de la région et la population. Proportionnel aux dénominateurs nationaux.",
+          "pt": "Varia consoante a dimensão e a população da região. Proporcional aos denominadores nacionais."
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator, admin_area_2, and year (all required). Compare denominator sources to assess regional data quality.",
-          "fr": "Toujours désagréger par denominator, admin_area_2 et year (tous requis). Comparer les sources de dénominateur pour évaluer la qualité des données régionales."
+          "fr": "Toujours désagréger par denominator, admin_area_2 et year (tous requis). Comparer les sources de dénominateur pour évaluer la qualité des données régionales.",
+          "pt": "Desagregar sempre por denominator, admin_area_2 e year (todos obrigatórios). Comparar as fontes de denominador para avaliar a qualidade dos dados regionais."
         }
       },
       "importantNotes": null,
@@ -502,11 +530,13 @@
       "id": "m4a-01-03",
       "label": {
         "en": "Denominator values",
-        "fr": "Valeurs de dénominateur"
+        "fr": "Valeurs de dénominateur",
+        "pt": "Valores de denominador"
       },
       "variantLabel": {
         "en": "Admin area 3",
-        "fr": "Zone administrative 3"
+        "fr": "Zone administrative 3",
+        "pt": "Área administrativa 3"
       },
       "valueProps": [
         "value"
@@ -573,24 +603,29 @@
       "aiDescription": {
         "summary": {
           "en": "District-level population denominators for coverage calculation at admin area 3 level.",
-          "fr": "Dénominateurs de population au niveau du district pour le calcul de couverture au niveau de la zone administrative 3."
+          "fr": "Dénominateurs de population au niveau du district pour le calcul de couverture au niveau de la zone administrative 3.",
+          "pt": "Denominadores populacionais ao nível do distrito para o cálculo da cobertura ao nível da área administrativa 3."
         },
         "methodology": {
           "en": "AVG of district-level denominators. Finest geographic resolution available. Only generated when ANALYSIS_LEVEL includes admin_area_3.",
-          "fr": "Moyenne des dénominateurs au niveau du district. Résolution géographique la plus fine disponible. Généré uniquement lorsque ANALYSIS_LEVEL inclut admin_area_3."
+          "fr": "Moyenne des dénominateurs au niveau du district. Résolution géographique la plus fine disponible. Généré uniquement lorsque ANALYSIS_LEVEL inclut admin_area_3.",
+          "pt": "Média (AVG) dos denominadores ao nível do distrito. Resolução geográfica mais fina disponível. Apenas gerado quando ANALYSIS_LEVEL inclui admin_area_3."
         },
         "interpretation": {
           "en": "District denominators most uncertain due to small sample sizes and population mobility. Use with caution for micro-level targeting.",
-          "fr": "Les dénominateurs de district sont les plus incertains en raison de petites tailles d'échantillon et mobilité de la population."
+          "fr": "Les dénominateurs de district sont les plus incertains en raison de petites tailles d'échantillon et mobilité de la population.",
+          "pt": "Os denominadores de distrito são os mais incertos devido às pequenas dimensões das amostras e à mobilidade da população."
         },
         "typicalRange": {
           "en": "Varies by district size. Smaller than admin area 2 denominators, proportional to population.",
-          "fr": "Varie selon la taille du district. Plus petit que les dénominateurs de zone administrative 2, proportionnel à la population."
+          "fr": "Varie selon la taille du district. Plus petit que les dénominateurs de zone administrative 2, proportionnel à la population.",
+          "pt": "Varia consoante a dimensão do distrito. Menor do que os denominadores da área administrativa 2, proporcional à população."
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator, admin_area_3, and year (all required). Interpret with caution due to denominator uncertainty at this level.",
-          "fr": "Toujours désagréger par denominator, admin_area_3 et year (tous requis). Interpréter avec prudence en raison de l'incertitude du dénominateur à ce niveau."
+          "fr": "Toujours désagréger par denominator, admin_area_3 et year (tous requis). Interpréter avec prudence en raison de l'incertitude du dénominateur à ce niveau.",
+          "pt": "Desagregar sempre por denominator, admin_area_3 e year (todos obrigatórios). Interpretar com prudência devido à incerteza do denominador a este nível."
         }
       },
       "importantNotes": null,
@@ -601,11 +636,13 @@
       "id": "m4a-02-01",
       "label": {
         "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
+        "fr": "Couverture estimée avec différents dénominateurs",
+        "pt": "Cobertura estimada com diferentes denominadores"
       },
       "variantLabel": {
         "en": "National",
-        "fr": "National"
+        "fr": "National",
+        "pt": "Nacional"
       },
       "valueProps": [
         "value"
@@ -672,27 +709,33 @@
       "aiDescription": {
         "summary": {
           "en": "Coverage estimates calculated using alternative denominator sources, plus survey benchmarks at national level.",
-          "fr": "Estimations de couverture calculées utilisant des sources de dénominateur alternatives, plus repères d'enquête au niveau national."
+          "fr": "Estimations de couverture calculées utilisant des sources de dénominateur alternatives, plus repères d'enquête au niveau national.",
+          "pt": "Estimativas de cobertura calculadas utilizando fontes de denominador alternativas, mais os valores de referência dos inquéritos ao nível nacional."
         },
         "methodology": {
           "en": "AVG of coverage calculated as HMIS numerators divided by each available denominator type. Includes 'best' denominator (selected to minimize survey error) and 'survey' (original survey estimate). Enables comparison of how denominator choice affects coverage estimates.",
-          "fr": "Moyenne de la couverture calculée comme numérateurs HMIS divisés par chaque type de dénominateur disponible. Inclut le 'meilleur' dénominateur et l'estimé d'enquête."
+          "fr": "Moyenne de la couverture calculée comme numérateurs HMIS divisés par chaque type de dénominateur disponible. Inclut le 'meilleur' dénominateur et l'estimé d'enquête.",
+          "pt": "Média (AVG) da cobertura calculada como os numeradores HMIS divididos por cada tipo de denominador disponível. Inclui o 'melhor' denominador e a estimativa de inquérito."
         },
         "interpretation": {
           "en": "Large variation across denominator types indicates denominator uncertainty. Coverage estimates should be similar to survey values when using appropriate denominators. Coverage >100% suggests denominator underestimation or HMIS over-reporting.",
-          "fr": "Une grande variation entre types de dénominateur indique une incertitude. Les estimations de couverture devraient être similaires aux valeurs d'enquête avec des dénominateurs appropriés."
+          "fr": "Une grande variation entre types de dénominateur indique une incertitude. Les estimations de couverture devraient être similaires aux valeurs d'enquête avec des dénominateurs appropriés.",
+          "pt": "Uma grande variação entre os tipos de denominador indica incerteza. As estimativas de cobertura deveriam ser semelhantes aos valores dos inquéritos quando se utilizam denominadores adequados."
         },
         "typicalRange": {
           "en": "0-100%. Denominators producing >100% coverage are likely inappropriate or require data quality investigation.",
-          "fr": "0-100%. Les dénominateurs produisant >100% de couverture sont probablement inappropriés ou nécessitent une investigation de qualité."
+          "fr": "0-100%. Les dénominateurs produisant >100% de couverture sont probablement inappropriés ou nécessitent une investigation de qualité.",
+          "pt": "0-100%. Os denominadores que produzem coberturas superiores a 100% são provavelmente inadequados ou exigem uma investigação da qualidade dos dados."
         },
         "caveats": {
           "en": "Denominator selection is subjective and affects results. The 'best' denominator minimizes squared error against surveys but may not be appropriate for all analytical purposes.",
-          "fr": "La sélection du dénominateur est subjective et affecte les résultats. Le 'meilleur' dénominateur minimise l'erreur quadratique mais peut ne pas être approprié pour tous les objectifs."
+          "fr": "La sélection du dénominateur est subjective et affecte les résultats. Le 'meilleur' dénominateur minimise l'erreur quadratique mais peut ne pas être approprié pour tous les objectifs.",
+          "pt": "A seleção do denominador é subjetiva e afeta os resultados. O 'melhor' denominador minimiza o erro quadrático em relação aos inquéritos, mas pode não ser adequado para todos os fins analíticos."
         },
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, indicator_common_id, and year (all required). Compare 'best' vs 'survey' to validate denominator selection. Visualize all denominator types to assess range of plausible coverage estimates.",
-          "fr": "Toujours désagréger par denominator_best_or_survey, indicator_common_id et year (tous requis). Comparer 'meilleur' vs 'enquête' pour valider la sélection du dénominateur."
+          "fr": "Toujours désagréger par denominator_best_or_survey, indicator_common_id et year (tous requis). Comparer 'meilleur' vs 'enquête' pour valider la sélection du dénominateur.",
+          "pt": "Desagregar sempre por denominator_best_or_survey, indicator_common_id e year (todos obrigatórios). Comparar 'melhor' vs 'inquérito' para validar a seleção do denominador."
         }
       },
       "importantNotes": null,
@@ -701,11 +744,13 @@
           "id": "coverage-timeseries",
           "label": {
             "en": "Coverage by denominator type",
-            "fr": "Couverture par type de dénominateur"
+            "fr": "Couverture par type de dénominateur",
+            "pt": "Cobertura por tipo de denominador"
           },
           "description": {
             "en": "Timeseries comparing coverage across denominator sources",
-            "fr": "Séries temporelles comparant la couverture entre sources de dénominateur"
+            "fr": "Séries temporelles comparant la couverture entre sources de dénominateur",
+            "pt": "Séries temporais que comparam a cobertura entre fontes de denominador"
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -737,12 +782,14 @@
             "t": {
               "caption": {
                 "en": "Coverage based on different denominators",
-                "fr": "Couverture selon différents dénominateurs"
+                "fr": "Couverture selon différents dénominateurs",
+                "pt": "Cobertura com base em diferentes denominadores"
               },
               "captionRelFontSize": null,
               "subCaption": {
                 "en": "DATE_RANGE",
-                "fr": "PLAGE_DE_DATES"
+                "fr": "PLAGE_DE_DATES",
+                "pt": "INTERVALO_DE_DATAS"
               },
               "subCaptionRelFontSize": null,
               "footnote": null,
@@ -757,11 +804,13 @@
       "id": "m4a-02-02",
       "label": {
         "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
+        "fr": "Couverture estimée avec différents dénominateurs",
+        "pt": "Cobertura estimada com diferentes denominadores"
       },
       "variantLabel": {
         "en": "Admin area 2",
-        "fr": "Zone administrative 2"
+        "fr": "Zone administrative 2",
+        "pt": "Área administrativa 2"
       },
       "valueProps": [
         "value"
@@ -829,24 +878,29 @@
       "aiDescription": {
         "summary": {
           "en": "Subnational coverage estimates using alternative denominators at admin area 2 level.",
-          "fr": "Estimations de couverture sous-nationales utilisant des dénominateurs alternatifs au niveau de la zone administrative 2."
+          "fr": "Estimations de couverture sous-nationales utilisant des dénominateurs alternatifs au niveau de la zone administrative 2.",
+          "pt": "Estimativas de cobertura subnacionais utilizando denominadores alternativos ao nível da área administrativa 2."
         },
         "methodology": {
           "en": "AVG of coverage with different denominator types at subnational level. National-only denominators (e.g., UNWPP) replaced with subnational alternatives.",
-          "fr": "Moyenne de la couverture avec différents types de dénominateur au niveau sous-national. Dénominateurs nationaux uniquement remplacés par alternatives sous-nationales."
+          "fr": "Moyenne de la couverture avec différents types de dénominateur au niveau sous-national. Dénominateurs nationaux uniquement remplacés par alternatives sous-nationales.",
+          "pt": "Média (AVG) da cobertura com diferentes tipos de denominador ao nível subnacional. Os denominadores apenas nacionais (por exemplo, UNWPP) são substituídos por alternativas subnacionais."
         },
         "interpretation": {
           "en": "Enables assessment of denominator uncertainty at regional level. Useful for understanding geographic variation in coverage and denominator quality.",
-          "fr": "Permet l'évaluation de l'incertitude du dénominateur au niveau régional. Utile pour comprendre la variation géographique de la couverture."
+          "fr": "Permet l'évaluation de l'incertitude du dénominateur au niveau régional. Utile pour comprendre la variation géographique de la couverture.",
+          "pt": "Permite avaliar a incerteza do denominador ao nível regional. Útil para compreender a variação geográfica da cobertura e a qualidade do denominador."
         },
         "typicalRange": {
           "en": "0-100%. Variation across denominators indicates uncertainty in regional coverage estimates.",
-          "fr": "0-100%. La variation entre dénominateurs indique une incertitude dans les estimations de couverture régionale."
+          "fr": "0-100%. La variation entre dénominateurs indique une incertitude dans les estimations de couverture régionale.",
+          "pt": "0-100%. A variação entre denominadores indica incerteza nas estimativas de cobertura regional."
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, admin_area_2, indicator_common_id, and year (all required). Compare denominator types to assess regional estimate uncertainty.",
-          "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_2, indicator_common_id et year (tous requis). Comparer les types de dénominateur pour évaluer l'incertitude des estimations régionales."
+          "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_2, indicator_common_id et year (tous requis). Comparer les types de dénominateur pour évaluer l'incertitude des estimations régionales.",
+          "pt": "Desagregar sempre por denominator_best_or_survey, admin_area_2, indicator_common_id e year (todos obrigatórios). Comparar os tipos de denominador para avaliar a incerteza das estimativas regionais."
         }
       },
       "importantNotes": null,
@@ -857,11 +911,13 @@
       "id": "m4a-02-03",
       "label": {
         "en": "Coverage estimated with different denominators",
-        "fr": "Couverture estimée avec différents dénominateurs"
+        "fr": "Couverture estimée avec différents dénominateurs",
+        "pt": "Cobertura estimada com diferentes denominadores"
       },
       "variantLabel": {
         "en": "Admin area 3",
-        "fr": "Zone administrative 3"
+        "fr": "Zone administrative 3",
+        "pt": "Área administrativa 3"
       },
       "valueProps": [
         "value"
@@ -929,24 +985,29 @@
       "aiDescription": {
         "summary": {
           "en": "District-level coverage estimates using alternative denominators at admin area 3 level.",
-          "fr": "Estimations de couverture au niveau du district utilisant des dénominateurs alternatifs au niveau de la zone administrative 3."
+          "fr": "Estimations de couverture au niveau du district utilisant des dénominateurs alternatifs au niveau de la zone administrative 3.",
+          "pt": "Estimativas de cobertura ao nível do distrito utilizando denominadores alternativos ao nível da área administrativa 3."
         },
         "methodology": {
           "en": "AVG of coverage with different denominator types at district level. Highest geographic resolution for coverage estimation.",
-          "fr": "Moyenne de la couverture avec différents types de dénominateur au niveau du district. Plus haute résolution géographique pour l'estimation de couverture."
+          "fr": "Moyenne de la couverture avec différents types de dénominateur au niveau du district. Plus haute résolution géographique pour l'estimation de couverture.",
+          "pt": "Média (AVG) da cobertura com diferentes tipos de denominador ao nível do distrito. Resolução geográfica mais elevada para a estimativa de cobertura."
         },
         "interpretation": {
           "en": "District-level denominator uncertainty typically highest. Use to understand micro-level coverage patterns but interpret with caution.",
-          "fr": "L'incertitude du dénominateur au niveau du district est généralement la plus élevée. Utiliser pour comprendre les modèles de couverture micro-niveau avec prudence."
+          "fr": "L'incertitude du dénominateur au niveau du district est généralement la plus élevée. Utiliser pour comprendre les modèles de couverture micro-niveau avec prudence.",
+          "pt": "A incerteza do denominador ao nível do distrito é geralmente a mais elevada. Utilizar para compreender os padrões de cobertura ao nível micro, mas interpretar com prudência."
         },
         "typicalRange": {
           "en": "0-100%. Wide variation across denominators common due to small sample sizes and denominator uncertainty.",
-          "fr": "0-100%. Variation large entre dénominateurs commune en raison de petites tailles d'échantillon et incertitude du dénominateur."
+          "fr": "0-100%. Variation large entre dénominateurs commune en raison de petites tailles d'échantillon et incertitude du dénominateur.",
+          "pt": "0-100%. É comum uma ampla variação entre denominadores devido às pequenas dimensões das amostras e à incerteza do denominador."
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "Always disaggregate by denominator_best_or_survey, admin_area_3, indicator_common_id, and year (all required). High uncertainty at this level - consider aggregating to admin area 2.",
-          "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_3, indicator_common_id et year (tous requis). Incertitude élevée à ce niveau - considérer l'agrégation à la zone administrative 2."
+          "fr": "Toujours désagréger par denominator_best_or_survey, admin_area_3, indicator_common_id et year (tous requis). Incertitude élevée à ce niveau - considérer l'agrégation à la zone administrative 2.",
+          "pt": "Desagregar sempre por denominator_best_or_survey, admin_area_3, indicator_common_id e year (todos obrigatórios). Incerteza elevada a este nível - considerar a agregação à área administrativa 2."
         }
       },
       "importantNotes": null,

@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -v ':0$')"
+      "Bash(grep -v ':0$')",
+      "Bash(awk '{print $NF}')",
+      "Bash(./build)"
     ]
   }
 }

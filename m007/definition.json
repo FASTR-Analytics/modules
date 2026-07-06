@@ -1,7 +1,8 @@
 {
   "label": {
     "en": "M7. National Health Sector Scorecard (NHSS)",
-    "fr": "M7. Tableau de bord du secteur national de la sante (NHSS)"
+    "fr": "M7. Tableau de bord du secteur national de la sante (NHSS)",
+    "pt": "M7. Painel de Avaliação do Setor Nacional de Saúde (NHSS)"
   },
   "prerequisites": [
     "m002"
@@ -21,7 +22,8 @@
         "replacementString": "SELECTED_COUNT_VARIABLE",
         "description": {
           "en": "Count value to use",
-          "fr": "Valeur de comptage à utiliser"
+          "fr": "Valeur de comptage à utiliser",
+          "pt": "Valor de contagem a utilizar"
         },
         "input": {
           "inputType": "select",
@@ -51,7 +53,8 @@
         "replacementString": "BIRTHS_PCT",
         "description": {
           "en": "Quarterly births as proportion of total population (annual rate x 0.25)",
-          "fr": "Naissances trimestrielles en proportion de la population totale (taux annuel x 0,25)"
+          "fr": "Naissances trimestrielles en proportion de la population totale (taux annuel x 0,25)",
+          "pt": "Nascimentos trimestrais como proporção da população total (taxa anual x 0,25)"
         },
         "input": {
           "inputType": "number",
@@ -62,7 +65,8 @@
         "replacementString": "WOMEN_15_49_PCT",
         "description": {
           "en": "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
-          "fr": "Femmes trimestrielles 15-49 ans en proportion de la population totale (taux annuel x 0,25)"
+          "fr": "Femmes trimestrielles 15-49 ans en proportion de la population totale (taux annuel x 0,25)",
+          "pt": "Mulheres de 15-49 anos trimestrais como proporção da população total (taxa anual x 0,25)"
         },
         "input": {
           "inputType": "number",
@@ -73,7 +77,8 @@
         "replacementString": "INTERPOLATE_POPULATION",
         "description": {
           "en": "Use smoothed (interpolated) population or raw annual values",
-          "fr": "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes"
+          "fr": "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes",
+          "pt": "Utilizar a população suavizada (interpolada) ou os valores anuais brutos"
         },
         "input": {
           "inputType": "select",
@@ -133,7 +138,8 @@
       "id": "m7-01-01",
       "label": {
         "en": "Scorecard (AA2)",
-        "fr": "Scorecard (AA2)"
+        "fr": "Scorecard (AA2)",
+        "pt": "Painel de Avaliação (AA2)"
       },
       "variantLabel": null,
       "valueProps": [
@@ -163,24 +169,29 @@
       "aiDescription": {
         "summary": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "methodology": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "interpretation": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "typicalRange": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         }
       },
       "importantNotes": null,
@@ -191,7 +202,8 @@
       "id": "m7-01-02",
       "label": {
         "en": "Scorecard (AA3)",
-        "fr": "Scorecard (AA3)"
+        "fr": "Scorecard (AA3)",
+        "pt": "Painel de Avaliação (AA3)"
       },
       "variantLabel": null,
       "valueProps": [
@@ -221,24 +233,29 @@
       "aiDescription": {
         "summary": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "methodology": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "interpretation": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "typicalRange": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         }
       },
       "importantNotes": null,
@@ -249,7 +266,8 @@
       "id": "m7-01-03",
       "label": {
         "en": "Scorecard (AA4)",
-        "fr": "Scorecard (AA4)"
+        "fr": "Scorecard (AA4)",
+        "pt": "Painel de Avaliação (AA4)"
       },
       "variantLabel": null,
       "valueProps": [
@@ -279,24 +297,29 @@
       "aiDescription": {
         "summary": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "methodology": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "interpretation": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "typicalRange": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         },
         "caveats": null,
         "disaggregationGuidance": {
           "en": "xxx",
-          "fr": "xxx"
+          "fr": "xxx",
+          "pt": "xxx"
         }
       },
       "importantNotes": null,

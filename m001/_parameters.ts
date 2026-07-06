@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Proportion threshold for outlier detection",
       fr: "Seuil de proportion pour la détection des valeurs aberrantes",
+      pt: "Limiar de proporção para a deteção de valores atípicos",
     },
     replacementString: "OUTLIER_PROPORTION_THRESHOLD",
     input: {
@@ -16,6 +17,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Minimum count threshold for consideration",
       fr: "Seuil de comptage minimum pour considération",
+      pt: "Limiar mínimo de contagem para consideração",
     },
     replacementString: "MINIMUM_COUNT_THRESHOLD",
     input: {
@@ -27,6 +29,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Number of MADs",
       fr: "Nombre de MADs",
+      pt: "Número de MADs",
     },
     replacementString: "MADS",
     input: {
@@ -38,6 +41,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Indicators subjected to DQA",
       fr: "Indicateurs soumis à l'AQD",
+      pt: "Indicadores submetidos à AQD",
     },
     replacementString: "DQA_INDICATORS",
     input: {
@@ -80,6 +84,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Consistency pairs used",
       fr: "Paires de cohérence utilisées",
+      pt: "Pares de coerência utilizados",
     },
     replacementString: "CONSISTENCY_PAIRS_USED",
     input: {
@@ -130,6 +135,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Admin level used to join facilities to corresponding geo-consistency",
       fr: "Niveau administratif utilisé pour joindre les établissements à la cohérence géographique correspondante",
+      pt: "Nível administrativo utilizado para associar as unidades sanitárias à coerência geográfica correspondente",
     },
     replacementString: "GEOLEVEL",
     input: {

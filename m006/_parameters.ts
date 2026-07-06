@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Denominator to use for all coverage calculations",
       fr: "Dénominateur à utiliser pour tous les calculs de couverture",
+      pt: "Denominador a utilizar em todos os cálculos de cobertura",
     },
     replacementString: "DENOMINATOR_CHAIN",
     input: {

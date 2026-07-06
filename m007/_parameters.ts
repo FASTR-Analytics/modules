@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Count value to use",
       fr: "Valeur de comptage à utiliser",
+      pt: "Valor de contagem a utilizar",
     },
     replacementString: "SELECTED_COUNT_VARIABLE",
     input: {
@@ -33,6 +34,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Quarterly births as proportion of total population (annual rate x 0.25)",
       fr: "Naissances trimestrielles en proportion de la population totale (taux annuel x 0,25)",
+      pt: "Nascimentos trimestrais como proporção da população total (taxa anual x 0,25)",
     },
     input: {
       inputType: "number",
@@ -44,6 +46,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Quarterly women 15-49 as proportion of total population (annual rate x 0.25)",
       fr: "Femmes trimestrielles 15-49 ans en proportion de la population totale (taux annuel x 0,25)",
+      pt: "Mulheres de 15-49 anos trimestrais como proporção da população total (taxa anual x 0,25)",
     },
     input: {
       inputType: "number",
@@ -55,6 +58,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Use smoothed (interpolated) population or raw annual values",
       fr: "Utiliser la population lissée (interpolée) ou les valeurs annuelles brutes",
+      pt: "Utilizar a população suavizada (interpolada) ou os valores anuais brutos",
     },
     input: {
       inputType: "select",

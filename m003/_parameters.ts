@@ -5,6 +5,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Count variable to use for modeling",
       fr: "Variable de comptage à utiliser pour la modélisation",
+      pt: "Variável de contagem a utilizar para a modelação",
     },
     replacementString: "SELECTEDCOUNT",
     input: {
@@ -35,6 +36,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Count variable to use for visualization",
       fr: "Variable de comptage à utiliser pour la visualisation",
+      pt: "Variável de contagem a utilizar para a visualização",
     },
     replacementString: "VISUALIZATIONCOUNT",
     input: {
@@ -65,6 +67,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Run district-level model (admin_area_3)",
       fr: "Exécuter le modèle au niveau du district (admin_area_3)",
+      pt: "Executar o modelo ao nível do distrito (admin_area_3)",
     },
     replacementString: "RUN_DISTRICT_MODEL",
     input: {
@@ -87,6 +90,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Run admin_area_4 analysis",
       fr: "Exécuter l'analyse admin_area_4",
+      pt: "Executar a análise admin_area_4",
     },
     replacementString: "RUN_ADMIN_AREA_4_ANALYSIS",
     input: {
@@ -109,6 +113,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Threshold for MAD-based control limits",
       fr: "Seuil pour les limites de contrôle basées sur MAD",
+      pt: "Limiar para os limites de controlo baseados no MAD",
     },
     replacementString: "MADS_THRESHOLD",
     input: {
@@ -120,6 +125,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Smoothing window (k)",
       fr: "Fenêtre de lissage (k)",
+      pt: "Janela de suavização (k)",
     },
     replacementString: "SMOOTH_K",
     input: {
@@ -131,6 +137,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Dip threshold (proportion of expected)",
       fr: "Seuil de baisse (proportion de l'attendu)",
+      pt: "Limiar de queda (proporção do esperado)",
     },
     replacementString: "DIP_THRESHOLD",
     input: {
@@ -142,6 +149,7 @@ export const parameters: ModuleParameter[] = [
     description: {
       en: "Difference percent threshold for visualization",
       fr: "Seuil de pourcentage de différence pour la visualisation",
+      pt: "Limiar de percentagem de diferença para a visualização",
     },
     replacementString: "DIFFPERCENT",
     input: {

@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M8. National Health Sector Scorecard (Catalog-Driven)",
     fr: "M8. Tableau de bord du secteur national de la santé (piloté par catalogue)",
+    pt: "M8. Painel de Indicadores do Sector Nacional da Saúde (Orientado por Catálogo)",
   },
   prerequisites: ["m002"],
   scriptGenerationType: "calculated_indicators",

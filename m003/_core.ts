@@ -4,6 +4,7 @@ export const core: ModuleDefinitionCore = {
   label: {
     en: "M3. Service utilization",
     fr: "M3. Utilisation des services",
+    pt: "M3. Utilização dos serviços",
   },
   prerequisites: ["m001", "m002"],
   scriptGenerationType: "template",
