@@ -7,6 +7,10 @@
 #
 # OUTPUT:
 #   M10_hfa_results.csv — One row per facility × indicator × time_point
+#   M10_hfa_response_status.csv — Response-status companion (don't-know /
+#     missing / not-applicable / answered), one row per facility × indicator
+#     × time_point. Empty (header only) when the server does not emit
+#     __status columns.
 #
 #-------------------------------------------------------------------------------------------------------------
 
@@ -83,5 +87,39 @@ if (nrow(results_long) == 0) {
 
 # Write output
 write.csv(results_long, "M10_hfa_results.csv", row.names = FALSE)
+
+# Response-status companion output: share of facilities answering don't-know /
+# missing / not-applicable per indicator. The __status columns are emitted by
+# the server-side script generator; without them (older server) write a
+# header-only file so ingestion still succeeds.
+status_cols <- names(results)[grepl("__status$", names(results))]
+if (length(status_cols) > 0) {
+  status_long <- facility_info %>%
+    bind_cols(data_wide %>% select(weight_final)) %>%
+    bind_cols(results %>% select(all_of(status_cols))) %>%
+    pivot_longer(
+      cols = all_of(status_cols),
+      names_to = "hfa_indicator",
+      values_to = "response_status"
+    ) %>%
+    mutate(hfa_indicator = sub("__status$", "", hfa_indicator)) %>%
+    left_join(indicator_metadata, by = "hfa_indicator") %>%
+    filter(!is.na(response_status)) %>%
+    mutate(
+      dk_num       = (response_status == "dont_know") * weight_final,
+      missing_num  = (response_status == "missing") * weight_final,
+      answered_num = (response_status == "answered") * weight_final,
+      na_num       = (response_status == "not_applicable") * weight_final,
+      resp_weight  = (response_status != "not_applicable") * weight_final,
+      total_weight = weight_final
+    ) %>%
+    select(-response_status, -weight_final, -hfa_short_label, -ind_type, -ind_aggregation)
+  write.csv(status_long, "M10_hfa_response_status.csv", row.names = FALSE)
+} else {
+  writeLines(
+    "facility_id,admin_area_4,admin_area_3,admin_area_2,admin_area_1,hfa_indicator,hfa_category,hfa_sub_category,hfa_service_category,time_point,facility_ownership,facility_type,facility_custom_1,facility_custom_2,facility_custom_3,facility_custom_4,facility_custom_5,dk_num,missing_num,answered_num,na_num,resp_weight,total_weight",
+    "M10_hfa_response_status.csv"
+  )
+}
 
 print("HFA script completed successfully!")
