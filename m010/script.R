@@ -117,7 +117,7 @@ if (length(status_cols) > 0) {
   write.csv(status_long, "M10_hfa_response_status.csv", row.names = FALSE)
 } else {
   writeLines(
-    "facility_id,admin_area_4,admin_area_3,admin_area_2,admin_area_1,hfa_indicator,hfa_category,hfa_sub_category,hfa_service_category,time_point,facility_ownership,facility_type,facility_custom_1,facility_custom_2,facility_custom_3,facility_custom_4,facility_custom_5,dk_num,missing_num,answered_num,na_num,resp_weight,total_weight",
+    "facility_id,admin_area_4,admin_area_3,admin_area_2,admin_area_1,hfa_indicator,hfa_category,hfa_sub_category,hfa_service_category,time_point,dk_num,missing_num,answered_num,na_num,resp_weight,total_weight",
     "M10_hfa_response_status.csv"
   )
 }
