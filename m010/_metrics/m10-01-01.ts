@@ -113,7 +113,11 @@ export const metric: MetricDefinitionGithub = {
       pt: "Desagregar sempre por hfa_indicator e time_point (ambos obrigatórios). Utilizar admin_area para comparar resultados regionais. Desagregar por facility_type ou facility_ownership para identificar disparidades.",
     },
   },
-  variantLabel: null,
+  variantLabel: {
+    en: "Observed only",
+    fr: "Valeurs observées uniquement",
+    pt: "Apenas valores observados",
+  },
   importantNotes: null,
   vizPresets,
 };

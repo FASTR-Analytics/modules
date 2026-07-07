@@ -7,6 +7,11 @@
 #
 # OUTPUT:
 #   M10_hfa_results.csv — One row per facility × indicator × time_point
+#   M10_hfa_results_carried.csv — Same as M10_hfa_results.csv, plus rounds
+#     where an indicator was not measured filled by duplicating the nearest
+#     measured round's facility rows (previous round preferred; later round
+#     only for leading gaps). carried_from = donor time point (NA on
+#     observed rows).
 #   M10_hfa_response_status.csv — Response-status companion (don't-know /
 #     missing / not-applicable / answered), one row per facility × indicator
 #     × time_point. Empty (header only) when the server does not emit
@@ -87,6 +92,41 @@ if (nrow(results_long) == 0) {
 
 # Write output
 write.csv(results_long, "M10_hfa_results.csv", row.names = FALSE)
+
+# Carried variant: fill rounds where an indicator has no observed values at
+# all (question not asked that round) by duplicating the donor round's
+# facility rows. Previous-first; leading gaps backfill from the next
+# observed round. Filled rounds exactly reproduce donor aggregates.
+time_point_order <- c(__HFA_TIME_POINT_ORDER__)
+data_tps <- unique(as.character(data_wide$time_point))
+extra_tps <- setdiff(data_tps, time_point_order)
+if (length(extra_tps) > 0) {
+  warning(paste0(
+    "Time points in data but missing from instance time-point order (appended at end): ",
+    paste(sort(extra_tps), collapse = ", ")
+  ))
+  time_point_order <- c(time_point_order, sort(extra_tps))
+}
+ordered_tps <- time_point_order[time_point_order %in% data_tps]
+
+carried_new_rows <- list()
+for (ind in unique(results_long$hfa_indicator)) {
+  ind_rows <- results_long %>% filter(hfa_indicator == ind)
+  obs_idx <- which(ordered_tps %in% unique(ind_rows$time_point))
+  for (i in setdiff(seq_along(ordered_tps), obs_idx)) {
+    prev_obs <- obs_idx[obs_idx < i]
+    donor_idx <- if (length(prev_obs) > 0) max(prev_obs) else min(obs_idx[obs_idx > i])
+    carried_new_rows[[length(carried_new_rows) + 1]] <- ind_rows %>%
+      filter(time_point == ordered_tps[donor_idx]) %>%
+      mutate(carried_from = time_point, time_point = ordered_tps[i])
+  }
+}
+
+results_carried <- bind_rows(
+  results_long %>% mutate(carried_from = NA_character_),
+  bind_rows(carried_new_rows)
+)
+write.csv(results_carried, "M10_hfa_results_carried.csv", row.names = FALSE)
 
 # Response-status companion output: share of facilities answering don't-know /
 # missing / not-applicable per indicator. The __status columns are emitted by

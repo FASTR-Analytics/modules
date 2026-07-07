@@ -20,6 +20,25 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
     },
   },
   {
+    id: "M10_hfa_results_carried.csv",
+    createTableStatementPossibleColumns: {
+      facility_id: "TEXT NOT NULL",
+      admin_area_4: "TEXT NOT NULL",
+      admin_area_3: "TEXT NOT NULL",
+      admin_area_2: "TEXT NOT NULL",
+      admin_area_1: "TEXT NOT NULL",
+      hfa_indicator: "TEXT NOT NULL",
+      hfa_category: "TEXT",
+      hfa_sub_category: "TEXT",
+      hfa_service_category: "TEXT",
+      time_point: "TEXT NOT NULL",
+      sum_val: "NUMERIC",
+      avg_num: "NUMERIC",
+      avg_weight: "NUMERIC",
+      carried_from: "TEXT",
+    },
+  },
+  {
     id: "M10_hfa_response_status.csv",
     createTableStatementPossibleColumns: {
       facility_id: "TEXT NOT NULL",
