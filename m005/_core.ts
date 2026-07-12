@@ -25,9 +25,5 @@ export const core: ModuleDefinitionCore = {
   assetsToImport: [
     "survey_data_unified.csv",
     "population_estimates_only.csv",
-    "ng_province_denominators_corrected.csv",
-    "ng_national_denominators_corrected.csv",
-    "chmis_national_for_module4.csv",
-    "chmis_admin_area_for_module4.csv",
   ],
 };

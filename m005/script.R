@@ -30,9 +30,10 @@ library(stringr)
 library(purrr)
 
 # ------------------------------ Define File Paths -----------------------------------------------------------
-# Use local files for testing (comment out GitHub URLs when testing local changes)
-PROJECT_DATA_COVERAGE <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/survey_data_unified.csv"
-PROJECT_DATA_POPULATION <- "https://raw.githubusercontent.com/FASTR-Analytics/modules/main/population_estimates_only.csv"
+# Pinned local copies imported by the platform (assetsToImport) — no network
+# access at run time.
+PROJECT_DATA_COVERAGE <- "survey_data_unified.csv"
+PROJECT_DATA_POPULATION <- "population_estimates_only.csv"
 
 
 CURRENT_YEAR <- as.numeric(format(Sys.Date(), "%Y"))  # Dynamically get current year
@@ -49,7 +50,7 @@ message("  → Loading adjusted HMIS data (subnational)...")
 adjusted_volume_data_subnational <- read.csv("M2_adjusted_data_admin_area.csv", fileEncoding = "UTF-8") %>%
   mutate(iso3_code = COUNTRY_ISO3)
 
-message("  → Loading survey data from GitHub...")
+message("  → Loading survey data...")
 survey_data_unified <- read.csv(PROJECT_DATA_COVERAGE, fileEncoding = "UTF-8")
 
 # Filter by ISO3 code
@@ -79,7 +80,7 @@ if ("iso3_code" %in% names(survey_data_unified)) {
   warning("iso3_code column not found in survey data - cannot filter by country")
 }
 
-message("  → Loading population estimates from GitHub...")
+message("  → Loading population estimates...")
 population_estimates_only <- read.csv(PROJECT_DATA_POPULATION, fileEncoding = "UTF-8")
 
 # Filter by ISO3 code

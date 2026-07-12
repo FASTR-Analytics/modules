@@ -723,22 +723,7 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
     )
     write.csv(dummy_geo_consistency, "M1_output_consistency_geo.csv", row.names = FALSE)
   }
-  
-  # Prepare facility-level output
-  # Detect available admin columns dynamically
-  facility_geo_cols_for_export <- detect_admin_cols(facility_consistency_results)
-  print(facility_geo_cols_for_export)
-  
-  facility_consistency_export <- facility_consistency_results %>%
-    select(
-      facility_id,
-      all_of(facility_geo_cols_for_export),  # Dynamic geo columns
-      period_id,
-      ratio_type,
-      sconsistency
-    )
-  write.csv(facility_consistency_export, "M1_output_consistency_facility.csv", row.names = FALSE)
-  
+
 } else {
   print("No consistency results to save - creating dummy files with headers...")
   
@@ -751,17 +736,6 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
     sconsistency = integer(0)
   )
   write.csv(dummy_geo_consistency, "M1_output_consistency_geo.csv", row.names = FALSE)
-  
-  # Create dummy facility consistency data with fallback admin columns
-  dummy_facility_consistency <- data.frame(
-    facility_id = character(0),
-    admin_area_3 = character(0),
-    admin_area_2 = character(0),
-    period_id = integer(0),
-    ratio_type = character(0),
-    sconsistency = integer(0)
-  )
-  write.csv(dummy_facility_consistency, "M1_output_consistency_facility.csv", row.names = FALSE)
 }
 
 print("Preparing and saving results from completeness analysis...")
