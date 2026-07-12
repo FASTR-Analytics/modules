@@ -1,5 +1,6 @@
 import {
   ModuleDefinitionJSONSchema,
+  type ModuleDefinitionCore,
   type ModuleDefinitionGithub,
   type MetricDefinitionGithub,
 } from "./.validation/_module_definition_github.ts";
@@ -41,6 +42,48 @@ async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGith
   return { metrics, errors };
 }
 
+// Pinned repo assets: authoring supplies {name, repoPath, commit}; the build
+// computes sha256 from the working-tree file at repoPath, so the pin bump
+// commit must land AFTER the data-file commit it pins (two commits: land the
+// data file, then bump the pin to that commit's SHA).
+async function resolveAssetsToImport(
+  dir: string,
+  core: ModuleDefinitionCore,
+): Promise<{
+  assetsToImport: ModuleDefinitionGithub["assetsToImport"];
+  errors: string[];
+}> {
+  const assetsToImport: ModuleDefinitionGithub["assetsToImport"] = [];
+  const errors: string[] = [];
+  for (const entry of core.assetsToImport) {
+    if (typeof entry === "string") {
+      assetsToImport.push(entry);
+      continue;
+    }
+    let bytes: Uint8Array<ArrayBuffer>;
+    try {
+      bytes = await Deno.readFile(new URL(entry.repoPath, root));
+    } catch {
+      errors.push(
+        `${dir}: pinned repo asset "${entry.name}" — repoPath "${entry.repoPath}" not found in working tree`,
+      );
+      continue;
+    }
+    if (!/^[0-9a-f]{40}$/.test(entry.commit)) {
+      errors.push(
+        `${dir}: pinned repo asset "${entry.name}" — commit must be a full 40-char SHA, got "${entry.commit}"`,
+      );
+      continue;
+    }
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    const sha256 = [...new Uint8Array(digest)]
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    assetsToImport.push({ ...entry, sha256 });
+  }
+  return { assetsToImport, errors };
+}
+
 let hadError = false;
 const allModules: { dir: string; def: ModuleDefinitionGithub }[] = [];
 
@@ -71,8 +114,18 @@ for (const dir of moduleDirs) {
     continue;
   }
 
+  const assetsResult = await resolveAssetsToImport(dir, coreMod.core);
+  if (assetsResult.errors.length > 0) {
+    hadError = true;
+    for (const err of assetsResult.errors) {
+      console.error(`FAIL  ${err}`);
+    }
+    continue;
+  }
+
   const definition = {
     ...coreMod.core,
+    assetsToImport: assetsResult.assetsToImport,
     resultsObjects: resultsMod.resultsObjects,
     metrics: metricsResult.metrics,
     configRequirements: { parameters: parametersMod.parameters },

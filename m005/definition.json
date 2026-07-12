@@ -169,8 +169,18 @@
     ]
   },
   "assetsToImport": [
-    "survey_data_unified.csv",
-    "population_estimates_only.csv"
+    {
+      "name": "survey_data_unified.csv",
+      "repoPath": "survey_data_unified.csv",
+      "commit": "19f1bf78f8dfa565e1081e2f1acd11547dbb63b6",
+      "sha256": "4b9d35959f51ca461a081af7e320f3e86f453ad8579964728c14ae65bfaee00c"
+    },
+    {
+      "name": "population_estimates_only.csv",
+      "repoPath": "population_estimates_only.csv",
+      "commit": "4d5ffa044823671ce344d106a802105b3f47b40b",
+      "sha256": "a7dc8ebb86846d3db5f2730e6ed1371578399da9453491e77ffd1a71b72f92da"
+    }
   ],
   "resultsObjects": [
     {

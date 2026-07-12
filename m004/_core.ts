@@ -23,7 +23,15 @@ export const core: ModuleDefinitionCore = {
     },
   ],
   assetsToImport: [
-    "survey_data_unified.csv",
-    "population_estimates_only.csv",
+    {
+      name: "survey_data_unified.csv",
+      repoPath: "survey_data_unified.csv",
+      commit: "19f1bf78f8dfa565e1081e2f1acd11547dbb63b6",
+    },
+    {
+      name: "population_estimates_only.csv",
+      repoPath: "population_estimates_only.csv",
+      commit: "4d5ffa044823671ce344d106a802105b3f47b40b",
+    },
   ],
 };
