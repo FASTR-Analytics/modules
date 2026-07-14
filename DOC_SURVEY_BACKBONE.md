@@ -168,29 +168,35 @@ then merged.
 
 ## 4. Known-broken, NOT fixed here (needs an owner)
 
-### Rotavirus is dead on both sides
+### Rotavirus — survey side FIXED, HMIS side still missing
 
-- m004 asks for `rota1` / `rota2` (script.R lines 174, 189, 204, 298).
-- The backbone stores the DHS names `rotavirus1` / `rotavirus2` (596 rows, 15 countries).
-- m004's `recode()` block at line 288 translates `polio1→opv1`, `vitamina→vitaminA`… **but has no
-  rota entry.** So the filter matches zero rows.
-- Separately, **no `hmis_*.csv` in the repo carries a rota dose count at all.**
+m004 **and** m005 consume `rota1` / `rota2`. The survey CSV stored the DHS names
+`rotavirus1` / `rotavirus2`, and m004's `recode()` block (script.R:288) translates
+`polio1→opv1` and `vitamina→vitaminA` but **never got a rota entry** — so the filter matched zero
+rows. 596 rows across 15 countries were unreachable.
 
-So even adding the two recode lines yields nothing — there is no HMIS numerator to pair against.
-Rota coverage has returned empty for every country since the indicator was added, without warning.
-Fix needs **two lines in m004 (module code) AND a DHIS2 pull for rota doses.** Not fixable from the
-data side. **Do not "fix" this by renaming `rotavirus1`→`rota1` in the CSV** — that diverges from the
-fetcher and from the polio/vitamin A pattern, and still produces nothing.
+**Fixed 2026 Jul 14 on the data side**: `rotavirus1`/`rotavirus2` renamed to `rota1`/`rota2` in the
+survey CSV *and* in the fetcher, so the names now match what the modules ask for and no recode is
+needed. (m004 is module code and off-limits, so the rename had to happen in the data + fetcher.)
+
+⚠️ **This still produces no coverage**, because **no `hmis_*.csv` carries a rota dose count at all**
+— there is no numerator to pair the survey anchor against. Coverage = HMIS count / denominator,
+anchored on the survey. The survey half now works; the HMIS half needs a **DHIS2 pull for rota doses**.
 
 ### Admin joins that silently produce zero coverage
 
 m004 joins survey→HMIS on `admin_area_2` with **no fuzzy matching and no stripping**. One character
 off = zero coverage for that region, silently.
 
+> **The real HMIS is the source of truth, NOT `assets/<country>_backbone.csv`.** The backbone files
+> are *supposed* to mirror DHIS2, but several are stale and do not. Always check the survey name
+> against the actual `hmis_*.csv`, never against the backbone alone. Two backbones were found wrong
+> this way (Chad and Ethiopia) — see below.
+
 | Country | Issue | Verdict |
 |---|---|---|
 | **MRT** | survey has one `Nouakchott`; HMIS has `Nouakchott Sud` + `Nord` + `Ouest` | **Do not auto-split.** Splitting one survey value across three districts invents data the survey never collected. |
-| **TCD** | `hmis_TCD.csv` has `WADIFIRA`; the backbone **and** the survey both say `WADI FIRA` | The **HMIS extract** is wrong, not the survey. Fix belongs to whoever owns the Chad DHIS2 pull. |
+| **TCD** | ~~HMIS typo~~ **FIXED 2026 Jul 14.** DHIS2 (94,809 HMIS rows) says `WADIFIRA`. `chad_backbone.csv` said `WADI FIRA` and the survey had been harmonised to *it*, so Wadi Fira produced zero coverage. The **backbone was stale**, not the HMIS. Survey, backbone and the fetcher's Chad mapping all corrected to `WADIFIRA`. | resolved |
 | **AFG** | HMIS keeps provinces at `admin_area_4`; survey puts them at `admin_area_2` | No subnational join possible. |
 | **MWI** | HMIS `admin_area_2` = 5 zones; districts live at `admin_area_3`; survey puts districts at `admin_area_2` | No subnational join possible. |
 | **ETH** | legacy `SNNPR` rows | Region no longer exists (split 2020+). Left as historical record; joins to nothing. |
@@ -200,13 +206,23 @@ off = zero coverage for that region, silently.
 boundaries move.** Two entries with the same name and different years are not necessarily the same
 geographic entity.
 
-### `06_survey_data_fetcher/assets/ethiopia_backbone.csv` is STALE
+### Stale `assets/<country>_backbone.csv` files
+
+#### `ethiopia_backbone.csv`
 
 13 entries, and it never got the SNNPR split. Missing `Central Ethiopian region` and
 `South West Ethiopia Region`. Has trailing whitespace (`'Amhara Region '`), and calls Benishangul a
 `Regional Health Bureau`. **Any future ETH fetch harmonising to this backbone will produce wrong names.**
 
 Until it is refreshed: **match the real HMIS (`01_hmis_data/hmis_ethiopia_q2.csv`), not the backbone.**
+
+#### `chad_backbone.csv` — FIXED 2026 Jul 14
+
+It said `WADI FIRA`; DHIS2 says `WADIFIRA` (94,809 HMIS rows). The survey had been harmonised
+to the backbone, so Wadi Fira silently produced zero coverage. Backbone, survey CSV and the
+fetcher's Chad province mapping (`"Wadi Fira" = "WADIFIRA"`) all corrected.
+
+**Assume any backbone may be stale until checked against the real `hmis_*.csv`.**
 
 ---
 
@@ -315,7 +331,9 @@ not a wrong magnitude. Flagged for Nicole Danfakah / Dan Kabtyimer (ARO Data & D
 | deduped after merge + Madagascar name harmonisation | −267 |
 | fixed `u5mr` `indicator_type` percent→rate (MDG) | 24 |
 | fixed `indicator_type` `other`→real type (`fully_immunized`, `pnc1`) | 169 |
-| fixed GIN `IRS Nzérékoré` → `IRS N'zérékoré` (backbone is source of truth) | 71 |
+| fixed GIN `IRS Nzérékoré` → `IRS N'zérékoré` (matches `guinea_backbone.csv` AND the HMIS) | 71 |
+| fixed TCD `WADI FIRA` → `WADIFIRA` (matches DHIS2; `chad_backbone.csv` was stale) | 4 |
+| renamed `rotavirus1`/`rotavirus2` → `rota1`/`rota2` (what m004 and m005 actually consume) | 596 |
 | fixed `iso2_code` holding an ISO-3 (MRT, CIV) | 216 |
 | harmonised `country_name` / `admin_area_1` (CAF, CIV, MDG) | 1,834 |
 
