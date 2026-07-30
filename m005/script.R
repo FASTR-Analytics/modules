@@ -890,9 +890,9 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
         mutate(
           dwpp_dpt = if_else(!is.na(totu1pop_unwpp), totu1pop_unwpp, NA_real_),
           dwpp_measles1 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry),
-                                  totu1pop_unwpp * (1 - (nmrcarry / 100)), NA_real_),
+                                  totu1pop_unwpp * (1 - (nmrcarry / 1000)), NA_real_),
           dwpp_measles2 = if_else(!is.na(totu1pop_unwpp) & !is.na(nmrcarry) & !is.na(postnmr),
-                                  totu1pop_unwpp * (1 - (nmrcarry / 100)) * (1 - (2 * postnmr / 100)), NA_real_)
+                                  totu1pop_unwpp * (1 - (nmrcarry / 1000)) * (1 - (2 * postnmr / 1000)), NA_real_)
         ) %>%
         mutate(
           dwpp_dpt       = if_else(nummonth < 12, dwpp_dpt * (nummonth / 12), dwpp_dpt),
