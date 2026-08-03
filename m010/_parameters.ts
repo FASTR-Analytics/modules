@@ -46,7 +46,7 @@ export const parameters: ModuleParameter[] = [
     },
     input: {
       inputType: "boolean",
-      defaultValue: "TRUE",
+      defaultValue: "FALSE",
     },
   },
 ];

@@ -59,7 +59,7 @@
         },
         "input": {
           "inputType": "boolean",
-          "defaultValue": "TRUE"
+          "defaultValue": "FALSE"
         }
       }
     ]
