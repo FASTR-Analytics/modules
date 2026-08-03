@@ -166,6 +166,8 @@ const configDGithubStrict = z
       z.object({
         disOpt: disaggregationOptionGithub,
         disDisplayOpt: disaggregationDisplayOptionGithub,
+        rollup: z.boolean().optional(),
+        rollupPosition: z.enum(["bottom", "top"]).optional(),
       }),
     ),
     filterBy: z.array(
@@ -176,8 +178,6 @@ const configDGithubStrict = z
     ),
     periodFilter: periodFilterGithub,
     selectedReplicantValue: z.string().optional(),
-    includeAdminAreaRollup: z.boolean().optional(),
-    adminAreaRollupPosition: z.enum(["bottom", "top"]).optional(),
   });
 // Note: Duplicate disDisplayOpt/disOpt entries are allowed — UI handles gracefully.
 
@@ -318,6 +318,22 @@ const resultsObjectDefinitionGithub = z.object({
   ]),
 });
 
+// ── assetsToImport (github) ─────────────────────────────────────────
+
+// Two kinds (PLAN_RESULTS_RUNS item 2 ruling, 2026-07-13): a plain string
+// names an instance-uploaded asset; an object pins a modules-repo data file
+// by repo path + full commit SHA. `sha256` is computed by the modules-repo
+// build from the working-tree file (authoring supplies name/repoPath/commit
+// only); the server verifies it after fetching the pinned raw file and
+// caches content-addressed.
+const repoAssetToImportGithub = z.object({
+  name: z.string(),
+  repoPath: z.string(),
+  commit: z.string(),
+  sha256: z.string(),
+});
+const assetToImportGithub = z.union([z.string(), repoAssetToImportGithub]);
+
 // ── moduleDefinition (github — full file) ───────────────────────────
 
 export const moduleDefinitionGithubSchema = z
@@ -327,7 +343,7 @@ export const moduleDefinitionGithubSchema = z
     scriptGenerationType: scriptGenerationTypeGithub,
     dataSources: z.array(dataSourceGithub),
     configRequirements: configRequirementsGithub,
-    assetsToImport: z.array(z.string()),
+    assetsToImport: z.array(assetToImportGithub),
     resultsObjects: z.array(resultsObjectDefinitionGithub),
     metrics: z.array(metricDefinitionGithub),
   })
@@ -419,12 +435,16 @@ export type VizPresetTextConfig = z.infer<
 >;
 export type VizPreset = z.infer<typeof vizPresetGithub>;
 export type MetricAIDescription = z.infer<typeof metricAIDescriptionGithub>;
-export type ModuleDefinitionCore = Pick<
-  ModuleDefinitionGithub,
-  | "label"
-  | "prerequisites"
-  | "scriptGenerationType"
-  | "dataSources"
-  | "assetsToImport"
->;
+export type RepoAssetToImportGithub = z.infer<typeof repoAssetToImportGithub>;
+// Authoring shape in _core.ts — the build injects sha256.
+export type RepoAssetPin = Omit<RepoAssetToImportGithub, "sha256">;
+export type ModuleDefinitionCore =
+  & Pick<
+    ModuleDefinitionGithub,
+    | "label"
+    | "prerequisites"
+    | "scriptGenerationType"
+    | "dataSources"
+  >
+  & { assetsToImport: (string | RepoAssetPin)[] };
 export { moduleDefinitionGithubSchema as ModuleDefinitionJSONSchema };
