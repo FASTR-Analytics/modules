@@ -42,10 +42,11 @@ async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGith
   return { metrics, errors };
 }
 
-// Pinned repo assets: authoring supplies {name, repoPath, commit}; the build
-// computes sha256 from the working-tree file at repoPath, so the pin bump
-// commit must land AFTER the data-file commit it pins (two commits: land the
-// data file, then bump the pin to that commit's SHA).
+// Pinned repo assets: authoring supplies {name, repoPath}; the build computes
+// sha256 from the working-tree file at repoPath. The server fetches the file
+// at the SAME gitRef it resolved the definition at, so committing the data
+// file and the rebuilt definition together (one commit or one push) is always
+// consistent — there is no per-asset commit to maintain.
 async function resolveAssetsToImport(
   dir: string,
   core: ModuleDefinitionCore,
@@ -66,12 +67,6 @@ async function resolveAssetsToImport(
     } catch {
       errors.push(
         `${dir}: pinned repo asset "${entry.name}" — repoPath "${entry.repoPath}" not found in working tree`,
-      );
-      continue;
-    }
-    if (!/^[0-9a-f]{40}$/.test(entry.commit)) {
-      errors.push(
-        `${dir}: pinned repo asset "${entry.name}" — commit must be a full 40-char SHA, got "${entry.commit}"`,
       );
       continue;
     }

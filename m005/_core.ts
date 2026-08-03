@@ -26,12 +26,10 @@ export const core: ModuleDefinitionCore = {
     {
       name: "survey_data_unified.csv",
       repoPath: "survey_data_unified.csv",
-      commit: "baa11785b67cbf8eed858e61c1a995ca9bb029bd",
     },
     {
       name: "population_estimates_only.csv",
       repoPath: "population_estimates_only.csv",
-      commit: "baa11785b67cbf8eed858e61c1a995ca9bb029bd",
     },
   ],
 };

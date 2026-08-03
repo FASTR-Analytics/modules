@@ -172,13 +172,11 @@
     {
       "name": "survey_data_unified.csv",
       "repoPath": "survey_data_unified.csv",
-      "commit": "baa11785b67cbf8eed858e61c1a995ca9bb029bd",
       "sha256": "7fba99fbff0459f3dc7a894e96a7bae3c628570df95e2a9e577a49aec8be674d"
     },
     {
       "name": "population_estimates_only.csv",
       "repoPath": "population_estimates_only.csv",
-      "commit": "baa11785b67cbf8eed858e61c1a995ca9bb029bd",
       "sha256": "640d2bf27258943f6422e228a396e15fdd1bd1c7e690221875bb700d42a756c4"
     }
   ],
