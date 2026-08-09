@@ -87,7 +87,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "chart",
-        timeseriesGrouping: "year",
         valuesDisDisplayOpt: "indicator",
         disaggregateBy: [
           {

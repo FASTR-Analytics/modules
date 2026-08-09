@@ -381,7 +381,6 @@
           "config": {
             "d": {
               "type": "chart",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "series",
               "valuesFilter": [
                 "coverage_cov"

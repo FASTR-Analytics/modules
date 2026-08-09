@@ -21,7 +21,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "table",
-        timeseriesGrouping: "period_id",
         valuesDisDisplayOpt: "col",
         disaggregateBy: [
           {
@@ -80,7 +79,7 @@ export const metric: MetricDefinitionGithub = {
     pt: "Scorecard",
   },
   requiredDisaggregationOptions: ["indicator_common_id"],
-  formatAs: "percent",
+  formatAs: "indicator",
   postAggregationExpression: {
     ingredientValues: [
       { prop: "numerator", func: "SUM" },

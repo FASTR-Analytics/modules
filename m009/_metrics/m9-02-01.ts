@@ -21,7 +21,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "table",
-        timeseriesGrouping: "year",
         valuesDisDisplayOpt: "col",
         periodFilter: {
           filterType: "last_calendar_year",
@@ -73,7 +72,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "chart",
-        timeseriesGrouping: "year",
         valuesDisDisplayOpt: "indicator",
         valuesFilter: ["cix"],
         periodFilter: {

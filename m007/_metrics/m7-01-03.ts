@@ -32,7 +32,7 @@ export const metric: MetricDefinitionGithub = {
     "quarter_id",
     "indicator_common_id",
   ],
-  formatAs: "percent",
+  formatAs: "indicator",
   aiDescription: {
     summary: {
       en: "xxx",

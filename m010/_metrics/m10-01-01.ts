@@ -33,7 +33,9 @@ export const vizPresets: VizPreset[] = [
           { disOpt: "hfa_indicator", disDisplayOpt: "row" },
           { disOpt: "time_point", disDisplayOpt: "col" },
         ],
-        selectedReplicantValue: "financing",
+        // "" per DOC_VIZPRESET_STANDARDS (tables: user selects) — the app
+        // auto-selects the first valid category until they do.
+        selectedReplicantValue: "",
         filterBy: [],
       },
       s: {
@@ -70,7 +72,7 @@ export const metric: MetricDefinitionGithub = {
     pt: "Indicadores HFA",
   },
   requiredDisaggregationOptions: ["hfa_indicator", "time_point"],
-  formatAs: "number",
+  formatAs: "indicator",
   postAggregationExpression: {
     ingredientValues: [
       { prop: "sum_val", func: "SUM" },

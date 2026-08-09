@@ -244,11 +244,17 @@ for (const { dir, def } of allModules) {
         }
       }
 
-      // Check replicant requires selectedReplicantValue (except for admin_area_* replicants)
+      // Check replicant requires selectedReplicantValue (except for admin_area_*
+      // replicants). Per DOC_VIZPRESET_STANDARDS: "" is the sanctioned value for
+      // non-map presets (user selects; the app auto-defaults to the first valid
+      // option), while maps need a specific value.
       const replicantDis = preset.config.d.disaggregateBy.find(d => d.disDisplayOpt === "replicant");
       if (replicantDis && !replicantDis.disOpt.startsWith("admin_area_")) {
-        if (!preset.config.d.selectedReplicantValue) {
-          console.error(`MISSING selectedReplicantValue in ${location} (has replicant on ${replicantDis.disOpt})`);
+        if (preset.config.d.selectedReplicantValue === undefined) {
+          console.error(`MISSING selectedReplicantValue in ${location} (has replicant on ${replicantDis.disOpt}) — use "" to let the app auto-select`);
+          hadError = true;
+        } else if (preset.config.d.type === "map" && !preset.config.d.selectedReplicantValue) {
+          console.error(`EMPTY selectedReplicantValue in ${location} (map preset with replicant on ${replicantDis.disOpt}) — maps need a specific value`);
           hadError = true;
         }
       }

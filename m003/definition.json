@@ -1248,7 +1248,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1347,7 +1346,6 @@
           "config": {
             "d": {
               "type": "map",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
@@ -1762,7 +1760,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1866,7 +1863,6 @@
           "config": {
             "d": {
               "type": "map",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
@@ -2277,7 +2273,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {

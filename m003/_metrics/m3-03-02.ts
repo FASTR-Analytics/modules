@@ -33,7 +33,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "table",
-        timeseriesGrouping: "period_id",
         valuesDisDisplayOpt: "col",
         disaggregateBy: [
           {
@@ -101,7 +100,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "map",
-        timeseriesGrouping: "period_id",
         valuesDisDisplayOpt: "cell",
         disaggregateBy: [
           {

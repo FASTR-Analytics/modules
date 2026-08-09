@@ -124,7 +124,6 @@
           "config": {
             "d": {
               "type": "chart",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -199,7 +198,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -401,7 +399,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -466,7 +463,6 @@
           "config": {
             "d": {
               "type": "chart",
-              "timeseriesGrouping": "year",
               "valuesDisDisplayOpt": "indicator",
               "valuesFilter": [
                 "cix"

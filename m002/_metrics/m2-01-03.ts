@@ -19,7 +19,6 @@ export const vizPresets: VizPreset[] = [
     config: {
       d: {
         type: "table",
-        timeseriesGrouping: "period_id",
         valuesDisDisplayOpt: "col",
         disaggregateBy: [
           {

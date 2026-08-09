@@ -20,6 +20,7 @@ export const ALL_DISAGGREGATION_OPTIONS = [
   "facility_custom_4",
   "facility_custom_5",
   "hfa_indicator",
+  "hfa_variant_item",
   "hfa_category",
   "hfa_sub_category",
   "hfa_service_category",

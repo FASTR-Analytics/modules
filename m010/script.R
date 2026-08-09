@@ -16,6 +16,15 @@
 #     missing / not-applicable / answered), one row per facility × indicator
 #     × time_point. Empty (header only) when the server does not emit
 #     __status columns.
+#   M10_hfa_results_variants.csv — Per-item breakdown for indicators authored
+#     with a variant group: one row per facility × indicator × variant item ×
+#     time_point, hfa_indicator = the parent indicator. Empty (header only)
+#     when no variant columns are emitted.
+#   M10_hfa_results_variants_carried.csv — Same as M10_hfa_results_variants.csv,
+#     plus rounds where a (indicator, variant item) pair was not measured
+#     filled by duplicating the nearest measured round's facility rows (same
+#     donor rule as the main carried output). carried_from = donor time point
+#     (NA on observed rows).
 #
 #-------------------------------------------------------------------------------------------------------------
 
@@ -160,6 +169,69 @@ if (length(status_cols) > 0) {
     "facility_id,admin_area_4,admin_area_3,admin_area_2,admin_area_1,hfa_indicator,hfa_category,hfa_sub_category,hfa_service_category,time_point,dk_num,missing_num,answered_num,na_num,resp_weight,total_weight",
     "M10_hfa_response_status.csv"
   )
+}
+
+# Variant breakdown output: a SEPARATE pipeline from the main results (own
+# metadata frame, own select/pivot/write), so the main output stays untouched
+# and the carried loop above never sees variant rows. Parent/item routing is
+# metadata-driven via variant_col — composed column names are never parsed
+# apart. Per-item denominators legitimately differ: each item gates on its own
+# expression's NA.
+variant_cols <- c(__VARIANT_COLS__)
+if (length(variant_cols) > 0) {
+  results_variants <- results %>%
+__VARIANT_MUTATES__
+  variant_metadata <- data.frame(
+__VARIANT_METADATA__
+  )
+  variants_long <- facility_info %>%
+    bind_cols(data_wide %>% select(weight_final)) %>%
+    bind_cols(results_variants %>% select(all_of(variant_cols))) %>%
+    pivot_longer(
+      cols = all_of(variant_cols),
+      names_to = "variant_col",
+      values_to = "raw_value"
+    ) %>%
+    left_join(variant_metadata, by = "variant_col") %>%
+    filter(!is.na(raw_value)) %>%
+    mutate(
+      sum_val    = ifelse(ind_aggregation == "sum", raw_value * weight_final, NA_real_),
+      avg_num    = ifelse(ind_aggregation == "avg", raw_value * weight_final, NA_real_),
+      avg_weight = ifelse(ind_aggregation == "avg", weight_final, NA_real_)
+    ) %>%
+    select(-variant_col, -raw_value, -weight_final, -ind_aggregation)
+  write.csv(variants_long, "M10_hfa_results_variants.csv", row.names = FALSE)
+
+  # Carried twin: the main carried loop's donor rule, applied per
+  # (indicator, variant item) pair.
+  variant_pairs <- variants_long %>% distinct(hfa_indicator, hfa_variant_item)
+  variants_carried_new_rows <- list()
+  for (pi in seq_len(nrow(variant_pairs))) {
+    pair_rows <- variants_long %>%
+      filter(
+        hfa_indicator == variant_pairs$hfa_indicator[pi],
+        hfa_variant_item == variant_pairs$hfa_variant_item[pi]
+      )
+    obs_idx <- which(ordered_tps %in% unique(pair_rows$time_point))
+    for (i in setdiff(seq_along(ordered_tps), obs_idx)) {
+      prev_obs <- obs_idx[obs_idx < i]
+      donor_idx <- if (length(prev_obs) > 0) max(prev_obs) else min(obs_idx[obs_idx > i])
+      variants_carried_new_rows[[length(variants_carried_new_rows) + 1]] <- pair_rows %>%
+        filter(time_point == ordered_tps[donor_idx]) %>%
+        mutate(carried_from = time_point, time_point = ordered_tps[i])
+    }
+  }
+  variants_carried <- bind_rows(
+    variants_long %>% mutate(carried_from = NA_character_),
+    bind_rows(variants_carried_new_rows)
+  )
+  write.csv(variants_carried, "M10_hfa_results_variants_carried.csv", row.names = FALSE)
+} else {
+  # Header-only, with the instance's actual facility/admin columns.
+  variants_empty <- results_long[0, ] %>% mutate(hfa_variant_item = character(0))
+  write.csv(variants_empty, "M10_hfa_results_variants.csv", row.names = FALSE)
+  variants_carried_empty <- variants_empty %>% mutate(carried_from = character(0))
+  write.csv(variants_carried_empty, "M10_hfa_results_variants_carried.csv", row.names = FALSE)
 }
 
 print("HFA script completed successfully!")

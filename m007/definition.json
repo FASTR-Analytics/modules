@@ -146,7 +146,7 @@
         "value"
       ],
       "valueFunc": "identity",
-      "formatAs": "percent",
+      "formatAs": "indicator",
       "requiredDisaggregationOptions": [
         "admin_area_2",
         "quarter_id",
@@ -210,7 +210,7 @@
         "value"
       ],
       "valueFunc": "identity",
-      "formatAs": "percent",
+      "formatAs": "indicator",
       "requiredDisaggregationOptions": [
         "admin_area_3",
         "quarter_id",
@@ -274,7 +274,7 @@
         "value"
       ],
       "valueFunc": "identity",
-      "formatAs": "percent",
+      "formatAs": "indicator",
       "requiredDisaggregationOptions": [
         "admin_area_4",
         "quarter_id",

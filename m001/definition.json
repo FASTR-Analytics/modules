@@ -369,7 +369,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -460,7 +459,7 @@
           "config": {
             "d": {
               "type": "map",
-              "valuesDisDisplayOpt": "mapArea",
+              "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -609,7 +608,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -756,7 +754,7 @@
           "config": {
             "d": {
               "type": "map",
-              "valuesDisDisplayOpt": "mapArea",
+              "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
                   "disOpt": "indicator_common_id",
@@ -911,7 +909,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1002,7 +999,7 @@
           "config": {
             "d": {
               "type": "map",
-              "valuesDisDisplayOpt": "mapArea",
+              "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
                   "disOpt": "ratio_type",
@@ -1150,7 +1147,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1237,7 +1233,7 @@
           "config": {
             "d": {
               "type": "map",
-              "valuesDisDisplayOpt": "mapArea",
+              "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
                   "disOpt": "admin_area_2",
@@ -1376,7 +1372,6 @@
           "config": {
             "d": {
               "type": "table",
-              "timeseriesGrouping": "period_id",
               "valuesDisDisplayOpt": "col",
               "disaggregateBy": [
                 {
@@ -1463,7 +1458,7 @@
           "config": {
             "d": {
               "type": "map",
-              "valuesDisDisplayOpt": "mapArea",
+              "valuesDisDisplayOpt": "cell",
               "disaggregateBy": [
                 {
                   "disOpt": "admin_area_2",
