@@ -104,6 +104,7 @@ const presentationOptionGithub = z.enum([
   "table",
   "chart",
   "map",
+  "pie",
 ]);
 const disaggregationDisplayOptionGithub = z.enum([
   "row",
@@ -246,6 +247,16 @@ const configSGithubStrict = z
     mapShowRegionLabels: z.boolean().optional(),
     mapDataLabelMode: z.enum(["none", "centroid", "callout", "auto"])
       .optional(),
+    pieInnerRadiusRatio: z.number(),
+    pieGroupSmallSlices: z.number(),
+    pieCompletionMode: z.boolean(),
+    pieShowCenterValue: z.boolean(),
+    customValueOrder: z.array(
+      z.object({
+        disOpt: disaggregationOptionGithub,
+        orderedIds: z.array(z.string()),
+      }),
+    ),
   })
   .merge(cfStorageSchema)
   .partial();
@@ -329,6 +340,12 @@ const resultsObjectDefinitionGithub = z.object({
 // integrity check and content-addressed cache key. There is no per-asset
 // commit field any more; legacy definitions carrying one parse fine (strip)
 // and the field is ignored.
+//
+// The 1.65.0 hotfix declared repoPath/sha256 OPTIONAL and collapsed pins to
+// names via getAssetName (main consumed assets by name only). On this branch
+// the pin is honoured — repo_assets.ts fetches by repoPath and verifies
+// sha256 — so both fields are required and no collapse exists (2026-08-09
+// merge ruling).
 const repoAssetToImportGithub = z.object({
   name: z.string(),
   repoPath: z.string(),
