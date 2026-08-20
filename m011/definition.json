@@ -1,0 +1,487 @@
+{
+  "label": {
+    "en": "M11. Bayesian disruption detection (LI model)",
+    "fr": "M11. Détection bayésienne des perturbations (modèle LI)"
+  },
+  "prerequisites": [
+    "m002"
+  ],
+  "scriptGenerationType": "template",
+  "dataSources": [
+    {
+      "sourceType": "dataset",
+      "replacementString": "PROJECT_DATA_HMIS",
+      "datasetType": "hmis"
+    },
+    {
+      "sourceType": "results_object",
+      "replacementString": "M2_adjusted_data.csv",
+      "resultsObjectId": "M2_adjusted_data.csv",
+      "moduleId": "m002"
+    }
+  ],
+  "configRequirements": {
+    "parameters": [
+      {
+        "replacementString": "SELECTEDCOUNT",
+        "description": {
+          "en": "Count variable to model. Completeness-imputed counts are deliberately not offered: this module models reporting gaps itself, so it must see them in the data",
+          "fr": "Variable de comptage à modéliser. Les comptages imputés pour complétude ne sont volontairement pas proposés : ce module modélise lui-même les lacunes de rapportage et doit donc les voir dans les données",
+          "pt": "Variável de contagem a modelar. As contagens imputadas por completude não são propositadamente oferecidas: este módulo modela ele próprio as lacunas de reporte, pelo que deve vê-las nos dados"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "count_final_none",
+              "label": "Count (unadjusted)"
+            },
+            {
+              "value": "count_final_outliers",
+              "label": "Count (adjusted for outliers)"
+            }
+          ],
+          "defaultValue": "count_final_outliers"
+        }
+      },
+      {
+        "replacementString": "TRIM_FROM_PERIOD",
+        "description": {
+          "en": "Trim data from this period (YYYYMM, leave blank for all data)",
+          "fr": "Tronquer les données à partir de cette période (AAAAMM, laisser vide pour toutes les données)",
+          "pt": "Truncar os dados a partir deste período (AAAAMM, deixar em branco para todos os dados)"
+        },
+        "input": {
+          "inputType": "number",
+          "defaultValue": ""
+        }
+      },
+      {
+        "replacementString": "FOURIER_K",
+        "description": {
+          "en": "Number of Fourier seasonality terms (K). Raise to 3-4 for campaign-style indicators with sharp seasonal spikes (e.g. Vitamin A)",
+          "fr": "Nombre de termes de saisonnalité de Fourier (K). Augmenter à 3-4 pour les indicateurs de type campagne avec des pics saisonniers marqués (ex. vitamine A)",
+          "pt": "Número de termos de sazonalidade de Fourier (K). Aumentar para 3-4 para indicadores de tipo campanha com picos sazonais acentuados (ex. vitamina A)"
+        },
+        "input": {
+          "inputType": "number",
+          "defaultValue": "2"
+        }
+      },
+      {
+        "replacementString": "USE_POSTERIOR_DRAWS",
+        "description": {
+          "en": "Use joint posterior draws for proper subnational credible intervals (slower, memory-heavy on large countries)",
+          "fr": "Utiliser des tirages a posteriori conjoints pour des intervalles de crédibilité sous-nationaux corrects (plus lent, gourmand en mémoire pour les grands pays)",
+          "pt": "Utilizar amostras conjuntas da posteriori para intervalos de credibilidade subnacionais corretos (mais lento, pesado em memória para países grandes)"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "TRUE",
+              "label": "Yes"
+            },
+            {
+              "value": "FALSE",
+              "label": "No"
+            }
+          ],
+          "defaultValue": "FALSE"
+        }
+      },
+      {
+        "replacementString": "ZEROS_REAL",
+        "description": {
+          "en": "How to treat explicit zeros: all = real reports of zero activity (canonical); detect = pick all/auto/strict automatically from the data's zero signature; auto = real only when the facility submitted another indicator that month; strict = like auto but the other indicator must be > 0 (for systems that auto-fill zeros across all indicators); none = all zeros treated as missing",
+          "fr": "Traitement des zéros explicites : all = vrais rapports d'activité nulle (canonique) ; detect = choix automatique all/auto/strict selon la signature des zéros dans les données ; auto = réel seulement si l'établissement a soumis un autre indicateur ce mois-là ; strict = comme auto mais l'autre indicateur doit être > 0 (pour les systèmes qui remplissent des zéros sur tous les indicateurs) ; none = tous les zéros traités comme manquants",
+          "pt": "Tratamento dos zeros explícitos: all = relatórios reais de atividade nula (canónico); detect = escolha automática all/auto/strict segundo a assinatura dos zeros nos dados; auto = real apenas se a unidade submeteu outro indicador nesse mês; strict = como auto mas o outro indicador deve ser > 0 (para sistemas que preenchem zeros em todos os indicadores); none = todos os zeros tratados como em falta"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "string",
+          "options": [
+            {
+              "value": "all",
+              "label": "All zeros are real (canonical)"
+            },
+            {
+              "value": "detect",
+              "label": "Auto-detect from the data"
+            },
+            {
+              "value": "auto",
+              "label": "Cross-indicator detection (corrected)"
+            },
+            {
+              "value": "strict",
+              "label": "Cross-indicator detection (other indicator > 0)"
+            },
+            {
+              "value": "none",
+              "label": "All zeros treated as missing"
+            }
+          ],
+          "defaultValue": "all"
+        }
+      },
+      {
+        "replacementString": "INLA_THREADS",
+        "description": {
+          "en": "INLA threading, e.g. 1:1 to force single-threaded model fits — several-fold lower peak memory at some speed cost. Leave blank for INLA's default",
+          "fr": "Threads INLA, ex. 1:1 pour forcer des ajustements mono-thread — pic mémoire réduit plusieurs fois au prix de la vitesse. Laisser vide pour la valeur par défaut d'INLA",
+          "pt": "Threads INLA, ex. 1:1 para forçar ajustes mono-thread — pico de memória várias vezes menor à custa de velocidade. Deixar em branco para o padrão do INLA"
+        },
+        "input": {
+          "inputType": "text",
+          "defaultValue": ""
+        }
+      },
+      {
+        "replacementString": "POSTCLOSURE_GRACE",
+        "description": {
+          "en": "Presumed-closure grace window in months: grid months more than N months after a facility's last-ever report are dropped as presumed closure (the first N silent months still count as non-reporting). 0 = off. Only relevant where many facilities go permanently dark (e.g. Liberia)",
+          "fr": "Fenêtre de grâce de fermeture présumée en mois : les mois de grille au-delà de N mois après le dernier rapport d'un établissement sont exclus comme fermeture présumée (les N premiers mois de silence comptent toujours comme non-rapportage). 0 = désactivé. Pertinent seulement là où beaucoup d'établissements cessent définitivement de rapporter (ex. Libéria)",
+          "pt": "Janela de tolerância de encerramento presumido em meses: os meses da grelha para além de N meses após o último relatório de uma unidade são excluídos como encerramento presumido (os primeiros N meses de silêncio contam como não-reporte). 0 = desativado. Relevante apenas onde muitas unidades deixam de reportar definitivamente (ex. Libéria)"
+        },
+        "input": {
+          "inputType": "number",
+          "defaultValue": "0"
+        }
+      },
+      {
+        "replacementString": "EXCLUDE_PRELAUNCH",
+        "description": {
+          "en": "Exclude grid months before a facility's first-ever report, so facilities that opened partway through the period (and indicators rolled out late) are not counted as non-reporting before they existed",
+          "fr": "Exclure les mois de grille antérieurs au tout premier rapport d'un établissement, afin que les établissements ouverts en cours de période (et les indicateurs déployés tardivement) ne soient pas comptés comme non-rapporteurs avant d'exister",
+          "pt": "Excluir os meses da grelha anteriores ao primeiro relatório de uma unidade, para que as unidades abertas a meio do período (e os indicadores introduzidos tardiamente) não contem como não-reportantes antes de existirem"
+        },
+        "input": {
+          "inputType": "select",
+          "valueType": "number",
+          "options": [
+            {
+              "value": "TRUE",
+              "label": "Yes"
+            },
+            {
+              "value": "FALSE",
+              "label": "No"
+            }
+          ],
+          "defaultValue": "TRUE"
+        }
+      }
+    ]
+  },
+  "assetsToImport": [],
+  "resultsObjects": [
+    {
+      "id": "M11_disruptions_analysis_admin_area_1.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_1": "TEXT NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "observed": "NUMERIC",
+        "expected": "NUMERIC",
+        "ppi_lwr": "NUMERIC",
+        "ppi_upr": "NUMERIC",
+        "expected_full": "NUMERIC",
+        "expected_as": "NUMERIC",
+        "gap_reporting": "NUMERIC",
+        "gap_service": "NUMERIC",
+        "flag_deficit": "INTEGER",
+        "flag_surplus": "INTEGER",
+        "mean_p": "NUMERIC",
+        "n_facilities": "INTEGER"
+      }
+    },
+    {
+      "id": "M11_disruptions_analysis_admin_area_2.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "observed": "NUMERIC",
+        "expected": "NUMERIC",
+        "ppi_lwr": "NUMERIC",
+        "ppi_upr": "NUMERIC",
+        "expected_full": "NUMERIC",
+        "expected_as": "NUMERIC",
+        "gap_reporting": "NUMERIC",
+        "gap_service": "NUMERIC",
+        "flag_deficit": "INTEGER",
+        "flag_surplus": "INTEGER",
+        "mean_p": "NUMERIC",
+        "n_facilities": "INTEGER"
+      }
+    },
+    {
+      "id": "M11_disruptions_analysis_admin_area_3.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "observed": "NUMERIC",
+        "expected": "NUMERIC",
+        "ppi_lwr": "NUMERIC",
+        "ppi_upr": "NUMERIC",
+        "expected_full": "NUMERIC",
+        "expected_as": "NUMERIC",
+        "gap_reporting": "NUMERIC",
+        "gap_service": "NUMERIC",
+        "flag_deficit": "INTEGER",
+        "flag_surplus": "INTEGER",
+        "mean_p": "NUMERIC",
+        "n_facilities": "INTEGER"
+      }
+    },
+    {
+      "id": "M11_disruptions_analysis_admin_area_4.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "admin_area_4": "TEXT NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "observed": "NUMERIC",
+        "expected": "NUMERIC",
+        "ppi_lwr": "NUMERIC",
+        "ppi_upr": "NUMERIC",
+        "expected_full": "NUMERIC",
+        "expected_as": "NUMERIC",
+        "gap_reporting": "NUMERIC",
+        "gap_service": "NUMERIC",
+        "flag_deficit": "INTEGER",
+        "flag_surplus": "INTEGER",
+        "mean_p": "NUMERIC",
+        "n_facilities": "INTEGER"
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "id": "m11-01-01",
+      "label": {
+        "en": "Bayesian disruption detection — observed vs expected with 95% CI",
+        "fr": "Détection bayésienne — observé vs attendu avec IC à 95%"
+      },
+      "variantLabel": {
+        "en": "National",
+        "fr": "National"
+      },
+      "valueProps": [
+        "observed",
+        "expected",
+        "ppi_lwr",
+        "ppi_upr"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "observed": "Observed services",
+        "expected": "Expected services (Bayesian)",
+        "ppi_lwr": "Lower 95% credible bound",
+        "ppi_upr": "Upper 95% credible bound"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M11_disruptions_analysis_admin_area_1.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Observed service volumes vs Bayesian expected baseline with 95% credible interval, isolating real service-rate disruptions from reporting-coverage gaps.",
+          "fr": "Volumes de services observés vs base de référence bayésienne avec intervalle de crédibilité à 95%, isolant les vraies perturbations de service des écarts de complétude."
+        },
+        "methodology": {
+          "en": "Two-part Bayesian model (author: Mustapha Wasseja) fit with INLA. Part 1 (Reporting): a Bernoulli model on the full facility-by-month grid predicts the probability that each facility reports. Part 2 (Service): a NegBin model on reporters only estimates latent intensity mu(f,t). The expected baseline is the sum of mu over the same facilities that reported each month (apples-to-apples). Deviations outside the 95% credible interval are flagged.",
+          "fr": "Modèle bayésien en deux parties (auteur: Mustapha Wasseja) ajusté avec INLA. Partie 1 (Complétude): un modèle Bernoulli sur la grille complète établissement-mois prédit la probabilité de rapport. Partie 2 (Service): un modèle NegBin sur les rapporteurs estime l'intensité latente mu(f,t). La base de référence est la somme de mu sur les mêmes établissements rapporteurs chaque mois."
+        },
+        "interpretation": {
+          "en": "Observed below ppi_lwr indicates a real service decline among reporting facilities (deficit). Observed above ppi_upr indicates a service surge (surplus). Values inside the band are within expected variation given trend, seasonality, and facility heterogeneity — not signal.",
+          "fr": "Observé sous ppi_lwr indique une vraie baisse de service parmi les rapporteurs (déficit). Observé au-dessus de ppi_upr indique une augmentation (surplus). Les valeurs dans la bande sont dans la variation attendue."
+        },
+        "typicalRange": {
+          "en": "Varies by service and country. Mean reporting (mean_p) typically 60-95%.",
+          "fr": "Varie selon le service et le pays. Complétude moyenne (mean_p) typiquement 60-95%."
+        },
+        "caveats": {
+          "en": "The expected baseline is conditional on the same facilities that reported each month, so it isolates service-rate change from reporting-coverage change. The marginal-sum CI is approximate at fine admin levels — set USE_POSTERIOR_DRAWS=TRUE for properly calibrated bands at admin_area_3.",
+          "fr": "La base de référence attendue est conditionnelle aux mêmes établissements rapportant chaque mois, isolant le changement de taux de service du changement de complétude. L'IC par somme marginale est approximatif aux niveaux administratifs fins; mettre USE_POSTERIOR_DRAWS=TRUE pour des bandes correctement calibrées au niveau admin_area_3."
+        },
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id (required). Subnational comparison reveals geographic concentration of disruptions; time series reveals onset and recovery.",
+          "fr": "Toujours désagréger par indicator_common_id (requis). La comparaison sous-nationale révèle la concentration géographique; les séries temporelles révèlent début et reprise."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [
+        {
+          "id": "observed-expected-ci",
+          "label": {
+            "en": "Observed vs expected with 95% credible interval",
+            "fr": "Observé vs attendu avec intervalle de crédibilité à 95%"
+          },
+          "description": {
+            "en": "Four plain lines per indicator: observed, expected, lower and upper 95% credible bounds, by month. No additional formatting.",
+            "fr": "Quatre lignes simples par indicateur : observé, attendu, bornes inférieure et supérieure de l'intervalle de crédibilité à 95%, par mois. Aucune mise en forme supplémentaire."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id"
+          ],
+          "createDefaultVisualizationOnInstall": null,
+          "config": {
+            "d": {
+              "type": "timeseries",
+              "timeseriesGrouping": "period_id",
+              "valuesDisDisplayOpt": "series",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "cell"
+                }
+              ],
+              "filterBy": []
+            },
+            "s": {
+              "content": "lines"
+            },
+            "t": {
+              "caption": {
+                "en": "Observed vs expected services with 95% credible interval",
+                "fr": "Services observés vs attendus avec intervalle de crédibilité à 95%"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
+        }
+      ],
+      "hide": false
+    },
+    {
+      "id": "m11-01-02",
+      "label": {
+        "en": "Bayesian disruption detection — observed vs expected with 95% CI",
+        "fr": "Détection bayésienne — observé vs attendu avec IC à 95%"
+      },
+      "variantLabel": {
+        "en": "Admin area 2",
+        "fr": "Zone administrative 2"
+      },
+      "valueProps": [
+        "observed",
+        "expected",
+        "ppi_lwr",
+        "ppi_upr"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id",
+        "admin_area_2"
+      ],
+      "valueLabelReplacements": {
+        "observed": "Observed services",
+        "expected": "Expected services (Bayesian)",
+        "ppi_lwr": "Lower 95% credible bound",
+        "ppi_upr": "Upper 95% credible bound"
+      },
+      "postAggregationExpression": null,
+      "resultsObjectId": "M11_disruptions_analysis_admin_area_2.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Observed service volumes vs Bayesian expected baseline with 95% credible interval, isolating real service-rate disruptions from reporting-coverage gaps.",
+          "fr": "Volumes de services observés vs base de référence bayésienne avec intervalle de crédibilité à 95%, isolant les vraies perturbations de service des écarts de complétude."
+        },
+        "methodology": {
+          "en": "Two-part Bayesian model (author: Mustapha Wasseja) fit with INLA. Part 1 (Reporting): a Bernoulli model on the full facility-by-month grid predicts the probability that each facility reports. Part 2 (Service): a NegBin model on reporters only estimates latent intensity mu(f,t). The expected baseline is the sum of mu over the same facilities that reported each month (apples-to-apples). Deviations outside the 95% credible interval are flagged.",
+          "fr": "Modèle bayésien en deux parties (auteur: Mustapha Wasseja) ajusté avec INLA. Partie 1 (Complétude): un modèle Bernoulli sur la grille complète établissement-mois prédit la probabilité de rapport. Partie 2 (Service): un modèle NegBin sur les rapporteurs estime l'intensité latente mu(f,t). La base de référence est la somme de mu sur les mêmes établissements rapporteurs chaque mois."
+        },
+        "interpretation": {
+          "en": "Observed below ppi_lwr indicates a real service decline among reporting facilities (deficit). Observed above ppi_upr indicates a service surge (surplus). Values inside the band are within expected variation given trend, seasonality, and facility heterogeneity — not signal.",
+          "fr": "Observé sous ppi_lwr indique une vraie baisse de service parmi les rapporteurs (déficit). Observé au-dessus de ppi_upr indique une augmentation (surplus). Les valeurs dans la bande sont dans la variation attendue."
+        },
+        "typicalRange": {
+          "en": "Varies by service and country. Mean reporting (mean_p) typically 60-95%.",
+          "fr": "Varie selon le service et le pays. Complétude moyenne (mean_p) typiquement 60-95%."
+        },
+        "caveats": {
+          "en": "The expected baseline is conditional on the same facilities that reported each month, so it isolates service-rate change from reporting-coverage change. The marginal-sum CI is approximate at fine admin levels — set USE_POSTERIOR_DRAWS=TRUE for properly calibrated bands at admin_area_3.",
+          "fr": "La base de référence attendue est conditionnelle aux mêmes établissements rapportant chaque mois, isolant le changement de taux de service du changement de complétude. L'IC par somme marginale est approximatif aux niveaux administratifs fins; mettre USE_POSTERIOR_DRAWS=TRUE pour des bandes correctement calibrées au niveau admin_area_3."
+        },
+        "disaggregationGuidance": {
+          "en": "Always disaggregate by indicator_common_id (required). Subnational comparison reveals geographic concentration of disruptions; time series reveals onset and recovery.",
+          "fr": "Toujours désagréger par indicator_common_id (requis). La comparaison sous-nationale révèle la concentration géographique; les séries temporelles révèlent début et reprise."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [
+        {
+          "id": "observed-expected-ci",
+          "label": {
+            "en": "Observed vs expected with 95% credible interval",
+            "fr": "Observé vs attendu avec intervalle de crédibilité à 95%"
+          },
+          "description": {
+            "en": "Four plain lines per indicator: observed, expected, lower and upper 95% credible bounds, by month. No additional formatting.",
+            "fr": "Quatre lignes simples par indicateur : observé, attendu, bornes inférieure et supérieure de l'intervalle de crédibilité à 95%, par mois. Aucune mise en forme supplémentaire."
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id",
+            "admin_area_2"
+          ],
+          "createDefaultVisualizationOnInstall": null,
+          "config": {
+            "d": {
+              "type": "timeseries",
+              "timeseriesGrouping": "period_id",
+              "valuesDisDisplayOpt": "series",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "row"
+                },
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "col"
+                }
+              ],
+              "filterBy": []
+            },
+            "s": {
+              "content": "lines"
+            },
+            "t": {
+              "caption": {
+                "en": "Observed vs expected services with 95% credible interval",
+                "fr": "Services observés vs attendus avec intervalle de crédibilité à 95%"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "DATE_RANGE",
+                "fr": "PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": null,
+              "footnoteRelFontSize": null
+            }
+          }
+        }
+      ],
+      "hide": false
+    }
+  ]
+}
