@@ -159,3 +159,4 @@ disruption_mapping/
 
 # --- Personal Shiny viewers inside module folders (local-only) ---
 m007/shiny_scorecard.R
+*.Rproj
