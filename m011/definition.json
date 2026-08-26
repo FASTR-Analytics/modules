@@ -299,12 +299,12 @@
         {
           "id": "observed-expected-ci",
           "label": {
-            "en": "Observed vs expected with 95% credible interval",
-            "fr": "Observé vs attendu avec intervalle de crédibilité à 95%"
+            "en": "Disruptions chart with 95% credible band",
+            "fr": "Graphique des perturbations avec bande de crédibilité à 95%"
           },
           "description": {
-            "en": "Four plain lines per indicator: observed, expected, lower and upper 95% credible bounds, by month. No additional formatting.",
-            "fr": "Quatre lignes simples par indicateur : observé, attendu, bornes inférieure et supérieure de l'intervalle de crédibilité à 95%, par mois. Aucune mise en forme supplémentaire."
+            "en": "Observed (solid) and expected (dashed) lines per indicator, by month, over a grey 95% credible band — green shading where observed rises above the band, red where it falls below.",
+            "fr": "Lignes observée (pleine) et attendue (pointillée) par indicateur, par mois, sur une bande de crédibilité grise à 95% — ombrage vert où l'observé dépasse la bande, rouge où il tombe en dessous."
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -325,7 +325,8 @@
               "filterBy": []
             },
             "s": {
-              "content": "lines"
+              "content": "lines",
+              "specialDisruptionsChartV2": true
             },
             "t": {
               "caption": {
@@ -407,12 +408,12 @@
         {
           "id": "observed-expected-ci",
           "label": {
-            "en": "Observed vs expected with 95% credible interval",
-            "fr": "Observé vs attendu avec intervalle de crédibilité à 95%"
+            "en": "Disruptions chart with 95% credible band",
+            "fr": "Graphique des perturbations avec bande de crédibilité à 95%"
           },
           "description": {
-            "en": "Four plain lines per indicator: observed, expected, lower and upper 95% credible bounds, by month. No additional formatting.",
-            "fr": "Quatre lignes simples par indicateur : observé, attendu, bornes inférieure et supérieure de l'intervalle de crédibilité à 95%, par mois. Aucune mise en forme supplémentaire."
+            "en": "Observed (solid) and expected (dashed) lines per indicator and admin area, by month, over a grey 95% credible band — green shading where observed rises above the band, red where it falls below.",
+            "fr": "Lignes observée (pleine) et attendue (pointillée) par indicateur et zone administrative, par mois, sur une bande de crédibilité grise à 95% — ombrage vert où l'observé dépasse la bande, rouge où il tombe en dessous."
           },
           "importantNotes": null,
           "allowedFilters": [
@@ -438,7 +439,8 @@
               "filterBy": []
             },
             "s": {
-              "content": "lines"
+              "content": "lines",
+              "specialDisruptionsChartV2": true
             },
             "t": {
               "caption": {
