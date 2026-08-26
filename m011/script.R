@@ -1,13 +1,11 @@
 COUNTRY_ISO3 <- "ZMB"
 
 SELECTEDCOUNT <- "count_final_outliers"  # count_final_none | count_final_outliers ONLY — completeness-imputed counts (count_final_completeness/_both) are rejected: this module models reporting gaps itself and must see them in the data
-TRIM_FROM_PERIOD <- ""  # e.g. 202001 drops data before Jan 2020; "" = use all history
 FOURIER_K <- 2  # seasonal wave-pairs: 2 = annual + semi-annual; 3-4 for campaign-spike indicators (e.g. vitamin A)
 USE_POSTERIOR_DRAWS <- FALSE  # TRUE = properly calibrated subnational CIs, ~10x slower and memory-heavy
 ZEROS_REAL <- "all"  # all | detect | auto | strict | none — zero-handling policy, see header
 EXCLUDE_PRELAUNCH <- TRUE  # drop grid months before a facility's first-ever report (new facilities / late-rollout indicators)
 POSTCLOSURE_GRACE <- 0  # e.g. 12 drops grid months >12m after a facility's last-ever report (presumed closure); 0 = off
-INLA_THREADS <- ""  # e.g. "1:1" forces single-threaded fits (several-fold lower peak memory); "" = INLA default
 
 PROJECT_DATA_HMIS <- "hmis_ZMB.csv"  # injected per country by the platform; local-testing default
 #-------------------------------------------------------------------------------------------------------------
@@ -98,6 +96,10 @@ suppressPackageStartupMessages({
 })
 
 select <- dplyr::select
+
+TRIM_FROM_PERIOD <- ""  # e.g. 202001 drops data before Jan 2020; "" = use all history
+INLA_THREADS <- "1:1"  # e.g. "1:1" forces single-threaded fits (several-fold lower peak memory); "" = INLA default
+
 
 #-------------------------------------------------------------------------------------------------------------
 # STEP 1: LOAD DATA

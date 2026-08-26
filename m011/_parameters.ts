@@ -24,18 +24,18 @@ export const parameters: ModuleParameter[] = [
       defaultValue: "count_final_outliers",
     },
   },
-  {
-    replacementString: "TRIM_FROM_PERIOD",
-    description: {
-      en: "Trim data from this period (YYYYMM, leave blank for all data)",
-      fr: "Tronquer les données à partir de cette période (AAAAMM, laisser vide pour toutes les données)",
-      pt: "Truncar os dados a partir deste período (AAAAMM, deixar em branco para todos os dados)",
-    },
-    input: {
-      inputType: "number",
-      defaultValue: "",
-    },
-  },
+  // {
+  //   replacementString: "TRIM_FROM_PERIOD",
+  //   description: {
+  //     en: "Trim data from this period (YYYYMM, leave blank for all data)",
+  //     fr: "Tronquer les données à partir de cette période (AAAAMM, laisser vide pour toutes les données)",
+  //     pt: "Truncar os dados a partir deste período (AAAAMM, deixar em branco para todos os dados)",
+  //   },
+  //   input: {
+  //     inputType: "text",
+  //     defaultValue: "",
+  //   },
+  // },
   {
     replacementString: "FOURIER_K",
     description: {
@@ -106,18 +106,18 @@ export const parameters: ModuleParameter[] = [
       defaultValue: "all",
     },
   },
-  {
-    replacementString: "INLA_THREADS",
-    description: {
-      en: "INLA threading, e.g. 1:1 to force single-threaded model fits — several-fold lower peak memory at some speed cost. Leave blank for INLA's default",
-      fr: "Threads INLA, ex. 1:1 pour forcer des ajustements mono-thread — pic mémoire réduit plusieurs fois au prix de la vitesse. Laisser vide pour la valeur par défaut d'INLA",
-      pt: "Threads INLA, ex. 1:1 para forçar ajustes mono-thread — pico de memória várias vezes menor à custa de velocidade. Deixar em branco para o padrão do INLA",
-    },
-    input: {
-      inputType: "text",
-      defaultValue: "",
-    },
-  },
+  // {
+  //   replacementString: "INLA_THREADS",
+  //   description: {
+  //     en: "INLA threading, e.g. 1:1 to force single-threaded model fits — several-fold lower peak memory at some speed cost. Leave blank for INLA's default",
+  //     fr: "Threads INLA, ex. 1:1 pour forcer des ajustements mono-thread — pic mémoire réduit plusieurs fois au prix de la vitesse. Laisser vide pour la valeur par défaut d'INLA",
+  //     pt: "Threads INLA, ex. 1:1 para forçar ajustes mono-thread — pico de memória várias vezes menor à custa de velocidade. Deixar em branco para o padrão do INLA",
+  //   },
+  //   input: {
+  //     inputType: "text",
+  //     defaultValue: "",
+  //   },
+  // },
   {
     replacementString: "POSTCLOSURE_GRACE",
     description: {
