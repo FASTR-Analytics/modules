@@ -88,29 +88,6 @@ export const parameters: ModuleParameter[] = [
   },
   {
     description: {
-      en: "Run admin_area_4 analysis",
-      fr: "Exécuter l'analyse admin_area_4",
-      pt: "Executar a análise admin_area_4",
-    },
-    replacementString: "RUN_ADMIN_AREA_4_ANALYSIS",
-    input: {
-      inputType: "select",
-      options: [
-        {
-          value: "TRUE",
-          label: "Yes",
-        },
-        {
-          value: "FALSE",
-          label: "No",
-        },
-      ],
-      valueType: "number",
-      defaultValue: "FALSE",
-    },
-  },
-  {
-    description: {
       en: "Threshold for MAD-based control limits",
       fr: "Seuil pour les limites de contrôle basées sur MAD",
       pt: "Limiar para os limites de controlo baseados no MAD",
