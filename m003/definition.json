@@ -122,29 +122,6 @@
         }
       },
       {
-        "replacementString": "RUN_ADMIN_AREA_4_ANALYSIS",
-        "description": {
-          "en": "Run admin_area_4 analysis",
-          "fr": "Exécuter l'analyse admin_area_4",
-          "pt": "Executar a análise admin_area_4"
-        },
-        "input": {
-          "inputType": "select",
-          "valueType": "number",
-          "options": [
-            {
-              "value": "TRUE",
-              "label": "Yes"
-            },
-            {
-              "value": "FALSE",
-              "label": "No"
-            }
-          ],
-          "defaultValue": "FALSE"
-        }
-      },
-      {
         "replacementString": "MADS_THRESHOLD",
         "description": {
           "en": "Threshold for MAD-based control limits",
