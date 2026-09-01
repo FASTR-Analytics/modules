@@ -331,6 +331,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_denominators_national.csv",
       "aiDescription": {
         "summary": {
@@ -497,6 +498,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_denominators_admin2.csv",
       "aiDescription": {
         "summary": {
@@ -603,6 +605,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_denominators_admin3.csv",
       "aiDescription": {
         "summary": {
@@ -709,6 +712,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_combined_results_national.csv",
       "aiDescription": {
         "summary": {
@@ -878,6 +882,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_combined_results_admin2.csv",
       "aiDescription": {
         "summary": {
@@ -985,6 +990,7 @@
         "target_fully_immunized": "Children under 1 year eligible for full immunization"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M5_combined_results_admin3.csv",
       "aiDescription": {
         "summary": {

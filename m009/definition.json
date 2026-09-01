@@ -66,6 +66,7 @@
       ],
       "valueLabelReplacements": {},
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M9_iceh_data.csv",
       "aiDescription": {
         "summary": {
@@ -342,6 +343,7 @@
         "sii": "SII"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M9_iceh_inequality.csv",
       "aiDescription": {
         "summary": {

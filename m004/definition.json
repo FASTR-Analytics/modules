@@ -249,6 +249,7 @@
         "coverage_cov": "Coverage calculated from HMIS data"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M4_coverage_estimation.csv",
       "aiDescription": {
         "summary": {
@@ -368,6 +369,7 @@
         "coverage_cov": "Coverage calculated from HMIS data"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M4_coverage_estimation_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -557,6 +559,7 @@
         "coverage_cov": "Coverage calculated from HMIS data"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M4_coverage_estimation_admin_area_3.csv",
       "aiDescription": {
         "summary": {

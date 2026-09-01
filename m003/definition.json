@@ -293,6 +293,7 @@
         "count_final_both": "Number of services after both outlier and completeness adjustment"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_service_utilization.csv",
       "aiDescription": {
         "summary": {
@@ -678,6 +679,7 @@
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
@@ -807,6 +809,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
@@ -870,6 +873,7 @@
         "count_expect_sum": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
@@ -934,6 +938,7 @@
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -1173,6 +1178,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -1442,6 +1448,7 @@
         "count_expect_sum": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {
@@ -1506,6 +1513,7 @@
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
@@ -1685,6 +1693,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
@@ -1959,6 +1968,7 @@
         "count_expect_sum": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_3.csv",
       "aiDescription": {
         "summary": {
@@ -2019,6 +2029,7 @@
         "count_expected_if_above_diff_threshold": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {
@@ -2198,6 +2209,7 @@
         ],
         "expression": "pct_diff = (count_sum - count_expect_sum)/count_expect_sum"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {
@@ -2365,6 +2377,7 @@
         "count_expect_sum": "Expected service volume"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M3_disruptions_analysis_admin_area_4.csv",
       "aiDescription": {
         "summary": {

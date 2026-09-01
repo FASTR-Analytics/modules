@@ -69,5 +69,6 @@ export const metric: MetricDefinitionGithub = {
   },
   importantNotes: null,
   hide: false,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

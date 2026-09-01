@@ -100,5 +100,6 @@ export const metric: MetricDefinitionGithub = {
   postAggregationExpression: null,
   importantNotes: null,
   hide: false,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

@@ -127,5 +127,6 @@ export const metric: MetricDefinitionGithub = {
     pt: "Com valores transportados",
   },
   importantNotes: null,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

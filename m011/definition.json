@@ -267,6 +267,7 @@
         "ppi_upr": "Upper 95% credible bound"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M11_disruptions_analysis_admin_area_1.csv",
       "aiDescription": {
         "summary": {
@@ -376,6 +377,7 @@
         "ppi_upr": "Upper 95% credible bound"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M11_disruptions_analysis_admin_area_2.csv",
       "aiDescription": {
         "summary": {

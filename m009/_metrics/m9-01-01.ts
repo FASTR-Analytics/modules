@@ -225,5 +225,6 @@ export const metric: MetricDefinitionGithub = {
   },
   variantLabel: null,
   importantNotes: null,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

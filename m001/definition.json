@@ -262,6 +262,7 @@
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {},
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_outliers.csv",
       "aiDescription": {
         "summary": {
@@ -313,6 +314,7 @@
         "outlier_flag": "Binary variable indicating whether this an outlier"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_outliers.csv",
       "aiDescription": {
         "summary": {
@@ -552,6 +554,7 @@
         "completeness_flag": "Binary variable indicating whether the facility meets criteria"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_completeness.csv",
       "aiDescription": {
         "summary": {
@@ -853,6 +856,7 @@
         "pair_penta": "Penta 1 is larger than Penta 3"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_consistency_geo.csv",
       "aiDescription": {
         "summary": {
@@ -1092,6 +1096,7 @@
         "dqa_score": "Binary variable indicating adequate data quality"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_dqa.csv",
       "aiDescription": {
         "summary": {
@@ -1321,6 +1326,7 @@
         "dqa_mean": "Data quality score across facilities"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_dqa.csv",
       "aiDescription": {
         "summary": {
@@ -1546,6 +1552,7 @@
         "dqa_score": "Indicator outliers"
       },
       "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M1_output_outlier_list.csv",
       "aiDescription": {
         "summary": {

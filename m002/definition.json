@@ -96,6 +96,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_outliers)/count_final_none"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {
@@ -257,6 +258,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_completeness)/count_final_none"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {
@@ -418,6 +420,7 @@
         ],
         "expression": "pct_change = ABS(count_final_none-count_final_both)/count_final_none"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M2_adjusted_data.csv",
       "aiDescription": {
         "summary": {

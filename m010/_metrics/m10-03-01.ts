@@ -127,5 +127,6 @@ export const metric: MetricDefinitionGithub = {
     pt: "Apenas valores observados",
   },
   importantNotes: null,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

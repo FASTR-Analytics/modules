@@ -5,10 +5,23 @@ import {
   type MetricDefinitionGithub,
 } from "./.validation/_module_definition_github.ts";
 
+// FROZEN, not authored (ruled 2026-09-01, PLAN_1a §5): m007 and m008 are
+// retired, but every still-deployed pre-restructure app resolves its WHOLE
+// registry — m007 and m008 included — from this repo's HEAD at wizard time,
+// so their committed files must stay on main, byte-frozen, until the fleet
+// runs the new app. They are exempt from this build (m008's
+// "calculated_indicators" generation type no longer validates under the
+// current authoring schema, by design). PLAN_1c deletes the directories AND
+// this list in the same commit. Never rebuild or edit them.
+const FROZEN_MODULE_DIRS = ["m007", "m008"];
+
 const root = new URL(".", import.meta.url);
 const moduleDirs: string[] = [];
 for await (const entry of Deno.readDir(root)) {
-  if (entry.isDirectory && /^m\d+$/.test(entry.name)) {
+  if (
+    entry.isDirectory && /^m\d+$/.test(entry.name) &&
+    !FROZEN_MODULE_DIRS.includes(entry.name)
+  ) {
     moduleDirs.push(entry.name);
   }
 }
@@ -201,14 +214,46 @@ for (const { dir, def } of allModules) {
 
     const roColumns = resultsObjectColumns.get(metric.resultsObjectId);
 
-    // Check valueProps reference valid columns (skip if postAggregationExpression)
-    if (roColumns && !metric.postAggregationExpression) {
+    // Check valueProps reference valid columns. Skipped for the two declared
+    // wire/display splits, where valueProps names the COMPUTED output rather
+    // than a stored column: a postAggregationExpression, or a
+    // catalogExpressionEvaluation (whose value comes from the indicator
+    // catalog's own formula over the ingredient columns).
+    if (
+      roColumns && !metric.postAggregationExpression &&
+      !metric.catalogExpressionEvaluation
+    ) {
       for (const prop of metric.valueProps) {
         if (!roColumns.has(prop)) {
           console.error(`INVALID valueProps "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
           hadError = true;
         }
       }
+    }
+
+    // Check catalogExpressionEvaluation ingredientProps reference valid
+    // columns — the twin of the postAggregationExpression check below. These
+    // ARE stored columns; only the value they produce is computed.
+    if (metric.catalogExpressionEvaluation && roColumns) {
+      for (const prop of metric.catalogExpressionEvaluation.ingredientProps) {
+        if (!roColumns.has(prop)) {
+          console.error(`INVALID ingredientProp "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          hadError = true;
+        }
+      }
+    }
+
+    // AUTHORING INVARIANT (PLAN_1a §1.8): a catalog-evaluated metric must
+    // require indicator_common_id as a disaggregation. The server enforces
+    // required options as GROUP BYs using the INTERSECTION across all metrics
+    // sharing a results object, so ONE metric omitting it dissolves the
+    // no-cross-indicator-pooling guarantee for every metric on that table.
+    if (
+      metric.catalogExpressionEvaluation &&
+      !metric.requiredDisaggregationOptions.includes("indicator_common_id")
+    ) {
+      console.error(`MISSING required disaggregation "indicator_common_id" in ${dir}:${metric.id} - mandatory for catalogExpressionEvaluation metrics`);
+      hadError = true;
     }
 
     // Check postAggregationExpression ingredientValues reference valid columns

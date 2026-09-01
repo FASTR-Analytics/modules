@@ -204,6 +204,7 @@
         ],
         "expression": "value = COALESCE(sum_val, avg_num / avg_weight)"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_results.csv",
       "aiDescription": {
         "summary": {
@@ -368,6 +369,7 @@
         ],
         "expression": "value = COALESCE(sum_val, avg_num / avg_weight)"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_results_carried.csv",
       "aiDescription": {
         "summary": {
@@ -524,6 +526,7 @@
         ],
         "expression": "value = dk_num / resp_weight"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_response_status.csv",
       "aiDescription": {
         "summary": {
@@ -592,6 +595,7 @@
         ],
         "expression": "value = missing_num / resp_weight"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_response_status.csv",
       "aiDescription": {
         "summary": {
@@ -669,6 +673,7 @@
         ],
         "expression": "value = COALESCE(sum_val, avg_num / avg_weight)"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_results_variants.csv",
       "aiDescription": {
         "summary": {
@@ -839,6 +844,7 @@
         ],
         "expression": "value = COALESCE(sum_val, avg_num / avg_weight)"
       },
+      "catalogExpressionEvaluation": null,
       "resultsObjectId": "M10_hfa_results_variants_carried.csv",
       "aiDescription": {
         "summary": {

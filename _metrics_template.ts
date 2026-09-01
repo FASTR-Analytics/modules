@@ -56,6 +56,10 @@ export const metrics: MetricDefinitionGithub[] = [
 
     requiredDisaggregationOptions: [],
     postAggregationExpression: null,
+    // Only an indicator_values results object sets this — it names the
+    // ingredient columns the server sums before applying each indicator's own
+    // catalog expression. Every other metric declares null.
+    catalogExpressionEvaluation: null,
     // Example postAggregationExpression:
     // {
     //   ingredientValues: [

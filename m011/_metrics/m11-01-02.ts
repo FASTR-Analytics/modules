@@ -106,5 +106,6 @@ export const metric: MetricDefinitionGithub = {
     },
   },
   importantNotes: null,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };

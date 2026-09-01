@@ -63,5 +63,6 @@ export const metric: MetricDefinitionGithub = {
   variantLabel: null,
   postAggregationExpression: null,
   importantNotes: null,
+  catalogExpressionEvaluation: null,
   vizPresets,
 };
