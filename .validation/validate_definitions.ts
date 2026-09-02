@@ -1,5 +1,6 @@
 import { walk } from "jsr:@std/fs@^1/walk";
 import { moduleDefinitionGithubSchema } from "./_module_definition_github.ts";
+import { FROZEN_MODULE_DIRS } from "../_frozen_modules.ts";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 
@@ -7,7 +8,11 @@ let hasErrors = false;
 
 for await (const entry of walk(ROOT, {
   match: [/\/definition\.json$/],
-  skip: [/\/\./, /\/node_modules\//],
+  skip: [
+    /\/\./,
+    /\/node_modules\//,
+    ...FROZEN_MODULE_DIRS.map((dir) => new RegExp(`/${dir}/`)),
+  ],
 })) {
   const relativePath = entry.path.replace(ROOT, "");
   let raw: unknown;

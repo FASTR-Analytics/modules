@@ -4,16 +4,7 @@ import {
   type ModuleDefinitionGithub,
   type MetricDefinitionGithub,
 } from "./.validation/_module_definition_github.ts";
-
-// FROZEN, not authored (ruled 2026-09-01, PLAN_1a §5): m007 and m008 are
-// retired, but every still-deployed pre-restructure app resolves its WHOLE
-// registry — m007 and m008 included — from this repo's HEAD at wizard time,
-// so their committed files must stay on main, byte-frozen, until the fleet
-// runs the new app. They are exempt from this build (m008's
-// "calculated_indicators" generation type no longer validates under the
-// current authoring schema, by design). PLAN_1c deletes the directories AND
-// this list in the same commit. Never rebuild or edit them.
-const FROZEN_MODULE_DIRS = ["m007", "m008"];
+import { FROZEN_MODULE_DIRS } from "./_frozen_modules.ts";
 
 const root = new URL(".", import.meta.url);
 const moduleDirs: string[] = [];
@@ -46,7 +37,7 @@ async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGith
   files.sort();
   for (const file of files) {
     const expectedId = file.replace(/\.ts$/, "");
-    const mod = await import(`./${dir}/_metrics/${file}`);
+    const mod = await import(new URL(file, metricsFolderPath).href);
     if (mod.metric.id !== expectedId) {
       errors.push(`${dir}/_metrics/${file}: metric.id "${mod.metric.id}" does not match filename "${expectedId}"`);
     }

@@ -19,9 +19,6 @@ DIFFPERCENT <- 10                      # Difference threshold (in percent): if t
 RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the lowest geographic level (admin_area_3).
                                        # Set to FALSE for faster runtime.
 
-RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
-                                       # Warning: This can be very slow for large datasets
-
 
 PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 #-------------------------------------------------------------------------------------------------------------
@@ -52,6 +49,13 @@ PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 # FILE: M3_disruptions_analysis.csv     # Outputs from the disruption analysis.
 
 #-------------------------------------------------------------------------------------------------------------
+
+
+
+RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
+                                       # Warning: This can be very slow for large datasets
+
+                                       
 # Load required libraries
 library(data.table)  # For memory-efficient data operations
 library(lubridate)
