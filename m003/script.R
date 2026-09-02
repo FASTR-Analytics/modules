@@ -49,13 +49,11 @@ PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 # FILE: M3_disruptions_analysis.csv     # Outputs from the disruption analysis.
 
 #-------------------------------------------------------------------------------------------------------------
-
-
-
+# Script-internal setting (not a platform parameter; must stay below the header so the platform keeps it).
+# The admin_area_4 analysis is always off. Empty AA4 compatibility files are still written further down.
 RUN_ADMIN_AREA_4_ANALYSIS <- FALSE     # Set to TRUE to run finest-level analysis (admin_area_4)
                                        # Warning: This can be very slow for large datasets
 
-                                       
 # Load required libraries
 library(data.table)  # For memory-efficient data operations
 library(lubridate)
@@ -68,10 +66,6 @@ library(tidyr)
 
 # Ensure dplyr::select is used (MASS::select masks it)
 select <- dplyr::select
-
-# Script-internal setting (not a platform parameter; must stay below the header so the platform keeps it).
-# The admin_area_4 analysis is always off. Empty AA4 compatibility files are still written further down.
-RUN_ADMIN_AREA_4_ANALYSIS <- FALSE
 
 # Memory tracking helper - logs to console AND file
 mem_usage <- function(msg) {
