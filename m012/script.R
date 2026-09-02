@@ -1,5 +1,6 @@
 SELECTED_COUNT_VARIABLE <- SELECTEDCOUNT
 ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
+POPULATION_FILE <- POPULATION_PERSON_YEARS
 
 #-------------------------------------------------------------------------------------------------------------
 # M12: Indicator values
@@ -14,8 +15,17 @@ ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
 # table names. The table is DATA the app substitutes in below (the
 # INDICATOR_INGREDIENTS token); the logic here is the same in every country.
 #
+# Population rates: the app expands the instance's annual population figures
+# into monthly PERSON-YEARS (population / 12) per area, which sum like any
+# count. They enter here as one more ingredient under the pseudo-indicator id
+# "population:<type>" - the same id the ingredient table names in a
+# population rate's eighth slot - so the join below treats them exactly like
+# a base indicator.
+#
 # INPUTS:
 #   M2_adjusted_data.csv        - facility x month x indicator, four count variants
+#   POPULATION_PERSON_YEARS     - area x month x population_type, person_years
+#                                 (header-only when no indicator needs it)
 #   INDICATOR_INGREDIENTS       - substituted tribble of
 #                                 indicator_common_id, slot, ingredient_common_id
 #
@@ -68,6 +78,39 @@ message(sprintf("Aggregating to: %s x period_id", paste(geo_cols, collapse = " x
 area_month <- adjusted_data %>%
   group_by(across(all_of(geo_cols)), period_id, indicator_common_id) %>%
   summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop")
+
+# Step 1b: person-years join the area x month table as pseudo-indicator rows.
+# The app writes the file at the same admin level as the adjusted data, so
+# its area columns must be exactly geo_cols; anything else is a contract
+# break, not something to reconcile here.
+message("Loading population person-years...")
+population <- read_csv(POPULATION_FILE, show_col_types = FALSE,
+                       col_types = cols(.default = col_character(),
+                                        period_id = col_integer(),
+                                        person_years = col_double()))
+if (nrow(population) > 0) {
+  pop_geo_cols <- intersect(all_geo_cols, names(population))
+  if (!identical(pop_geo_cols, geo_cols)) {
+    stop(sprintf(
+      "ERROR: population file admin columns (%s) differ from the adjusted data's (%s)",
+      paste(pop_geo_cols, collapse = ", "), paste(geo_cols, collapse = ", ")
+    ))
+  }
+  message(sprintf("  %d person-year row(s) for population type(s): %s",
+                  nrow(population), paste(unique(population$population_type), collapse = ", ")))
+  area_month <- bind_rows(
+    area_month,
+    population %>%
+      transmute(
+        across(all_of(geo_cols)),
+        period_id,
+        indicator_common_id = paste0("population:", population_type),
+        count = person_years
+      )
+  )
+} else {
+  message("  No person-years in this run (no population rate needs them)")
+}
 
 # An ingredient with no rows in this dataset is NOT an error (PLAN_1a §1.5):
 # the join below simply produces no row for it and the pivot leaves NA, which

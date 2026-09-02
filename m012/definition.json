@@ -14,6 +14,10 @@
       "replacementString": "M2_adjusted_data.csv",
       "resultsObjectId": "M2_adjusted_data.csv",
       "moduleId": "m002"
+    },
+    {
+      "sourceType": "population",
+      "replacementString": "POPULATION_PERSON_YEARS"
     }
   ],
   "configRequirements": {
@@ -116,16 +120,20 @@
           "pt": "O módulo materializa as componentes aditivas de cada indicador ao nível área administrativa x mês. Um gráfico volta a somar essas componentes no agrupamento que mostra e aplica a fórmula uma só vez, pelo que um valor regional ou anual é a fórmula sobre as somas e nunca uma média de rácios."
         },
         "interpretation": {
-          "en": "Values carry each indicator's own format (count, percent, or rate). Thresholds for traffic-light colouring come from the indicator dictionary.",
-          "fr": "Les valeurs portent le format propre à chaque indicateur (effectif, pourcentage ou taux). Les seuils de coloration feu tricolore proviennent du dictionnaire d'indicateurs.",
-          "pt": "Os valores têm o formato próprio de cada indicador (contagem, percentagem ou taxa). Os limiares para a coloração tipo semáforo provêm do dicionário de indicadores."
+          "en": "Values carry each indicator's own format (count, percent, or rate). Thresholds for traffic-light colouring come from the indicator dictionary. Population rates are ANNUALISED: the numerator is divided by person-years of the population (annual population × months / 12) and scaled by the indicator's multiplier, so a monthly or quarterly value reads as a rate per year and is directly comparable with an annual one.",
+          "fr": "Les valeurs portent le format propre à chaque indicateur (effectif, pourcentage ou taux). Les seuils de coloration feu tricolore proviennent du dictionnaire d'indicateurs. Les taux de population sont ANNUALISÉS : le numérateur est divisé par les personnes-années de la population (population annuelle × mois / 12) puis multiplié par le multiplicateur de l'indicateur, de sorte qu'une valeur mensuelle ou trimestrielle se lit comme un taux annuel, directement comparable à une valeur annuelle.",
+          "pt": "Os valores têm o formato próprio de cada indicador (contagem, percentagem ou taxa). Os limiares para a coloração tipo semáforo provêm do dicionário de indicadores. As taxas populacionais são ANUALIZADAS: o numerador é dividido pelas pessoas-ano da população (população anual × meses / 12) e multiplicado pelo multiplicador do indicador, pelo que um valor mensal ou trimestral se lê como uma taxa anual, diretamente comparável com um valor anual."
         },
         "typicalRange": {
           "en": "Varies by indicator — see the indicator dictionary.",
           "fr": "Varie selon l'indicateur — voir le dictionnaire d'indicateurs.",
           "pt": "Varia consoante o indicador — ver o dicionário de indicadores."
         },
-        "caveats": null,
+        "caveats": {
+          "en": "Population denominators are interpolated between the instance's annual figures (mid-year anchors) and extrapolated at most one year beyond them, so a population rate's precision is that of the population estimates, not of the facility counts.",
+          "fr": "Les dénominateurs de population sont interpolés entre les chiffres annuels de l'instance (ancrés en milieu d'année) et extrapolés d'au plus un an au-delà ; la précision d'un taux de population est donc celle des estimations de population, pas celle des effectifs des établissements.",
+          "pt": "Os denominadores de população são interpolados entre os valores anuais da instância (âncoras a meio do ano) e extrapolados no máximo um ano para além deles, pelo que a precisão de uma taxa populacional é a das estimativas de população, não a das contagens dos estabelecimentos."
+        },
         "disaggregationGuidance": {
           "en": "Always grouped by indicator. Can also be disaggregated by admin area (2, 3 or 4) and time period (month, quarter, year). Facility-level analysis is not available here — use m3-01-01.",
           "fr": "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative (2, 3 ou 4) et par période (mois, trimestre, année). L'analyse au niveau des établissements n'est pas disponible ici — utilisez m3-01-01.",
