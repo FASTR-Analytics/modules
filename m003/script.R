@@ -23,7 +23,7 @@ RUN_DISTRICT_MODEL <- TRUE             # Set to TRUE to run regressions at the l
 PROJECT_DATA_HMIS <- "hmis_NGA.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jun 18
+# Last edit: 2026 Sep 02
 # Module: SERVICE UTILIZATION
 
 
@@ -68,6 +68,10 @@ library(tidyr)
 
 # Ensure dplyr::select is used (MASS::select masks it)
 select <- dplyr::select
+
+# Script-internal setting (not a platform parameter; must stay below the header so the platform keeps it).
+# The admin_area_4 analysis is always off. Empty AA4 compatibility files are still written further down.
+RUN_ADMIN_AREA_4_ANALYSIS <- FALSE
 
 # Memory tracking helper - logs to console AND file
 mem_usage <- function(msg) {
