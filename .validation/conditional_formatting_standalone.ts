@@ -10,13 +10,20 @@ const colorKeyOrStringSchema = z.union([
   z.object({ key: z.string() }),
 ]);
 
+// A label is stored trimmed with inner whitespace collapsed, and an empty one
+// is absent: the legend merges rules by label text, so two authors' spacing
+// must never read as two meanings.
 const thresholdBucketSchema = z.object({
   color: colorKeyOrStringSchema,
-  label: z.string().optional(),
+  label: z
+    .string()
+    .transform((s) => s.trim().replace(/\s+/g, " "))
+    .transform((s) => (s === "" ? undefined : s))
+    .optional(),
 });
 
-// A thresholds rule on its own — what a common indicator carries (DB JSONB,
-// catalog row, manifest entry, API body) and what the figure-level
+// A thresholds rule on its own — what a common indicator carries (DB JSON
+// text, catalog row, manifest entry, API body) and what the figure-level
 // `thresholds` source wraps. Cutoffs are in STORED units, ascending; one
 // bucket more than cutoffs. No `type` discriminator: that belongs to the
 // figure-level union alone.
