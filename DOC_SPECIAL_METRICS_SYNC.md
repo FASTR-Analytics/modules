@@ -4,7 +4,7 @@ This document explains the relationship between metric definitions in this repos
 
 ## The Const File
 
-**Location:** `wb-fastr/client/src/generate_visualization/get_style_from_po/_0_conditional_consts.ts`
+**Location:** `wb-fastr/client/src/generate_visualization/special_chart_checks.ts`
 
 This file contains arrays of metric IDs that require special rendering behavior in the app:
 
@@ -90,7 +90,7 @@ echo "=== specialDisruptionsChart ===" && grep -rl "specialDisruptionsChart: tru
 echo "=== negative pct (no ABS) ===" && grep -rl "postAggregationExpression:" m*/_metrics/*.ts | while read f; do grep -A15 "postAggregationExpression:" "$f" | grep "expression:" | grep -v "ABS" | grep -v "null" && basename "$f" .ts; done
 ```
 
-Compare output against the arrays in `_0_conditional_consts.ts`.
+Compare output against the arrays in `special_chart_checks.ts`.
 
 ## Consequences of Misalignment
 

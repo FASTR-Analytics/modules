@@ -1,7 +1,5 @@
-SELECTED_COUNT_VARIABLE <- SELECTEDCOUNT
-ADJUSTED_DATA_FILE <- "M2_adjusted_data.csv"
-POPULATION_FILE <- POPULATION_PERSON_YEARS
-
+SELECTEDCOUNT <- "count_final_outliers"  # local development only: the app strips everything above the #--- marker and substitutes the tokens in the body
+POPULATION_PERSON_YEARS <- "population.csv"
 #-------------------------------------------------------------------------------------------------------------
 # M12: Indicator values
 #
@@ -42,12 +40,12 @@ library(tidyr)
 SLOTS <- paste0("ing", 1:8)
 
 message("Loading adjusted data from M2...")
-adjusted_data <- read_csv(ADJUSTED_DATA_FILE, show_col_types = FALSE)
+adjusted_data <- read_csv("M2_adjusted_data.csv", show_col_types = FALSE)
 
-if (!SELECTED_COUNT_VARIABLE %in% names(adjusted_data)) {
+if (!SELECTEDCOUNT %in% names(adjusted_data)) {
   stop(sprintf(
-    "ERROR: count variable '%s' is not a column of %s",
-    SELECTED_COUNT_VARIABLE, ADJUSTED_DATA_FILE
+    "ERROR: count variable '%s' is not a column of the adjusted data",
+    SELECTEDCOUNT
   ))
 }
 
@@ -77,14 +75,14 @@ message(sprintf("Aggregating to: %s x period_id", paste(geo_cols, collapse = " x
 # every later grouping re-sums these same additive numbers.
 area_month <- adjusted_data %>%
   group_by(across(all_of(geo_cols)), period_id, indicator_common_id) %>%
-  summarise(count = sum(.data[[SELECTED_COUNT_VARIABLE]], na.rm = TRUE), .groups = "drop")
+  summarise(count = sum(.data[[SELECTEDCOUNT]], na.rm = TRUE), .groups = "drop")
 
 # Step 1b: person-years join the area x month table as pseudo-indicator rows.
 # The app writes the file at the same admin level as the adjusted data, so
 # its area columns must be exactly geo_cols; anything else is a contract
 # break, not something to reconcile here.
 message("Loading population person-years...")
-population <- read_csv(POPULATION_FILE, show_col_types = FALSE,
+population <- read_csv(POPULATION_PERSON_YEARS, show_col_types = FALSE,
                        col_types = cols(.default = col_character(),
                                         period_id = col_integer(),
                                         person_years = col_double()))

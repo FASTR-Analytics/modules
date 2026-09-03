@@ -182,7 +182,7 @@
               }
             },
             "s": {
-              "specialScorecardTable": true
+              "cfMode": "indicator"
             },
             "t": {
               "caption": {

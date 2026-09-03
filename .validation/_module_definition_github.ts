@@ -52,7 +52,7 @@ const dataSourceResultsObjectGithub = z.object({
 // monthly person-years per population type at the HMIS structure's finest
 // admin level, expanded at capture from the instance population store. It is
 // not a dataset family — it accompanies the HMIS family and is written on
-// every HMIS capture (header-only when no population rate needs it), so a
+// every HMIS capture (header-only when no expression names a population), so a
 // module declaring it needs the hmis dataset in the run and nothing else.
 const dataSourcePopulationGithub = z.object({
   sourceType: z.literal("population"),
@@ -246,7 +246,6 @@ const configSGithubStrict = z
     specialCoverageChart: z.boolean(),
     specialDisruptionsChart: z.boolean(),
     specialDisruptionsChartV2: z.boolean(),
-    specialScorecardTable: z.boolean(),
     verticalTickLabels: z.boolean(),
     horizontal: z.boolean().optional(),
     allowVerticalColHeaders: z.boolean(),

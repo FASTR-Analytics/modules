@@ -29,7 +29,7 @@ export const vizPresets: VizPreset[] = [
         filterBy: [],
         periodFilter: { filterType: "last_n_months", nMonths: 12 },
       },
-      s: { specialScorecardTable: true },
+      s: { cfMode: "indicator" },
       t: {
         caption: {
           en: "Health Sector Scorecard",

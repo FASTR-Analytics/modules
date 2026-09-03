@@ -178,6 +178,18 @@ The R script receives:
 - Parameter values via replacement strings
 - Working directory set to the module sandbox
 
+**The `#---` marker.** The app strips every line above the first line that
+starts with `#---` (`stripFrontmatter` in wb-fastr's
+`server/github/fetch_module.ts`) and substitutes the replacement strings
+in what remains. So the lines above the marker exist for LOCAL development
+only: put the token names themselves there with a local value
+(`SELECTEDCOUNT <- "count_final_outliers"`,
+`PROJECT_DATA_HMIS <- "hmis_NGA.csv"`), and use the token names directly
+in the body (`get(SELECTEDCOUNT)`, `fread(PROJECT_DATA_HMIS)`,
+`read_csv("M2_adjusted_data.csv")`). Never define a helper variable above
+the marker and reference it below — the body will fail in the sandbox with
+"object not found" while running fine locally (m012, 2026-09-02).
+
 Must output CSV files matching the results objects:
 ```r
 write.csv(result_df, "M1_output_outliers.csv", row.names = FALSE)
