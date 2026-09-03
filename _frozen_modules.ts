@@ -1,4 +1,4 @@
-// FROZEN, not authored (ruled 2026-09-01, PLAN_1a §5): m007 and m008 are
+// FROZEN, not authored (ruled 2026-09-01, closed — never re-raise): m007 and m008 are
 // retired, but every still-deployed pre-restructure app resolves its WHOLE
 // registry — m007 and m008 included — from this repo's HEAD at wizard time,
 // so their committed files must stay on main, byte-frozen, until the fleet
