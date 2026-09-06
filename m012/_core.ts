@@ -11,11 +11,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 // parameter. It therefore rides in the script text the memoization key
 // already hashes, so an indicator edit re-runs this module by construction.
 //
-// The population source (PLAN_1b) is the app-written inputs/population.csv:
-// monthly person-years per population type at the finest admin level,
-// expanded from the instance population store at capture. It IS a data
-// source — its content hash enters this module's memoization key, so a
-// population edit re-runs the module and an unchanged store does not.
+// The population source is the app-written inputs/population.csv: monthly
+// person-years per population type at the instance's population level (the
+// level of the stored population data, else the HMIS depth), expanded from the
+// instance population store at capture. Its admin columns set this module's
+// grain even when the file is header-only. It IS a data source: its content
+// hash enters this module's memoization key, so a population edit re-runs
+// the module and an unchanged store does not.
 export const core: ModuleDefinitionCore = {
   label: {
     en: "M12. Indicator values",

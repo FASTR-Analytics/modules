@@ -112,9 +112,9 @@ export const metric: MetricDefinitionGithub = {
       pt: "Varia consoante o indicador — ver o dicionário de indicadores.",
     },
     disaggregationGuidance: {
-      en: "Always grouped by indicator. Can also be disaggregated by admin area (2, 3 or 4) and time period (month, quarter, year). Facility-level analysis is not available here — use m3-01-01.",
-      fr: "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative (2, 3 ou 4) et par période (mois, trimestre, année). L'analyse au niveau des établissements n'est pas disponible ici — utilisez m3-01-01.",
-      pt: "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa (2, 3 ou 4) e por período (mês, trimestre, ano). A análise ao nível dos estabelecimentos não está disponível aqui — utilize m3-01-01.",
+      en: "Always grouped by indicator. Can also be disaggregated by admin area down to the instance's population level (the level of its population data) and by time period (month, quarter, year). Facility-level analysis is not available here — use m3-01-01.",
+      fr: "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative jusqu'au niveau de population de l'instance (le niveau de ses données de population) et par période (mois, trimestre, année). L'analyse au niveau des établissements n'est pas disponible ici — utilisez m3-01-01.",
+      pt: "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa até ao nível de população da instância (o nível dos seus dados de população) e por período (mês, trimestre, ano). A análise ao nível dos estabelecimentos não está disponível aqui — utilize m3-01-01.",
     },
     caveats: {
       en: "Population denominators are interpolated between the instance's annual figures (mid-year anchors) and extrapolated at most one year beyond them, so a population rate's precision is that of the population estimates, not of the facility counts.",

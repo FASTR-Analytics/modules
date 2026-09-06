@@ -4,26 +4,32 @@ POPULATION_PERSON_YEARS <- "population.csv"
 # M12: Indicator values
 #
 # Materialises the additive INGREDIENTS of every common indicator at
-# admin area x month grain. It does NOT compute any indicator's value: the
-# formula is catalog data and is applied after aggregation, so that a chart at
-# any grouping re-sums the ingredients and evaluates the formula once, exactly.
+# admin area x month grain, where the admin level is the instance's
+# POPULATION LEVEL: the admin columns of the person-years file (the level of
+# the stored population figures, or the HMIS structure's depth when none are
+# stored). Facilities and any finer admin level in the data are summed away.
+# It does NOT compute any indicator's value: the formula is catalog data and
+# is applied after aggregation, so that a chart at any grouping re-sums the
+# ingredients and evaluates the formula once, exactly.
 #
 # The ingredient table says which base indicator fills which slot for which
 # indicator. This script never parses a formula - it only sums the columns the
 # table names. The table is DATA the app substitutes in below (the
 # INDICATOR_INGREDIENTS token); the logic here is the same in every country.
 #
-# Population rates: the app expands the instance's annual population figures
+# Population rates: the app expands the instance's annual population counts
 # into monthly PERSON-YEARS (population / 12) per area, which sum like any
 # count. They enter here as one more ingredient under the pseudo-indicator id
-# "population:<type>" - the same id the ingredient table names in a
-# population rate's eighth slot - so the join below treats them exactly like
-# a base indicator.
+# "population:<type>" - the same id the ingredient table names in whichever
+# slot the term was assigned (slots follow order of appearance in the
+# formula) - so the join below treats them exactly like a base indicator.
 #
 # INPUTS:
 #   M2_adjusted_data.csv        - facility x month x indicator, four count variants
 #   POPULATION_PERSON_YEARS     - area x month x population_type, person_years
-#                                 (header-only when no indicator needs it)
+#                                 at the population level (header-only when no
+#                                 indicator needs it; the header still sets
+#                                 the grain)
 #   INDICATOR_INGREDIENTS       - substituted tribble of
 #                                 indicator_common_id, slot, ingredient_common_id
 #
@@ -63,37 +69,43 @@ if (length(bad_slots) > 0) {
   ))
 }
 
-# Admin columns present in the upstream output, finest last.
 all_geo_cols <- c("admin_area_2", "admin_area_3", "admin_area_4")
-geo_cols <- intersect(all_geo_cols, names(adjusted_data))
-if (length(geo_cols) == 0) {
+data_geo_cols <- intersect(all_geo_cols, names(adjusted_data))
+if (length(data_geo_cols) == 0) {
   stop("ERROR: no admin area columns in the adjusted data")
 }
-message(sprintf("Aggregating to: %s x period_id", paste(geo_cols, collapse = " x ")))
 
-# Step 1: facilities summed away. This is the ONLY aggregation the module does;
-# every later grouping re-sums these same additive numbers.
-area_month <- adjusted_data %>%
-  group_by(across(all_of(geo_cols)), period_id, indicator_common_id) %>%
-  summarise(count = sum(.data[[SELECTEDCOUNT]], na.rm = TRUE), .groups = "drop")
-
-# Step 1b: person-years join the area x month table as pseudo-indicator rows.
-# The app writes the file at the same admin level as the adjusted data, so
-# its area columns must be exactly geo_cols; anything else is a contract
-# break, not something to reconcile here.
+# The person-years file's admin columns set this module's grain: the app
+# writes its header at the instance's population level whether or not the
+# file has rows. The data may be finer (it is summed up) but never coarser.
 message("Loading population person-years...")
 population <- read_csv(POPULATION_PERSON_YEARS, show_col_types = FALSE,
                        col_types = cols(.default = col_character(),
                                         period_id = col_integer(),
                                         person_years = col_double()))
+geo_cols <- intersect(all_geo_cols, names(population))
+if (length(geo_cols) == 0) {
+  stop("ERROR: no admin area columns in the population file")
+}
+deeper_than_data <- setdiff(geo_cols, data_geo_cols)
+if (length(deeper_than_data) > 0) {
+  stop(sprintf(
+    "ERROR: the population level is deeper than the data: the population file has %s, which the adjusted data does not",
+    paste(deeper_than_data, collapse = ", ")
+  ))
+}
+message(sprintf("Aggregating to: %s x period_id", paste(geo_cols, collapse = " x ")))
+
+# Step 1: facilities (and any admin level below the population level) summed
+# away. This is the ONLY aggregation the module does; every later grouping
+# re-sums these same additive numbers.
+area_month <- adjusted_data %>%
+  group_by(across(all_of(geo_cols)), period_id, indicator_common_id) %>%
+  summarise(count = sum(.data[[SELECTEDCOUNT]], na.rm = TRUE), .groups = "drop")
+
+# Step 1b: person-years join the area x month table as pseudo-indicator rows,
+# already at geo_cols by construction.
 if (nrow(population) > 0) {
-  pop_geo_cols <- intersect(all_geo_cols, names(population))
-  if (!identical(pop_geo_cols, geo_cols)) {
-    stop(sprintf(
-      "ERROR: population file admin columns (%s) differ from the adjusted data's (%s)",
-      paste(pop_geo_cols, collapse = ", "), paste(geo_cols, collapse = ", ")
-    ))
-  }
   message(sprintf("  %d person-year row(s) for population type(s): %s",
                   nrow(population), paste(unique(population$population_type), collapse = ", ")))
   area_month <- bind_rows(

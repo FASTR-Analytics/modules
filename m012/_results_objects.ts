@@ -1,9 +1,12 @@
 import type { ResultsObjectDefinitionGithub } from "../.validation/_module_definition_github.ts";
 
-// One row per indicator × month × finest admin area, carrying that indicator's
-// additive ingredients in numbered slots. AREA × MONTH grain uniformly: rows
-// are summed across facilities, so there is no facility_id and no facility
-// column (facility analysis stays on m3-01-01 and the quality metrics).
+// One row per indicator × month × admin area at the instance's population
+// level (the level of the stored population data, else the HMIS depth),
+// carrying that indicator's additive ingredients in numbered slots. AREA ×
+// MONTH grain uniformly: rows are summed across facilities and any finer
+// admin level, so there is no facility_id and no facility column (facility
+// analysis stays on m3-01-01 and the quality metrics). The admin columns
+// present in a package are those of its person-years file.
 //
 // The slots are the generalisation of m008's numerator/denominator pair from
 // two columns to eight, which is what lets an indicator be an arbitrary
