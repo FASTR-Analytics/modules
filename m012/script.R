@@ -120,8 +120,9 @@ if (length(unmatched) > 0) {
   ))
 }
 
-# The evaluator's semantics, bound for eval() below. Each helper reaches
-# base arithmetic through base:: so that binding `/` here cannot recurse.
+# The evaluator's semantics, bound for eval() below. The helpers are closures
+# over this script's environment, not formula_env, so arithmetic inside them
+# is base R's; `/` says so explicitly because it is the one being rebound.
 formula_env <- new.env(parent = baseenv())
 formula_env[["/"]] <- function(x, y) {
   out <- base::`/`(x, y)
