@@ -1,21 +1,50 @@
 SELECTEDCOUNT <- "count_final_outliers"  # local development only: the app strips everything above the #--- marker and substitutes the tokens in the body
 POPULATION_PERSON_YEARS <- "population.csv"
+POPULATION_ACTIVE <- TRUE
 #-------------------------------------------------------------------------------------------------------------
 # M12: Indicator values
 #
 # Materialises the additive INGREDIENTS of every common indicator at
-# admin area x month grain, where the admin level is the instance's
-# POPULATION LEVEL: the admin columns of the person-years file (the level of
-# the stored population figures, or the HMIS structure's depth when none are
-# stored). Facilities and any finer admin level in the data are summed away.
-# It does NOT compute any indicator's value: the formula is catalog data and
-# is applied after aggregation, so that a chart at any grouping re-sums the
-# ingredients and evaluates the formula once, exactly.
+# admin area x month grain, and decides WHICH ROWS EXIST. When no indicator
+# formula names a population the grain is the data's own admin level. When
+# one does, the grain is the instance's POPULATION LEVEL, the admin columns
+# of the person-years file: facilities and any finer admin level in the data
+# are summed away.
 #
-# The ingredient table says which base indicator fills which slot for which
-# indicator. This script never parses a formula - it only sums the columns the
-# table names. The table is DATA the app substitutes in below (the
-# INDICATOR_INGREDIENTS token); the logic here is the same in every country.
+# It does NOT write any indicator's value: the formula is applied after
+# aggregation by the app, so that a chart at any grouping re-sums the
+# ingredients and evaluates the formula once, exactly. It DOES evaluate the
+# formula per row, for one purpose:
+#
+#   THE RULE: a row (indicator x area x month) is in the output only if the
+#   indicator's formula over that row's ingredients produces a number.
+#
+# So an ingredient no facility in the area ever reports, a zero denominator,
+# a nullif that fires, or a month or area the population store does not
+# cover all mean the row is absent, and an indicator with no such row is
+# absent from the package altogether. What the app cannot compute, nobody
+# sees: not in a chart, not in a filter list. Keeping such a row instead
+# would let a coarser grouping sum the numerator over cells the
+# denominator never covers. A `coalesce` in the formula is honoured, because
+# the formula decides, not the presence of a slot.
+#
+# Two tables are DATA the app substitutes in below; the logic here is the
+# same in every country:
+#   INDICATOR_INGREDIENTS  - which base indicator (or population) fills which
+#                            slot column of which indicator
+#   INDICATOR_EXPRESSIONS  - each indicator's formula over its slot columns
+#                            (ing1..ing8), in the app's expression language
+#
+# The expression language's syntax is a subset of R's: decimals, + - * /,
+# unary minus, parentheses, and calls to abs, coalesce, nullif. The text is
+# evaluated as R inside an environment that binds `/`, coalesce and nullif to
+# the app evaluator's semantics (lib/indicator_expression/evaluate.ts):
+#   - NA in, NA out, through every operator and abs
+#   - division by zero is NA, not Inf/NaN
+#   - coalesce(a, b, ...) is the first non-NA argument
+#   - nullif(a, b) is NA where a equals b, else a
+# A row is kept when the result is finite. The app's parity test runs this
+# script against the TypeScript evaluator over the same inputs.
 #
 # Population rates: the app expands the instance's annual population counts
 # into monthly PERSON-YEARS (population / 12) per area, which sum like any
@@ -23,15 +52,21 @@ POPULATION_PERSON_YEARS <- "population.csv"
 # "population:<type>" - the same id the ingredient table names in whichever
 # slot the term was assigned (slots follow order of appearance in the
 # formula) - so the join below treats them exactly like a base indicator.
+# The file holds rows only for the cells the stored population covers (its
+# anchored years plus one year of extrapolation either side, per area), so
+# coverage is partial by design and the app records it in the run manifest.
 #
 # INPUTS:
 #   M2_adjusted_data.csv        - facility x month x indicator, four count variants
+#   POPULATION_ACTIVE           - substituted TRUE/FALSE: whether any indicator
+#                                 formula names a population
 #   POPULATION_PERSON_YEARS     - area x month x population_type, person_years
-#                                 at the population level (header-only when no
-#                                 indicator needs it; the header still sets
-#                                 the grain)
+#                                 at the population level, only the covered
+#                                 cells (header-only when not active)
 #   INDICATOR_INGREDIENTS       - substituted tribble of
 #                                 indicator_common_id, slot, ingredient_common_id
+#   INDICATOR_EXPRESSIONS       - substituted tribble of
+#                                 indicator_common_id, expression
 #
 # OUTPUT:
 #   M12_indicator_values.csv    - indicator x month x area, ing1..ing8
@@ -69,30 +104,85 @@ if (length(bad_slots) > 0) {
   ))
 }
 
+expressions <- INDICATOR_EXPRESSIONS
+message(sprintf("Expression table: %d row(s)", nrow(expressions)))
+
+# The two tables describe the same indicators: one is the catalog's slot maps,
+# the other its expressions, both written only for indicators with data.
+unmatched <- c(
+  setdiff(unique(ingredients$indicator_common_id), expressions$indicator_common_id),
+  setdiff(expressions$indicator_common_id, unique(ingredients$indicator_common_id))
+)
+if (length(unmatched) > 0) {
+  stop(sprintf(
+    "ERROR: ingredient and expression tables disagree on indicator(s): %s",
+    paste(unmatched, collapse = ", ")
+  ))
+}
+
+# The evaluator's semantics, bound for eval() below. Each helper reaches
+# base arithmetic through base:: so that binding `/` here cannot recurse.
+formula_env <- new.env(parent = baseenv())
+formula_env[["/"]] <- function(x, y) {
+  out <- base::`/`(x, y)
+  out[!is.na(y) & y == 0] <- NA_real_
+  out
+}
+formula_env[["coalesce"]] <- function(...) {
+  args <- list(...)
+  out <- args[[1]]
+  for (a in args[-1]) {
+    out <- ifelse(is.na(out), a, out)
+  }
+  out
+}
+formula_env[["nullif"]] <- function(x, y) {
+  n <- max(length(x), length(y))
+  x <- rep_len(x, n)
+  y <- rep_len(y, n)
+  x[!is.na(x) & !is.na(y) & x == y] <- NA_real_
+  x
+}
+compiled <- setNames(
+  lapply(expressions$expression, function(e) parse(text = e, keep.source = FALSE)[[1]]),
+  expressions$indicator_common_id
+)
+
 all_geo_cols <- c("admin_area_2", "admin_area_3", "admin_area_4")
 data_geo_cols <- intersect(all_geo_cols, names(adjusted_data))
 if (length(data_geo_cols) == 0) {
   stop("ERROR: no admin area columns in the adjusted data")
 }
 
-# The person-years file's admin columns set this module's grain: the app
-# writes its header at the instance's population level whether or not the
-# file has rows. The data may be finer (it is summed up) but never coarser.
-message("Loading population person-years...")
-population <- read_csv(POPULATION_PERSON_YEARS, show_col_types = FALSE,
-                       col_types = cols(.default = col_character(),
-                                        period_id = col_integer(),
-                                        person_years = col_double()))
-geo_cols <- intersect(all_geo_cols, names(population))
-if (length(geo_cols) == 0) {
-  stop("ERROR: no admin area columns in the population file")
-}
-deeper_than_data <- setdiff(geo_cols, data_geo_cols)
-if (length(deeper_than_data) > 0) {
-  stop(sprintf(
-    "ERROR: the population level is deeper than the data: the population file has %s, which the adjusted data does not",
-    paste(deeper_than_data, collapse = ", ")
-  ))
+population_active <- POPULATION_ACTIVE
+population_types <- sub("^population:", "",
+                        grep("^population:", unique(ingredients$ingredient_common_id), value = TRUE))
+
+# When a formula names a population, the person-years file's admin columns
+# set this module's grain: the app writes its header at the instance's
+# population level. The data may be finer (it is summed up) but never
+# coarser: the app refuses such a run before this script runs, so the check
+# below is defensive. Otherwise the data keeps its own admin level.
+if (population_active) {
+  message("Loading population person-years...")
+  population <- read_csv(POPULATION_PERSON_YEARS, show_col_types = FALSE,
+                         col_types = cols(.default = col_character(),
+                                          period_id = col_integer(),
+                                          person_years = col_double()))
+  geo_cols <- intersect(all_geo_cols, names(population))
+  if (length(geo_cols) == 0) {
+    stop("ERROR: no admin area columns in the population file")
+  }
+  deeper_than_data <- setdiff(geo_cols, data_geo_cols)
+  if (length(deeper_than_data) > 0) {
+    stop(sprintf(
+      "ERROR: the population level is deeper than the data: the population file has %s, which the adjusted data does not",
+      paste(deeper_than_data, collapse = ", ")
+    ))
+  }
+} else {
+  message("No indicator formula names a population: keeping the data's own admin level")
+  geo_cols <- data_geo_cols
 }
 message(sprintf("Aggregating to: %s x period_id", paste(geo_cols, collapse = " x ")))
 
@@ -104,10 +194,19 @@ area_month <- adjusted_data %>%
   summarise(count = sum(.data[[SELECTEDCOUNT]], na.rm = TRUE), .groups = "drop")
 
 # Step 1b: person-years join the area x month table as pseudo-indicator rows,
-# already at geo_cols by construction.
-if (nrow(population) > 0) {
-  message(sprintf("  %d person-year row(s) for population type(s): %s",
-                  nrow(population), paste(unique(population$population_type), collapse = ", ")))
+# already at geo_cols by construction. One log line per population type the
+# ingredient table names: what the file covers is what the run can compute.
+if (population_active) {
+  for (pop_type in population_types) {
+    pop_rows <- population[population$population_type == pop_type, ]
+    if (nrow(pop_rows) == 0) {
+      message(sprintf("  population:%s: no covered cells", pop_type))
+    } else {
+      message(sprintf("  population:%s: %d person-year row(s), %d area(s), %d to %d",
+                      pop_type, nrow(pop_rows), nrow(unique(pop_rows[geo_cols])),
+                      min(pop_rows$period_id), max(pop_rows$period_id)))
+    }
+  }
   area_month <- bind_rows(
     area_month,
     population %>%
@@ -118,8 +217,6 @@ if (nrow(population) > 0) {
         count = person_years
       )
   )
-} else {
-  message("  No person-years in this run (no population rate needs them)")
 }
 
 # An ingredient with no rows in this dataset is NOT an error (PLAN_1a §1.5):
@@ -127,8 +224,11 @@ if (nrow(population) > 0) {
 # is the correct answer and what the app's evaluator expects. Failing here
 # would abort generation on every instance that does not collect one of the
 # seeded default indicators.
-missing <- setdiff(unique(ingredients$ingredient_common_id),
-                   unique(area_month$indicator_common_id))
+# Population ingredients are reported per type above, so they are left out.
+missing <- setdiff(
+  grep("^population:", unique(ingredients$ingredient_common_id), value = TRUE, invert = TRUE),
+  unique(area_month$indicator_common_id)
+)
 if (length(missing) > 0) {
   message(sprintf(
     "Note: no data this run for ingredient indicator(s): %s",
@@ -173,6 +273,28 @@ for (slot in SLOTS) {
     output[[slot]] <- NA_real_
   }
 }
+
+# Step 3: THE RULE (header). Evaluate each indicator's formula over its slot
+# columns and keep the rows where the result is a number. The value itself is
+# not written: the app re-evaluates over sums at whatever grouping a chart
+# asks for. An indicator with no surviving row leaves the output entirely.
+rows_before <- nrow(output)
+if (rows_before > 0) {
+  kept <- lapply(split(output, output$indicator_common_id), function(rows) {
+    id <- rows$indicator_common_id[1]
+    value <- eval(compiled[[id]], envir = rows[SLOTS], enclos = formula_env)
+    value <- rep_len(value, nrow(rows))
+    dropped <- sum(!is.finite(value))
+    if (dropped > 0) {
+      message(sprintf("  %s: %d of %d row(s) produce no value, dropped%s",
+                      id, dropped, nrow(rows),
+                      if (dropped == nrow(rows)) " (indicator absent from output)" else ""))
+    }
+    rows[is.finite(value), ]
+  })
+  output <- bind_rows(kept)
+}
+message(sprintf("Dropped %d row(s) whose formula produces no value", rows_before - nrow(output)))
 
 output <- output %>%
   select(indicator_common_id, period_id, all_of(geo_cols), all_of(SLOTS))
