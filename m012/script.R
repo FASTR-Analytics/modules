@@ -1,7 +1,6 @@
 SELECTEDCOUNT <- "count_final_outliers"  # local development only: the app strips everything above the #--- marker and substitutes the tokens in the body
 POPULATION_PERSON_YEARS <- "population.csv"
 POPULATION_ACTIVE <- TRUE
-POPULATION_TYPE_IDS <- c("population_total", "population_u5", "population_u1", "population_wra", "population_births", "population_pregnancies")
 #-------------------------------------------------------------------------------------------------------------
 # M12: Indicator values
 #
@@ -53,9 +52,7 @@ POPULATION_TYPE_IDS <- c("population_total", "population_u5", "population_u1", "
 # (population_total, ...) - the same id the ingredient table names in
 # whichever slot the term was assigned (slots follow order of appearance in
 # the formula) - so the join below treats them exactly like a base indicator.
-# The app substitutes the type vocabulary as POPULATION_TYPE_IDS: a base
-# indicator id may legitimately start with "population_", so the vocabulary,
-# not a prefix, tells the two apart.
+# This script never tells a population ingredient from a base one.
 # The file holds rows only for the cells the stored population covers (its
 # anchored years plus one year of extrapolation either side, per area), so
 # coverage is partial by design and the app records it in the run manifest.
@@ -64,8 +61,6 @@ POPULATION_TYPE_IDS <- c("population_total", "population_u5", "population_u1", "
 #   M2_adjusted_data.csv        - facility x month x indicator, four count variants
 #   POPULATION_ACTIVE           - substituted TRUE/FALSE: whether any indicator
 #                                 formula names a population
-#   POPULATION_TYPE_IDS         - substituted character vector of every
-#                                 population type id
 #   POPULATION_PERSON_YEARS     - area x month x population_type, person_years
 #                                 at the population level, only the covered
 #                                 cells (header-only when not active)
@@ -162,7 +157,6 @@ if (length(data_geo_cols) == 0) {
 }
 
 population_active <- POPULATION_ACTIVE
-population_types <- intersect(POPULATION_TYPE_IDS, unique(ingredients$ingredient_common_id))
 
 # When a formula names a population, the person-years file's admin columns
 # set this module's grain: the app writes its header at the instance's
@@ -201,17 +195,14 @@ area_month <- adjusted_data %>%
 
 # Step 1b: person-years join the area x month table as pseudo-indicator rows,
 # already at geo_cols by construction. One log line per population type the
-# ingredient table names: what the file covers is what the run can compute.
+# file covers; a referenced type the file lacks shows up in the missing note
+# below like any other ingredient with no rows.
 if (population_active) {
-  for (pop_type in population_types) {
+  for (pop_type in unique(population$population_type)) {
     pop_rows <- population[population$population_type == pop_type, ]
-    if (nrow(pop_rows) == 0) {
-      message(sprintf("  %s: no covered cells", pop_type))
-    } else {
-      message(sprintf("  %s: %d person-year row(s), %d area(s), %d to %d",
-                      pop_type, nrow(pop_rows), nrow(unique(pop_rows[geo_cols])),
-                      min(pop_rows$period_id), max(pop_rows$period_id)))
-    }
+    message(sprintf("  %s: %d person-year row(s), %d area(s), %d to %d",
+                    pop_type, nrow(pop_rows), nrow(unique(pop_rows[geo_cols])),
+                    min(pop_rows$period_id), max(pop_rows$period_id)))
   }
   area_month <- bind_rows(
     area_month,
@@ -230,9 +221,8 @@ if (population_active) {
 # is the correct answer and what the app's evaluator expects. Failing here
 # would abort generation on every instance that does not collect one of the
 # seeded default indicators.
-# Population ingredients are reported per type above, so they are left out.
 missing <- setdiff(
-  setdiff(unique(ingredients$ingredient_common_id), POPULATION_TYPE_IDS),
+  unique(ingredients$ingredient_common_id),
   unique(area_month$indicator_common_id)
 )
 if (length(missing) > 0) {
