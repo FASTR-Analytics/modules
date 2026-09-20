@@ -42,7 +42,7 @@ data <- read.csv(PROJECT_DATA_HFA)
 if (!"weight" %in% names(data)) data$weight <- NA_real_
 
 data_wide <- data %>%
-  pivot_wider(names_from = var_name, values_from = value)
+  pivot_wider(names_from = variable_id, values_from = value)
 
 # Detect facility columns dynamically
 facility_cols <- names(data_wide)[grepl("^(facility_|admin_area_|time_point)", names(data_wide))]
