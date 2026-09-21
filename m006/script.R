@@ -6,7 +6,7 @@ DENOMINATOR_CHAIN <- "auto"  # Options: "auto", "anc1", "delivery", "bcg", "pent
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Apr 20
+# Last edit: 2026 Jul 30
 # Module: COVERAGE ESTIMATES (PART2 - DENOMINATOR SELECTION & SURVEY PROJECTION)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -303,10 +303,8 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
     arrange(across(all_of(c(base_keys, "indicator_common_id", "denominator", "year")))) %>%
 
     # For each (geo, indicator, denominator):
-    # 1) Find pivot year (first year with coverage_cov)
-    # 2) Forward-fill survey up to and including pivot year
-    # 3) Calculate projections starting FROM pivot year using additive formula:
-    #    proj[t] = last_survey + (coverage_cov[t] - coverage_cov[pivot_year])
+    # Projection anchored at the last survey year, additive in coverage units:
+    #    proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
     group_by(across(all_of(c(base_keys, "indicator_common_id", "denominator")))) %>%
     mutate(
       # Find pivot year (first year with coverage_cov)
@@ -337,15 +335,15 @@ build_final_results <- function(coverage_df, proj_df, survey_raw_df = NULL) {
       # At last survey year: copy survey value (anchor point)
       # After: proj[t] = last_survey_value + (coverage_cov[t] - coverage_cov[last_survey_year])
       coverage_avgsurveyprojection = case_when(
-        # Preserve values from proj_df ONLY if at or after last survey year
-        !is.na(coverage_avgsurveyprojection) & year >= .last_survey_year ~ coverage_avgsurveyprojection,
-        # No projection if no baseline
-        is.na(.last_survey_value) | is.na(.last_survey_year) | is.na(.baseline_cov) ~ NA_real_,
+        # No survey baseline at all -> no projection
+        is.na(.last_survey_value) | is.na(.last_survey_year) ~ NA_real_,
         # At last survey year: copy survey value (anchor point)
         year == .last_survey_year ~ .last_survey_value,
         # After last survey year: additive projection
-        year > .last_survey_year & !is.na(coverage_cov) ~
+        year > .last_survey_year & !is.na(coverage_cov) & !is.na(.baseline_cov) ~
           .last_survey_value + (coverage_cov - .baseline_cov),
+        # Fallback where no HMIS coverage exists at the anchor year
+        !is.na(coverage_avgsurveyprojection) & year >= .last_survey_year ~ coverage_avgsurveyprojection,
         # Otherwise NA (including years before last survey)
         TRUE ~ NA_real_
       )
