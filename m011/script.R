@@ -11,7 +11,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"  # injected per country by the platform; loc
 #-------------------------------------------------------------------------------------------------------------
 # FASTR PROJECT
 # Module: BAYESIAN DISRUPTION DETECTION (LI MODEL)
-# Last edit: 2026 Jul 28
+# Last edit: 2026 Sep 21
 #
 # Bayesian model author: Mustapha Wasseja
 # Module integration:    CB
@@ -110,11 +110,12 @@ stopifnot(
 )
 
 print("Loading data...")
-raw_data <- fread(PROJECT_DATA_HMIS)
-adj_data <- fread("M2_adjusted_data.csv")
+# Memory notes: the facility-level M2 file can exceed 80 million rows, so only the columns the model uses are
+# read, admin levels are attached in place, and the facility x month grid is built with data.table.
 
-# Auto-detect available admin_area_X columns in raw HMIS
-admin_cols <- grep("^admin_area_[0-9]+$", names(raw_data), value = TRUE)
+# Auto-detect available admin_area_X columns in raw HMIS (header only)
+hmis_cols <- names(fread(PROJECT_DATA_HMIS, nrows = 0))
+admin_cols <- grep("^admin_area_[0-9]+$", hmis_cols, value = TRUE)
 admin_cols <- admin_cols[order(as.integer(sub("admin_area_", "", admin_cols)))]
 deepest_level <- as.integer(sub("admin_area_", "", tail(admin_cols, 1)))
 print(paste0("[Geo] available admin levels: ",
@@ -123,10 +124,16 @@ print(paste0("[Geo] available admin levels: ",
 
 # M2_adjusted_data already carries some admin levels (m002 auto-detects them
 # too). Pull from raw HMIS only the levels that aren't already on adj_data,
-# to avoid column-name collisions on merge.
-raw_only_cols <- setdiff(admin_cols, names(adj_data))
-admin_lookup <- unique(raw_data[, c("facility_id", raw_only_cols), with = FALSE])
-rm(raw_data); gc()
+# to avoid column-name collisions.
+m2_cols <- names(fread("M2_adjusted_data.csv", nrows = 0))
+raw_only_cols <- setdiff(admin_cols, m2_cols)
+admin_lookup <- unique(fread(PROJECT_DATA_HMIS, select = c("facility_id", raw_only_cols)))
+if (anyDuplicated(admin_lookup, by = "facility_id")) {
+  admin_lookup <- unique(admin_lookup, by = "facility_id")
+}
+adj_data <- fread("M2_adjusted_data.csv",
+                  select = unique(c("facility_id", "indicator_common_id", "period_id",
+                                    intersect(admin_cols, m2_cols), SELECTEDCOUNT)))
 
 # Trim window (YYYYMM int parameter; blank/NA = use all data)
 trim_period <- suppressWarnings(as.integer(TRIM_FROM_PERIOD))
@@ -143,20 +150,20 @@ if (n_zeros > 0L) {
                " — zero policy: ZEROS_REAL = '", ZEROS_REAL, "'"))
 }
 
-# Join admin levels not already on adj_data (admin_area_1 + admin_area_4+)
-adj_data <- merge(adj_data, admin_lookup, by = "facility_id", all.x = TRUE)
+# Join admin levels not already on adj_data (admin_area_1 + admin_area_4+), in place
+if (length(raw_only_cols) > 0) {
+  adj_data[admin_lookup, (raw_only_cols) := mget(paste0("i.", raw_only_cols)), on = "facility_id"]
+}
+rm(admin_lookup)
 adj_data[, value := as.numeric(get(SELECTEDCOUNT))]
 adj_data <- adj_data[!is.na(value)]
 adj_data[, value := pmax(0L, as.integer(round(value)))]
+adj_data[, (SELECTEDCOUNT) := NULL]
 adj_data[, year  := period_id %/% 100L]
 adj_data[, month := period_id %%  100L]
-
-# Keep only the columns the model uses — adj_data stays resident for the whole
-# run, and M2 files carry several unused count variants (big-country RAM win)
-adj_data <- adj_data[, unique(c("facility_id", "indicator_common_id", "period_id",
-                                intersect(admin_cols, names(adj_data)),
-                                "value", "year", "month")), with = FALSE]
-gc()
+setcolorder(adj_data, unique(c("facility_id", "indicator_common_id", "period_id",
+                               intersect(admin_cols, names(adj_data)), "value", "year", "month")))
+invisible(gc())
 
 # ZEROS_REAL = "detect": pick the policy from the data itself, using the same
 # heuristic as test_zero_signature.R — zeros rare -> "all" (convention is
@@ -196,8 +203,13 @@ if (ZEROS_REAL %in% c("auto", "strict")) {
 add_fourier <- function(df, K) {
   w <- 2 * pi * df$month / 12
   for (k in seq_len(K)) {
-    df[[paste0("sin", k)]] <- sin(k * w)
-    df[[paste0("cos", k)]] <- cos(k * w)
+    if (is.data.table(df)) {
+      set(df, j = paste0("sin", k), value = sin(k * w))
+      set(df, j = paste0("cos", k), value = cos(k * w))
+    } else {
+      df[[paste0("sin", k)]] <- sin(k * w)
+      df[[paste0("cos", k)]] <- cos(k * w)
+    }
   }
   df
 }
@@ -298,27 +310,26 @@ for (ind_name in indicators) {
   ok <- tryCatch({
 
   all_facilities <- unique(fac_data[, c("facility_id", admin_cols), with = FALSE])
-  all_periods    <- data.table(period_id = sort(unique(adj_data$period_id)))
+  if (anyDuplicated(all_facilities, by = "facility_id")) {
+    all_facilities <- unique(all_facilities, by = "facility_id")
+  }
+  all_periods    <- sort(unique(adj_data$period_id))
 
-  # Build full facility x period grid
-  full_grid <- as_tibble(CJ(facility_id = all_facilities$facility_id,
-                            period_id   = all_periods$period_id, sorted = FALSE)) %>%
-    mutate(year  = period_id %/% 100L,
-           month = period_id %%  100L) %>%
-    left_join(all_facilities, by = "facility_id") %>%
-    left_join(fac_data %>% select(facility_id, period_id, value),
-              by = c("facility_id", "period_id")) %>%
-    mutate(did_report = as.integer(!is.na(value)))
+  # Build full facility x period grid (data.table, columns attached in place)
+  full_grid <- CJ(facility_id = all_facilities$facility_id, period_id = all_periods, sorted = FALSE)
+  full_grid[, `:=`(year = period_id %/% 100L, month = period_id %% 100L)]
+  full_grid[all_facilities, (admin_cols) := mget(paste0("i.", admin_cols)), on = "facility_id"]
+  full_grid[fac_data, value := i.value, on = .(facility_id, period_id)]
+  full_grid[, did_report := as.integer(!is.na(value))]
 
   # Drop pre-launch months: grid cells before a facility's first-ever report
   # would otherwise count as non-reporting and deflate its Part 1 estimate
   if (isTRUE(as.logical(EXCLUDE_PRELAUNCH))) {
     first_report <- fac_data[, .(first_period = min(period_id)), by = facility_id]
     n_before <- nrow(full_grid)
-    full_grid <- full_grid %>%
-      left_join(as_tibble(first_report), by = "facility_id") %>%
-      dplyr::filter(period_id >= first_period) %>%
-      select(-first_period)
+    full_grid[first_report, first_period := i.first_period, on = "facility_id"]
+    full_grid <- full_grid[period_id >= first_period]
+    full_grid[, first_period := NULL]
     if (n_before > nrow(full_grid)) {
       print(paste0("  [Grid] dropped ", n_before - nrow(full_grid),
                    " pre-launch facility-periods (EXCLUDE_PRELAUNCH)"))
@@ -334,10 +345,9 @@ for (ind_name in indicators) {
                                                 period_id %% 100L)),
                             by = facility_id]
     n_before <- nrow(full_grid)
-    full_grid <- full_grid %>%
-      left_join(as_tibble(last_report), by = "facility_id") %>%
-      dplyr::filter(year * 12L + month <= last_mi + pc_grace) %>%
-      select(-last_mi)
+    full_grid[last_report, last_mi := i.last_mi, on = "facility_id"]
+    full_grid <- full_grid[year * 12L + month <= last_mi + pc_grace]
+    full_grid[, last_mi := NULL]
     if (n_before > nrow(full_grid)) {
       print(paste0("  [Grid] dropped ", n_before - nrow(full_grid),
                    " post-closure facility-periods (POSTCLOSURE_GRACE=",
@@ -346,14 +356,13 @@ for (ind_name in indicators) {
   }
 
   # Time/seasonality covariates (zt scaled on the retained grid)
-  full_grid <- full_grid %>%
-    mutate(time_index = (year - min(year)) * 12L + month) %>%
-    add_fourier(K = FOURIER_K) %>%
-    mutate(zt = as.numeric(scale(time_index)))
+  full_grid[, time_index := (year - min(year)) * 12L + month]
+  add_fourier(full_grid, K = FOURIER_K)
+  full_grid[, zt := as.numeric(scale(time_index))]
 
   fac_levels <- sort(unique(full_grid$facility_id))
-  full_grid$fac_idx   <- match(full_grid$facility_id, fac_levels)
-  full_grid$fac_idx_p <- full_grid$fac_idx
+  full_grid[, fac_idx := match(facility_id, fac_levels)]
+  full_grid[, fac_idx_p := fac_idx]
   n_total <- nrow(full_grid)
   n_rep   <- sum(full_grid$did_report)
   print(paste0("  Grid: ", n_total, " facility-periods | ",
@@ -368,20 +377,24 @@ for (ind_name in indicators) {
     "+ f(fac_idx_p, model = 'iid',",
     "    hyper = list(prec = list(prior = 'pc.prec', param = c(1, 0.01))))"
   ))
+  # return.marginals = FALSE: only the summary tables are used below, so the per-facility latent marginals
+  # need not be returned (results are unchanged)
   fit_p <- inla(f_report,
                 family             = "binomial",
                 Ntrials            = rep(1, n_total),
                 data               = as.data.frame(full_grid),
                 control.predictor  = list(compute = TRUE, link = 1),
+                control.compute    = list(return.marginals = FALSE),
                 control.inla       = list(strategy = "adaptive"),
                 num.threads        = inla_nthreads,
                 verbose            = FALSE)
-  full_grid$p_fitted <- fit_p$summary.fitted.values$`0.5quant`
+  full_grid[, p_fitted := fit_p$summary.fitted.values$`0.5quant`]
+  rm(fit_p)
 
   # ── Part 2: Service (NegBin on reporters) ──
   print("  [Part 2] Fitting NegBin service model on reporters...")
-  reported_data <- full_grid %>% dplyr::filter(did_report == 1)
-  reported_data$fac_idx_mu <- reported_data$fac_idx
+  reported_data <- full_grid[did_report == 1L]
+  reported_data[, fac_idx_mu := fac_idx]
   f_service <- as.formula(paste(
     "value ~ 1 + zt +", fourier_terms,
     "+ f(fac_idx_mu, model = 'iid',",
@@ -391,12 +404,13 @@ for (ind_name in indicators) {
                  family            = "nbinomial",
                  data              = as.data.frame(reported_data),
                  control.predictor = list(compute = TRUE, link = 1),
+                 control.compute   = list(return.marginals = FALSE),
                  control.inla      = list(strategy = "adaptive"),
                  num.threads       = inla_nthreads,
                  verbose           = FALSE)
-  reported_data$mu_fitted <- fit_mu$summary.fitted.values$`0.5quant`
-  reported_data$mu_lwr    <- fit_mu$summary.fitted.values$`0.025quant`
-  reported_data$mu_upr    <- fit_mu$summary.fitted.values$`0.975quant`
+  reported_data[, `:=`(mu_fitted = fit_mu$summary.fitted.values$`0.5quant`,
+                       mu_lwr    = fit_mu$summary.fitted.values$`0.025quant`,
+                       mu_upr    = fit_mu$summary.fitted.values$`0.975quant`)]
 
   # Model-expected mu for EVERY grid cell, including non-reporting months —
   # feeds the gap decomposition (expected_full / expected_as). Rebuilt from
@@ -411,11 +425,10 @@ for (ind_name in indicators) {
   re_tab <- fit_mu$summary.random$fac_idx_mu
   fac_re <- re_tab$mean[match(full_grid$fac_idx, re_tab$ID)]
   fac_re[is.na(fac_re)] <- 0
-  full_grid <- full_grid %>%
-    mutate(mu_predicted = exp(lin_pred + fac_re)) %>%
-    left_join(reported_data %>% select(facility_id, period_id, mu_fitted),
-              by = c("facility_id", "period_id")) %>%
-    mutate(mu_final = dplyr::coalesce(mu_fitted, mu_predicted))
+  full_grid[, mu_predicted := exp(lin_pred + fac_re)]
+  rm(lin_pred, fac_re)
+  full_grid[reported_data, mu_fitted := i.mu_fitted, on = .(facility_id, period_id)]
+  full_grid[, mu_final := fcoalesce(mu_fitted, mu_predicted)]
 
   # Optional joint-posterior draws for properly calibrated subnational CI
   draws_mat <- NULL
@@ -492,7 +505,7 @@ for (ind_name in indicators) {
     out_admin4[[ind_name]] <- rollup(c("admin_area_2", "admin_area_3", "admin_area_4"))
   }
 
-  rm(full_grid, reported_data, fit_p, fit_mu, draws_mat); gc()
+  rm(full_grid, reported_data, fit_mu, draws_mat); gc()
 
   # Crash-safety: persist accumulated results after every indicator, so a
   # mid-run failure (e.g. OOM on a later indicator) loses nothing already done
