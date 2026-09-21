@@ -21,10 +21,20 @@ EXCLUDED_PATTERN <- "death|still_birth"
 WINDOW_MONTHS    <- 7   # rolling window width; odd so the centred window is symmetric
 MIN_VALID_MONTHS <- 3   # minimum valid months required inside a window for it to be used
 
-# Load
-raw_data         <- fread(PROJECT_DATA_HMIS)
-outlier_data     <- fread("M1_output_outliers.csv")
-completeness_data<- fread("M1_output_completeness.csv")
+# Memory notes: the facility-level table can exceed 80 million rows. Only the columns that are used are read,
+# the four scenarios are computed on one table (the outlier step is shared by the "outliers" and "both"
+# scenarios), temporary columns are created one at a time and dropped as soon as they are used, and the
+# same-month-last-year lookup is built only for the series that need it.
+
+# Load (only the columns used)
+hmis_cols <- names(fread(PROJECT_DATA_HMIS, nrows = 0))
+geo_cols  <- grep("^admin_area_[0-9]+$", hmis_cols, value = TRUE)
+raw_data         <- fread(PROJECT_DATA_HMIS,
+                          select = c("facility_id", geo_cols, "period_id", "indicator_common_id", "count"))
+outlier_data     <- fread("M1_output_outliers.csv",
+                          select = c("facility_id", "indicator_common_id", "period_id", "outlier_flag"))
+completeness_data<- fread("M1_output_completeness.csv",
+                          select = c("facility_id", "indicator_common_id", "period_id", "completeness_flag"))
 
 setDT(raw_data); setDT(outlier_data); setDT(completeness_data)
 
@@ -36,13 +46,15 @@ LOW_VOLUME_INDICATORS <- low_volume_check[has_volume == FALSE, indicator_common_
 message("Indicators excluded from adjustment (volume < 100): ",
         if (length(LOW_VOLUME_INDICATORS) > 0) paste(LOW_VOLUME_INDICATORS, collapse = ", ") else "None")
 
-# Geo columns
-geo_cols <- grep("^admin_area_[0-9]+$", names(raw_data), value = TRUE)
+# Facility -> admin area lookup, then the geo columns are dropped from the raw table
+geo_lookup <- unique(raw_data[, .SD, .SDcols = c("facility_id", geo_cols)])
+raw_data[, (geo_cols) := NULL]
+if (anyDuplicated(geo_lookup, by = "facility_id")) {
+  message("NOTE: some facilities carry more than one admin area combination; the first is used")
+  geo_lookup <- unique(geo_lookup, by = "facility_id")
+}
 
 # ----------------------------- Adjustment core --------------------------------------------------------------
-# Memory notes: the facility-level table can exceed 80 million rows, so temporary columns are created one at a
-# time and dropped as soon as they are used, and the same-month-last-year lookup is built only for the series
-# that need it. Results are identical to computing everything at once.
 
 # Rolling mean over WINDOW_MONTHS valid months for one alignment, kept only where at least MIN_VALID_MONTHS
 # of the window are valid.
@@ -69,157 +81,136 @@ smly_lookup <- function(dt, target) {
   hit[!is.na(smly)]
 }
 
-apply_adjustments <- function(raw_data, completeness_data, outlier_data,
-                              adjust_outliers = FALSE, adjust_completeness = FALSE) {
-  message("Running adjustments...")
-  
-  # Merge inputs (period_id only)
-  data_adj <- merge(
-    completeness_data[, .(facility_id, indicator_common_id, period_id, completeness_flag)],
-    outlier_data[, .(facility_id, indicator_common_id, period_id, outlier_flag)],
-    by = c("facility_id", "indicator_common_id", "period_id"),
-    all.x = TRUE
-  )
+# Outlier adjustment: replaces flagged outliers in count_working (in place)
+adjust_outliers_step <- function(dt) {
+  message(" -> Adjusting outliers...")
+  dt[, adj_method := NA_character_]
+  dt[, valid_count := fifelse(outlier_flag == 0L & !is.na(count), count, NA_real_)]
+  roll_fill(dt, "valid_count", "roll6", "center")
+  roll_fill(dt, "valid_count", "fwd6",  "left")
+  roll_fill(dt, "valid_count", "bwd6",  "right")
+
+  dt[outlier_flag == 1L & !is.na(roll6),                        `:=`(count_working = roll6, adj_method = "roll6")]
+  dt[outlier_flag == 1L & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_method = "forward")]
+  dt[outlier_flag == 1L & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
+     `:=`(count_working = bwd6, adj_method = "backward")]
+  dt[, c("roll6", "fwd6", "bwd6") := NULL]
+
+  # same-month last year fallback
+  hit <- smly_lookup(dt, dt[outlier_flag == 1L & is.na(adj_method), .(facility_id, indicator_common_id, mm, yy)])
+  if (!is.null(hit) && nrow(hit) > 0L) {
+    dt[hit, on = .(facility_id, indicator_common_id, mm, yy),
+       `:=`(count_working = i.smly, adj_method = "same_month_last_year")]
+  }
+
+  dt[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
+  dt[outlier_flag == 1L & is.na(adj_method), `:=`(count_working = fallback, adj_method = "fallback")]
+  dt[, c("fallback", "valid_count") := NULL]
+
+  message("     Roll6 adjusted: ", sum(dt$adj_method == "roll6", na.rm = TRUE))
+  message("     Forward-filled: ", sum(dt$adj_method == "forward", na.rm = TRUE))
+  message("     Backward-filled:", sum(dt$adj_method == "backward", na.rm = TRUE))
+  message("     Same-month LY:  ", sum(dt$adj_method == "same_month_last_year", na.rm = TRUE))
+  message("     Fallback mean:  ", sum(dt$adj_method == "fallback", na.rm = TRUE))
+  dt[, adj_method := NULL]
+  invisible(dt)
+}
+
+# Completeness adjustment: fills missing count_working (in place)
+adjust_completeness_step <- function(dt) {
+  message(" -> Adjusting for completeness...")
+  dt[, valid_count := fifelse(!is.na(count_working) & outlier_flag == 0L, count_working, NA_real_)]
+  roll_fill(dt, "valid_count", "roll6", "center")
+  roll_fill(dt, "valid_count", "fwd6",  "left")
+  roll_fill(dt, "valid_count", "bwd6",  "right")
+
+  dt[, adj_source := NA_character_]
+  dt[is.na(count_working) & !is.na(roll6),                        `:=`(count_working = roll6, adj_source = "roll6")]
+  dt[is.na(count_working) & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_source = "forward")]
+  dt[is.na(count_working) & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
+     `:=`(count_working = bwd6, adj_source = "backward")]
+  dt[, c("roll6", "fwd6", "bwd6") := NULL]
+
+  hit <- smly_lookup(dt, dt[is.na(count_working), .(facility_id, indicator_common_id, mm, yy)])
+  if (!is.null(hit) && nrow(hit) > 0L) {
+    dt[hit, on = .(facility_id, indicator_common_id, mm, yy),
+       `:=`(count_working = i.smly, adj_source = "same_month_last_year")]
+  }
+
+  dt[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
+  dt[is.na(count_working), `:=`(count_working = fallback, adj_source = "fallback")]
+
+  message("     Roll6 filled:    ", sum(dt$adj_source == "roll6",   na.rm = TRUE))
+  message("     Forward-filled:  ", sum(dt$adj_source == "forward", na.rm = TRUE))
+  message("     Backward-filled: ", sum(dt$adj_source == "backward",na.rm = TRUE))
+  message("     Same-month LY:   ", sum(dt$adj_source == "same_month_last_year", na.rm = TRUE))
+  message("     Fallback mean:   ", sum(dt$adj_source == "fallback",na.rm = TRUE))
+  dt[, c("valid_count", "fallback", "adj_source") := NULL]
+  invisible(dt)
+}
+
+# ----------------------------- Scenarios --------------------------------------------------------------------
+# All four scenarios on one table:
+#   none         = raw count
+#   outliers     = outlier step
+#   both         = outlier step, then completeness step (continues from the outlier-adjusted values)
+#   completeness = completeness step on the raw counts
+# Excluded indicators (EXCLUDED_PATTERN, low volume) keep the raw count in every scenario.
+apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_data) {
+  message("Applying adjustments across scenarios...")
+
+  # Row universe = the completeness table (one row per facility, indicator, period); outlier flags and raw
+  # counts are attached in place, so no copy of the full table is made.
+  keys <- c("facility_id", "indicator_common_id", "period_id")
+  data_adj <- completeness_data[, .(facility_id, indicator_common_id, period_id)]
+  data_adj[outlier_data, outlier_flag := i.outlier_flag, on = keys]
   data_adj[, outlier_flag := fifelse(is.na(outlier_flag), 0L, outlier_flag)]
-  
-  data_adj <- merge(
-    data_adj,
-    raw_data[, .(facility_id, indicator_common_id, period_id, count)],
-    by = c("facility_id", "indicator_common_id", "period_id"),
-    all.x = TRUE
-  )
-  
+  data_adj[raw_data, count := i.count, on = keys]
+
   # period_id (YYYYMM) orders the same way as a date; month and year are read from it directly
   data_adj[, period_id := as.integer(period_id)]
   setorder(data_adj, facility_id, indicator_common_id, period_id)
   data_adj[, `:=`(mm = period_id %% 100L, yy = period_id %/% 100L)]
-  
-  data_adj[, `:=`(count_working = as.numeric(count),
-                  adj_method = NA_character_, adjust_note = NA_character_)]
-  
-  # -------- Outlier adjustment --------
-  if (adjust_outliers) {
-    message(" -> Adjusting outliers...")
-    data_adj[, valid_count := fifelse(outlier_flag == 0L & !is.na(count), count, NA_real_)]
-    roll_fill(data_adj, "valid_count", "roll6", "center")
-    roll_fill(data_adj, "valid_count", "fwd6",  "left")
-    roll_fill(data_adj, "valid_count", "bwd6",  "right")
+  data_adj[, excluded := grepl(EXCLUDED_PATTERN, indicator_common_id, ignore.case = TRUE) |
+                         indicator_common_id %in% LOW_VOLUME_INDICATORS]
 
-    data_adj[outlier_flag == 1L & !is.na(roll6),                        `:=`(count_working = roll6, adj_method = "roll6")]
-    data_adj[outlier_flag == 1L & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_method = "forward")]
-    data_adj[outlier_flag == 1L & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
-             `:=`(count_working = bwd6, adj_method = "backward")]
-    data_adj[, c("roll6", "fwd6", "bwd6") := NULL]
+  message(" -> Scenario: none")
+  data_adj[, count_final_none := as.numeric(count)]
 
-    # same-month last year fallback
-    hit <- smly_lookup(data_adj, data_adj[outlier_flag == 1L & is.na(adj_method),
-                                          .(facility_id, indicator_common_id, mm, yy)])
-    if (!is.null(hit) && nrow(hit) > 0L) {
-      data_adj[hit, on = .(facility_id, indicator_common_id, mm, yy),
-               `:=`(count_working = i.smly,
-                    adj_method    = "same_month_last_year",
-                    adjust_note   = sprintf("%04d-%02d", i.yy - 1L, i.mm))]
-    }
+  message(" -> Scenario: outliers")
+  data_adj[, count_working := as.numeric(count)]
+  adjust_outliers_step(data_adj)
+  data_adj[, count_final_outliers := fifelse(excluded, as.numeric(count), count_working)]
 
-    data_adj[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
-    data_adj[outlier_flag == 1L & is.na(adj_method), `:=`(count_working = fallback, adj_method = "fallback")]
-    data_adj[, c("fallback", "valid_count") := NULL]
-    
-    message("     Roll6 adjusted: ", sum(data_adj$adj_method == "roll6", na.rm = TRUE))
-    message("     Forward-filled: ", sum(data_adj$adj_method == "forward", na.rm = TRUE))
-    message("     Backward-filled:", sum(data_adj$adj_method == "backward", na.rm = TRUE))
-    message("     Same-month LY:  ", sum(data_adj$adj_method == "same_month_last_year", na.rm = TRUE))
-    message("     Fallback mean:  ", sum(data_adj$adj_method == "fallback", na.rm = TRUE))
-  }
-  
-  # -------- Completeness adjustment --------
-  if (adjust_completeness) {
-    message(" -> Adjusting for completeness...")
-    data_adj[, valid_count := fifelse(!is.na(count_working) & outlier_flag == 0L, count_working, NA_real_)]
-    roll_fill(data_adj, "valid_count", "roll6", "center")
-    roll_fill(data_adj, "valid_count", "fwd6",  "left")
-    roll_fill(data_adj, "valid_count", "bwd6",  "right")
+  message(" -> Scenario: both")
+  adjust_completeness_step(data_adj)
+  data_adj[, count_final_both := fifelse(excluded, as.numeric(count), count_working)]
 
-    data_adj[, adj_source := NA_character_]
-    data_adj[is.na(count_working) & !is.na(roll6),                        `:=`(count_working = roll6, adj_source = "roll6")]
-    data_adj[is.na(count_working) & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_source = "forward")]
-    data_adj[is.na(count_working) & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
-             `:=`(count_working = bwd6, adj_source = "backward")]
-    data_adj[, c("roll6", "fwd6", "bwd6") := NULL]
+  message(" -> Scenario: completeness")
+  data_adj[, count_working := as.numeric(count)]
+  adjust_completeness_step(data_adj)
+  data_adj[, count_final_completeness := fifelse(excluded, as.numeric(count), count_working)]
 
-    hit <- smly_lookup(data_adj, data_adj[is.na(count_working), .(facility_id, indicator_common_id, mm, yy)])
-    if (!is.null(hit) && nrow(hit) > 0L) {
-      data_adj[hit, on = .(facility_id, indicator_common_id, mm, yy),
-               `:=`(count_working = i.smly, adj_source = "same_month_last_year")]
-    }
-
-    data_adj[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
-    data_adj[is.na(count_working),                                       `:=`(count_working = fallback, adj_source = "fallback")]
-
-    message("     Roll6 filled:    ", sum(data_adj$adj_source == "roll6",   na.rm = TRUE))
-    message("     Forward-filled:  ", sum(data_adj$adj_source == "forward", na.rm = TRUE))
-    message("     Backward-filled: ", sum(data_adj$adj_source == "backward",na.rm = TRUE))
-    message("     Same-month LY:   ", sum(data_adj$adj_source == "same_month_last_year", na.rm = TRUE))
-    message("     Fallback mean:   ", sum(data_adj$adj_source == "fallback",na.rm = TRUE))
-
-    data_adj[, c("valid_count", "fallback", "adj_source") := NULL]
-  }
-  
-  data_adj[, c("mm", "yy") := NULL]
-  return(data_adj[])
-}
-
-# ----------------------------- Scenarios wrapper ------------------------------------------------------------
-apply_adjustments_scenarios <- function(raw_data, completeness_data, outlier_data) {
-  message("Applying adjustments across scenarios...")
-  join_cols <- c("facility_id","indicator_common_id","period_id")
-  
-  scenarios <- list(
-    none          = list(adjust_outliers = FALSE, adjust_completeness = FALSE),
-    outliers      = list(adjust_outliers = TRUE,  adjust_completeness = FALSE),
-    completeness  = list(adjust_outliers = FALSE, adjust_completeness = TRUE),
-    both          = list(adjust_outliers = TRUE,  adjust_completeness = TRUE)
-  )
-  
-  results <- lapply(names(scenarios), function(scn) {
-    message(" -> Scenario: ", scn)
-    opts <- scenarios[[scn]]
-    dat  <- apply_adjustments(raw_data, completeness_data, outlier_data,
-                              adjust_outliers = opts$adjust_outliers,
-                              adjust_completeness = opts$adjust_completeness)
-    dat[grepl(EXCLUDED_PATTERN, indicator_common_id, ignore.case = TRUE) |
-        indicator_common_id %in% LOW_VOLUME_INDICATORS, count_working := count]
-    dat <- dat[, .(facility_id, indicator_common_id, period_id,
-                   count_final = count_working)]
-    setnames(dat, "count_final", paste0("count_final_", scn))
-    dat
-  })
-  names(results) <- names(scenarios)
-  
-  Reduce(function(x, y) merge(x, y, by = join_cols, all = TRUE), results)
+  data_adj[, c("count_working", "count", "outlier_flag", "mm", "yy", "excluded") := NULL]
+  setcolorder(data_adj, c("facility_id", "indicator_common_id", "period_id",
+                          "count_final_none", "count_final_outliers", "count_final_completeness", "count_final_both"))
+  data_adj[]
 }
 
 # ----------------------------- Main -------------------------------------------------------------------------
 message("Running adjustments analysis...")
 
-adjusted_data_final <- apply_adjustments_scenarios(
+adjusted_data_export <- apply_adjustments_scenarios(
   raw_data = raw_data,
   completeness_data = completeness_data,
   outlier_data = outlier_data
 )
+rm(completeness_data, outlier_data, raw_data); invisible(gc())
 
-# Metadata lookups
-geo_lookup <- unique(raw_data[, .SD, .SDcols = c("facility_id", geo_cols)])
-
-# Merge metadata into facility-level adjusted data
-setDT(adjusted_data_final)
-setkey(adjusted_data_final, facility_id)
-setkey(geo_lookup, facility_id)
-
-adjusted_data_export <- merge(adjusted_data_final, geo_lookup, by = "facility_id", all.x = TRUE)
+# Attach admin areas to the facility-level adjusted data (in place)
+adjusted_data_export[geo_lookup, on = "facility_id", (geo_cols) := mget(paste0("i.", geo_cols))]
 
 # Geo sets
-geo_cols <- grep("^admin_area_[0-9]+$", names(adjusted_data_export), value = TRUE)
 geo_admin_area_sub <- setdiff(geo_cols, "admin_area_1")
 
 message("Detected admin area columns: ", paste(geo_cols, collapse = ", "))
@@ -258,12 +249,12 @@ adjusted_data_national_final <- adjusted_data_export[
 ]
 
 # --------------------------- Save Outputs -------------------------------------------------------------------
-# Drop admin_area_1 from facility-level file for cleanliness (unchanged)
-adjusted_data_export_clean <- adjusted_data_export[, !"admin_area_1"]
-
-fwrite(adjusted_data_export_clean,     "M2_adjusted_data.csv",            na = "NA")
 fwrite(adjusted_data_admin_area_final, "M2_adjusted_data_admin_area.csv", na = "NA")
 fwrite(adjusted_data_national_final,   "M2_adjusted_data_national.csv",   na = "NA")
 fwrite(low_volume_check[, .(indicator_common_id, low_volume_exclude)], "M2_low_volume_exclusions.csv", na = "NA")
+
+# Facility-level file without admin_area_1 (dropped in place, no copy of the table)
+adjusted_data_export[, admin_area_1 := NULL]
+fwrite(adjusted_data_export, "M2_adjusted_data.csv", na = "NA")
 
 message("Adjustments completed and all outputs saved.")
