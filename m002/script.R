@@ -4,7 +4,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
 # Module: DATA QUALITY ADJUSTMENT
-# Last edit: 2026 Jul 30
+# Last edit: 2026 Sep 21
 #-------------------------------------------------------------------------------------------------------------
 
 # -------------------------- KEY OUTPUT ----------------------------------------------------------------------
@@ -40,6 +40,35 @@ message("Indicators excluded from adjustment (volume < 100): ",
 geo_cols <- grep("^admin_area_[0-9]+$", names(raw_data), value = TRUE)
 
 # ----------------------------- Adjustment core --------------------------------------------------------------
+# Memory notes: the facility-level table can exceed 80 million rows, so temporary columns are created one at a
+# time and dropped as soon as they are used, and the same-month-last-year lookup is built only for the series
+# that need it. Results are identical to computing everything at once.
+
+# Rolling mean over WINDOW_MONTHS valid months for one alignment, kept only where at least MIN_VALID_MONTHS
+# of the window are valid.
+roll_fill <- function(dt, valid_col, out_col, align) {
+  dt[, (out_col) := frollmean(get(valid_col), WINDOW_MONTHS, na.rm = TRUE, align = align),
+     by = .(facility_id, indicator_common_id)]
+  dt[, n_valid := frollsum(as.integer(!is.na(get(valid_col))), WINDOW_MONTHS, align = align),
+     by = .(facility_id, indicator_common_id)]
+  dt[is.na(n_valid) | n_valid < MIN_VALID_MONTHS, (out_col) := NA_real_]
+  dt[, n_valid := NULL]
+  invisible(dt)
+}
+
+# Same-month-last-year value for the rows in `target` (facility_id, indicator_common_id, mm, yy): the raw,
+# non-outlier count of the same month one year earlier, when exactly one such record exists.
+smly_lookup <- function(dt, target) {
+  if (nrow(target) == 0L) return(NULL)
+  series <- unique(target[, .(facility_id, indicator_common_id)])
+  src <- dt[series, on = .(facility_id, indicator_common_id), nomatch = NULL,
+            .(facility_id, indicator_common_id, mm, yy = yy + 1L, count, outlier_flag)]
+  src <- src[outlier_flag == 0L & !is.na(count)]
+  src <- src[, .(smly = if (.N == 1L) count else NA_real_), by = .(facility_id, indicator_common_id, mm, yy)]
+  hit <- src[target, on = .(facility_id, indicator_common_id, mm, yy), nomatch = NULL]
+  hit[!is.na(smly)]
+}
+
 apply_adjustments <- function(raw_data, completeness_data, outlier_data,
                               adjust_outliers = FALSE, adjust_completeness = FALSE) {
   message("Running adjustments...")
@@ -60,9 +89,10 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
     all.x = TRUE
   )
   
-  # Date (internal only)
-  data_adj[, date := as.Date(sprintf("%04d-%02d-01", as.integer(period_id) %/% 100, as.integer(period_id) %% 100))]
-  setorder(data_adj, facility_id, indicator_common_id, date)
+  # period_id (YYYYMM) orders the same way as a date; month and year are read from it directly
+  data_adj[, period_id := as.integer(period_id)]
+  setorder(data_adj, facility_id, indicator_common_id, period_id)
+  data_adj[, `:=`(mm = period_id %% 100L, yy = period_id %/% 100L)]
   
   data_adj[, `:=`(count_working = as.numeric(count),
                   adj_method = NA_character_, adjust_note = NA_character_)]
@@ -71,80 +101,59 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
   if (adjust_outliers) {
     message(" -> Adjusting outliers...")
     data_adj[, valid_count := fifelse(outlier_flag == 0L & !is.na(count), count, NA_real_)]
-    data_adj[, valid_ind := as.integer(!is.na(valid_count))]
-    data_adj[, `:=`(
-      roll6   = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "center"),
-      fwd6    = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "left"),
-      bwd6    = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "right"),
-      n_c     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "center"),
-      n_f     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "left"),
-      n_b     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "right"),
-      fallback= mean(valid_count, na.rm = TRUE)
-    ), by = .(facility_id, indicator_common_id)]
-    data_adj[is.na(n_c) | n_c < MIN_VALID_MONTHS, roll6 := NA_real_]
-    data_adj[is.na(n_f) | n_f < MIN_VALID_MONTHS, fwd6  := NA_real_]
-    data_adj[is.na(n_b) | n_b < MIN_VALID_MONTHS, bwd6  := NA_real_]
+    roll_fill(data_adj, "valid_count", "roll6", "center")
+    roll_fill(data_adj, "valid_count", "fwd6",  "left")
+    roll_fill(data_adj, "valid_count", "bwd6",  "right")
 
     data_adj[outlier_flag == 1L & !is.na(roll6),                        `:=`(count_working = roll6, adj_method = "roll6")]
     data_adj[outlier_flag == 1L & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_method = "forward")]
     data_adj[outlier_flag == 1L & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
              `:=`(count_working = bwd6, adj_method = "backward")]
-    # same-month last year fallback (uses month/year only internally)
-    data_adj[, `:=`(mm = month(date), yy = year(date))]
-    smly_src <- data_adj[outlier_flag == 0L & !is.na(count),
-                         .(facility_id, indicator_common_id, mm, yy = yy + 1L, count)
-                         ][, .(smly = if (.N == 1L) count else NA_real_),
-                           by = .(facility_id, indicator_common_id, mm, yy)]
-    data_adj[smly_src, smly := i.smly, on = .(facility_id, indicator_common_id, mm, yy)]
-    data_adj[outlier_flag == 1L & is.na(adj_method) & !is.na(smly),
-             `:=`(count_working = smly,
-                  adj_method    = "same_month_last_year",
-                  adjust_note   = sprintf("%04d-%02d", yy - 1L, mm))]
+    data_adj[, c("roll6", "fwd6", "bwd6") := NULL]
 
+    # same-month last year fallback
+    hit <- smly_lookup(data_adj, data_adj[outlier_flag == 1L & is.na(adj_method),
+                                          .(facility_id, indicator_common_id, mm, yy)])
+    if (!is.null(hit) && nrow(hit) > 0L) {
+      data_adj[hit, on = .(facility_id, indicator_common_id, mm, yy),
+               `:=`(count_working = i.smly,
+                    adj_method    = "same_month_last_year",
+                    adjust_note   = sprintf("%04d-%02d", i.yy - 1L, i.mm))]
+    }
+
+    data_adj[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
     data_adj[outlier_flag == 1L & is.na(adj_method), `:=`(count_working = fallback, adj_method = "fallback")]
+    data_adj[, c("fallback", "valid_count") := NULL]
     
     message("     Roll6 adjusted: ", sum(data_adj$adj_method == "roll6", na.rm = TRUE))
     message("     Forward-filled: ", sum(data_adj$adj_method == "forward", na.rm = TRUE))
     message("     Backward-filled:", sum(data_adj$adj_method == "backward", na.rm = TRUE))
     message("     Same-month LY:  ", sum(data_adj$adj_method == "same_month_last_year", na.rm = TRUE))
     message("     Fallback mean:  ", sum(data_adj$adj_method == "fallback", na.rm = TRUE))
-    
-    data_adj[, c("roll6","fwd6","bwd6","n_c","n_f","n_b","fallback","valid_count","valid_ind","mm","yy","smly") := NULL]
   }
   
   # -------- Completeness adjustment --------
   if (adjust_completeness) {
     message(" -> Adjusting for completeness...")
     data_adj[, valid_count := fifelse(!is.na(count_working) & outlier_flag == 0L, count_working, NA_real_)]
-    data_adj[, valid_ind := as.integer(!is.na(valid_count))]
-    data_adj[, `:=`(
-      roll6   = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "center"),
-      fwd6    = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "left"),
-      bwd6    = frollmean(valid_count, WINDOW_MONTHS, na.rm = TRUE, align = "right"),
-      n_c     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "center"),
-      n_f     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "left"),
-      n_b     = frollsum(valid_ind,    WINDOW_MONTHS, na.rm = TRUE, align = "right"),
-      fallback= mean(valid_count, na.rm = TRUE)
-    ), by = .(facility_id, indicator_common_id)]
-    data_adj[is.na(n_c) | n_c < MIN_VALID_MONTHS, roll6 := NA_real_]
-    data_adj[is.na(n_f) | n_f < MIN_VALID_MONTHS, fwd6  := NA_real_]
-    data_adj[is.na(n_b) | n_b < MIN_VALID_MONTHS, bwd6  := NA_real_]
+    roll_fill(data_adj, "valid_count", "roll6", "center")
+    roll_fill(data_adj, "valid_count", "fwd6",  "left")
+    roll_fill(data_adj, "valid_count", "bwd6",  "right")
 
     data_adj[, adj_source := NA_character_]
     data_adj[is.na(count_working) & !is.na(roll6),                        `:=`(count_working = roll6, adj_source = "roll6")]
     data_adj[is.na(count_working) & is.na(roll6) & !is.na(fwd6),          `:=`(count_working = fwd6, adj_source = "forward")]
     data_adj[is.na(count_working) & is.na(roll6) & is.na(fwd6) & !is.na(bwd6),
              `:=`(count_working = bwd6, adj_source = "backward")]
+    data_adj[, c("roll6", "fwd6", "bwd6") := NULL]
 
-    data_adj[, `:=`(mm = month(date), yy = year(date))]
-    smly_src <- data_adj[outlier_flag == 0L & !is.na(count),
-                         .(facility_id, indicator_common_id, mm, yy = yy + 1L, count)
-                         ][, .(smly = if (.N == 1L) count else NA_real_),
-                           by = .(facility_id, indicator_common_id, mm, yy)]
-    data_adj[smly_src, smly := i.smly, on = .(facility_id, indicator_common_id, mm, yy)]
-    data_adj[is.na(count_working) & !is.na(smly),
-             `:=`(count_working = smly, adj_source = "same_month_last_year")]
+    hit <- smly_lookup(data_adj, data_adj[is.na(count_working), .(facility_id, indicator_common_id, mm, yy)])
+    if (!is.null(hit) && nrow(hit) > 0L) {
+      data_adj[hit, on = .(facility_id, indicator_common_id, mm, yy),
+               `:=`(count_working = i.smly, adj_source = "same_month_last_year")]
+    }
 
+    data_adj[, fallback := mean(valid_count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
     data_adj[is.na(count_working),                                       `:=`(count_working = fallback, adj_source = "fallback")]
 
     message("     Roll6 filled:    ", sum(data_adj$adj_source == "roll6",   na.rm = TRUE))
@@ -153,9 +162,10 @@ apply_adjustments <- function(raw_data, completeness_data, outlier_data,
     message("     Same-month LY:   ", sum(data_adj$adj_source == "same_month_last_year", na.rm = TRUE))
     message("     Fallback mean:   ", sum(data_adj$adj_source == "fallback",na.rm = TRUE))
 
-    data_adj[, c("valid_count","valid_ind","roll6","fwd6","bwd6","n_c","n_f","n_b","fallback","adj_source","mm","yy","smly") := NULL]
+    data_adj[, c("valid_count", "fallback", "adj_source") := NULL]
   }
   
+  data_adj[, c("mm", "yy") := NULL]
   return(data_adj[])
 }
 
