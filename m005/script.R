@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Apr 20
+# Last edit: 2026 Jul 30
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
@@ -834,9 +834,12 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
   # DENOMINATORS FROM BCG DATA (NATIONAL ANALYSIS ONLY)
   if (!has_admin_area_2 && all(indicator_vars$bcg %in% available_vars)) {
     data <- data %>% mutate(
-      dbcg_pregnancy = safe_mutate("bcg", (countbcg / bcgcarry) / (1 - PREGNANCY_LOSS_RATE) / (1 + TWIN_RATE) / (1 - STILLBIRTH_RATE)),
       dbcg_livebirth = safe_mutate("bcg", countbcg / bcgcarry),
-      dbcg_dpt = safe_mutate("bcg", (countbcg / bcgcarry) * (1 - P1_NMR))
+      dbcg_birth = safe_calc(dbcg_livebirth / (1 - STILLBIRTH_RATE)),
+      dbcg_pregnancy = safe_calc(dbcg_birth * (1 - 0.5 * TWIN_RATE) / (1 - PREGNANCY_LOSS_RATE)),
+      dbcg_dpt = safe_calc(dbcg_livebirth * (1 - P1_NMR)),
+      dbcg_measles1 = safe_calc(dbcg_dpt * (1 - P2_PNMR)),
+      dbcg_measles2 = safe_calc(dbcg_dpt * (1 - 2 * P2_PNMR))
     )
   }
   
@@ -874,10 +877,11 @@ calculate_denominators <- function(hmis_data, survey_data, population_data = NUL
     if (has_crudebr_unwpp && has_poptot_unwpp) {
       data <- data %>%
         mutate(
-          dwpp_pregnancy = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
-                                   (crudebr_unwpp / 1000) * poptot_unwpp / (1 + TWIN_RATE), NA_real_),
           dwpp_livebirth = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
-                                   (crudebr_unwpp / 1000) * poptot_unwpp, NA_real_)
+                                   (crudebr_unwpp / 1000) * poptot_unwpp, NA_real_),
+          dwpp_pregnancy = if_else(!is.na(crudebr_unwpp) & !is.na(poptot_unwpp),
+                                   ((crudebr_unwpp / 1000) * poptot_unwpp / (1 - STILLBIRTH_RATE)) *
+                                     (1 - 0.5 * TWIN_RATE) / (1 - PREGNANCY_LOSS_RATE), NA_real_)
         ) %>%
         mutate(
           dwpp_pregnancy = if_else(nummonth < 12, dwpp_pregnancy * (nummonth / 12), dwpp_pregnancy),
