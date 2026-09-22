@@ -2,10 +2,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M5. Coverage estimates ~ new, part 1",
-    fr: "M5. Estimations de couverture ~ nouveau, partie 1",
-    pt: "M5. Estimativas de cobertura ~ novo, parte 1",
+    en: "Coverage denominators",
+    fr: "Dénominateurs de couverture",
+    pt: "Denominadores de cobertura",
   },
+  family: "hmis",
+  tier: "secondary",
+  sortOrder: 4,
   prerequisites: ["m002"],
   scriptGenerationType: "template",
   dataSources: [

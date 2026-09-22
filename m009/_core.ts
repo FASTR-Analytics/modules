@@ -2,10 +2,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M9. ICEH Survey Data Analysis",
-    fr: "M9. Analyse des données d'enquête ICEH",
-    pt: "M9. Análise de Dados de Inquéritos ICEH",
+    en: "ICEH survey analysis",
+    fr: "Analyse de l'enquête ICEH",
+    pt: "Análise do inquérito ICEH",
   },
+  family: "iceh",
+  tier: "primary",
+  sortOrder: 1,
   prerequisites: [],
   scriptGenerationType: "template",
   dataSources: [

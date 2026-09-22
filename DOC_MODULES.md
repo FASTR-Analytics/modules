@@ -44,7 +44,7 @@ Each module lives in a directory named `m###` (e.g., `m001`, `m002`). Required f
 
 | File                   | Purpose                                           |
 |------------------------|---------------------------------------------------|
-| `_core.ts`             | Label, prerequisites, data sources, script type   |
+| `_core.ts`             | Label, family, tier, sort order, prerequisites, data sources, script type |
 | `_metrics.ts`          | Metric definitions with aggregation and viz       |
 | `_parameters.ts`       | User-configurable parameters injected into R      |
 | `_results_objects.ts`  | Output CSV schemas (column names and SQL types)   |
@@ -58,9 +58,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M1. Data quality assessment",
-    fr: "M1. Évaluation de la qualité des données",
+    en: "Data quality assessment",      // No number prefix: the app orders modules
+    fr: "Évaluation de la qualité des données",
+    pt: "Avaliação da qualidade dos dados",
   },
+  family: "hmis",                       // "hmis", "hfa" or "iceh"
+  tier: "secondary",                    // "primary" (one per family) or "secondary"
+  sortOrder: 1,                         // Position among the family's modules of this tier
   prerequisites: [],                    // Module IDs that must run first
   scriptGenerationType: "template",     // "template" or "hfa"
   dataSources: [

@@ -2,10 +2,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M2. Data quality adjustments",
-    fr: "M2. Ajustements de la qualité des données",
-    pt: "M2. Ajustes da qualidade dos dados",
+    en: "Data quality adjustments",
+    fr: "Ajustements de la qualité des données",
+    pt: "Ajustes da qualidade dos dados",
   },
+  family: "hmis",
+  tier: "secondary",
+  sortOrder: 2,
   prerequisites: ["m001"],
   scriptGenerationType: "template",
   dataSources: [

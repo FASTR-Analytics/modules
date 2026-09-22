@@ -4,7 +4,7 @@
 
 set -e
 
-SRC_DIR="$HOME/projects/apps/wb-fastr/lib/types"
+SRC_DIR="$HOME/projects/apps/wb-fastr-v2/lib/types"
 DST_DIR=".validation"
 
 FILES="_module_definition_github.ts conditional_formatting_standalone.ts disaggregation_options.ts"

@@ -2,9 +2,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M11. Bayesian disruption detection (LI model)",
-    fr: "M11. Détection bayésienne des perturbations (modèle LI)",
+    en: "Disruption detection",
+    fr: "Détection des perturbations",
+    pt: "Detecção de perturbações",
   },
+  family: "hmis",
+  tier: "secondary",
+  sortOrder: 3,
   prerequisites: ["m002"],
   scriptGenerationType: "template",
   dataSources: [

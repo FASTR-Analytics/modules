@@ -2,10 +2,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M10. Health facility assessment",
-    fr: "M10. Évaluation des établissements de santé",
-    pt: "M10. Avaliação de unidades sanitárias",
+    en: "Health facility assessment",
+    fr: "Évaluation des établissements de santé",
+    pt: "Avaliação de unidades sanitárias",
   },
+  family: "hfa",
+  tier: "primary",
+  sortOrder: 1,
   prerequisites: [],
   scriptGenerationType: "hfa",
   dataSources: [

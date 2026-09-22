@@ -1,9 +1,12 @@
 {
   "label": {
-    "en": "M12. Indicator values",
-    "fr": "M12. Valeurs des indicateurs",
-    "pt": "M12. Valores dos indicadores"
+    "en": "Indicator values",
+    "fr": "Valeurs des indicateurs",
+    "pt": "Valores dos indicadores"
   },
+  "family": "hmis",
+  "tier": "primary",
+  "sortOrder": 1,
   "prerequisites": [
     "m002"
   ],
@@ -135,9 +138,9 @@
           "pt": "Os denominadores de população são interpolados entre os valores anuais da instância (âncoras a meio do ano) e extrapolados no máximo um ano para além deles, pelo que a precisão de uma taxa populacional é a das estimativas de população, não a das contagens dos estabelecimentos. Quando uma zona ou ano não tem dados de população dentro dessa janela, um indicador baseado na população não tem valor para essa zona e período, e os totais para zonas ou períodos maiores são calculados apenas sobre as células cobertas. Um indicador de contagem ao lado cobre todas as zonas e períodos."
         },
         "disaggregationGuidance": {
-          "en": "Always grouped by indicator. Can also be disaggregated by admin area down to the level of the package's indicator values (the instance's population level while any indicator formula uses a population, otherwise the deepest level of the HMIS structure) and by time period (month, quarter, year). Facility-level analysis is not available here — use m3-01-01.",
-          "fr": "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative jusqu'au niveau des valeurs d'indicateurs du paquet (le niveau de population de l'instance tant qu'une formule d'indicateur utilise une population, sinon le niveau le plus fin de la structure HMIS) et par période (mois, trimestre, année). L'analyse au niveau des établissements n'est pas disponible ici — utilisez m3-01-01.",
-          "pt": "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa até ao nível dos valores de indicadores do pacote (o nível de população da instância enquanto alguma fórmula de indicador usar uma população, caso contrário o nível mais fino da estrutura HMIS) e por período (mês, trimestre, ano). A análise ao nível dos estabelecimentos não está disponível aqui — utilize m3-01-01."
+          "en": "Always grouped by indicator. Can also be disaggregated by admin area down to the level of the package's indicator values (the instance's population level while any indicator formula uses a population, otherwise the deepest level of the HMIS structure) and by time period (month, quarter, year).",
+          "fr": "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative jusqu'au niveau des valeurs d'indicateurs du paquet (le niveau de population de l'instance tant qu'une formule d'indicateur utilise une population, sinon le niveau le plus fin de la structure HMIS) et par période (mois, trimestre, année).",
+          "pt": "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa até ao nível dos valores de indicadores do pacote (o nível de população da instância enquanto alguma fórmula de indicador usar uma população, caso contrário o nível mais fino da estrutura HMIS) e por período (mês, trimestre, ano)."
         }
       },
       "importantNotes": null,

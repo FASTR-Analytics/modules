@@ -20,10 +20,13 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 // the module and an unchanged store does not.
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "M12. Indicator values",
-    fr: "M12. Valeurs des indicateurs",
-    pt: "M12. Valores dos indicadores",
+    en: "Indicator values",
+    fr: "Valeurs des indicateurs",
+    pt: "Valores dos indicadores",
   },
+  family: "hmis",
+  tier: "primary",
+  sortOrder: 1,
   prerequisites: ["m002"],
   scriptGenerationType: "template",
   assetsToImport: [],
