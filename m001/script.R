@@ -11,7 +11,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 May 20
+# Last edit: 2026 Sep 21
 # Module: DATA QUALITY ASSESSMENT
 
 # This script is designed to evaluate the reliability of HMIS data by
@@ -72,22 +72,24 @@ dqa_rules <- list(
 # Load Required Libraries ------------------------------------------------------------------------------------
 library(zoo)
 library(stringr)
-library(dplyr)       
+library(dplyr)
 library(tidyr)
 library(data.table)
+
+# Speed notes: the facility-level file can exceed 80 million rows. Only the columns used are read (fread),
+# the per-facility statistics are computed with data.table by-group operations, calendar arithmetic uses the
+# integer period_id (no per-row date strings), the 12-month window total is a cumulative sum rather than a
+# per-row loop, and the two large outputs are written with fwrite. Results are unchanged.
 
 # Define Functions ------------------------------------------------------------------------------------------
 load_and_preprocess_data <- function(file_path) {
   print("Loading and preprocessing data...")
   
-  data <- read.csv(file_path) %>%
-    mutate(
-      # trust period_id is YYYYMM integer or string; coerce to Date for ordering only
-      period_id = as.integer(period_id),
-      date = as.Date(sprintf("%04d-%02d-01", period_id %/% 100, period_id %% 100))
-    )
-  
-  geo_cols <- colnames(data)[grepl("^admin_area_", colnames(data))]
+  all_cols <- names(fread(file_path, nrows = 0))
+  geo_cols <- all_cols[grepl("^admin_area_", all_cols)]
+  data <- fread(file_path, select = c("facility_id", geo_cols, "period_id", "indicator_common_id", "count"))
+  # trust period_id is YYYYMM integer or string
+  data[, period_id := as.integer(period_id)]
   
   # Optional: Add malaria consistency composite if both components exist
   malaria_indicators <- c("rdt_positive", "micro_positive", "confirmed_malaria_treated_with_act")
@@ -96,17 +98,12 @@ load_and_preprocess_data <- function(file_path) {
   if (all(available_malaria)) {
     print("Adding malaria consistency indicator: rdt_positive_plus_micro")
     
-    malaria_sum <- data %>%
-      filter(indicator_common_id %in% c("rdt_positive", "micro_positive")) %>%
-      group_by(facility_id, period_id, across(all_of(geo_cols))) %>%
-      summarise(count = sum(count, na.rm = TRUE), .groups = "drop") %>%
-      mutate(
-        indicator_common_id = "rdt_positive_plus_micro",
-        # ensure date exists for downstream ordering
-        date = as.Date(sprintf("%04d-%02d-01", period_id %/% 100, period_id %% 100))
-      )
+    malaria_sum <- data[indicator_common_id %in% c("rdt_positive", "micro_positive"),
+                        .(count = sum(count, na.rm = TRUE)),
+                        by = c("facility_id", "period_id", geo_cols)]
+    malaria_sum[, indicator_common_id := "rdt_positive_plus_micro"]
     
-    data <- bind_rows(data, malaria_sum)
+    data <- rbindlist(list(data, malaria_sum), use.names = TRUE, fill = TRUE)
   } else {
     print("Skipping malaria consistency: one or more indicators missing")
   }
@@ -164,49 +161,44 @@ validate_consistency_pairs <- function(consistency_params, data) {
 outlier_analysis <- function(data, geo_cols, outlier_params) {
   print("Performing outlier analysis...")
   
-  # median + MAD by facility × indicator
-  data <- data %>%
-    group_by(facility_id, indicator_common_id) %>%
-    mutate(median_volume = median(count, na.rm = TRUE)) %>%
-    ungroup() %>%
-    group_by(facility_id, indicator_common_id) %>%
-    mutate(
-      mad_volume   = ifelse(!is.na(count), mad(count[count >= median_volume], na.rm = TRUE), NA_real_),
-      mad_residual = ifelse(!is.na(mad_volume) & mad_volume > 0, abs(count - median_volume) / mad_volume, NA_real_),
-      outlier_mad  = ifelse(!is.na(mad_residual) & mad_residual > MADS, 1L, 0L)
-    ) %>%
-    ungroup()
+  # median + MAD by facility x indicator (row order preserved)
+  data[, median_volume := median(count, na.rm = TRUE), by = .(facility_id, indicator_common_id)]
+  data[, mad_volume := {
+    v <- count[!is.na(count) & count >= median_volume]
+    m <- if (length(v) > 0) mad(v) else NA_real_
+    fifelse(!is.na(count), m, NA_real_)
+  }, by = .(facility_id, indicator_common_id)]
+  data[, mad_residual := fifelse(!is.na(mad_volume) & mad_volume > 0, abs(count - median_volume) / mad_volume, NA_real_)]
+  data[, outlier_mad := fifelse(!is.na(mad_residual) & mad_residual > MADS, 1L, 0L)]
   
   # proportional contribution within a rolling (trailing) 12-month window per
   # facility x indicator: each row's denominator is the sum of counts in the
   # 12 months ending at that row's period. Replaces the calendar-year
   # denominator, which falsely flagged facilities whose only reporting fell
   # early in a calendar year.
-  data <- data %>%
-    mutate(yearmon_key = (period_id %/% 100L) * 12L + (period_id %% 100L)) %>%
-    group_by(facility_id, indicator_common_id) %>%
-    mutate(
-      window_total = vapply(yearmon_key, function(ym) {
-        sum(count[yearmon_key >= ym - 11L & yearmon_key <= ym], na.rm = TRUE)
-      }, numeric(1)),
-      pc           = ifelse(window_total > 0, count / window_total, NA_real_),
-      outlier_pc   = ifelse(!is.na(pc) & pc > outlier_params$outlier_pc_threshold, 1L, 0L)
-    ) %>%
-    ungroup() %>%
-    select(-yearmon_key, -window_total)
+  # (cumulative sum over the months sorted within the group; same total as summing the window row by row)
+  data[, yearmon_key := (period_id %/% 100L) * 12L + (period_id %% 100L)]
+  data[, window_total := {
+    o   <- order(yearmon_key)
+    ym  <- yearmon_key[o]
+    cnt <- as.numeric(count[o]); cnt[is.na(cnt)] <- 0
+    cs  <- cumsum(cnt)
+    lo  <- findInterval(ym - 12L, ym)   # rows with yearmon <= ym - 12 are outside the window
+    hi  <- findInterval(ym, ym)         # rows with yearmon <= ym
+    w   <- cs[hi] - fifelse(lo > 0L, cs[pmax(lo, 1L)], 0)
+    res <- numeric(.N); res[o] <- w; res
+  }, by = .(facility_id, indicator_common_id)]
+  data[, pc := fifelse(window_total > 0, count / window_total, NA_real_)]
+  data[, outlier_pc := fifelse(!is.na(pc) & pc > outlier_params$outlier_pc_threshold, 1L, 0L)]
+  data[, c("yearmon_key", "window_total") := NULL]
   
   # combine flags
-  data <- data %>%
-    mutate(
-      outlier_flag = ifelse((outlier_mad == 1L | outlier_pc == 1L) & count > outlier_params$count_threshold, 1L, 0L)
-    )
+  data[, outlier_flag := fifelse((outlier_mad == 1L | outlier_pc == 1L) & !is.na(count) & count > outlier_params$count_threshold, 1L, 0L)]
   
   # export (period_id only; no year/quarter_id)
-  outlier_data <- data %>%
-    select(
-      facility_id, all_of(geo_cols), indicator_common_id, period_id, count,
-      median_volume, mad_volume, mad_residual, outlier_mad, pc, outlier_flag
-    )
+  outlier_data <- data[, c("facility_id", geo_cols, "indicator_common_id", "period_id", "count",
+                           "median_volume", "mad_volume", "mad_residual", "outlier_mad", "pc", "outlier_flag"),
+                       with = FALSE]
   
   return(outlier_data)
 }
@@ -220,16 +212,12 @@ geo_consistency_analysis <- function(data, geo_cols, geo_level, consistency_para
   relevant_geo_cols <- geo_levels[seq_len(match(geo_level, geo_levels, nomatch = length(geo_levels)))]
   relevant_geo_cols <- intersect(relevant_geo_cols, geo_cols)
   
-  # drop outliers
-  data <- data %>% mutate(count = ifelse(outlier_flag == 1, NA_real_, count))
-  
-  # aggregate to selected geo level per period_id
-  aggregated_data <- data %>%
-    group_by(across(all_of(c(relevant_geo_cols, "indicator_common_id", "period_id")))) %>%
-    summarise(count = sum(count, na.rm = TRUE), .groups = "drop")
+  # aggregate to selected geo level per period_id, outliers dropped
+  aggregated_data <- data[, .(count = sum(fifelse(outlier_flag == 1L, NA_real_, as.numeric(count)), na.rm = TRUE)),
+                          by = c(relevant_geo_cols, "indicator_common_id", "period_id")]
   
   # wide per period_id
-  wide_data <- aggregated_data %>%
+  wide_data <- as_tibble(aggregated_data) %>%
     pivot_wider(
       id_cols = c(all_of(relevant_geo_cols), period_id),
       names_from = "indicator_common_id",
@@ -307,38 +295,27 @@ expand_geo_consistency_to_facilities <- function(facility_metadata, geo_consiste
 }
 
 # PART 3 COMPLETENESS ---------------------------------------------------------------------------------------
+# Monthly period_id sequence between two YYYYMM values
+month_sequence <- function(first_pid, last_pid) {
+  mi <- seq((first_pid %/% 100L) * 12L + (first_pid %% 100L) - 1L,
+            (last_pid  %/% 100L) * 12L + (last_pid  %% 100L) - 1L)
+  as.integer((mi %/% 12L) * 100L + (mi %% 12L) + 1L)
+}
+
 # Function to generate full time series per indicator
 generate_full_series_per_indicator <- function(outlier_data, indicator_id, timeframe) {
   print(paste("Processing indicator:", indicator_id))
   
-  indicator_subset <- outlier_data[indicator_common_id == indicator_id, .(facility_id, indicator_common_id, period_id, count)]
+  indicator_subset <- outlier_data[indicator_common_id == indicator_id, .(facility_id, period_id, count)]
   print(paste("Subset data size for", indicator_id, ":", nrow(indicator_subset)))
   
   time_range <- timeframe[indicator_common_id == indicator_id]
-  first_pid <- time_range$first_pid
-  last_pid  <- time_range$last_pid
+  month_seq_pid <- month_sequence(time_range$first_pid, time_range$last_pid)
   
-  # build monthly period_id sequence between first_pid and last_pid
-  month_seq_dates <- seq(
-    from = as.Date(sprintf("%04d-%02d-01", first_pid %/% 100, first_pid %% 100)),
-    to   = as.Date(sprintf("%04d-%02d-01",  last_pid %/% 100,  last_pid %% 100)),
-    by = "1 month"
-  )
-  month_seq_pid <- as.integer(format(month_seq_dates, "%Y%m"))
-  
-  complete_grid <- CJ(
-    facility_id = unique(indicator_subset$facility_id),
-    period_id   = month_seq_pid
-  )[, `:=`(indicator_common_id = indicator_id,
-           date = as.Date(sprintf("%04d-%02d-01", period_id %/% 100, period_id %% 100)))]
-  
-  indicator_subset[, date := as.Date(sprintf("%04d-%02d-01", period_id %/% 100, period_id %% 100))]
-  
-  complete_data <- merge(
-    complete_grid, indicator_subset,
-    by = c("facility_id", "indicator_common_id", "period_id", "date"),
-    all.x = TRUE
-  )[, .(facility_id, indicator_common_id, period_id, date, count)]
+  complete_data <- CJ(facility_id = unique(indicator_subset$facility_id), period_id = month_seq_pid)
+  complete_data[, indicator_common_id := indicator_id]
+  complete_data[indicator_subset, count := i.count, on = .(facility_id, period_id)]
+  setcolorder(complete_data, c("facility_id", "indicator_common_id", "period_id", "count"))
   
   print(paste("Merged data size for", indicator_id, ":", nrow(complete_data)))
   return(complete_data)
@@ -349,9 +326,8 @@ process_completeness <- function(outlier_data_main) {
   print("Starting completeness processing...")
   setDT(outlier_data_main)
   
-  # ensure period_id int and date exist
+  # ensure period_id int
   outlier_data_main[, period_id := as.integer(period_id)]
-  outlier_data_main[, date := as.Date(sprintf("%04d-%02d-01", period_id %/% 100, period_id %% 100))]
   
   # first/last period_id per indicator
   indicator_timeframe <- outlier_data_main[, .(
@@ -362,15 +338,18 @@ process_completeness <- function(outlier_data_main) {
   print(paste("Identified timeframes for", nrow(indicator_timeframe), "indicators"))
   
   geo_lookup <- unique(outlier_data_main[, .SD, .SDcols = c("facility_id", geo_cols)])
+  if (anyDuplicated(geo_lookup, by = "facility_id")) {
+    geo_lookup <- unique(geo_lookup, by = "facility_id")
+  }
   
   completeness_list <- lapply(unique(outlier_data_main$indicator_common_id), function(ind) {
     print(paste("Starting processing for indicator:", ind))
     complete_data <- generate_full_series_per_indicator(outlier_data_main, ind, indicator_timeframe)
     
     print(paste("Applying completeness tagging for", ind))
-    setorder(complete_data, facility_id, date)
+    setorder(complete_data, facility_id, period_id)
     
-    complete_data[, has_reported := !is.na(count), by = facility_id]
+    complete_data[, has_reported := !is.na(count)]
     complete_data[, first_report_idx := cumsum(has_reported) > 0, by = facility_id]
     complete_data[, last_report_idx  := rev(cumsum(rev(has_reported)) > 0), by = facility_id]
     
@@ -385,9 +364,9 @@ process_completeness <- function(outlier_data_main) {
     
     complete_data[, completeness_flag := fifelse(
       offline_flag == 2L, 2L, fifelse(has_reported, 1L, 0L)
-    ), by = facility_id]
+    )]
     
-    complete_data <- merge(complete_data, geo_lookup, by = "facility_id", all.x = TRUE)
+    complete_data[geo_lookup, (geo_cols) := mget(paste0("i.", geo_cols)), on = "facility_id"]
     
     result <- complete_data[completeness_flag != 2L,
                             c("facility_id","indicator_common_id","period_id","completeness_flag", geo_cols),
@@ -398,9 +377,6 @@ process_completeness <- function(outlier_data_main) {
   
   print("Combining all indicator datasets...")
   completeness_long <- rbindlist(completeness_list, use.names = TRUE, fill = TRUE)
-  if ("facility_id.1" %in% colnames(completeness_long)) {
-    completeness_long <- completeness_long[, !("facility_id.1"), with = FALSE]
-  }
   print("Completeness processing finished!")
   return(completeness_long)
 }
@@ -408,6 +384,19 @@ process_completeness <- function(outlier_data_main) {
 # PART 4 DQA ------------------------------------------------------------------------------------------------
 # 1. dqa_with_consistency: Includes consistency checks
 # 2. dqa_without_consistency: Excludes consistency checks
+
+# Shared first step: completeness + outlier pass per facility x indicator x month, for the DQA indicators only
+dqa_merge <- function(completeness_data, outlier_data, geo_cols, dqa_rules) {
+  completeness_data <- completeness_data[indicator_common_id %in% dqa_indicators_to_use]
+  outlier_sub <- outlier_data[indicator_common_id %in% dqa_indicators_to_use,
+                              c("facility_id", "indicator_common_id", "period_id", geo_cols, "outlier_flag"), with = FALSE]
+  merged_data <- merge(completeness_data, outlier_sub,
+                       by = c("facility_id", "indicator_common_id", "period_id", geo_cols), all.x = TRUE)
+  merged_data[, outlier_flag := fifelse(is.na(outlier_flag), 0L, outlier_flag)]
+  merged_data[, completeness_pass := fifelse(completeness_flag == dqa_rules$completeness, 1L, 0L)]
+  merged_data[, outlier_pass      := fifelse(outlier_flag       == dqa_rules$outlier_flag, 1L, 0L)]
+  merged_data
+}
 
 # DQA Function Including Consistency Checks
 dqa_with_consistency <- function(
@@ -419,22 +408,7 @@ dqa_with_consistency <- function(
 ) {
   print("Performing DQA analysis with strict consistency checks...")
   
-  completeness_data <- completeness_data %>%
-    filter(indicator_common_id %in% dqa_indicators_to_use)
-  
-  outlier_data <- outlier_data %>%
-    filter(indicator_common_id %in% dqa_indicators_to_use)
-  
-  merged_data <- completeness_data %>%
-    left_join(
-      outlier_data %>% select(facility_id, indicator_common_id, period_id, all_of(geo_cols), outlier_flag),
-      by = c("facility_id", "indicator_common_id", "period_id", geo_cols)
-    ) %>%
-    mutate(
-      outlier_flag = replace_na(outlier_flag, 0L),
-      completeness_pass = ifelse(completeness_flag == dqa_rules$completeness, 1L, 0L),
-      outlier_pass      = ifelse(outlier_flag       == dqa_rules$outlier_flag, 1L, 0L)
-    )
+  merged_data <- dqa_merge(completeness_data, outlier_data, geo_cols, dqa_rules)
   
   dqa_facility_month <- merged_data %>%
     group_by(facility_id, period_id, !!!syms(geo_cols)) %>%
@@ -497,22 +471,7 @@ dqa_without_consistency <- function(
 ) {
   print("Performing DQA analysis without consistency checks...")
   
-  completeness_data <- completeness_data %>%
-    filter(indicator_common_id %in% dqa_indicators_to_use)
-  
-  outlier_data <- outlier_data %>%
-    filter(indicator_common_id %in% dqa_indicators_to_use)
-  
-  merged_data <- completeness_data %>%
-    left_join(
-      outlier_data %>% select(facility_id, indicator_common_id, period_id, all_of(geo_cols), outlier_flag),
-      by = c("facility_id", "indicator_common_id", "period_id", geo_cols)
-    ) %>%
-    mutate(
-      outlier_flag       = replace_na(outlier_flag, 0L),
-      completeness_pass  = ifelse(completeness_flag == dqa_rules$completeness, 1L, 0L),
-      outlier_pass       = ifelse(outlier_flag       == dqa_rules$outlier_flag, 1L, 0L)
-    )
+  merged_data <- dqa_merge(completeness_data, outlier_data, geo_cols, dqa_rules)
   
   dqa_results <- merged_data %>%
     group_by(facility_id, period_id, !!!syms(geo_cols)) %>%
@@ -588,9 +547,7 @@ completeness_results <- process_completeness(outlier_data_main)
 geo_cols_filtered <- setdiff(geo_cols, "facility_id")
 
 # Extract unique facilities and their geo/admin_area columns
-facility_metadata <- completeness_results %>%
-  select(any_of(c("facility_id", geo_cols_filtered))) %>%
-  distinct()
+facility_metadata <- unique(completeness_results[, intersect(c("facility_id", geo_cols_filtered), names(completeness_results)), with = FALSE])
 
 # Run Consistency Analysis (if applicable)
 if (length(consistency_params$consistency_pairs) > 0) {
@@ -672,27 +629,20 @@ if (run_dqa) {
 # -------------------------------- SAVE DATA OUTPUTS ------------------------------------------------------------
 print("Preparing and saving outlier list...")
 
-outlier_list_export <- outlier_data_main %>%
-  filter(outlier_flag == 1) %>%
-  select(facility_id, 
-         all_of(geo_columns_export), 
-         indicator_common_id, 
-         period_id, 
-         count)
+outlier_list_export <- outlier_data_main[outlier_flag == 1L,
+                                         c("facility_id", geo_columns_export, "indicator_common_id", "period_id", "count"),
+                                         with = FALSE]
 
 write.csv(outlier_list_export, "M1_output_outlier_list.csv", row.names = FALSE)
 
 
 print("Preparing and saving results from outlier analysis...")
 
-outlier_data_export <- outlier_data_main %>%
-  select(facility_id,
-         all_of(geo_columns_export),
-         period_id,
-         indicator_common_id,
-         outlier_flag)
+outlier_data_export <- outlier_data_main[, c("facility_id", geo_columns_export, "period_id", "indicator_common_id", "outlier_flag"),
+                                         with = FALSE]
 
-write.csv(outlier_data_export, "M1_output_outliers.csv", row.names = FALSE)
+fwrite(outlier_data_export, "M1_output_outliers.csv", na = "NA")
+rm(outlier_data_export)
 
 
 # Save consistency results with dummy data if needed
@@ -739,16 +689,11 @@ if (!is.null(facility_consistency_results) && nrow(facility_consistency_results)
 }
 
 print("Preparing and saving results from completeness analysis...")
-completeness_export <- completeness_results %>%
-  select(
-    facility_id,
-    all_of(geo_columns_export),
-    indicator_common_id,
-    period_id,
-    completeness_flag
-  )
+completeness_export <- completeness_results[, c("facility_id", geo_columns_export, "indicator_common_id", "period_id", "completeness_flag"),
+                                            with = FALSE]
 
-write.csv(completeness_export, "M1_output_completeness.csv", row.names = FALSE)
+fwrite(completeness_export, "M1_output_completeness.csv", na = "NA")
+rm(completeness_export)
 
 # Save DQA results with dummy data if needed
 if (run_dqa && !is.null(dqa_results) && nrow(dqa_results) > 0) {
