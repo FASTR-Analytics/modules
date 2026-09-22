@@ -1,9 +1,8 @@
 import type { ModuleParameter } from "../.validation/_module_definition_github.ts";
 
-// One adjustment basis per results package (PLAN_1a §1.5). Adjustment-scenario
-// comparison stays m3-01-01's job; changing the basis here means regenerating,
-// which is the system's normal lifecycle. Same options and default as m003's
-// SELECTEDCOUNT.
+// One adjustment basis per results package (PLAN_1a §1.5). Comparing
+// adjustment scenarios means regenerating with another basis, which is the
+// system's normal lifecycle.
 export const parameters: ModuleParameter[] = [
   {
     description: {

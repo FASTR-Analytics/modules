@@ -4,8 +4,8 @@ import type { ResultsObjectDefinitionGithub } from "../.validation/_module_defin
 // level (the level of the stored population data, else the HMIS depth),
 // carrying that indicator's additive ingredients in numbered slots. AREA ×
 // MONTH grain uniformly: rows are summed across facilities and any finer
-// admin level, so there is no facility_id and no facility column (facility
-// analysis stays on m3-01-01 and the quality metrics). The admin columns
+// admin level, so there is no facility_id and no facility column; facility-
+// level analysis belongs to the data-quality metrics. The admin columns
 // present in a package are those of its person-years file.
 //
 // The slots are the generalisation of m008's numerator/denominator pair from
