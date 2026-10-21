@@ -170,14 +170,12 @@ then merged.
 
 ### Rotavirus — survey side FIXED, HMIS side still missing
 
-m004 **and** m005 consume `rota1` / `rota2`. The survey CSV stored the DHS names
-`rotavirus1` / `rotavirus2`, and m004's `recode()` block (script.R:288) translates
-`polio1→opv1` and `vitamina→vitaminA` but **never got a rota entry** — so the filter matched zero
-rows. 596 rows across 15 countries were unreachable.
+m005 consumes `rota1` / `rota2`. The survey CSV stored the DHS names
+`rotavirus1` / `rotavirus2`, so the filter matched zero rows. 596 rows across 15 countries were unreachable.
 
 **Fixed 2026 Jul 14 on the data side**: `rotavirus1`/`rotavirus2` renamed to `rota1`/`rota2` in the
 survey CSV *and* in the fetcher, so the names now match what the modules ask for and no recode is
-needed. (m004 is module code and off-limits, so the rename had to happen in the data + fetcher.)
+needed. (Module code is off-limits here, so the rename had to happen in the data + fetcher.)
 
 ⚠️ **This still produces no coverage**, because **no `hmis_*.csv` carries a rota dose count at all**
 — there is no numerator to pair the survey anchor against. Coverage = HMIS count / denominator,
@@ -185,7 +183,7 @@ anchored on the survey. The survey half now works; the HMIS half needs a **DHIS2
 
 ### Admin joins that silently produce zero coverage
 
-m004 joins survey→HMIS on `admin_area_2` with **no fuzzy matching and no stripping**. One character
+m005 joins survey→HMIS on `admin_area_2` with **no fuzzy matching and no stripping**. One character
 off = zero coverage for that region, silently.
 
 > **The real HMIS is the source of truth, NOT `assets/<country>_backbone.csv`.** The backbone files
@@ -333,7 +331,7 @@ not a wrong magnitude. Flagged for Nicole Danfakah / Dan Kabtyimer (ARO Data & D
 | fixed `indicator_type` `other`→real type (`fully_immunized`, `pnc1`) | 169 |
 | fixed GIN `IRS Nzérékoré` → `IRS N'zérékoré` (matches `guinea_backbone.csv` AND the HMIS) | 71 |
 | fixed TCD `WADI FIRA` → `WADIFIRA` (matches DHIS2; `chad_backbone.csv` was stale) | 4 |
-| renamed `rotavirus1`/`rotavirus2` → `rota1`/`rota2` (what m004 and m005 actually consume) | 596 |
+| renamed `rotavirus1`/`rotavirus2` → `rota1`/`rota2` (what m005 actually consumes) | 596 |
 | fixed `iso2_code` holding an ISO-3 (MRT, CIV) | 216 |
 | harmonised `country_name` / `admin_area_1` (CAF, CIV, MDG) | 1,834 |
 
@@ -347,5 +345,5 @@ not a wrong magnitude. Flagged for Nicole Danfakah / Dan Kabtyimer (ARO Data & D
   removed the label fallback that bucketed any FP/contraceptive label into `fp`.
 - `indicator_mappings.R` — UNWPP `"19"` and the TFR pattern now emit `total_fertility_rate`.
 
-**Not fixed, needs an owner:** rota (m004 + DHIS2), MRT Nouakchott, AFG/MWI admin levels,
+**Not fixed, needs an owner:** rota (DHIS2), MRT Nouakchott, AFG/MWI admin levels,
 stale `ethiopia_backbone.csv`, `hmis_TCD.csv` `WADIFIRA` typo, FP denominator decision + re-fetch.

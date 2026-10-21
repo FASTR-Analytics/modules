@@ -161,7 +161,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         importantNotes: null,
         allowedFilters: ["indicator_common_id", "admin_area_2"],
-        createDefaultVisualizationOnInstall: null,
         config: {
           d: {
             type: "table",
@@ -237,7 +236,6 @@ export const metrics: MetricDefinitionGithub[] = [
         },
         importantNotes: null,
         allowedFilters: ["indicator_common_id"],
-        createDefaultVisualizationOnInstall: null,
         config: {
           d: {
             type: "timeseries",

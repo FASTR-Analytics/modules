@@ -7,7 +7,7 @@ lane is read-only with respect to the repos.
 
 Finding ids are fixed per lane so the consolidated report can cite them
 without collisions: `F-{MODULE}-<n>` for a module lane (for example
-`F-m003-4`), `F-C-<n>` for Lane C, `F-X-<n>` for Lane X, `F-T-<n>` for
+`F-m011-4`), `F-C-<n>` for Lane C, `F-X-<n>` for Lane X, `F-T-<n>` for
 Lane T.
 
 ---
@@ -158,11 +158,11 @@ Procedure:
 3. Sibling and near-duplicate test. For each group that shares a label, or
    whose labels differ only in wording, state what an agent would need to
    know to choose between them and whether the catalog line provides it.
-   Groups to examine at least: m3-02, m3-03, m3-04, m3-05 (four admin
-   levels of the same three metrics); `m4-*`, `m4a-*` and `m6-*` (three
-   modules that each compute coverage); m10-01 and m10-03 (observed versus
-   carry-forward, indicator versus variant); m11 versus m3-02 (two
-   disruption methods); m12-01-01 versus m3-01-01 and `m6-*` (indicator
+   Groups to examine at least: m11-01-01 to m11-01-04 (four admin levels
+   of the same metric); `m4a-*` and `m6-*` (two modules that each compute
+   coverage); m10-01 and m10-03 (observed versus carry-forward, indicator
+   versus variant); m11-01 versus m11-02 (the band chart versus the
+   percentage difference); m12-01-01 versus m2-02-01 and `m6-*` (indicator
    values versus volume versus coverage).
 4. Scenario test. For each of these user requests, write which metric and
    preset an agent should choose and whether the catalog text leads there:
@@ -177,7 +177,7 @@ Procedure:
    the derived notes tell an agent the figure type, grain, what varies, and
    when to use it instead of its siblings. Check every metric-level and
    preset-level `importantNotes` that appears in the catalog for validity on
-   both surfaces (at the time of writing, only the metric note on m3-01-01).
+   both surfaces (at the time of writing, none).
 6. Terminology and format across the whole catalog: `Admin Area N` versus
    "region" or "district", consistent naming of the count variables,
    consistent bracket conventions in variants, formatAs consistent with
@@ -198,8 +198,8 @@ lanes; step 7 reads their reports in `{REPORTS}`.
 Procedure:
 
 1. Read the briefing, then `{AI_VIEW}/catalog.md` and `{AI_VIEW}/modules.md`.
-2. Parameter descriptions across modules. `SELECTEDCOUNT` (m003, m011,
-   m012) and `SELECTED_COUNT_VARIABLE` (m004, m005) name the same choice;
+2. Parameter descriptions across modules. `SELECTEDCOUNT` (m011, m012)
+   and `SELECTED_COUNT_VARIABLE` (m005) name the same choice;
    check their descriptions and option labels agree, and that the option
    labels are understandable by someone who has not read m002. Same for
    any other parameter that recurs.
@@ -221,8 +221,8 @@ Procedure:
    descriptions): list every missing `pt` and any fr or pt that carries
    different ids or numbers than the en. m011 is known to lack pt entirely.
 7. Shared text presets (`_shared/text_presets.ts`): check the footnotes'
-   method statements against what m004 and m006 actually compute, using
-   the "One-line truth per metric" sections of `{REPORTS}/lane_m004.md`
+   method statements against what m005 and m006 actually compute, using
+   the "One-line truth per metric" sections of `{REPORTS}/lane_m005.md`
    and `lane_m006.md` rather than re-reading the R. Note which presets use
    the shared text and which have hand-written variants that have drifted.
 8. Authoring documents. Check `DOC_METRICS_REFERENCE.md`,

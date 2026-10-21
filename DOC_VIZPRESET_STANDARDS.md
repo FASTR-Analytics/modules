@@ -17,19 +17,13 @@ Guidelines for writing consistent, clean viz presets across modules.
 
 **Examples:**
 ```
-disruption-differences-table                                          # base table, no replicant
-disruption-differences-table-single-admin-area-2-multiple-admin-area-3  # table with AA2 replicant
-disruption-differences-map-admin-area-2                               # map showing AA2
-disruption-chart-single-indicator                                     # chart filtered to single indicator
+disruption-table-admin-area-2                      # base table, no replicant
+disruption-table-admin-area-3                      # table with the parent Admin Area 2 as replicant
+disruption-map-admin-area-2                        # map showing Admin Area 2
+observed-expected-ci-single-indicator              # chart for a single indicator, the replicant
 ```
 
-### createDefaultVisualizationOnInstall
-
-**Scope:** Must be globally unique across all modules. This UUID becomes the presentation object's primary key in the database.
-
-- Always use a valid UUID v4
-- Never use placeholders like `"MAKE THIS FOR ME"`
-- Set to `null` if the preset should not create a default visualization on install
+Every preset is offered in the insert-figure wizard and shown as a card on the package page; the app identifies it as `metricId/presetId`.
 
 ## Labels
 
@@ -167,7 +161,7 @@ subCaption: {
 
 ## Symmetry Checklist
 
-When reviewing a set of related metrics (e.g., m3-03-02, m3-04-02, m3-05-02):
+When reviewing a set of related metrics (e.g., m11-01-01 to m11-01-04, built by `m011/_band_chart.ts`):
 
 - [ ] IDs follow consistent pattern across admin levels
 - [ ] Labels follow same structure, differing only by admin level

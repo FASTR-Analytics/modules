@@ -14,7 +14,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant le changement en pourcentage dû à l'ajustement de complétude par indicateur et Zone administrative 2",
       pt: "Tabela que mostra a variação percentual devida ao ajuste de completude por indicador e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "b4750223-9ffd-43f6-958b-0ba9c0412df4",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {

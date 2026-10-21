@@ -20,7 +20,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Séries temporelles de couverture nationale avec repères d'enquête",
       pt: "Séries temporais de cobertura nacional com referências de inquéritos",
     },
-    createDefaultVisualizationOnInstall: "2a74f737-78e5-41a1-8f6d-7a3f59be2d19",
     allowedFilters: [],
     config: {
       d: {

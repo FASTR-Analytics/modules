@@ -32,7 +32,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tendances de couverture dans le temps par zone administrative 3",
       pt: "Tendências de cobertura ao longo do tempo por área administrativa 3",
     },
-    createDefaultVisualizationOnInstall: "e5f8740b-a690-4a84-a0cd-05d529676f27",
     allowedFilters: ["admin_area_3"],
     config: {
       d: {
@@ -96,7 +95,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Diagramme à barres comparant la couverture entre Zones administratives 3",
       pt: "Gráfico de barras que compara a cobertura entre Áreas administrativas 3",
     },
-    createDefaultVisualizationOnInstall: "9d4977b4-0d87-44e1-b2bd-3eddcba623f5",
     allowedFilters: ["admin_area_3"],
     config: {
       d: {

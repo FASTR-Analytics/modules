@@ -23,7 +23,6 @@ export const vizPresets: VizPreset[] = [
       "hfa_indicator",
       "time_point",
     ],
-    createDefaultVisualizationOnInstall: "82617c89-803b-4139-b000-ebddf2469dfd",
     config: {
       d: {
         type: "table",

@@ -13,7 +13,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau des valeurs de dénominateur par source et année",
       pt: "Tabela de valores de denominador por fonte e ano",
     },
-    createDefaultVisualizationOnInstall: "1f8d2940-803c-43f0-b17b-278b271d34a7",
     allowedFilters: ["denominator", "source_indicator"],
     config: {
       d: {

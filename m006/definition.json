@@ -197,7 +197,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "2a74f737-78e5-41a1-8f6d-7a3f59be2d19",
           "config": {
             "d": {
               "type": "timeseries",
@@ -320,7 +319,6 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f26",
           "config": {
             "d": {
               "type": "timeseries",
@@ -382,7 +380,6 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "9d4977b4-0d87-44e1-b2bd-3eddcba623f4",
           "config": {
             "d": {
               "type": "chart",
@@ -575,7 +572,6 @@
           "allowedFilters": [
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "e5f8740b-a690-4a84-a0cd-05d529676f27",
           "config": {
             "d": {
               "type": "timeseries",
@@ -637,7 +633,6 @@
           "allowedFilters": [
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "9d4977b4-0d87-44e1-b2bd-3eddcba623f5",
           "config": {
             "d": {
               "type": "chart",

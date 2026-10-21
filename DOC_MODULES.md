@@ -109,7 +109,6 @@ export const metrics: MetricDefinitionGithub[] = [
         importantNotes: null,
         needsReplicant: false,
         allowedFilters: ["indicator_common_id"],
-        createDefaultVisualizationOnInstall: null,
         config: {
           d: {
             type: "timeseries",

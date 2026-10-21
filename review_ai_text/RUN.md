@@ -26,7 +26,7 @@ Files:
 | `REPORTS` | Absolute path of `REPO/review_ai_text/reports/<date>` |
 | `AI_VIEW` | `REPORTS/ai_view` |
 | `DELTA` | `REPORTS/briefing_delta.md`, or the word `none` |
-| `MODULE` | A module directory name such as `m003` |
+| `MODULE` | A module directory name such as `m011` |
 | `OUT` | The lane's report file, always inside `REPORTS` |
 
 ## Orchestrator steps
@@ -71,9 +71,8 @@ leave them unchanged.
 
 ### 1. Launch the module lanes
 
-One agent per active module directory: every `mNNN` not listed in
-`_frozen_modules.ts` (m001 to m006 and m009 to m012 at the time of
-writing). Use the general-purpose agent type, run in the background, all at
+One agent per module directory: every `mNNN` (m001, m002, m005, m006 and
+m009 to m012 at the time of writing). Use the general-purpose agent type, run in the background, all at
 once. For each, the prompt is the common preamble from `LANES.md` followed
 by the Lane M section, with every placeholder filled. `OUT` is
 `REPORTS/lane_<MODULE>.md`.

@@ -39,7 +39,6 @@ const TEXT_SIZES = {
 function tablePreset(
   level: AdminLevel,
   parent: 2 | 3 | undefined,
-  uuid: string,
 ): VizPreset {
   const area = areaLabel(level);
   const parentArea = parent === undefined ? undefined : areaLabel(parent);
@@ -65,7 +64,6 @@ function tablePreset(
       },
     importantNotes: null,
     allowedFilters: ["indicator_common_id", adminArea(level)],
-    createDefaultVisualizationOnInstall: uuid,
     config: {
       d: {
         type: "table",
@@ -98,7 +96,7 @@ function tablePreset(
   };
 }
 
-function mapPreset(level: AdminLevel, uuid: string): VizPreset {
+function mapPreset(level: AdminLevel): VizPreset {
   const area = areaLabel(level);
   return {
     id: `disruption-map-admin-area-${level}`,
@@ -112,7 +110,6 @@ function mapPreset(level: AdminLevel, uuid: string): VizPreset {
     },
     importantNotes: null,
     allowedFilters: [],
-    createDefaultVisualizationOnInstall: uuid,
     config: {
       d: {
         type: "map",
@@ -143,11 +140,11 @@ function mapPreset(level: AdminLevel, uuid: string): VizPreset {
 }
 
 export const vizPresets: VizPreset[] = [
-  tablePreset(2, undefined, "8d950e95-882f-4356-a896-935329daaf86"),
-  mapPreset(2, "aff2800a-c205-48ef-91f4-37cc182f8022"),
-  tablePreset(3, 2, "f7cacf73-92f3-4697-a4c4-323c4c669075"),
-  mapPreset(3, "38fb8a22-06d1-4b4f-9dd0-30aecb7e7b86"),
-  tablePreset(4, 3, "36c76a26-2586-4882-b8fd-e3e9c6e7ca7f"),
+  tablePreset(2, undefined),
+  mapPreset(2),
+  tablePreset(3, 2),
+  mapPreset(3),
+  tablePreset(4, 3),
 ];
 
 export const metric: MetricDefinitionGithub = {

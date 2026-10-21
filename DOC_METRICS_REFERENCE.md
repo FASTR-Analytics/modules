@@ -195,7 +195,6 @@ vizPresets: [
     importantNotes: null,                   // Or { en: "...", fr: "..." }
     needsReplicant: false,                  // True if requires replicant selection
     allowedFilters: ["indicator_common_id", "admin_area_2"],
-    createDefaultVisualizationOnInstall: "uuid-here",  // Or null
     config: {
       d: { /* data config */ },
       s: { /* style config */ },

@@ -13,7 +13,6 @@
 //
 // Usage: deno run --allow-read --allow-write review_ai_text/render_ai_view.ts <outDir>
 
-import { FROZEN_MODULE_DIRS } from "../_frozen_modules.ts";
 import type {
   MetricDefinitionGithub,
   ModuleDefinitionGithub,
@@ -55,10 +54,7 @@ await Deno.mkdir(outDir, { recursive: true });
 type LoadedModule = { dir: string; def: ModuleDefinitionGithub };
 const modules: LoadedModule[] = [];
 for await (const entry of Deno.readDir(root)) {
-  if (
-    entry.isDirectory && /^m\d+$/.test(entry.name) &&
-    !FROZEN_MODULE_DIRS.includes(entry.name)
-  ) {
+  if (entry.isDirectory && /^m\d+$/.test(entry.name)) {
     const def = JSON.parse(
       await Deno.readTextFile(new URL(`${entry.name}/definition.json`, root)),
     ) as ModuleDefinitionGithub;

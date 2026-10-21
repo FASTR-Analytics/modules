@@ -29,7 +29,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant les scores EQD moyens par Zone administrative 2 et année",
       pt: "Tabela que mostra as pontuações médias de AQD por Área Administrativa 2 e ano",
     },
-    createDefaultVisualizationOnInstall: "4dc02c21-29da-4a01-9812-469deedaaac8",
     allowedFilters: ["admin_area_2"],
     config: {
       d: {
@@ -102,7 +101,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte montrant les scores EQD moyens par Zone administrative 2",
       pt: "Mapa que mostra as pontuações médias de AQD por Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "0730bd53-f951-4286-83ef-5b299395912c",
     allowedFilters: [],
     config: {
       d: {

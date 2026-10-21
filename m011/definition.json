@@ -332,7 +332,6 @@
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "createDefaultVisualizationOnInstall": "4449f49e-c1b7-4900-a077-fd4ee6c7f510",
           "config": {
             "d": {
               "type": "timeseries",
@@ -443,7 +442,6 @@
             "indicator_common_id",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "df19e07e-88dd-41ea-aa40-29b4d82fb0dc",
           "config": {
             "d": {
               "type": "timeseries",
@@ -495,7 +493,6 @@
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "createDefaultVisualizationOnInstall": "c43c3d27-c1c0-4945-a4fa-21d93c5cf45a",
           "config": {
             "d": {
               "type": "timeseries",
@@ -548,7 +545,6 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "19283b6d-4a37-4843-9667-9d66979a5990",
           "config": {
             "d": {
               "type": "timeseries",
@@ -664,7 +660,6 @@
             "indicator_common_id",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "403b0757-4158-41e7-a9f2-e7c703ff9175",
           "config": {
             "d": {
               "type": "timeseries",
@@ -721,7 +716,6 @@
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "createDefaultVisualizationOnInstall": "adc9ad91-2449-4d50-bbea-7f4dbf61920b",
           "config": {
             "d": {
               "type": "timeseries",
@@ -837,7 +831,6 @@
             "indicator_common_id",
             "admin_area_4"
           ],
-          "createDefaultVisualizationOnInstall": "ab26c051-62e8-40fc-a562-2fca058375a3",
           "config": {
             "d": {
               "type": "timeseries",
@@ -894,7 +887,6 @@
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "createDefaultVisualizationOnInstall": "9040ce32-5daa-4886-814c-c6a1120f3e89",
           "config": {
             "d": {
               "type": "timeseries",
@@ -1012,7 +1004,6 @@
             "indicator_common_id",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "8d950e95-882f-4356-a896-935329daaf86",
           "config": {
             "d": {
               "type": "table",
@@ -1113,7 +1104,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "aff2800a-c205-48ef-91f4-37cc182f8022",
           "config": {
             "d": {
               "type": "map",
@@ -1218,7 +1208,6 @@
             "indicator_common_id",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "f7cacf73-92f3-4697-a4c4-323c4c669075",
           "config": {
             "d": {
               "type": "table",
@@ -1324,7 +1313,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "38fb8a22-06d1-4b4f-9dd0-30aecb7e7b86",
           "config": {
             "d": {
               "type": "map",
@@ -1429,7 +1417,6 @@
             "indicator_common_id",
             "admin_area_4"
           ],
-          "createDefaultVisualizationOnInstall": "36c76a26-2586-4882-b8fd-e3e9c6e7ca7f",
           "config": {
             "d": {
               "type": "table",

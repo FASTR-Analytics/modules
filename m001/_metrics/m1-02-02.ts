@@ -29,7 +29,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant la complétude par indicateur et région",
       pt: "Tabela que mostra a completude por indicador e região",
     },
-    createDefaultVisualizationOnInstall: "c20f1672-edfc-4140-ae2c-09a30b50443a",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {
@@ -103,7 +102,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Graphique en aires montrant les tendances de complétude dans le temps par indicateur",
       pt: "Gráfico de áreas que mostra as tendências de completude ao longo do tempo por indicador",
     },
-    createDefaultVisualizationOnInstall: "26dedd7c-4577-4022-928c-69e0ee790a71",
     allowedFilters: ["indicator_common_id"],
     config: {
       d: {
@@ -172,7 +170,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte montrant la complétude par indicateur et région",
       pt: "Mapa que mostra a completude por indicador e região",
     },
-    createDefaultVisualizationOnInstall: "f9d926c9-e9d9-41b8-bca9-c3ae252ab259",
     allowedFilters: [],
     config: {
       d: {

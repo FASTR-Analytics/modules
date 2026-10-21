@@ -17,7 +17,6 @@ export const vizPresets: VizPreset[] = [
       pt: "Tabela de medidas-resumo de desigualdade de riqueza (Rácio, Diferença, CIX, SII) com os indicadores em linhas e as quatro medidas em colunas. Filtrada para quintis de riqueza; altere o ano de inquérito com o seletor de replicante.",
     },
     allowedFilters: ["iceh_indicator", "strat", "year"],
-    createDefaultVisualizationOnInstall: "c4a9f1e2-7b3d-4e6a-8f12-9d05b7c3a6e1",
     config: {
       d: {
         type: "table",
@@ -68,7 +67,6 @@ export const vizPresets: VizPreset[] = [
       pt: "Gráfico que ordena os indicadores segundo uma medida de desigualdade de riqueza (índice de concentração por predefinição; altere a medida através do filtro de valores). Estratificador definido pelo seletor de replicante (quintis de riqueza por predefinição).",
     },
     allowedFilters: ["iceh_indicator", "strat", "year"],
-    createDefaultVisualizationOnInstall: "f2a8d6c3-9b41-4e7a-8d52-3c1f6b9e04a7",
     config: {
       d: {
         type: "chart",
@@ -124,7 +122,6 @@ export const vizPresets: VizPreset[] = [
       pt: "Uma medida de desigualdade de riqueza (índice de concentração por predefinição; altere através do filtro de valores) ao longo dos anos de inquérito, uma linha por indicador. Filtrada para quintis de riqueza através do seletor de replicante.",
     },
     allowedFilters: ["iceh_indicator", "strat", "year"],
-    createDefaultVisualizationOnInstall: "b6d2c9a4-8e31-4f7a-9b62-1d4f8c2e07a3",
     config: {
       d: {
         type: "timeseries",

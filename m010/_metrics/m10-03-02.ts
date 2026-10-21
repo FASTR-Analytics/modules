@@ -24,7 +24,6 @@ export const vizPresets: VizPreset[] = [
       "hfa_variant_item",
       "time_point",
     ],
-    createDefaultVisualizationOnInstall: null,
     config: {
       d: {
         type: "table",

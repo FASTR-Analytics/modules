@@ -370,7 +370,6 @@
             "indicator_common_id",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "c3cb0cc9-4352-4b27-8532-f18e465faec8",
           "config": {
             "d": {
               "type": "table",
@@ -460,7 +459,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "efc60afb-0b25-4e5e-95e4-e97754d3af83",
           "config": {
             "d": {
               "type": "map",
@@ -610,7 +608,6 @@
             "indicator_common_id",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "c20f1672-edfc-4140-ae2c-09a30b50443a",
           "config": {
             "d": {
               "type": "table",
@@ -702,7 +699,6 @@
           "allowedFilters": [
             "indicator_common_id"
           ],
-          "createDefaultVisualizationOnInstall": "26dedd7c-4577-4022-928c-69e0ee790a71",
           "config": {
             "d": {
               "type": "timeseries",
@@ -756,7 +752,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "f9d926c9-e9d9-41b8-bca9-c3ae252ab259",
           "config": {
             "d": {
               "type": "map",
@@ -912,7 +907,6 @@
             "ratio_type",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
           "config": {
             "d": {
               "type": "table",
@@ -1002,7 +996,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "a6c091c0-8df5-4dc9-aa5f-857c697310d1",
           "config": {
             "d": {
               "type": "map",
@@ -1151,7 +1144,6 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "f0badea8-367a-46fb-97f3-2b64b746a047",
           "config": {
             "d": {
               "type": "table",
@@ -1237,7 +1229,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "7f08fbde-48e6-44d3-b1db-8771d96120c6",
           "config": {
             "d": {
               "type": "map",
@@ -1377,7 +1368,6 @@
           "allowedFilters": [
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "4dc02c21-29da-4a01-9812-469deedaaac8",
           "config": {
             "d": {
               "type": "table",
@@ -1463,7 +1453,6 @@
           },
           "importantNotes": null,
           "allowedFilters": [],
-          "createDefaultVisualizationOnInstall": "0730bd53-f951-4286-83ef-5b299395912c",
           "config": {
             "d": {
               "type": "map",

@@ -29,7 +29,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant la cohérence par type de ratio et Zone administrative 2",
       pt: "Tabela que mostra a coerência por tipo de rácio e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "cf5b8649-93c2-4bbe-8f2d-773f42ce8ec3",
     allowedFilters: ["ratio_type", "admin_area_2"],
     config: {
       d: {
@@ -106,7 +105,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte montrant la cohérence par type de ratio et Zone administrative 2",
       pt: "Mapa que mostra a coerência por tipo de rácio e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "a6c091c0-8df5-4dc9-aa5f-857c697310d1",
     allowedFilters: [],
     config: {
       d: {

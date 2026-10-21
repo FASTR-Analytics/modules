@@ -14,7 +14,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant le changement en pourcentage dû à l'ajustement des valeurs aberrantes par indicateur et Zone administrative 2",
       pt: "Tabela que mostra a variação percentual devida ao ajuste de valores atípicos por indicador e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "e5edce68-369c-498e-a4b0-03ba73d31d6c",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {

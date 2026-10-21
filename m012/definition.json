@@ -163,7 +163,6 @@
             "admin_area_2",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "4d1f6a02-9c31-4c8a-9f2c-1b7a5e0d3c44",
           "config": {
             "d": {
               "type": "table",
@@ -227,7 +226,6 @@
             "admin_area_2",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": "b41b1835-49b0-495f-a69b-2f860dbf642e",
           "config": {
             "d": {
               "type": "timeseries",
@@ -280,7 +278,6 @@
             "admin_area_2",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
@@ -338,7 +335,6 @@
             "admin_area_2",
             "admin_area_3"
           ],
-          "createDefaultVisualizationOnInstall": null,
           "config": {
             "d": {
               "type": "timeseries",
@@ -391,7 +387,6 @@
             "indicator_common_id",
             "admin_area_2"
           ],
-          "createDefaultVisualizationOnInstall": "0a17f31e-0d12-48bb-b071-6f60ade2c610",
           "config": {
             "d": {
               "type": "timeseries",

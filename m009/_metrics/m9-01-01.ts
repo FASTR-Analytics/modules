@@ -16,7 +16,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Couverture par sous-groupe sous forme d'équigraphique : une ligne par indicateur, un point coloré par sous-groupe. Changez le stratificateur avec le sélecteur de réplicant.",
       pt: "Cobertura por subgrupo sob a forma de equigráfico: uma linha por indicador, um ponto colorido por subgrupo. Altere o estratificador com o seletor de replicante.",
     },
-    createDefaultVisualizationOnInstall: "8cf07c58-5de6-4b48-b361-55b33b51de37",
     allowedFilters: ["iceh_indicator", "strat", "level", "year"],
     config: {
       d: {
@@ -86,7 +85,6 @@ export const vizPresets: VizPreset[] = [
       pt: "Tabela de estimativas de cobertura ICEH com os indicadores em linhas e os níveis de subgrupo em colunas. Altere o estratificador (riqueza, área, educação, região, ...) com o seletor de replicante.",
     },
     allowedFilters: ["iceh_indicator", "strat", "level", "year"],
-    createDefaultVisualizationOnInstall: "e7b3c1d4-5a82-4f9e-b6c3-2d8f1a7e90b5",
     config: {
       d: {
         type: "table",
@@ -138,7 +136,6 @@ export const vizPresets: VizPreset[] = [
       pt: "Cobertura de um indicador selecionado ao longo dos anos de inquérito, uma linha por quintil de riqueza (observe a evolução do fosso entre ricos e pobres ao longo do tempo). Altere o indicador com o seletor de replicante.",
     },
     allowedFilters: ["iceh_indicator", "strat", "level", "year"],
-    createDefaultVisualizationOnInstall: "a3f8e1d7-6c24-4b9e-8a51-2f7d9c3b6e08",
     config: {
       d: {
         type: "timeseries",

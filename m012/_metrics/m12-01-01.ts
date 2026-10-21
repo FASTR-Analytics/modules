@@ -16,7 +16,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau des indicateurs par zone avec coloration basée sur les seuils",
       pt: "Tabela de indicadores por área com coloração baseada em limiares",
     },
-    createDefaultVisualizationOnInstall: "4d1f6a02-9c31-4c8a-9f2c-1b7a5e0d3c44",
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
       d: {
@@ -61,7 +60,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Graphique linéaire montrant les valeurs mensuelles des indicateurs, un panneau par indicateur",
       pt: "Gráfico de linhas que mostra os valores mensais dos indicadores, um painel por indicador",
     },
-    createDefaultVisualizationOnInstall: "b41b1835-49b0-495f-a69b-2f860dbf642e",
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
       d: {
@@ -103,7 +101,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Diagramme à barres montrant les valeurs trimestrielles avec variation trimestre par trimestre, une ligne par indicateur",
       pt: "Gráfico de barras que mostra os valores trimestrais com variação trimestre a trimestre, uma linha por indicador",
     },
-    createDefaultVisualizationOnInstall: null,
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
       d: {
@@ -146,7 +143,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, une ligne par indicateur",
       pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, uma linha por indicador",
     },
-    createDefaultVisualizationOnInstall: null,
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
       d: {
@@ -188,7 +184,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, par indicateur et Zone administrative 2",
       pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, por indicador e Área administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "0a17f31e-0d12-48bb-b071-6f60ade2c610",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {

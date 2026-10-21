@@ -42,7 +42,7 @@ Two tiers:
 
 Out of scope: R code correctness, the app's own formatters and prompts
 (record observations about them separately, do not propose app changes as
-findings), and the frozen modules m007 and m008.
+findings).
 
 ## 2. The pipeline in one page
 
@@ -288,20 +288,16 @@ nobody should spend effort re-discovering them.
 | m001 `m1-03-01` presets | Footnote states a 30% threshold; no parameter carries it. Check `script.R`. |
 | m001 `_parameters.ts` vs `script.R` header | `CONSISTENCY_PAIRS_USED` and `DQA_INDICATORS` defaults differ from the header literals. Header is local-dev only (see section 8), so this is stale, not broken. |
 | m002 `adjustment-table` footnote | Copies m001's outlier sentence (10 MADs, 80%, 100) into a module with no parameters. |
-| m003 `m3-01-01.importantNotes` | Names four preset ids, tells the agent to call `get_module_settings` (SPA only), and quotes the parameter by its English description inside the fr and pt versions. |
-| m003 `m3-02-01.caveats` | Names `DIFFPERCENT` by replacement string; the agent only ever sees the description "Difference percent threshold for visualization". |
-| m003 `m3-02-02`, `m3-03-02`, `m3-04-02`, `m3-05-02` `typicalRange` | ±10 / ±10-30 / ±10-40 / ±20-50 escalate by admin level; source unknown. |
-| m003 `_parameters.ts` vs header | `SELECTEDCOUNT` and `RUN_DISTRICT_MODEL` defaults differ from header literals. |
-| m004, m005 `_parameters.ts` vs header | `SELECTED_COUNT_VARIABLE` and `INFANT_MORTALITY_RATE` (0.067 vs 0.063) differ; a stale inline comment `P1_NMR <- 0.039  #Default = 0.03`. |
+| m005 `_parameters.ts` vs header | `SELECTED_COUNT_VARIABLE` and `INFANT_MORTALITY_RATE` (0.067 vs 0.063) differ; a stale inline comment `P1_NMR <- 0.039  #Default = 0.03`. |
 | m005 | Metric ids are `m4a-*` inside module `m005` with results objects `M5_*`; the agent sees `m4a` ids beside an "M5." module label. |
 | m005 `m4a-01-01.typicalRange` | "2-5% / 2-4% of total population" relates to the seven rate parameters; check. |
 | m006 `script.R` header | Says `DENOMINATOR_CHAIN` must match m005's setting; m005 has no such parameter. |
 | m009 `m9-01-01.caveats` | Suppression rules "<25, <125 fertility, <250 mortality" are hard-coded; check they match the script. |
 | m009 `iceh-equiplot`, m012 `scorecard-table` | Footnote is `""` rather than `null`. |
 | m011 | No `pt` on any field, module label included. Falls back to en. Ten fields hard-code "95% CI". |
-| m012 `m12-01-01` | `disaggregationGuidance` points to `m3-01-01` (another module) for facility level; `typicalRange` uses an em-dash. |
+| m012 `m12-01-01` | `typicalRange` uses an em-dash. |
 | all modules | `caveats` is null on 15 of 48 metrics; every other `aiDescription` field is always present. Judge whether a null caveat is a gap for that metric. |
-| fr/pt | Translations are markedly shorter than the English on m001 (fr only), m002, m004 `m4-01-01`, m005 `m4a-01-01`, m006 `m6-01-01`. Only relevant to fields the AI reads in the instance language (label, variantLabel, importantNotes) and to Tier 2. |
+| fr/pt | Translations are markedly shorter than the English on m001 (fr only), m002, m005 `m4a-01-01`, m006 `m6-01-01`. Only relevant to fields the AI reads in the instance language (label, variantLabel, importantNotes) and to Tier 2. |
 | authoring docs | `DOC_METRICS_REFERENCE.md` shows a `postAggregationExpression` written as `cases / NULLIF(tests, 0)` while `_metrics_template.ts` requires `name = arithmetic` with automatic NULLIF; its disaggregation table omits most of `disaggregation_options.ts`; `DOC_MODULES.md` describes a single `_metrics.ts` while modules use `_metrics/`. |
 
 ## 8. Pitfalls that produce false findings
@@ -327,8 +323,7 @@ nobody should spend effort re-discovering them.
 - **Preset captions never reach the AI.** A caption that disagrees with the
   summary is Tier 2, not Tier 1.
 - **`hide: true` metrics** are absent from the catalog but still queryable
-  by id, and a preset on a hidden metric with
-  `createDefaultVisualizationOnInstall` still produces a default figure.
+  by id, and a preset on a hidden metric is still a card on the package page.
   Cross-references to a hidden metric are S1.
 - **Sample size and roll-up.** The AI's CSV excludes the admin-area roll-up
   row, and HFA values carry `(n=…)` inline. Text need not explain these; the
@@ -344,7 +339,7 @@ Modules repo (this repo):
 
 - `mNNN/_core.ts`, `_parameters.ts`, `_results_objects.ts`,
   `_metrics/*.ts`, `script.R`, `definition.json`
-- `_shared/text_presets.ts` (m004 and m006 import footnotes from it)
+- `_shared/text_presets.ts` (m006 imports footnotes from it)
 - `.validation/_module_definition_github.ts` (the schema),
   `.validation/disaggregation_options.ts`
 - `DOC_METRICS_REFERENCE.md`, `DOC_VIZPRESET_STANDARDS.md`,

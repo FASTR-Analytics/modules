@@ -19,13 +19,13 @@ Before any push, runs the `definition.json` validator. If errors are found, they
 ```
 OK    m001/definition.json
 OK    m002/definition.json
-FAIL  m003/definition.json
+FAIL  m011/definition.json
       labels[0].id: Required
 ...
 -------------------------------------------------------
   VALIDATION ERRORS
 -------------------------------------------------------
-FAIL  m003/definition.json
+FAIL  m011/definition.json
       labels[0].id: Required
 -------------------------------------------------------
 

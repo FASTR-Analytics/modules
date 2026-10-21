@@ -16,7 +16,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Graphique linéaire comparant le volume annuel de services selon chaque ajustement, un panneau par indicateur",
       pt: "Gráfico de linhas que compara o volume anual de serviços segundo cada ajuste, um painel por indicador",
     },
-    createDefaultVisualizationOnInstall: "bcd79747-f3cd-4c11-88f2-be395374bd5f",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {

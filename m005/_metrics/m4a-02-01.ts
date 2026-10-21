@@ -16,7 +16,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Séries temporelles comparant la couverture entre sources de dénominateur",
       pt: "Séries temporais que comparam a cobertura entre fontes de denominador",
     },
-    createDefaultVisualizationOnInstall: "15ca88bd-6183-4e71-bb26-3277dd8eb02f",
     allowedFilters: ["denominator_best_or_survey"],
     config: {
       d: {

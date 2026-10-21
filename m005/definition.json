@@ -387,7 +387,6 @@
             "denominator",
             "source_indicator"
           ],
-          "createDefaultVisualizationOnInstall": "1f8d2940-803c-43f0-b17b-278b271d34a7",
           "config": {
             "d": {
               "type": "table",
@@ -767,7 +766,6 @@
           "allowedFilters": [
             "denominator_best_or_survey"
           ],
-          "createDefaultVisualizationOnInstall": "15ca88bd-6183-4e71-bb26-3277dd8eb02f",
           "config": {
             "d": {
               "type": "timeseries",

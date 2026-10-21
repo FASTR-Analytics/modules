@@ -124,7 +124,6 @@
             "level",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "8cf07c58-5de6-4b48-b361-55b33b51de37",
           "config": {
             "d": {
               "type": "chart",
@@ -198,7 +197,6 @@
             "level",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "e7b3c1d4-5a82-4f9e-b6c3-2d8f1a7e90b5",
           "config": {
             "d": {
               "type": "table",
@@ -267,7 +265,6 @@
             "level",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "a3f8e1d7-6c24-4b9e-8a51-2f7d9c3b6e08",
           "config": {
             "d": {
               "type": "timeseries",
@@ -400,7 +397,6 @@
             "strat",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "c4a9f1e2-7b3d-4e6a-8f12-9d05b7c3a6e1",
           "config": {
             "d": {
               "type": "table",
@@ -464,7 +460,6 @@
             "strat",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "f2a8d6c3-9b41-4e7a-8d52-3c1f6b9e04a7",
           "config": {
             "d": {
               "type": "chart",
@@ -535,7 +530,6 @@
             "strat",
             "year"
           ],
-          "createDefaultVisualizationOnInstall": "b6d2c9a4-8e31-4f7a-9b62-1d4f8c2e07a3",
           "config": {
             "d": {
               "type": "timeseries",

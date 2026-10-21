@@ -29,7 +29,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2",
       pt: "Tabela que mostra a proporção de valores atípicos por indicador e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "c3cb0cc9-4352-4b27-8532-f18e465faec8",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {
@@ -106,7 +105,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Carte montrant la proportion de valeurs aberrantes par indicateur et Zone administrative 2",
       pt: "Mapa que mostra a proporção de valores atípicos por indicador e Área Administrativa 2",
     },
-    createDefaultVisualizationOnInstall: "efc60afb-0b25-4e5e-95e4-e97754d3af83",
     allowedFilters: [],
     config: {
       d: {

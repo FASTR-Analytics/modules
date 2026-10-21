@@ -50,7 +50,6 @@ function preset(p: {
   id: string;
   label: { en: string; fr: string };
   layout: { en: string; fr: string };
-  createDefaultVisualizationOnInstall: string;
   allowedFilters: DisOpt[];
   disaggregateBy: DisaggregateBy;
   selectedReplicantValue?: string;
@@ -64,7 +63,6 @@ function preset(p: {
     },
     importantNotes: null,
     allowedFilters: p.allowedFilters,
-    createDefaultVisualizationOnInstall: p.createDefaultVisualizationOnInstall,
     config: {
       d: {
         type: "timeseries",
@@ -83,7 +81,7 @@ function preset(p: {
 }
 
 // One panel per indicator, the whole area the metric covers.
-export function byIndicatorPreset(uuid: string): VizPreset {
+export function byIndicatorPreset(): VizPreset {
   return preset({
     id: "observed-expected-ci",
     label: {
@@ -91,14 +89,13 @@ export function byIndicatorPreset(uuid: string): VizPreset {
       fr: "Graphique des perturbations par indicateur",
     },
     layout: { en: "one panel per indicator", fr: "un panneau par indicateur" },
-    createDefaultVisualizationOnInstall: uuid,
     allowedFilters: ["indicator_common_id"],
     disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "cell" }],
   });
 }
 
 // Indicators down, the level's areas across.
-export function gridPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
+export function gridPreset(level: 2 | 3 | 4): VizPreset {
   const area = areaLabel(level);
   return preset({
     id: "observed-expected-ci",
@@ -110,7 +107,6 @@ export function gridPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
       en: `one panel per indicator and ${area.en}`,
       fr: `un panneau par indicateur et ${area.fr}`,
     },
-    createDefaultVisualizationOnInstall: uuid,
     allowedFilters: ["indicator_common_id", adminArea(level)],
     disaggregateBy: [
       { disOpt: "indicator_common_id", disDisplayOpt: "row" },
@@ -120,7 +116,7 @@ export function gridPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
 }
 
 // The same grid for the children of one parent area, chosen as the replicant.
-export function childrenOfParentPreset(level: 3 | 4, uuid: string): VizPreset {
+export function childrenOfParentPreset(level: 3 | 4): VizPreset {
   const parent = (level - 1) as 2 | 3;
   const area = areaLabel(level);
   const parentArea = areaLabel(parent);
@@ -135,7 +131,6 @@ export function childrenOfParentPreset(level: 3 | 4, uuid: string): VizPreset {
       en: `one panel per indicator and ${area.en}, for a single ${parentArea.en}`,
       fr: `un panneau par indicateur et ${area.fr}, pour une seule ${parentArea.fr}`,
     },
-    createDefaultVisualizationOnInstall: uuid,
     allowedFilters: ["indicator_common_id", adminArea(level)],
     disaggregateBy: [
       { disOpt: "indicator_common_id", disDisplayOpt: "row" },
@@ -147,7 +142,7 @@ export function childrenOfParentPreset(level: 3 | 4, uuid: string): VizPreset {
 }
 
 // One area, chosen as the replicant, one panel per indicator.
-export function singleAreaPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
+export function singleAreaPreset(level: 2 | 3 | 4): VizPreset {
   const area = areaLabel(level);
   return preset({
     id: `observed-expected-ci-single-admin-area-${level}`,
@@ -159,7 +154,6 @@ export function singleAreaPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
       en: `one panel per indicator, for a single ${area.en}`,
       fr: `un panneau par indicateur, pour une seule ${area.fr}`,
     },
-    createDefaultVisualizationOnInstall: uuid,
     allowedFilters: ["indicator_common_id"],
     disaggregateBy: [
       { disOpt: "indicator_common_id", disDisplayOpt: "cell" },
@@ -170,7 +164,7 @@ export function singleAreaPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
 }
 
 // One indicator, chosen as the replicant, one panel per area of the level.
-export function singleIndicatorPreset(level: 2 | 3 | 4, uuid: string): VizPreset {
+export function singleIndicatorPreset(level: 2 | 3 | 4): VizPreset {
   const area = areaLabel(level);
   return preset({
     id: "observed-expected-ci-single-indicator",
@@ -182,7 +176,6 @@ export function singleIndicatorPreset(level: 2 | 3 | 4, uuid: string): VizPreset
       en: `one panel per ${area.en}, for a single indicator`,
       fr: `un panneau par ${area.fr}, pour un seul indicateur`,
     },
-    createDefaultVisualizationOnInstall: uuid,
     allowedFilters: [adminArea(level)],
     disaggregateBy: [
       { disOpt: "indicator_common_id", disDisplayOpt: "replicant" },

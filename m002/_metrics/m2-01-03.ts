@@ -14,7 +14,6 @@ export const vizPresets: VizPreset[] = [
       fr: "Tableau montrant le changement en pourcentage dû à l'ajustement combiné des valeurs aberrantes et de la complétude par indicateur et région",
       pt: "Tabela que mostra a variação percentual devida ao ajuste combinado de valores atípicos e completude por indicador e região",
     },
-    createDefaultVisualizationOnInstall: "5337d614-02b8-4de8-abcb-f390d2b7a714",
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
       d: {

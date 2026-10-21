@@ -17,6 +17,8 @@ export const ALLOW_NEGATIVE_SCALE_VALUES_METRICS = [...]
 
 ## Why These Arrays Exist
 
+The app's lists also hold the ids of retired modules, so figures made with them keep their rendering; this document names only the metrics in this repo.
+
 The app needs to know which metrics require special chart rendering before it processes vizPreset configs. These arrays allow the rendering pipeline to apply metric-specific logic (axis scaling, color schemes, data label formatting, etc.) based on the metric ID.
 
 ## What Each Array Represents
@@ -25,7 +27,7 @@ The app needs to know which metrics require special chart rendering before it pr
 
 Metrics with `specialCoverageChart: true` in their vizPreset `config.s`.
 
-**Current metrics:** m4-01-01, m6-01-01, m6-02-01, m6-03-01
+**Current metrics:** m6-01-01, m6-02-01, m6-03-01
 
 **Rendering behavior:** Coverage charts show multiple estimation types (survey-based, projected, HMIS-derived) with specific styling for comparing coverage sources over time.
 
@@ -35,7 +37,7 @@ Metrics with `specialCoverageChart: true` in their vizPreset `config.s`.
 
 Metrics with `specialBarChart: true` in their vizPreset `config.s`.
 
-**Current metrics:** m12-01-01 (and m3-01-01, retired: packages generated with it stay readable)
+**Current metrics:** m12-01-01
 
 **Rendering behavior:** Bar charts showing year-over-year percent change with specific axis and label formatting.
 
@@ -47,7 +49,7 @@ Metrics with `specialBarChart: true` in their vizPreset `config.s`.
 
 Metrics with `specialDisruptionsChart: true` in their vizPreset `config.s`.
 
-**Current metrics:** m3-02-01, m3-03-01, m3-04-01, m3-05-01
+**Current metrics:** none in this repo; the app keeps the list for figures made with the retired m003
 
 **Rendering behavior:** Disruption charts comparing actual vs expected service volumes with specific visual treatment for showing deviations from baseline.
 
@@ -67,7 +69,7 @@ Metrics with `specialDisruptionsChartV2: true` in their vizPreset `config.s`.
 
 Metrics whose displayed values can be negative. The list also lets the conditional-formatting editor accept negative thresholds.
 
-**Current metrics:** m11-02-01 (and the m3-0x-01, m3-0x-02 and m3-0x-03 metrics of the retired m003, kept for packages generated with it)
+**Current metrics:** m11-02-01
 
 **Rendering behavior:** Axis scaling and color formatting must handle negative percentages (e.g., -15% meaning service volume 15% below expected).
 

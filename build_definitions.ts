@@ -4,15 +4,11 @@ import {
   type ModuleDefinitionGithub,
   type MetricDefinitionGithub,
 } from "./.validation/_module_definition_github.ts";
-import { FROZEN_MODULE_DIRS } from "./_frozen_modules.ts";
 
 const root = new URL(".", import.meta.url);
 const moduleDirs: string[] = [];
 for await (const entry of Deno.readDir(root)) {
-  if (
-    entry.isDirectory && /^m\d+$/.test(entry.name) &&
-    !FROZEN_MODULE_DIRS.includes(entry.name)
-  ) {
+  if (entry.isDirectory && /^m\d+$/.test(entry.name)) {
     moduleDirs.push(entry.name);
   }
 }
@@ -183,7 +179,6 @@ const standardDisOpts = new Set([
 // Check for duplicate IDs and run all validations
 const resultsObjectIds = new Map<string, string>();
 const metricIds = new Map<string, string>();
-const defaultVizIds = new Map<string, string>();
 
 for (const { dir, def } of allModules) {
   for (const ro of def.resultsObjects) {
@@ -314,21 +309,6 @@ for (const { dir, def } of allModules) {
             console.error(`INVALID disaggregateBy "${dis.disOpt}" in ${location} - not standard and not in resultsObject columns`);
             hadError = true;
           }
-        }
-      }
-
-      // Check createDefaultVisualizationOnInstall UUID
-      if (preset.createDefaultVisualizationOnInstall) {
-        const uuid = preset.createDefaultVisualizationOnInstall;
-        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) {
-          console.error(`INVALID UUID "${uuid}" in ${location} - not a valid UUID format`);
-          hadError = true;
-        }
-        if (defaultVizIds.has(uuid)) {
-          console.error(`DUPLICATE createDefaultVisualizationOnInstall "${uuid}" in ${location} (first seen in ${defaultVizIds.get(uuid)})`);
-          hadError = true;
-        } else {
-          defaultVizIds.set(uuid, location);
         }
       }
 
