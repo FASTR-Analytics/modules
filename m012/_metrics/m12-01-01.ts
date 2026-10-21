@@ -49,6 +49,178 @@ export const vizPresets: VizPreset[] = [
     },
     importantNotes: null,
   },
+  {
+    id: "values-monthly",
+    label: {
+      en: "Indicator values over time (monthly)",
+      fr: "Valeurs des indicateurs dans le temps (mensuel)",
+      pt: "Valores dos indicadores ao longo do tempo (mensal)",
+    },
+    description: {
+      en: "Line chart showing monthly indicator values, one panel per indicator",
+      fr: "Graphique linéaire montrant les valeurs mensuelles des indicateurs, un panneau par indicateur",
+      pt: "Gráfico de linhas que mostra os valores mensais dos indicadores, um painel por indicador",
+    },
+    createDefaultVisualizationOnInstall: "b41b1835-49b0-495f-a69b-2f860dbf642e",
+    allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "period_id",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "cell" }],
+        filterBy: [],
+      },
+      s: { content: "lines" },
+      t: {
+        caption: {
+          en: "Indicator values over time",
+          fr: "Valeurs des indicateurs dans le temps",
+          pt: "Valores dos indicadores ao longo do tempo",
+        },
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
+        },
+        footnote: null,
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  {
+    id: "values-quarterly-change",
+    label: {
+      en: "Quarterly change",
+      fr: "Variation trimestrielle",
+      pt: "Variação trimestral",
+    },
+    description: {
+      en: "Bar chart showing quarterly values with quarter-on-quarter change, one row per indicator",
+      fr: "Diagramme à barres montrant les valeurs trimestrielles avec variation trimestre par trimestre, une ligne par indicateur",
+      pt: "Gráfico de barras que mostra os valores trimestrais com variação trimestre a trimestre, uma linha por indicador",
+    },
+    createDefaultVisualizationOnInstall: null,
+    allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "quarter_id",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "row" }],
+        filterBy: [],
+        periodFilter: { filterType: "last_n_months", nMonths: 12 },
+      },
+      s: { specialBarChart: true, specialBarChartDataLabels: "all-values" },
+      t: {
+        caption: {
+          en: "Indicator values by quarter and quarter-on-quarter change",
+          fr: "Valeurs des indicateurs par trimestre et variation trimestre par trimestre",
+          pt: "Valores dos indicadores por trimestre e variação trimestre a trimestre",
+        },
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
+        },
+        footnote: null,
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  {
+    id: "values-annual-change",
+    label: {
+      en: "Annual change",
+      fr: "Variation annuelle",
+      pt: "Variação anual",
+    },
+    description: {
+      en: "Bar chart showing annual values with year-on-year change, one row per indicator",
+      fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, une ligne par indicateur",
+      pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, uma linha por indicador",
+    },
+    createDefaultVisualizationOnInstall: null,
+    allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "row" }],
+        filterBy: [],
+      },
+      s: { specialBarChart: true, specialBarChartDataLabels: "all-values" },
+      t: {
+        caption: {
+          en: "Indicator values by year and year-on-year change",
+          fr: "Valeurs des indicateurs par année et variation d'une année sur l'autre",
+          pt: "Valores dos indicadores por ano e variação de um ano para o outro",
+        },
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
+        },
+        footnote: null,
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
+  {
+    id: "values-annual-change-admin-area-2",
+    label: {
+      en: "Annual change by Admin Area 2",
+      fr: "Variation annuelle par Zone administrative 2",
+      pt: "Variação anual por Área administrativa 2",
+    },
+    description: {
+      en: "Bar chart showing annual values with year-on-year change, by indicator and Admin Area 2",
+      fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, par indicateur et Zone administrative 2",
+      pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, por indicador e Área administrativa 2",
+    },
+    createDefaultVisualizationOnInstall: "0a17f31e-0d12-48bb-b071-6f60ade2c610",
+    allowedFilters: ["indicator_common_id", "admin_area_2"],
+    config: {
+      d: {
+        type: "timeseries",
+        timeseriesGrouping: "year",
+        valuesDisDisplayOpt: "series",
+        disaggregateBy: [
+          { disOpt: "indicator_common_id", disDisplayOpt: "row" },
+          { disOpt: "admin_area_2", disDisplayOpt: "col" },
+        ],
+        filterBy: [],
+      },
+      s: { specialBarChart: true, specialBarChartDataLabels: "all-values" },
+      t: {
+        caption: {
+          en: "Indicator values by year and year-on-year change",
+          fr: "Valeurs des indicateurs par année et variation d'une année sur l'autre",
+          pt: "Valores dos indicadores por ano e variação de um ano para o outro",
+        },
+        subCaption: {
+          en: "DATE_RANGE",
+          fr: "PLAGE_DE_DATES",
+          pt: "INTERVALO_DE_DATAS",
+        },
+        footnote: null,
+        captionRelFontSize: null,
+        subCaptionRelFontSize: null,
+        footnoteRelFontSize: null,
+      },
+    },
+    importantNotes: null,
+  },
 ];
 
 export const metric: MetricDefinitionGithub = {

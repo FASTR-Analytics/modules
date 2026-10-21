@@ -35,7 +35,7 @@ Metrics with `specialCoverageChart: true` in their vizPreset `config.s`.
 
 Metrics with `specialBarChart: true` in their vizPreset `config.s`.
 
-**Current metrics:** m3-01-01
+**Current metrics:** m12-01-01 (and m3-01-01, retired: packages generated with it stay readable)
 
 **Rendering behavior:** Bar charts showing year-over-year percent change with specific axis and label formatting.
 
