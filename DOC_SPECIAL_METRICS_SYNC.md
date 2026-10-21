@@ -53,6 +53,16 @@ Metrics with `specialDisruptionsChart: true` in their vizPreset `config.s`.
 
 **How to identify:** Search for `specialDisruptionsChart: true` in metric files.
 
+### SPECIAL_DISRUPTIONS_CHART_V2_METRICS
+
+Metrics with `specialDisruptionsChartV2: true` in their vizPreset `config.s`.
+
+**Current metrics:** m11-01-01, m11-01-02, m11-01-03, m11-01-04
+
+**Rendering behavior:** Observed and expected lines over a grey 95% credible band, with green shading where observed rises above the band and red where it falls below. Needs all four value props (observed, expected, ppi_lwr, ppi_upr).
+
+**How to identify:** Search for `specialDisruptionsChartV2: true` in metric files, or for `bandChartMetric` in `m011/`.
+
 ### METRICS_WITH_NEGATIVE_PCT_VALUES
 
 Metrics whose `postAggregationExpression` can produce negative values.
@@ -75,6 +85,8 @@ When adding or modifying metrics:
 
 3. **Adding a disruptions metric:** If it has `specialDisruptionsChart: true`, add its ID to `SPECIAL_DISRUPTIONS_CHART_METRICS`
 
+3a. **Adding a credible-band disruptions metric:** If it has `specialDisruptionsChartV2: true`, add its ID to `SPECIAL_DISRUPTIONS_CHART_V2_METRICS`
+
 4. **Adding a metric with negative values:** If its `postAggregationExpression.expression` contains subtraction without `ABS()`, add its ID to `METRICS_WITH_NEGATIVE_PCT_VALUES`
 
 5. **Removing a metric:** Remove its ID from any const arrays it appears in
@@ -87,6 +99,7 @@ Run this from the `wb-fastr-modules` root to verify alignment:
 echo "=== specialCoverageChart ===" && grep -rl "specialCoverageChart: true" m*/_metrics/ | xargs basename -a | sed 's/.ts//' | sort
 echo "=== specialBarChart ===" && grep -rl "specialBarChart: true" m*/_metrics/ | xargs basename -a | sed 's/.ts//' | sort
 echo "=== specialDisruptionsChart ===" && grep -rl "specialDisruptionsChart: true" m*/_metrics/ | xargs basename -a | sed 's/.ts//' | sort
+echo "=== specialDisruptionsChartV2 ===" && grep -rl "bandChartMetric" m*/_metrics/ | xargs basename -a | sed 's/.ts//' | sort
 echo "=== negative pct (no ABS) ===" && grep -rl "postAggregationExpression:" m*/_metrics/*.ts | while read f; do grep -A15 "postAggregationExpression:" "$f" | grep "expression:" | grep -v "ABS" | grep -v "null" && basename "$f" .ts; done
 ```
 
