@@ -965,7 +965,7 @@
             "func": "SUM"
           }
         ],
-        "expression": "pct_diff = (observed - expected) / NULLIF(expected, 0)"
+        "expression": "pct_diff = (observed - expected) / expected"
       },
       "catalogExpressionEvaluation": null,
       "resultsObjectId": "M11_disruptions_analysis.csv",

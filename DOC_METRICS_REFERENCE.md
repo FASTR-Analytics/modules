@@ -151,7 +151,7 @@ postAggregationExpression: {
     { prop: "cases", func: "SUM" },
     { prop: "tests", func: "SUM" },
   ],
-  expression: "cases / NULLIF(tests, 0)",
+  expression: "cases / tests",
 }
 ```
 
@@ -170,7 +170,7 @@ FROM (
 ```
 
 **When to use:**
-- Ratios: `numerator / NULLIF(denominator, 0)`
+- Ratios: `numerator / denominator`. The app wraps every divisor in `NULLIF(…, 0)` itself; writing `NULLIF` in the expression double-wraps it into bad SQL
 - Differences: `col_a - col_b`
 - Weighted averages
 - Any calculation that needs columns aggregated differently
@@ -384,7 +384,7 @@ From `disaggregation_options.ts`:
       { prop: "positive_cases", func: "SUM" },
       { prop: "total_tests", func: "SUM" },
     ],
-    expression: "positive_cases / NULLIF(total_tests, 0)",
+    expression: "positive_cases / total_tests",
   },
   // ...
 }

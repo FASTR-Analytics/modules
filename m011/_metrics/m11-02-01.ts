@@ -161,7 +161,7 @@ export const metric: MetricDefinitionGithub = {
       { prop: "observed", func: "SUM" },
       { prop: "expected", func: "SUM" },
     ],
-    expression: "pct_diff = (observed - expected) / NULLIF(expected, 0)",
+    expression: "pct_diff = (observed - expected) / expected",
   },
   label: {
     en: "Difference between observed and expected services (%)",

@@ -72,7 +72,7 @@ Metrics whose displayed values can be negative. The list also lets the condition
 **Rendering behavior:** Axis scaling and color formatting must handle negative percentages (e.g., -15% meaning service volume 15% below expected).
 
 **How to identify:** Check `postAggregationExpression.expression` for subtraction without `ABS()` wrapper:
-- **Negative-capable:** `pct_diff = (observed - expected) / NULLIF(expected, 0)`
+- **Negative-capable:** `pct_diff = (observed - expected) / expected`
 - **Always positive:** `pct_change = ABS(count_final_none-count_final_outliers)/count_final_none`
 
 ## Keeping In Sync
