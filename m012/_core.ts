@@ -20,9 +20,9 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 // the module and an unchanged store does not.
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "Indicator values",
-    fr: "Valeurs des indicateurs",
-    pt: "Valores dos indicadores",
+    en: "Service utilization",
+    fr: "Utilisation des services",
+    pt: "Utilização dos serviços",
   },
   family: "hmis",
   tier: "primary",
