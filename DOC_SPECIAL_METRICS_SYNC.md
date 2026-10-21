@@ -12,7 +12,7 @@ This file contains arrays of metric IDs that require special rendering behavior 
 export const SPECIAL_COVERAGE_CHART_METRICS = [...]
 export const SPECIAL_PERCENT_CHANGE_CHART_METRICS = [...]
 export const SPECIAL_DISRUPTIONS_CHART_METRICS = [...]
-export const METRICS_WITH_NEGATIVE_PCT_VALUES = [...]
+export const ALLOW_NEGATIVE_SCALE_VALUES_METRICS = [...]
 ```
 
 ## Why These Arrays Exist
@@ -63,16 +63,16 @@ Metrics with `specialDisruptionsChartV2: true` in their vizPreset `config.s`.
 
 **How to identify:** Search for `specialDisruptionsChartV2: true` in metric files, or for `bandChartMetric` in `m011/`.
 
-### METRICS_WITH_NEGATIVE_PCT_VALUES
+### ALLOW_NEGATIVE_SCALE_VALUES_METRICS
 
-Metrics whose `postAggregationExpression` can produce negative values.
+Metrics whose displayed values can be negative. The list also lets the conditional-formatting editor accept negative thresholds.
 
-**Current metrics:** m3-02-02, m3-03-02, m3-04-02, m3-05-02
+**Current metrics:** m11-02-01 (and the m3-0x-01, m3-0x-02 and m3-0x-03 metrics of the retired m003, kept for packages generated with it)
 
 **Rendering behavior:** Axis scaling and color formatting must handle negative percentages (e.g., -15% meaning service volume 15% below expected).
 
 **How to identify:** Check `postAggregationExpression.expression` for subtraction without `ABS()` wrapper:
-- **Negative-capable:** `pct_diff = (count_sum - count_expect_sum)/count_expect_sum`
+- **Negative-capable:** `pct_diff = (observed - expected) / NULLIF(expected, 0)`
 - **Always positive:** `pct_change = ABS(count_final_none-count_final_outliers)/count_final_none`
 
 ## Keeping In Sync
@@ -87,7 +87,7 @@ When adding or modifying metrics:
 
 3a. **Adding a credible-band disruptions metric:** If it has `specialDisruptionsChartV2: true`, add its ID to `SPECIAL_DISRUPTIONS_CHART_V2_METRICS`
 
-4. **Adding a metric with negative values:** If its `postAggregationExpression.expression` contains subtraction without `ABS()`, add its ID to `METRICS_WITH_NEGATIVE_PCT_VALUES`
+4. **Adding a metric with negative values:** If its `postAggregationExpression.expression` contains subtraction without `ABS()`, add its ID to `ALLOW_NEGATIVE_SCALE_VALUES_METRICS`
 
 5. **Removing a metric:** Remove its ID from any const arrays it appears in
 

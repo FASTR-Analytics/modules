@@ -85,6 +85,7 @@ PROJECT_DATA_HMIS <- "hmis_ZMB.csv"  # injected per country by the platform; loc
 # FILE: M11_disruptions_analysis_admin_area_2.csv  # admin_area_2
 # FILE: M11_disruptions_analysis_admin_area_3.csv  # admin_area_3
 # FILE: M11_disruptions_analysis_admin_area_4.csv  # admin_area_4 (or empty if country has no admin_area_4)
+# FILE: M11_disruptions_analysis.csv               # deepest grain, additive columns only: the app sums it to any level
 #-------------------------------------------------------------------------------------------------------------
 
 suppressPackageStartupMessages({
@@ -236,12 +237,21 @@ out_admin2 <- list()
 out_admin3 <- list()
 out_admin4 <- list()
 
-write_admin <- function(rows_list, file, key_cols, quiet = FALSE) {
-  schema_cols <- c(key_cols, "indicator_common_id", "period_id",
-                   "observed", "expected", "ppi_lwr", "ppi_upr",
-                   "expected_full", "expected_as",
-                   "gap_reporting", "gap_service",
-                   "flag_deficit", "flag_surplus", "mean_p", "n_facilities")
+# The per-level files carry the credible bounds, which are the level's own:
+# with USE_POSTERIOR_DRAWS they are quantiles of that level's summed draws and
+# do not add up from a finer level. The single deepest-grain file carries the
+# additive columns only, so the app sums it to any level itself (as it does
+# M12) and one metric serves every level.
+LEVEL_VALUE_COLS <- c("observed", "expected", "ppi_lwr", "ppi_upr",
+                      "expected_full", "expected_as",
+                      "gap_reporting", "gap_service",
+                      "flag_deficit", "flag_surplus", "mean_p", "n_facilities")
+DEEPEST_VALUE_COLS <- c("observed", "expected", "expected_full", "expected_as",
+                        "gap_reporting", "gap_service", "n_facilities")
+HAS_ADMIN4 <- "admin_area_4" %in% admin_cols
+
+write_admin <- function(rows_list, file, key_cols, value_cols, quiet = FALSE) {
+  schema_cols <- c(key_cols, "indicator_common_id", "period_id", value_cols)
 
   if (length(rows_list) == 0L ||
       all(vapply(rows_list, nrow, integer(1)) == 0L)) {
@@ -261,13 +271,18 @@ write_admin <- function(rows_list, file, key_cols, quiet = FALSE) {
 
 flush_outputs <- function(quiet = TRUE) {
   write_admin(out_admin1, "M11_disruptions_analysis_admin_area_1.csv",
-              "admin_area_1", quiet = quiet)
+              "admin_area_1", LEVEL_VALUE_COLS, quiet = quiet)
   write_admin(out_admin2, "M11_disruptions_analysis_admin_area_2.csv",
-              "admin_area_2", quiet = quiet)
+              "admin_area_2", LEVEL_VALUE_COLS, quiet = quiet)
   write_admin(out_admin3, "M11_disruptions_analysis_admin_area_3.csv",
-              c("admin_area_2", "admin_area_3"), quiet = quiet)
+              c("admin_area_2", "admin_area_3"), LEVEL_VALUE_COLS, quiet = quiet)
   write_admin(out_admin4, "M11_disruptions_analysis_admin_area_4.csv",
-              c("admin_area_2", "admin_area_3", "admin_area_4"), quiet = quiet)
+              c("admin_area_2", "admin_area_3", "admin_area_4"), LEVEL_VALUE_COLS,
+              quiet = quiet)
+  write_admin(if (HAS_ADMIN4) out_admin4 else out_admin3,
+              "M11_disruptions_analysis.csv",
+              c("admin_area_2", "admin_area_3", if (HAS_ADMIN4) "admin_area_4"),
+              DEEPEST_VALUE_COLS, quiet = quiet)
 }
 
 indicators <- sort(unique(adj_data$indicator_common_id))

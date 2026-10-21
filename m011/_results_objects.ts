@@ -92,4 +92,23 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       n_facilities: "INTEGER",
     },
   },
+  {
+    id: "M11_disruptions_analysis.csv",
+    description:
+      "The deepest admin grain the data has, additive columns only: the app sums it to any level, so one metric serves every level. The credible bounds stay on the per-level files, where they are the level's own",
+    createTableStatementPossibleColumns: {
+      admin_area_2: "TEXT NOT NULL",
+      admin_area_3: "TEXT NOT NULL",
+      admin_area_4: "TEXT NOT NULL",
+      indicator_common_id: "TEXT NOT NULL",
+      period_id: "INTEGER NOT NULL",
+      observed: "NUMERIC",
+      expected: "NUMERIC",
+      expected_full: "NUMERIC",
+      expected_as: "NUMERIC",
+      gap_reporting: "NUMERIC",
+      gap_service: "NUMERIC",
+      n_facilities: "INTEGER",
+    },
+  },
 ];

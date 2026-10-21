@@ -240,6 +240,23 @@
         "mean_p": "NUMERIC",
         "n_facilities": "INTEGER"
       }
+    },
+    {
+      "id": "M11_disruptions_analysis.csv",
+      "createTableStatementPossibleColumns": {
+        "admin_area_2": "TEXT NOT NULL",
+        "admin_area_3": "TEXT NOT NULL",
+        "admin_area_4": "TEXT NOT NULL",
+        "indicator_common_id": "TEXT NOT NULL",
+        "period_id": "INTEGER NOT NULL",
+        "observed": "NUMERIC",
+        "expected": "NUMERIC",
+        "expected_full": "NUMERIC",
+        "expected_as": "NUMERIC",
+        "gap_reporting": "NUMERIC",
+        "gap_service": "NUMERIC",
+        "n_facilities": "INTEGER"
+      }
     }
   ],
   "metrics": [
@@ -917,6 +934,649 @@
           }
         }
       ],
+      "hide": false
+    },
+    {
+      "id": "m11-02-01",
+      "label": {
+        "en": "Difference between observed and expected services (%)",
+        "fr": "Différence entre les services observés et attendus (%)"
+      },
+      "variantLabel": null,
+      "valueProps": [
+        "pct_diff"
+      ],
+      "valueFunc": "identity",
+      "formatAs": "percent",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "pct_diff": "Percent difference"
+      },
+      "postAggregationExpression": {
+        "ingredientValues": [
+          {
+            "prop": "observed",
+            "func": "SUM"
+          },
+          {
+            "prop": "expected",
+            "func": "SUM"
+          }
+        ],
+        "expression": "pct_diff = (observed - expected) / NULLIF(expected, 0)"
+      },
+      "catalogExpressionEvaluation": null,
+      "resultsObjectId": "M11_disruptions_analysis.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Percentage difference between observed services and the Bayesian expected baseline, at any admin level and for any period.",
+          "fr": "Différence en pourcentage entre les services observés et la base de référence bayésienne attendue, à tout niveau administratif et pour toute période."
+        },
+        "methodology": {
+          "en": "Observed and expected services are summed over the grouping shown, then the difference is taken as a share of expected: (observed - expected) / expected. The expected baseline is the Bayesian disruption model's latent intensity summed over the same facilities that reported each month (see the band-chart metrics).",
+          "fr": "Les services observés et attendus sont sommés sur le regroupement affiché, puis la différence est rapportée à l'attendu : (observé - attendu) / attendu. La base de référence attendue est l'intensité latente du modèle bayésien de perturbation, sommée sur les mêmes établissements ayant rapporté chaque mois (voir les métriques du graphique à bande)."
+        },
+        "interpretation": {
+          "en": "Negative values mean fewer services than expected, positive values more. The preset thresholds at 5%, 10% and 20% either side mark increasing departures; whether a departure lies outside the model's credible interval is shown by the band-chart metrics.",
+          "fr": "Les valeurs négatives signifient moins de services qu'attendu, les positives davantage. Les seuils des préréglages à 5%, 10% et 20% de part et d'autre marquent des écarts croissants ; le graphique à bande montre si un écart sort de l'intervalle de crédibilité du modèle."
+        },
+        "typicalRange": {
+          "en": "Mostly within 10% either side; sustained values beyond 20% indicate a disruption or surge to triangulate with other data.",
+          "fr": "Le plus souvent à moins de 10% de part et d'autre ; des valeurs durablement au-delà de 20% indiquent une perturbation ou une hausse à trianguler avec d'autres données."
+        },
+        "caveats": {
+          "en": "A share of expected, so small expected volumes give large percentages; read alongside the observed volume. Only facilities that reported enter both terms, so the value reflects service-rate change, not reporting gaps.",
+          "fr": "Rapportée à l'attendu, donc de petits volumes attendus donnent de grands pourcentages ; à lire avec le volume observé. Seuls les établissements ayant rapporté entrent dans les deux termes, la valeur reflète donc un changement du taux de service, pas des lacunes de rapportage."
+        },
+        "disaggregationGuidance": {
+          "en": "Always by indicator_common_id (required). By admin area at any level for tables and maps; by month, quarter or year over time.",
+          "fr": "Toujours par indicator_common_id (requis). Par zone administrative à tout niveau pour les tableaux et les cartes ; par mois, trimestre ou année dans le temps."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [
+        {
+          "id": "disruption-table-admin-area-2",
+          "label": {
+            "en": "Service disruption by Admin Area 2",
+            "fr": "Perturbation des services par Zone administrative 2"
+          },
+          "description": {
+            "en": "Table showing the percentage difference between observed and expected services, Admin Area 2 down and indicators across",
+            "fr": "Tableau montrant la différence en pourcentage entre les services observés et attendus, Zone administrative 2 en lignes et indicateurs en colonnes"
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id",
+            "admin_area_2"
+          ],
+          "createDefaultVisualizationOnInstall": "8d950e95-882f-4356-a896-935329daaf86",
+          "config": {
+            "d": {
+              "type": "table",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "col"
+                },
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "row"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              }
+            },
+            "s": {
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#A9DFBF"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Service disruption by Admin Area 2",
+                "fr": "Perturbation des services par Zone administrative 2"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage difference between observed and expected services, DATE_RANGE",
+                "fr": "Différence en pourcentage entre les services observés et attendus, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+                "fr": "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "disruption-map-admin-area-2",
+          "label": {
+            "en": "Service disruption map by Admin Area 2",
+            "fr": "Carte des perturbations par Zone administrative 2"
+          },
+          "description": {
+            "en": "Map showing the percentage difference between observed and expected services by Admin Area 2, for one indicator",
+            "fr": "Carte montrant la différence en pourcentage entre les services observés et attendus par Zone administrative 2, pour un indicateur"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "aff2800a-c205-48ef-91f4-37cc182f8022",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "cell",
+              "disaggregateBy": [
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "mapArea"
+                },
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "replicant"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
+              "selectedReplicantValue": "anc1"
+            },
+            "s": {
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#A9DFBF"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Service disruption",
+                "fr": "Perturbation des services"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage difference between observed and expected services by Admin Area 2, DATE_RANGE",
+                "fr": "Différence en pourcentage entre les services observés et attendus par Zone administrative 2, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+                "fr": "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "disruption-table-admin-area-3",
+          "label": {
+            "en": "Service disruption by Admin Area 3 for one Admin Area 2",
+            "fr": "Perturbation des services par Zone administrative 3 pour une Zone administrative 2"
+          },
+          "description": {
+            "en": "Table showing the percentage difference between observed and expected services, Admin Area 3 down and indicators across, for a single Admin Area 2",
+            "fr": "Tableau montrant la différence en pourcentage entre les services observés et attendus, Zone administrative 3 en lignes et indicateurs en colonnes, pour une seule Zone administrative 2"
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id",
+            "admin_area_3"
+          ],
+          "createDefaultVisualizationOnInstall": "f7cacf73-92f3-4697-a4c4-323c4c669075",
+          "config": {
+            "d": {
+              "type": "table",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "col"
+                },
+                {
+                  "disOpt": "admin_area_2",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "admin_area_3",
+                  "disDisplayOpt": "row"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
+              "selectedReplicantValue": ""
+            },
+            "s": {
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#A9DFBF"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Service disruption by Admin Area 3",
+                "fr": "Perturbation des services par Zone administrative 3"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage difference between observed and expected services, DATE_RANGE",
+                "fr": "Différence en pourcentage entre les services observés et attendus, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+                "fr": "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "disruption-map-admin-area-3",
+          "label": {
+            "en": "Service disruption map by Admin Area 3",
+            "fr": "Carte des perturbations par Zone administrative 3"
+          },
+          "description": {
+            "en": "Map showing the percentage difference between observed and expected services by Admin Area 3, for one indicator",
+            "fr": "Carte montrant la différence en pourcentage entre les services observés et attendus par Zone administrative 3, pour un indicateur"
+          },
+          "importantNotes": null,
+          "allowedFilters": [],
+          "createDefaultVisualizationOnInstall": "38fb8a22-06d1-4b4f-9dd0-30aecb7e7b86",
+          "config": {
+            "d": {
+              "type": "map",
+              "valuesDisDisplayOpt": "cell",
+              "disaggregateBy": [
+                {
+                  "disOpt": "admin_area_3",
+                  "disDisplayOpt": "mapArea"
+                },
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "replicant"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
+              "selectedReplicantValue": "anc1"
+            },
+            "s": {
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#A9DFBF"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Service disruption",
+                "fr": "Perturbation des services"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage difference between observed and expected services by Admin Area 3, DATE_RANGE",
+                "fr": "Différence en pourcentage entre les services observés et attendus par Zone administrative 3, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+                "fr": "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        },
+        {
+          "id": "disruption-table-admin-area-4",
+          "label": {
+            "en": "Service disruption by Admin Area 4 for one Admin Area 3",
+            "fr": "Perturbation des services par Zone administrative 4 pour une Zone administrative 3"
+          },
+          "description": {
+            "en": "Table showing the percentage difference between observed and expected services, Admin Area 4 down and indicators across, for a single Admin Area 3",
+            "fr": "Tableau montrant la différence en pourcentage entre les services observés et attendus, Zone administrative 4 en lignes et indicateurs en colonnes, pour une seule Zone administrative 3"
+          },
+          "importantNotes": null,
+          "allowedFilters": [
+            "indicator_common_id",
+            "admin_area_4"
+          ],
+          "createDefaultVisualizationOnInstall": "36c76a26-2586-4882-b8fd-e3e9c6e7ca7f",
+          "config": {
+            "d": {
+              "type": "table",
+              "valuesDisDisplayOpt": "col",
+              "disaggregateBy": [
+                {
+                  "disOpt": "indicator_common_id",
+                  "disDisplayOpt": "col"
+                },
+                {
+                  "disOpt": "admin_area_3",
+                  "disDisplayOpt": "replicant"
+                },
+                {
+                  "disOpt": "admin_area_4",
+                  "disDisplayOpt": "row"
+                }
+              ],
+              "filterBy": [],
+              "periodFilter": {
+                "filterType": "last_n_calendar_quarters",
+                "nQuarters": 1
+              },
+              "selectedReplicantValue": ""
+            },
+            "s": {
+              "cfMode": "thresholds",
+              "cfScalePaletteKind": "preset",
+              "cfScalePalettePreset": "",
+              "cfScaleCustomFrom": "",
+              "cfScaleCustomMid": "",
+              "cfScaleCustomTo": "",
+              "cfScaleReverse": false,
+              "cfScaleSteps": 0,
+              "cfScaleDomainKind": "auto",
+              "cfScaleDomainMin": 0,
+              "cfScaleDomainMax": 1,
+              "cfScaleNoDataColor": "",
+              "cfThresholdCutoffs": [
+                -0.2,
+                -0.1,
+                -0.05,
+                0.05,
+                0.1,
+                0.2
+              ],
+              "cfThresholdBuckets": [
+                {
+                  "color": "#e73535"
+                },
+                {
+                  "color": "#F7BCBC"
+                },
+                {
+                  "color": "#f8c4c4"
+                },
+                {
+                  "color": {
+                    "key": "base200"
+                  }
+                },
+                {
+                  "color": "#b4e3c8"
+                },
+                {
+                  "color": "#A9DFBF"
+                },
+                {
+                  "color": "#3ea46a"
+                }
+              ],
+              "cfThresholdDirection": "higher-is-better",
+              "cfThresholdNoDataColor": "#ffffff"
+            },
+            "t": {
+              "caption": {
+                "en": "Service disruption by Admin Area 4",
+                "fr": "Perturbation des services par Zone administrative 4"
+              },
+              "captionRelFontSize": null,
+              "subCaption": {
+                "en": "Percentage difference between observed and expected services, DATE_RANGE",
+                "fr": "Différence en pourcentage entre les services observés et attendus, PLAGE_DE_DATES"
+              },
+              "subCaptionRelFontSize": null,
+              "footnote": {
+                "en": "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+                "fr": "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois."
+              },
+              "footnoteRelFontSize": null
+            }
+          }
+        }
+      ],
+      "hide": false
+    },
+    {
+      "id": "m11-02-02",
+      "label": {
+        "en": "Observed and expected services",
+        "fr": "Services observés et attendus"
+      },
+      "variantLabel": null,
+      "valueProps": [
+        "observed",
+        "expected"
+      ],
+      "valueFunc": "SUM",
+      "formatAs": "number",
+      "requiredDisaggregationOptions": [
+        "indicator_common_id"
+      ],
+      "valueLabelReplacements": {
+        "observed": "Observed services",
+        "expected": "Expected services (Bayesian)"
+      },
+      "postAggregationExpression": null,
+      "catalogExpressionEvaluation": null,
+      "resultsObjectId": "M11_disruptions_analysis.csv",
+      "aiDescription": {
+        "summary": {
+          "en": "Observed services and the Bayesian expected baseline, summed to any admin level and period.",
+          "fr": "Services observés et base de référence bayésienne attendue, sommés à tout niveau administratif et pour toute période."
+        },
+        "methodology": {
+          "en": "Both values are sums over facilities of the Bayesian disruption model's inputs and outputs: observed is the reported count, expected is the model's latent intensity for the same facilities that reported each month.",
+          "fr": "Les deux valeurs sont des sommes sur les établissements des entrées et sorties du modèle bayésien de perturbation : l'observé est le nombre rapporté, l'attendu est l'intensité latente du modèle pour les mêmes établissements ayant rapporté chaque mois."
+        },
+        "interpretation": {
+          "en": "Observed below expected is a shortfall, above is a surplus. The percentage version is the companion metric; whether a gap is outside the credible interval is shown by the band-chart metrics.",
+          "fr": "Un observé inférieur à l'attendu est un déficit, supérieur un excédent. La version en pourcentage est la métrique compagne ; le graphique à bande montre si un écart sort de l'intervalle de crédibilité."
+        },
+        "typicalRange": {
+          "en": "Volumes in the units of the indicator; expected tracks observed closely outside disruptions.",
+          "fr": "Volumes dans les unités de l'indicateur ; l'attendu suit de près l'observé hors perturbation."
+        },
+        "caveats": {
+          "en": "Only facilities that reported enter both values, so a reporting gap lowers both and does not open a gap between them.",
+          "fr": "Seuls les établissements ayant rapporté entrent dans les deux valeurs ; une lacune de rapportage abaisse les deux sans creuser d'écart entre elles."
+        },
+        "disaggregationGuidance": {
+          "en": "Always by indicator_common_id (required). By admin area at any level; by month, quarter or year over time.",
+          "fr": "Toujours par indicator_common_id (requis). Par zone administrative à tout niveau ; par mois, trimestre ou année dans le temps."
+        }
+      },
+      "importantNotes": null,
+      "vizPresets": [],
       "hide": false
     }
   ]
