@@ -981,6 +981,7 @@ add_denominator_labels <- function(df, denom_col = "denominator") {
       source_phrase = case_when(
         source_indicator == "anc1"       ~ "derived from HMIS data on ANC 1st visits",
         source_indicator == "delivery"   ~ "derived from HMIS data on institutional deliveries",
+        source_indicator == "sba"        ~ "derived from HMIS data on skilled birth attendance",
         source_indicator == "bcg"        ~ "derived from HMIS data on BCG doses",
         source_indicator == "penta1"     ~ "derived from HMIS data on Penta-1 doses",
         source_indicator == "wpp"        ~ "based on UN WPP estimates",
