@@ -35,11 +35,14 @@ POPULATION_ACTIVE <- TRUE
 #   INDICATOR_EXPRESSIONS  - each indicator's formula over its slot columns
 #                            (ing1..ing8), in the app's expression language
 #
-# The expression language's syntax is a subset of R's: decimals, + - * /,
-# unary minus, parentheses, and calls to abs, coalesce, nullif. The text is
+# The text the app writes here is a subset of R's syntax: decimals, + - * /,
+# unary minus, parentheses, the comparisons == != < > <= >=, & | ! (the app
+# writes AND OR NOT that way), and calls to abs, coalesce, nullif. The text is
 # evaluated as R inside an environment that binds `/`, coalesce and nullif to
 # the app evaluator's semantics (lib/indicator_expression/evaluate.ts):
-#   - NA in, NA out, through every operator and abs
+#   - NA in, NA out, through arithmetic, comparison, ! and abs
+#   - & and | are R's own three-valued logic: FALSE & NA is FALSE and
+#     TRUE | NA is TRUE, as the app's AND and OR are
 #   - division by zero is NA, not Inf/NaN
 #   - coalesce(a, b, ...) is the first non-NA argument
 #   - nullif(a, b) is NA where a equals b, else a
