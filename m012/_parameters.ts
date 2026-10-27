@@ -15,7 +15,10 @@ export const parameters: ModuleParameter[] = [
       inputType: "select",
       options: [
         { value: "count_final_none", label: "Count (unadjusted)" },
-        { value: "count_final_outliers", label: "Count (adjusted for outliers)" },
+        {
+          value: "count_final_outliers",
+          label: "Count (adjusted for outliers)",
+        },
         {
           value: "count_final_completeness",
           label: "Count (adjusted for completeness)",

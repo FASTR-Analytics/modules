@@ -29,6 +29,7 @@ wb-fastr-modules (this repo)          wb-fastr (main app)
 ```
 
 **Flow:**
+
 1. Module authors edit TypeScript definitions and R scripts in this repo
 2. Build script compiles TypeScript into `definition.json`
 3. Push to GitHub (FASTR-Analytics/modules)
@@ -40,16 +41,17 @@ wb-fastr-modules (this repo)          wb-fastr (main app)
 
 ## Module Structure
 
-Each module lives in a directory named `m###` (e.g., `m001`, `m002`). Required files:
+Each module lives in a directory named `m###` (e.g., `m001`, `m002`). Required
+files:
 
-| File                   | Purpose                                           |
-|------------------------|---------------------------------------------------|
-| `_core.ts`             | Label, family, tier, sort order, prerequisites, data sources, script type |
-| `_metrics.ts`          | Metric definitions with aggregation and viz       |
-| `_parameters.ts`       | User-configurable parameters injected into R      |
-| `_results_objects.ts`  | Output CSV schemas (column names and SQL types)   |
-| `script.R`             | The R script that performs analysis               |
-| `definition.json`      | **Generated** - do not edit directly              |
+| File                  | Purpose                                                                   |
+| --------------------- | ------------------------------------------------------------------------- |
+| `_core.ts`            | Label, family, tier, sort order, prerequisites, data sources, script type |
+| `_metrics.ts`         | Metric definitions with aggregation and viz                               |
+| `_parameters.ts`      | User-configurable parameters injected into R                              |
+| `_results_objects.ts` | Output CSV schemas (column names and SQL types)                           |
+| `script.R`            | The R script that performs analysis                                       |
+| `definition.json`     | **Generated** - do not edit directly                                      |
 
 ### _core.ts
 
@@ -58,23 +60,23 @@ import type { ModuleDefinitionCore } from "../.validation/_module_definition_git
 
 export const core: ModuleDefinitionCore = {
   label: {
-    en: "Data quality assessment",      // No number prefix: the app orders modules
+    en: "Data quality assessment", // No number prefix: the app orders modules
     fr: "Évaluation de la qualité des données",
     pt: "Avaliação da qualidade dos dados",
   },
-  family: "hmis",                       // "hmis", "hfa" or "iceh"
-  tier: "secondary",                    // "primary" (one per family) or "secondary"
-  sortOrder: 1,                         // Position among the family's modules of this tier
-  prerequisites: [],                    // Module IDs that must run first
-  scriptGenerationType: "template",     // "template" or "hfa"
+  family: "hmis", // "hmis", "hfa" or "iceh"
+  tier: "secondary", // "primary" (one per family) or "secondary"
+  sortOrder: 1, // Position among the family's modules of this tier
+  prerequisites: [], // Module IDs that must run first
+  scriptGenerationType: "template", // "template" or "hfa"
   dataSources: [
     {
       sourceType: "dataset",
-      replacementString: "PROJECT_DATA_HMIS",  // Replaced in R script
+      replacementString: "PROJECT_DATA_HMIS", // Replaced in R script
       datasetType: "hmis",
     },
   ],
-  assetsToImport: [],                   // Additional files copied to sandbox
+  assetsToImport: [], // Additional files copied to sandbox
 };
 ```
 
@@ -91,9 +93,12 @@ export const metrics: MetricDefinitionGithub[] = [
     id: "m1-01-01",
     resultsObjectId: "M1_output_outliers.csv",
     valueProps: ["outlier_flag"],
-    valueFunc: "AVG",                   // COUNT, SUM, AVG, MIN, MAX, identity
+    valueFunc: "AVG", // COUNT, SUM, AVG, MIN, MAX, identity
     formatAs: "percent",
-    label: { en: "Proportion of outliers", fr: "Proportion de valeurs aberrantes" },
+    label: {
+      en: "Proportion of outliers",
+      fr: "Proportion de valeurs aberrantes",
+    },
     variantLabel: null,
     requiredDisaggregationOptions: [],
     valueLabelReplacements: {},
@@ -105,7 +110,10 @@ export const metrics: MetricDefinitionGithub[] = [
       {
         id: "outlier-timeseries",
         label: { en: "Trend over time", fr: "Tendance dans le temps" },
-        description: { en: "Line chart by indicator", fr: "Graphique linéaire par indicateur" },
+        description: {
+          en: "Line chart by indicator",
+          fr: "Graphique linéaire par indicateur",
+        },
         importantNotes: null,
         needsReplicant: false,
         allowedFilters: ["indicator_common_id"],
@@ -114,11 +122,21 @@ export const metrics: MetricDefinitionGithub[] = [
             type: "timeseries",
             timeseriesGrouping: "period_id",
             valuesDisDisplayOpt: "series",
-            disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "series" }],
+            disaggregateBy: [{
+              disOpt: "indicator_common_id",
+              disDisplayOpt: "series",
+            }],
             filterBy: [],
           },
           s: { content: "lines" },
-          t: { caption: null, captionRelFontSize: null, subCaption: null, subCaptionRelFontSize: null, footnote: null, footnoteRelFontSize: null },
+          t: {
+            caption: null,
+            captionRelFontSize: null,
+            subCaption: null,
+            subCaptionRelFontSize: null,
+            footnote: null,
+            footnoteRelFontSize: null,
+          },
         },
       },
     ],
@@ -128,7 +146,8 @@ export const metrics: MetricDefinitionGithub[] = [
 
 ### _parameters.ts
 
-Parameters are injected into the R script via string replacement before execution.
+Parameters are injected into the R script via string replacement before
+execution.
 
 ```typescript
 import type { ModuleParameter } from "../.validation/_module_definition_github.ts";
@@ -149,6 +168,7 @@ export const parameters: ModuleParameter[] = [
 ```
 
 In the R script, use the replacement string as a placeholder:
+
 ```r
 threshold <- OUTLIER_THRESHOLD
 ```
@@ -177,23 +197,25 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
 ### script.R
 
 The R script receives:
+
 - Data source tables via replacement strings (e.g., `PROJECT_DATA_HMIS`)
 - Parameter values via replacement strings
 - Working directory set to the module sandbox
 
 **The `#---` marker.** The app strips every line above the first line that
 starts with `#---` (`stripFrontmatter` in wb-fastr's
-`server/github/fetch_module.ts`) and substitutes the replacement strings
-in what remains. So the lines above the marker exist for LOCAL development
-only: put the token names themselves there with a local value
+`server/github/fetch_module.ts`) and substitutes the replacement strings in what
+remains. So the lines above the marker exist for LOCAL development only: put the
+token names themselves there with a local value
 (`SELECTEDCOUNT <- "count_final_outliers"`,
-`PROJECT_DATA_HMIS <- "hmis_NGA.csv"`), and use the token names directly
-in the body (`get(SELECTEDCOUNT)`, `fread(PROJECT_DATA_HMIS)`,
-`read_csv("M2_adjusted_data.csv")`). Never define a helper variable above
-the marker and reference it below — the body will fail in the sandbox with
-"object not found" while running fine locally (m012, 2026-09-02).
+`PROJECT_DATA_HMIS <- "hmis_NGA.csv"`), and use the token names directly in the
+body (`get(SELECTEDCOUNT)`, `fread(PROJECT_DATA_HMIS)`,
+`read_csv("M2_adjusted_data.csv")`). Never define a helper variable above the
+marker and reference it below — the body will fail in the sandbox with "object
+not found" while running fine locally (m012, 2026-09-02).
 
 Must output CSV files matching the results objects:
+
 ```r
 write.csv(result_df, "M1_output_outliers.csv", row.names = FALSE)
 ```
@@ -209,6 +231,7 @@ deno run --allow-read --allow-write build_definitions.ts
 ```
 
 This:
+
 1. Scans for directories matching `m\d+`
 2. Imports all four TypeScript files from each module
 3. Validates against Zod schema in `.validation/`
@@ -265,15 +288,16 @@ To test modules without pushing to GitHub:
 
 The `.validation/` directory contains:
 
-| File                              | Purpose                                    |
-|-----------------------------------|--------------------------------------------|
-| `_module_definition_github.ts`    | Zod schema for module definitions          |
-| `validate_definitions.ts`         | Script to validate all definition.json     |
-| `cf_presets.ts`                   | Conditional formatting preset definitions  |
-| `disaggregation_options.ts`       | Valid disaggregation dimension options     |
+| File                           | Purpose                                   |
+| ------------------------------ | ----------------------------------------- |
+| `_module_definition_github.ts` | Zod schema for module definitions         |
+| `validate_definitions.ts`      | Script to validate all definition.json    |
+| `cf_presets.ts`                | Conditional formatting preset definitions |
+| `disaggregation_options.ts`    | Valid disaggregation dimension options    |
 
 The schema here must stay in sync with wb-fastr's
 `lib/types/_module_definition_github.ts`. When adding new fields:
+
 1. Update both schemas
 2. Rebuild all definitions
 3. Test in wb-fastr

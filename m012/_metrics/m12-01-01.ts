@@ -13,7 +13,8 @@ export const vizPresets: VizPreset[] = [
     },
     description: {
       en: "Table of indicators by area with threshold-based colouring",
-      fr: "Tableau des indicateurs par zone avec coloration basée sur les seuils",
+      fr:
+        "Tableau des indicateurs par zone avec coloration basée sur les seuils",
       pt: "Tabela de indicadores por área com coloração baseada em limiares",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
@@ -56,9 +57,12 @@ export const vizPresets: VizPreset[] = [
       pt: "Valores dos indicadores ao longo do tempo (mensal)",
     },
     description: {
-      en: "Line chart showing monthly indicator values, one panel per indicator",
-      fr: "Graphique linéaire montrant les valeurs mensuelles des indicateurs, un panneau par indicateur",
-      pt: "Gráfico de linhas que mostra os valores mensais dos indicadores, um painel por indicador",
+      en:
+        "Line chart showing monthly indicator values, one panel per indicator",
+      fr:
+        "Graphique linéaire montrant les valeurs mensuelles des indicateurs, un panneau par indicateur",
+      pt:
+        "Gráfico de linhas que mostra os valores mensais dos indicadores, um painel por indicador",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
@@ -66,7 +70,10 @@ export const vizPresets: VizPreset[] = [
         type: "timeseries",
         timeseriesGrouping: "period_id",
         valuesDisDisplayOpt: "series",
-        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "cell" }],
+        disaggregateBy: [{
+          disOpt: "indicator_common_id",
+          disDisplayOpt: "cell",
+        }],
         filterBy: [],
       },
       s: { content: "lines" },
@@ -97,9 +104,12 @@ export const vizPresets: VizPreset[] = [
       pt: "Variação trimestral",
     },
     description: {
-      en: "Bar chart showing quarterly values with quarter-on-quarter change, one row per indicator",
-      fr: "Diagramme à barres montrant les valeurs trimestrielles avec variation trimestre par trimestre, une ligne par indicateur",
-      pt: "Gráfico de barras que mostra os valores trimestrais com variação trimestre a trimestre, uma linha por indicador",
+      en:
+        "Bar chart showing quarterly values with quarter-on-quarter change, one row per indicator",
+      fr:
+        "Diagramme à barres montrant les valeurs trimestrielles avec variation trimestre par trimestre, une ligne par indicateur",
+      pt:
+        "Gráfico de barras que mostra os valores trimestrais com variação trimestre a trimestre, uma linha por indicador",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
@@ -107,7 +117,10 @@ export const vizPresets: VizPreset[] = [
         type: "timeseries",
         timeseriesGrouping: "quarter_id",
         valuesDisDisplayOpt: "series",
-        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "row" }],
+        disaggregateBy: [{
+          disOpt: "indicator_common_id",
+          disDisplayOpt: "row",
+        }],
         filterBy: [],
         periodFilter: { filterType: "last_n_months", nMonths: 12 },
       },
@@ -115,8 +128,10 @@ export const vizPresets: VizPreset[] = [
       t: {
         caption: {
           en: "Indicator values by quarter and quarter-on-quarter change",
-          fr: "Valeurs des indicateurs par trimestre et variation trimestre par trimestre",
-          pt: "Valores dos indicadores por trimestre e variação trimestre a trimestre",
+          fr:
+            "Valeurs des indicateurs par trimestre et variation trimestre par trimestre",
+          pt:
+            "Valores dos indicadores por trimestre e variação trimestre a trimestre",
         },
         subCaption: {
           en: "DATE_RANGE",
@@ -139,9 +154,12 @@ export const vizPresets: VizPreset[] = [
       pt: "Variação anual",
     },
     description: {
-      en: "Bar chart showing annual values with year-on-year change, one row per indicator",
-      fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, une ligne par indicateur",
-      pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, uma linha por indicador",
+      en:
+        "Bar chart showing annual values with year-on-year change, one row per indicator",
+      fr:
+        "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, une ligne par indicateur",
+      pt:
+        "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, uma linha por indicador",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2", "admin_area_3"],
     config: {
@@ -149,15 +167,20 @@ export const vizPresets: VizPreset[] = [
         type: "timeseries",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "series",
-        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "row" }],
+        disaggregateBy: [{
+          disOpt: "indicator_common_id",
+          disDisplayOpt: "row",
+        }],
         filterBy: [],
       },
       s: { specialBarChart: true, specialBarChartDataLabels: "all-values" },
       t: {
         caption: {
           en: "Indicator values by year and year-on-year change",
-          fr: "Valeurs des indicateurs par année et variation d'une année sur l'autre",
-          pt: "Valores dos indicadores por ano e variação de um ano para o outro",
+          fr:
+            "Valeurs des indicateurs par année et variation d'une année sur l'autre",
+          pt:
+            "Valores dos indicadores por ano e variação de um ano para o outro",
         },
         subCaption: {
           en: "DATE_RANGE",
@@ -180,9 +203,12 @@ export const vizPresets: VizPreset[] = [
       pt: "Variação anual por Área administrativa 2",
     },
     description: {
-      en: "Bar chart showing annual values with year-on-year change, by indicator and Admin Area 2",
-      fr: "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, par indicateur et Zone administrative 2",
-      pt: "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, por indicador e Área administrativa 2",
+      en:
+        "Bar chart showing annual values with year-on-year change, by indicator and Admin Area 2",
+      fr:
+        "Diagramme à barres montrant les valeurs annuelles avec variation d'une année sur l'autre, par indicateur et Zone administrative 2",
+      pt:
+        "Gráfico de barras que mostra os valores anuais com variação de um ano para o outro, por indicador e Área administrativa 2",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
@@ -200,8 +226,10 @@ export const vizPresets: VizPreset[] = [
       t: {
         caption: {
           en: "Indicator values by year and year-on-year change",
-          fr: "Valeurs des indicateurs par année et variation d'une année sur l'autre",
-          pt: "Valores dos indicadores por ano e variação de um ano para o outro",
+          fr:
+            "Valeurs des indicateurs par année et variation d'une année sur l'autre",
+          pt:
+            "Valores dos indicadores por ano e variação de um ano para o outro",
         },
         subCaption: {
           en: "DATE_RANGE",
@@ -259,19 +287,28 @@ export const metric: MetricDefinitionGithub = {
   },
   aiDescription: {
     summary: {
-      en: "Every common indicator's value, computed from the instance's indicator dictionary.",
-      fr: "La valeur de chaque indicateur commun, calculée à partir du dictionnaire d'indicateurs de l'instance.",
-      pt: "O valor de cada indicador comum, calculado a partir do dicionário de indicadores da instância.",
+      en:
+        "Every common indicator's value, computed from the instance's indicator dictionary.",
+      fr:
+        "La valeur de chaque indicateur commun, calculée à partir du dictionnaire d'indicateurs de l'instance.",
+      pt:
+        "O valor de cada indicador comum, calculado a partir do dicionário de indicadores da instância.",
     },
     methodology: {
-      en: "The module materialises each indicator's additive ingredients at admin area x month grain. A chart re-sums those ingredients at whatever grouping it shows and then applies the indicator's formula once, so a regional or annual figure is the formula over the summed parts, never an average of ratios.",
-      fr: "Le module matérialise les composantes additives de chaque indicateur au niveau zone administrative x mois. Un graphique resomme ces composantes au niveau qu'il affiche puis applique la formule une seule fois : un chiffre régional ou annuel est donc la formule appliquée aux sommes, jamais une moyenne de ratios.",
-      pt: "O módulo materializa as componentes aditivas de cada indicador ao nível área administrativa x mês. Um gráfico volta a somar essas componentes no agrupamento que mostra e aplica a fórmula uma só vez, pelo que um valor regional ou anual é a fórmula sobre as somas e nunca uma média de rácios.",
+      en:
+        "The module materialises each indicator's additive ingredients at admin area x month grain. A chart re-sums those ingredients at whatever grouping it shows and then applies the indicator's formula once, so a regional or annual figure is the formula over the summed parts, never an average of ratios.",
+      fr:
+        "Le module matérialise les composantes additives de chaque indicateur au niveau zone administrative x mois. Un graphique resomme ces composantes au niveau qu'il affiche puis applique la formule une seule fois : un chiffre régional ou annuel est donc la formule appliquée aux sommes, jamais une moyenne de ratios.",
+      pt:
+        "O módulo materializa as componentes aditivas de cada indicador ao nível área administrativa x mês. Um gráfico volta a somar essas componentes no agrupamento que mostra e aplica a fórmula uma só vez, pelo que um valor regional ou anual é a fórmula sobre as somas e nunca uma média de rácios.",
     },
     interpretation: {
-      en: "Values carry each indicator's own format (count, percent, or rate). Thresholds for traffic-light colouring come from the indicator dictionary. Population rates are ANNUALISED: the numerator is divided by person-years of the population (annual population × months / 12) and scaled by the indicator's multiplier, so a monthly or quarterly value reads as a rate per year and is directly comparable with an annual one.",
-      fr: "Les valeurs portent le format propre à chaque indicateur (effectif, pourcentage ou taux). Les seuils de coloration feu tricolore proviennent du dictionnaire d'indicateurs. Les taux de population sont ANNUALISÉS : le numérateur est divisé par les personnes-années de la population (population annuelle × mois / 12) puis multiplié par le multiplicateur de l'indicateur, de sorte qu'une valeur mensuelle ou trimestrielle se lit comme un taux annuel, directement comparable à une valeur annuelle.",
-      pt: "Os valores têm o formato próprio de cada indicador (contagem, percentagem ou taxa). Os limiares para a coloração tipo semáforo provêm do dicionário de indicadores. As taxas populacionais são ANUALIZADAS: o numerador é dividido pelas pessoas-ano da população (população anual × meses / 12) e multiplicado pelo multiplicador do indicador, pelo que um valor mensal ou trimestral se lê como uma taxa anual, diretamente comparável com um valor anual.",
+      en:
+        "Values carry each indicator's own format (count, percent, or rate). Thresholds for traffic-light colouring come from the indicator dictionary. Population rates are ANNUALISED: the numerator is divided by person-years of the population (annual population × months / 12) and scaled by the indicator's multiplier, so a monthly or quarterly value reads as a rate per year and is directly comparable with an annual one.",
+      fr:
+        "Les valeurs portent le format propre à chaque indicateur (effectif, pourcentage ou taux). Les seuils de coloration feu tricolore proviennent du dictionnaire d'indicateurs. Les taux de population sont ANNUALISÉS : le numérateur est divisé par les personnes-années de la population (population annuelle × mois / 12) puis multiplié par le multiplicateur de l'indicateur, de sorte qu'une valeur mensuelle ou trimestrielle se lit comme un taux annuel, directement comparable à une valeur annuelle.",
+      pt:
+        "Os valores têm o formato próprio de cada indicador (contagem, percentagem ou taxa). Os limiares para a coloração tipo semáforo provêm do dicionário de indicadores. As taxas populacionais são ANUALIZADAS: o numerador é dividido pelas pessoas-ano da população (população anual × meses / 12) e multiplicado pelo multiplicador do indicador, pelo que um valor mensal ou trimestral se lê como uma taxa anual, diretamente comparável com um valor anual.",
     },
     typicalRange: {
       en: "Varies by indicator — see the indicator dictionary.",
@@ -279,14 +316,20 @@ export const metric: MetricDefinitionGithub = {
       pt: "Varia consoante o indicador — ver o dicionário de indicadores.",
     },
     disaggregationGuidance: {
-      en: "Always grouped by indicator. Can also be disaggregated by admin area down to the level of the package's indicator values (the instance's population level while any indicator formula uses a population, otherwise the deepest level of the HMIS structure) and by time period (month, quarter, year).",
-      fr: "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative jusqu'au niveau des valeurs d'indicateurs du paquet (le niveau de population de l'instance tant qu'une formule d'indicateur utilise une population, sinon le niveau le plus fin de la structure HMIS) et par période (mois, trimestre, année).",
-      pt: "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa até ao nível dos valores de indicadores do pacote (o nível de população da instância enquanto alguma fórmula de indicador usar uma população, caso contrário o nível mais fino da estrutura HMIS) e por período (mês, trimestre, ano).",
+      en:
+        "Always grouped by indicator. Can also be disaggregated by admin area down to the level of the package's indicator values (the instance's population level while any indicator formula uses a population, otherwise the deepest level of the HMIS structure) and by time period (month, quarter, year).",
+      fr:
+        "Toujours groupé par indicateur. Peut aussi être désagrégé par zone administrative jusqu'au niveau des valeurs d'indicateurs du paquet (le niveau de population de l'instance tant qu'une formule d'indicateur utilise une population, sinon le niveau le plus fin de la structure HMIS) et par période (mois, trimestre, année).",
+      pt:
+        "Sempre agrupado por indicador. Pode também ser desagregado por área administrativa até ao nível dos valores de indicadores do pacote (o nível de população da instância enquanto alguma fórmula de indicador usar uma população, caso contrário o nível mais fino da estrutura HMIS) e por período (mês, trimestre, ano).",
     },
     caveats: {
-      en: "Population denominators are interpolated between the instance's annual figures (mid-year anchors) and extrapolated at most one year beyond them, so a population rate's precision is that of the population estimates, not of the facility counts. Where an area or year has no population data within that window, a population-based indicator has no value for that area and period, and totals for larger areas or periods are computed over the covered cells only. A count indicator beside it covers every area and period.",
-      fr: "Les dénominateurs de population sont interpolés entre les chiffres annuels de l'instance (ancrés en milieu d'année) et extrapolés d'au plus un an au-delà ; la précision d'un taux de population est donc celle des estimations de population, pas celle des effectifs des établissements. Lorsqu'une unité ou une année n'a pas de données de population dans cette fenêtre, un indicateur basé sur la population n'a pas de valeur pour cette unité et cette période, et les totaux pour des unités ou périodes plus larges ne portent que sur les cellules couvertes. Un indicateur de comptage à côté couvre toutes les unités et périodes.",
-      pt: "Os denominadores de população são interpolados entre os valores anuais da instância (âncoras a meio do ano) e extrapolados no máximo um ano para além deles, pelo que a precisão de uma taxa populacional é a das estimativas de população, não a das contagens dos estabelecimentos. Quando uma zona ou ano não tem dados de população dentro dessa janela, um indicador baseado na população não tem valor para essa zona e período, e os totais para zonas ou períodos maiores são calculados apenas sobre as células cobertas. Um indicador de contagem ao lado cobre todas as zonas e períodos.",
+      en:
+        "Population denominators are interpolated between the instance's annual figures (mid-year anchors) and extrapolated at most one year beyond them, so a population rate's precision is that of the population estimates, not of the facility counts. Where an area or year has no population data within that window, a population-based indicator has no value for that area and period, and totals for larger areas or periods are computed over the covered cells only. A count indicator beside it covers every area and period.",
+      fr:
+        "Les dénominateurs de population sont interpolés entre les chiffres annuels de l'instance (ancrés en milieu d'année) et extrapolés d'au plus un an au-delà ; la précision d'un taux de population est donc celle des estimations de population, pas celle des effectifs des établissements. Lorsqu'une unité ou une année n'a pas de données de population dans cette fenêtre, un indicateur basé sur la population n'a pas de valeur pour cette unité et cette période, et les totaux pour des unités ou périodes plus larges ne portent que sur les cellules couvertes. Un indicateur de comptage à côté couvre toutes les unités et périodes.",
+      pt:
+        "Os denominadores de população são interpolados entre os valores anuais da instância (âncoras a meio do ano) e extrapolados no máximo um ano para além deles, pelo que a precisão de uma taxa populacional é a das estimativas de população, não a das contagens dos estabelecimentos. Quando uma zona ou ano não tem dados de população dentro dessa janela, um indicador baseado na população não tem valor para essa zona e período, e os totais para zonas ou períodos maiores são calculados apenas sobre as células cobertas. Um indicador de contagem ao lado cobre todas as zonas e períodos.",
     },
   },
   variantLabel: null,

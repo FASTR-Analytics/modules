@@ -81,7 +81,8 @@ export const metrics: MetricDefinitionGithub[] = [
         fr: "Description brève en une phrase de ce que cette métrique mesure.",
       },
       methodology: {
-        en: "How the metric is calculated. Reference the valueFunc and any parameters.",
+        en:
+          "How the metric is calculated. Reference the valueFunc and any parameters.",
         fr: "Comment la métrique est calculée.",
       },
       interpretation: {
@@ -89,7 +90,8 @@ export const metrics: MetricDefinitionGithub[] = [
         fr: "Ce que les valeurs signifient.",
       },
       typicalRange: {
-        en: "Expected range of values (e.g., '0-5% is good, >10% is concerning').",
+        en:
+          "Expected range of values (e.g., '0-5% is good, >10% is concerning').",
         fr: "Plage de valeurs attendue.",
       },
       caveats: null,

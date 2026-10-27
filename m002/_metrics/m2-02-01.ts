@@ -12,9 +12,12 @@ export const vizPresets: VizPreset[] = [
       pt: "Comparação dos ajustes de qualidade dos dados",
     },
     description: {
-      en: "Line chart comparing annual service volume under each adjustment, one panel per indicator",
-      fr: "Graphique linéaire comparant le volume annuel de services selon chaque ajustement, un panneau par indicateur",
-      pt: "Gráfico de linhas que compara o volume anual de serviços segundo cada ajuste, um painel por indicador",
+      en:
+        "Line chart comparing annual service volume under each adjustment, one panel per indicator",
+      fr:
+        "Graphique linéaire comparant le volume annuel de services selon chaque ajustement, un panneau par indicateur",
+      pt:
+        "Gráfico de linhas que compara o volume anual de serviços segundo cada ajuste, um painel por indicador",
     },
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
@@ -22,7 +25,10 @@ export const vizPresets: VizPreset[] = [
         type: "timeseries",
         timeseriesGrouping: "year",
         valuesDisDisplayOpt: "series",
-        disaggregateBy: [{ disOpt: "indicator_common_id", disDisplayOpt: "col" }],
+        disaggregateBy: [{
+          disOpt: "indicator_common_id",
+          disDisplayOpt: "col",
+        }],
         filterBy: [],
       },
       s: {
@@ -85,34 +91,52 @@ export const metric: MetricDefinitionGithub = {
   catalogExpressionEvaluation: null,
   aiDescription: {
     summary: {
-      en: "Service volume as reported and after each data quality adjustment, side by side.",
-      fr: "Volume de services tel que déclaré et après chaque ajustement de qualité des données, côte à côte.",
-      pt: "Volume de serviços tal como notificado e após cada ajuste de qualidade dos dados, lado a lado.",
+      en:
+        "Service volume as reported and after each data quality adjustment, side by side.",
+      fr:
+        "Volume de services tel que déclaré et après chaque ajustement de qualité des données, côte à côte.",
+      pt:
+        "Volume de serviços tal como notificado e após cada ajuste de qualidade dos dados, lado a lado.",
     },
     methodology: {
-      en: "Sums the four count variants of the adjusted facility data: as reported, with outliers replaced, with missing reports imputed, and with both. The adjustments are the module's own outlier and completeness corrections.",
-      fr: "Somme les quatre variantes de comptage des données ajustées par établissement : telles que déclarées, avec les valeurs aberrantes remplacées, avec les rapports manquants imputés, et avec les deux. Les ajustements sont les corrections des valeurs aberrantes et de la complétude du module.",
-      pt: "Soma as quatro variantes de contagem dos dados ajustados por unidade sanitária: tal como notificados, com valores atípicos substituídos, com relatórios em falta imputados, e com ambos. Os ajustes são as correções de valores atípicos e de completude do módulo.",
+      en:
+        "Sums the four count variants of the adjusted facility data: as reported, with outliers replaced, with missing reports imputed, and with both. The adjustments are the module's own outlier and completeness corrections.",
+      fr:
+        "Somme les quatre variantes de comptage des données ajustées par établissement : telles que déclarées, avec les valeurs aberrantes remplacées, avec les rapports manquants imputés, et avec les deux. Les ajustements sont les corrections des valeurs aberrantes et de la complétude du module.",
+      pt:
+        "Soma as quatro variantes de contagem dos dados ajustados por unidade sanitária: tal como notificados, com valores atípicos substituídos, com relatórios em falta imputados, e com ambos. Os ajustes são as correções de valores atípicos e de completude do módulo.",
     },
     interpretation: {
-      en: "The gap between the reported line and an adjusted line is the volume that adjustment adds or removes. Lines that sit close together mean the adjustments change little.",
-      fr: "L'écart entre la ligne déclarée et une ligne ajustée est le volume que cet ajustement ajoute ou retire. Des lignes proches signifient que les ajustements changent peu.",
-      pt: "A diferença entre a linha notificada e uma linha ajustada é o volume que esse ajuste acrescenta ou retira. Linhas próximas significam que os ajustes alteram pouco.",
+      en:
+        "The gap between the reported line and an adjusted line is the volume that adjustment adds or removes. Lines that sit close together mean the adjustments change little.",
+      fr:
+        "L'écart entre la ligne déclarée et une ligne ajustée est le volume que cet ajustement ajoute ou retire. Des lignes proches signifient que les ajustements changent peu.",
+      pt:
+        "A diferença entre a linha notificada e uma linha ajustada é o volume que esse ajuste acrescenta ou retira. Linhas próximas significam que os ajustes alteram pouco.",
     },
     typicalRange: {
-      en: "Adjusted volumes usually lie within a few percent of the reported volume; completeness adjustment raises the volume, outlier adjustment lowers it.",
-      fr: "Les volumes ajustés se situent généralement à quelques pour cent du volume déclaré ; l'ajustement de la complétude augmente le volume, celui des valeurs aberrantes le diminue.",
-      pt: "Os volumes ajustados situam-se normalmente a poucos pontos percentuais do volume notificado; o ajuste de completude aumenta o volume, o de valores atípicos diminui-o.",
+      en:
+        "Adjusted volumes usually lie within a few percent of the reported volume; completeness adjustment raises the volume, outlier adjustment lowers it.",
+      fr:
+        "Les volumes ajustés se situent généralement à quelques pour cent du volume déclaré ; l'ajustement de la complétude augmente le volume, celui des valeurs aberrantes le diminue.",
+      pt:
+        "Os volumes ajustados situam-se normalmente a poucos pontos percentuais do volume notificado; o ajuste de completude aumenta o volume, o de valores atípicos diminui-o.",
     },
     caveats: {
-      en: "Facility-level rows are large; filter by indicator before disaggregating by facility.",
-      fr: "Les lignes au niveau des établissements sont nombreuses ; filtrer par indicateur avant de désagréger par établissement.",
-      pt: "As linhas ao nível das unidades sanitárias são numerosas; filtrar por indicador antes de desagregar por unidade sanitária.",
+      en:
+        "Facility-level rows are large; filter by indicator before disaggregating by facility.",
+      fr:
+        "Les lignes au niveau des établissements sont nombreuses ; filtrer par indicateur avant de désagréger par établissement.",
+      pt:
+        "As linhas ao nível das unidades sanitárias são numerosas; filtrar por indicador antes de desagregar por unidade sanitária.",
     },
     disaggregationGuidance: {
-      en: "Always by indicator_common_id (required). By year for the comparison chart; by admin area or facility to find where adjustments matter most.",
-      fr: "Toujours par indicator_common_id (requis). Par année pour le graphique de comparaison ; par zone administrative ou établissement pour voir où les ajustements comptent le plus.",
-      pt: "Sempre por indicator_common_id (obrigatório). Por ano para o gráfico de comparação; por área administrativa ou unidade sanitária para ver onde os ajustes mais importam.",
+      en:
+        "Always by indicator_common_id (required). By year for the comparison chart; by admin area or facility to find where adjustments matter most.",
+      fr:
+        "Toujours par indicator_common_id (requis). Par année pour le graphique de comparaison ; par zone administrative ou établissement pour voir où les ajustements comptent le plus.",
+      pt:
+        "Sempre por indicator_common_id (obrigatório). Por ano para o gráfico de comparação; por área administrativa ou unidade sanitária para ver onde os ajustes mais importam.",
     },
   },
   importantNotes: null,

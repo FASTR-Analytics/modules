@@ -1,8 +1,8 @@
 import {
-  ModuleDefinitionJSONSchema,
+  type MetricDefinitionGithub,
   type ModuleDefinitionCore,
   type ModuleDefinitionGithub,
-  type MetricDefinitionGithub,
+  ModuleDefinitionJSONSchema,
 } from "./.validation/_module_definition_github.ts";
 
 const root = new URL(".", import.meta.url);
@@ -14,7 +14,9 @@ for await (const entry of Deno.readDir(root)) {
 }
 moduleDirs.sort();
 
-async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGithub[]; errors: string[] }> {
+async function loadMetrics(
+  dir: string,
+): Promise<{ metrics: MetricDefinitionGithub[]; errors: string[] }> {
   const metricsFolderPath = new URL(`${dir}/_metrics/`, root);
   try {
     await Deno.stat(metricsFolderPath);
@@ -35,7 +37,9 @@ async function loadMetrics(dir: string): Promise<{ metrics: MetricDefinitionGith
     const expectedId = file.replace(/\.ts$/, "");
     const mod = await import(new URL(file, metricsFolderPath).href);
     if (mod.metric.id !== expectedId) {
-      errors.push(`${dir}/_metrics/${file}: metric.id "${mod.metric.id}" does not match filename "${expectedId}"`);
+      errors.push(
+        `${dir}/_metrics/${file}: metric.id "${mod.metric.id}" does not match filename "${expectedId}"`,
+      );
     }
     metrics.push(mod.metric);
   }
@@ -94,12 +98,14 @@ for (const dir of moduleDirs) {
     continue;
   }
 
-  const [coreMod, metricsResult, resultsMod, parametersMod] = await Promise.all([
-    import(corePath),
-    loadMetrics(dir),
-    import(resultsPath),
-    import(parametersPath),
-  ]);
+  const [coreMod, metricsResult, resultsMod, parametersMod] = await Promise.all(
+    [
+      import(corePath),
+      loadMetrics(dir),
+      import(resultsPath),
+      import(parametersPath),
+    ],
+  );
 
   if (metricsResult.errors.length > 0) {
     hadError = true;
@@ -154,7 +160,7 @@ for (const { def } of allModules) {
     if (ro.createTableStatementPossibleColumns !== false) {
       resultsObjectColumns.set(
         ro.id,
-        new Set(Object.keys(ro.createTableStatementPossibleColumns))
+        new Set(Object.keys(ro.createTableStatementPossibleColumns)),
       );
     }
   }
@@ -183,7 +189,11 @@ const metricIds = new Map<string, string>();
 for (const { dir, def } of allModules) {
   for (const ro of def.resultsObjects) {
     if (resultsObjectIds.has(ro.id)) {
-      console.error(`DUPLICATE resultsObjectId "${ro.id}" in ${dir} (first seen in ${resultsObjectIds.get(ro.id)})`);
+      console.error(
+        `DUPLICATE resultsObjectId "${ro.id}" in ${dir} (first seen in ${
+          resultsObjectIds.get(ro.id)
+        })`,
+      );
       hadError = true;
     } else {
       resultsObjectIds.set(ro.id, dir);
@@ -192,7 +202,11 @@ for (const { dir, def } of allModules) {
 
   for (const metric of def.metrics) {
     if (metricIds.has(metric.id)) {
-      console.error(`DUPLICATE metricId "${metric.id}" in ${dir} (first seen in ${metricIds.get(metric.id)})`);
+      console.error(
+        `DUPLICATE metricId "${metric.id}" in ${dir} (first seen in ${
+          metricIds.get(metric.id)
+        })`,
+      );
       hadError = true;
     } else {
       metricIds.set(metric.id, dir);
@@ -211,7 +225,9 @@ for (const { dir, def } of allModules) {
     ) {
       for (const prop of metric.valueProps) {
         if (!roColumns.has(prop)) {
-          console.error(`INVALID valueProps "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          console.error(
+            `INVALID valueProps "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`,
+          );
           hadError = true;
         }
       }
@@ -223,7 +239,9 @@ for (const { dir, def } of allModules) {
     if (metric.catalogExpressionEvaluation && roColumns) {
       for (const prop of metric.catalogExpressionEvaluation.ingredientProps) {
         if (!roColumns.has(prop)) {
-          console.error(`INVALID ingredientProp "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          console.error(
+            `INVALID ingredientProp "${prop}" in ${dir}:${metric.id} - not in resultsObject columns`,
+          );
           hadError = true;
         }
       }
@@ -238,15 +256,21 @@ for (const { dir, def } of allModules) {
       metric.catalogExpressionEvaluation &&
       !metric.requiredDisaggregationOptions.includes("indicator_common_id")
     ) {
-      console.error(`MISSING required disaggregation "indicator_common_id" in ${dir}:${metric.id} - mandatory for catalogExpressionEvaluation metrics`);
+      console.error(
+        `MISSING required disaggregation "indicator_common_id" in ${dir}:${metric.id} - mandatory for catalogExpressionEvaluation metrics`,
+      );
       hadError = true;
     }
 
     // Check postAggregationExpression ingredientValues reference valid columns
     if (metric.postAggregationExpression && roColumns) {
-      for (const ingredient of metric.postAggregationExpression.ingredientValues) {
+      for (
+        const ingredient of metric.postAggregationExpression.ingredientValues
+      ) {
         if (!roColumns.has(ingredient.prop)) {
-          console.error(`INVALID ingredientValue "${ingredient.prop}" in ${dir}:${metric.id} - not in resultsObject columns`);
+          console.error(
+            `INVALID ingredientValue "${ingredient.prop}" in ${dir}:${metric.id} - not in resultsObject columns`,
+          );
           hadError = true;
         }
       }
@@ -256,21 +280,29 @@ for (const { dir, def } of allModules) {
     for (const preset of metric.vizPresets) {
       const location = `${dir}:${metric.id}:${preset.id}`;
       if (vizPresetIdsInMetric.has(preset.id)) {
-        console.error(`DUPLICATE vizPresetId "${preset.id}" within metric ${metric.id} (${dir})`);
+        console.error(
+          `DUPLICATE vizPresetId "${preset.id}" within metric ${metric.id} (${dir})`,
+        );
         hadError = true;
       } else {
         vizPresetIdsInMetric.add(preset.id);
       }
 
       // Check requiredDisaggregationOptions are in disaggregateBy
-      const disaggregateByOpts = new Set(preset.config.d.disaggregateBy.map(d => d.disOpt));
+      const disaggregateByOpts = new Set(
+        preset.config.d.disaggregateBy.map((d) => d.disOpt),
+      );
       const timeOpts = new Set(["year", "period_id", "quarter_id"]);
       const isTimeseries = preset.config.d.type === "timeseries";
       const hasPeriodFilter = !!preset.config.d.periodFilter;
       for (const required of metric.requiredDisaggregationOptions) {
-        if ((isTimeseries || hasPeriodFilter) && timeOpts.has(required)) continue;
+        if ((isTimeseries || hasPeriodFilter) && timeOpts.has(required)) {
+          continue;
+        }
         if (!disaggregateByOpts.has(required)) {
-          console.error(`MISSING requiredDisaggregationOption "${required}" in ${location} disaggregateBy`);
+          console.error(
+            `MISSING requiredDisaggregationOption "${required}" in ${location} disaggregateBy`,
+          );
           hadError = true;
         }
       }
@@ -279,13 +311,22 @@ for (const { dir, def } of allModules) {
       // replicants). Per DOC_VIZPRESET_STANDARDS: "" is the sanctioned value for
       // non-map presets (user selects; the app auto-defaults to the first valid
       // option), while maps need a specific value.
-      const replicantDis = preset.config.d.disaggregateBy.find(d => d.disDisplayOpt === "replicant");
+      const replicantDis = preset.config.d.disaggregateBy.find((d) =>
+        d.disDisplayOpt === "replicant"
+      );
       if (replicantDis && !replicantDis.disOpt.startsWith("admin_area_")) {
         if (preset.config.d.selectedReplicantValue === undefined) {
-          console.error(`MISSING selectedReplicantValue in ${location} (has replicant on ${replicantDis.disOpt}) — use "" to let the app auto-select`);
+          console.error(
+            `MISSING selectedReplicantValue in ${location} (has replicant on ${replicantDis.disOpt}) — use "" to let the app auto-select`,
+          );
           hadError = true;
-        } else if (preset.config.d.type === "map" && !preset.config.d.selectedReplicantValue) {
-          console.error(`EMPTY selectedReplicantValue in ${location} (map preset with replicant on ${replicantDis.disOpt}) — maps need a specific value`);
+        } else if (
+          preset.config.d.type === "map" &&
+          !preset.config.d.selectedReplicantValue
+        ) {
+          console.error(
+            `EMPTY selectedReplicantValue in ${location} (map preset with replicant on ${replicantDis.disOpt}) — maps need a specific value`,
+          );
           hadError = true;
         }
       }
@@ -296,7 +337,9 @@ for (const { dir, def } of allModules) {
         const valuePropSet = new Set(metric.valueProps);
         for (const filterValue of valuesFilter) {
           if (!valuePropSet.has(filterValue)) {
-            console.error(`INVALID valuesFilter "${filterValue}" in ${location} - not in metric valueProps`);
+            console.error(
+              `INVALID valuesFilter "${filterValue}" in ${location} - not in metric valueProps`,
+            );
             hadError = true;
           }
         }
@@ -306,7 +349,9 @@ for (const { dir, def } of allModules) {
       if (roColumns) {
         for (const dis of preset.config.d.disaggregateBy) {
           if (!standardDisOpts.has(dis.disOpt) && !roColumns.has(dis.disOpt)) {
-            console.error(`INVALID disaggregateBy "${dis.disOpt}" in ${location} - not standard and not in resultsObject columns`);
+            console.error(
+              `INVALID disaggregateBy "${dis.disOpt}" in ${location} - not standard and not in resultsObject columns`,
+            );
             hadError = true;
           }
         }
@@ -316,23 +361,33 @@ for (const { dir, def } of allModules) {
       const subCaption = preset.config.t?.subCaption;
       if (subCaption && typeof subCaption === "object") {
         if (subCaption.en && !subCaption.en.includes("DATE_RANGE")) {
-          console.error(`CONVENTION subCaption.en missing DATE_RANGE in ${location}`);
+          console.error(
+            `CONVENTION subCaption.en missing DATE_RANGE in ${location}`,
+          );
           hadError = true;
         }
         if (subCaption.fr && subCaption.fr.includes("DATE_RANGE")) {
-          console.error(`CONVENTION subCaption.fr uses DATE_RANGE instead of PLAGE_DE_DATES in ${location}`);
+          console.error(
+            `CONVENTION subCaption.fr uses DATE_RANGE instead of PLAGE_DE_DATES in ${location}`,
+          );
           hadError = true;
         }
         if (subCaption.fr && !subCaption.fr.includes("PLAGE_DE_DATES")) {
-          console.error(`CONVENTION subCaption.fr missing PLAGE_DE_DATES in ${location}`);
+          console.error(
+            `CONVENTION subCaption.fr missing PLAGE_DE_DATES in ${location}`,
+          );
           hadError = true;
         }
         if (subCaption.pt && subCaption.pt.includes("DATE_RANGE")) {
-          console.error(`CONVENTION subCaption.pt uses DATE_RANGE instead of INTERVALO_DE_DATAS in ${location}`);
+          console.error(
+            `CONVENTION subCaption.pt uses DATE_RANGE instead of INTERVALO_DE_DATAS in ${location}`,
+          );
           hadError = true;
         }
         if (subCaption.pt && !subCaption.pt.includes("INTERVALO_DE_DATAS")) {
-          console.error(`CONVENTION subCaption.pt missing INTERVALO_DE_DATAS in ${location}`);
+          console.error(
+            `CONVENTION subCaption.pt missing INTERVALO_DE_DATAS in ${location}`,
+          );
           hadError = true;
         }
       }
@@ -341,14 +396,18 @@ for (const { dir, def } of allModules) {
       const label = preset.label;
       if (label && typeof label === "object") {
         if (label.en && /\b(region|district)\b/i.test(label.en)) {
-          console.error(`CONVENTION label.en uses "region" or "district" instead of "Admin Area N" in ${location}`);
+          console.error(
+            `CONVENTION label.en uses "region" or "district" instead of "Admin Area N" in ${location}`,
+          );
           hadError = true;
         }
       }
       const description = preset.description;
       if (description && typeof description === "object") {
         if (description.en && /\b(regions|districts)\b/i.test(description.en)) {
-          console.error(`CONVENTION description.en uses "regions" or "districts" instead of "Admin Areas N" in ${location}`);
+          console.error(
+            `CONVENTION description.en uses "regions" or "districts" instead of "Admin Areas N" in ${location}`,
+          );
           hadError = true;
         }
       }

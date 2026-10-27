@@ -1,12 +1,15 @@
 # Special Metrics Synchronization
 
-This document explains the relationship between metric definitions in this repository and the hardcoded const arrays in `wb-fastr`.
+This document explains the relationship between metric definitions in this
+repository and the hardcoded const arrays in `wb-fastr`.
 
 ## The Const File
 
-**Location:** `wb-fastr/client/src/generate_visualization/special_chart_checks.ts`
+**Location:**
+`wb-fastr/client/src/generate_visualization/special_chart_checks.ts`
 
-This file contains arrays of metric IDs that require special rendering behavior in the app:
+This file contains arrays of metric IDs that require special rendering behavior
+in the app:
 
 ```typescript
 export const SPECIAL_COVERAGE_CHART_METRICS = [...]
@@ -17,9 +20,13 @@ export const ALLOW_NEGATIVE_SCALE_VALUES_METRICS = [...]
 
 ## Why These Arrays Exist
 
-The app's lists also hold the ids of retired modules, so figures made with them keep their rendering; this document names only the metrics in this repo.
+The app's lists also hold the ids of retired modules, so figures made with them
+keep their rendering; this document names only the metrics in this repo.
 
-The app needs to know which metrics require special chart rendering before it processes vizPreset configs. These arrays allow the rendering pipeline to apply metric-specific logic (axis scaling, color schemes, data label formatting, etc.) based on the metric ID.
+The app needs to know which metrics require special chart rendering before it
+processes vizPreset configs. These arrays allow the rendering pipeline to apply
+metric-specific logic (axis scaling, color schemes, data label formatting, etc.)
+based on the metric ID.
 
 ## What Each Array Represents
 
@@ -29,7 +36,9 @@ Metrics with `specialCoverageChart: true` in their vizPreset `config.s`.
 
 **Current metrics:** m6-01-01, m6-02-01, m6-03-01
 
-**Rendering behavior:** Coverage charts show multiple estimation types (survey-based, projected, HMIS-derived) with specific styling for comparing coverage sources over time.
+**Rendering behavior:** Coverage charts show multiple estimation types
+(survey-based, projected, HMIS-derived) with specific styling for comparing
+coverage sources over time.
 
 **How to identify:** Search for `specialCoverageChart: true` in metric files.
 
@@ -39,19 +48,23 @@ Metrics with `specialBarChart: true` in their vizPreset `config.s`.
 
 **Current metrics:** m12-01-01
 
-**Rendering behavior:** Bar charts showing year-over-year percent change with specific axis and label formatting.
+**Rendering behavior:** Bar charts showing year-over-year percent change with
+specific axis and label formatting.
 
 **How to identify:** Search for `specialBarChart: true` in metric files.
 
-**Note:** The const name says "PERCENT_CHANGE" but the module flag is `specialBarChart`. This naming difference is intentional.
+**Note:** The const name says "PERCENT_CHANGE" but the module flag is
+`specialBarChart`. This naming difference is intentional.
 
 ### SPECIAL_DISRUPTIONS_CHART_METRICS
 
 Metrics with `specialDisruptionsChart: true` in their vizPreset `config.s`.
 
-**Current metrics:** none in this repo; the app keeps the list for figures made with the retired m003
+**Current metrics:** none in this repo; the app keeps the list for figures made
+with the retired m003
 
-**Rendering behavior:** Disruption charts comparing actual vs expected service volumes with specific visual treatment for showing deviations from baseline.
+**Rendering behavior:** Disruption charts comparing actual vs expected service
+volumes with specific visual treatment for showing deviations from baseline.
 
 **How to identify:** Search for `specialDisruptionsChart: true` in metric files.
 
@@ -61,35 +74,50 @@ Metrics with `specialDisruptionsChartV2: true` in their vizPreset `config.s`.
 
 **Current metrics:** m11-01-01, m11-01-02, m11-01-03, m11-01-04
 
-**Rendering behavior:** Observed and expected lines over a grey 95% credible band, with green shading where observed rises above the band and red where it falls below. Needs all four value props (observed, expected, ppi_lwr, ppi_upr).
+**Rendering behavior:** Observed and expected lines over a grey 95% credible
+band, with green shading where observed rises above the band and red where it
+falls below. Needs all four value props (observed, expected, ppi_lwr, ppi_upr).
 
-**How to identify:** Search for `specialDisruptionsChartV2: true` in metric files, or for `bandChartMetric` in `m011/`.
+**How to identify:** Search for `specialDisruptionsChartV2: true` in metric
+files, or for `bandChartMetric` in `m011/`.
 
 ### ALLOW_NEGATIVE_SCALE_VALUES_METRICS
 
-Metrics whose displayed values can be negative. The list also lets the conditional-formatting editor accept negative thresholds.
+Metrics whose displayed values can be negative. The list also lets the
+conditional-formatting editor accept negative thresholds.
 
 **Current metrics:** m11-02-01
 
-**Rendering behavior:** Axis scaling and color formatting must handle negative percentages (e.g., -15% meaning service volume 15% below expected).
+**Rendering behavior:** Axis scaling and color formatting must handle negative
+percentages (e.g., -15% meaning service volume 15% below expected).
 
-**How to identify:** Check `postAggregationExpression.expression` for subtraction without `ABS()` wrapper:
+**How to identify:** Check `postAggregationExpression.expression` for
+subtraction without `ABS()` wrapper:
+
 - **Negative-capable:** `pct_diff = (observed - expected) / expected`
-- **Always positive:** `pct_change = ABS(count_final_none-count_final_outliers)/count_final_none`
+- **Always positive:**
+  `pct_change = ABS(count_final_none-count_final_outliers)/count_final_none`
 
 ## Keeping In Sync
 
 When adding or modifying metrics:
 
-1. **Adding a coverage metric:** If it has `specialCoverageChart: true`, add its ID to `SPECIAL_COVERAGE_CHART_METRICS`
+1. **Adding a coverage metric:** If it has `specialCoverageChart: true`, add its
+   ID to `SPECIAL_COVERAGE_CHART_METRICS`
 
-2. **Adding a percent change metric:** If it has `specialBarChart: true`, add its ID to `SPECIAL_PERCENT_CHANGE_CHART_METRICS`
+2. **Adding a percent change metric:** If it has `specialBarChart: true`, add
+   its ID to `SPECIAL_PERCENT_CHANGE_CHART_METRICS`
 
-3. **Adding a disruptions metric:** If it has `specialDisruptionsChart: true`, add its ID to `SPECIAL_DISRUPTIONS_CHART_METRICS`
+3. **Adding a disruptions metric:** If it has `specialDisruptionsChart: true`,
+   add its ID to `SPECIAL_DISRUPTIONS_CHART_METRICS`
 
-3a. **Adding a credible-band disruptions metric:** If it has `specialDisruptionsChartV2: true`, add its ID to `SPECIAL_DISRUPTIONS_CHART_V2_METRICS`
+3a. **Adding a credible-band disruptions metric:** If it has
+`specialDisruptionsChartV2: true`, add its ID to
+`SPECIAL_DISRUPTIONS_CHART_V2_METRICS`
 
-4. **Adding a metric with negative values:** If its `postAggregationExpression.expression` contains subtraction without `ABS()`, add its ID to `ALLOW_NEGATIVE_SCALE_VALUES_METRICS`
+4. **Adding a metric with negative values:** If its
+   `postAggregationExpression.expression` contains subtraction without `ABS()`,
+   add its ID to `ALLOW_NEGATIVE_SCALE_VALUES_METRICS`
 
 5. **Removing a metric:** Remove its ID from any const arrays it appears in
 
@@ -109,8 +137,12 @@ Compare output against the arrays in `special_chart_checks.ts`.
 
 ## Consequences of Misalignment
 
-- **Missing from const array:** Metric renders with default styling instead of special treatment. Charts may have wrong axis bounds, missing visual cues, or incorrect data label formatting.
+- **Missing from const array:** Metric renders with default styling instead of
+  special treatment. Charts may have wrong axis bounds, missing visual cues, or
+  incorrect data label formatting.
 
-- **Extra in const array:** App applies special rendering to a metric that doesn't need it. May cause visual glitches or incorrect interpretation.
+- **Extra in const array:** App applies special rendering to a metric that
+  doesn't need it. May cause visual glitches or incorrect interpretation.
 
-- **Negative values not declared:** Axis may clip negative values or color scale may not handle below-zero percentages correctly.
+- **Negative values not declared:** Axis may clip negative values or color scale
+  may not handle below-zero percentages correctly.

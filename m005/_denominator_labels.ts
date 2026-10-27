@@ -41,7 +41,10 @@ const TARGETS: Record<string, { label: string; phrase: string }> = {
     phrase: "total births (live + stillbirths)",
   },
   livebirth: { label: "Live births", phrase: "live births" },
-  dpt: { label: "Infants eligible for DPT1", phrase: "infants eligible for DPT1" },
+  dpt: {
+    label: "Infants eligible for DPT1",
+    phrase: "infants eligible for DPT1",
+  },
   measles1: {
     label: "Children eligible for measles dose 1 (MCV1)",
     phrase: "children eligible for measles dose 1 (MCV1)",

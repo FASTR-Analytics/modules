@@ -92,8 +92,10 @@ export const vizPresets: VizPreset[] = [
     },
     description: {
       en: "Bar chart comparing coverage across Admin Areas 2",
-      fr: "Diagramme à barres comparant la couverture entre Zones administratives 2",
-      pt: "Gráfico de barras que compara a cobertura entre Áreas administrativas 2",
+      fr:
+        "Diagramme à barres comparant la couverture entre Zones administratives 2",
+      pt:
+        "Gráfico de barras que compara a cobertura entre Áreas administrativas 2",
     },
     allowedFilters: ["admin_area_2"],
     config: {
@@ -190,29 +192,44 @@ export const metric: MetricDefinitionGithub = {
   formatAs: "percent",
   aiDescription: {
     summary: {
-      en: "Subnational coverage estimates at admin area 2 level combining survey, projected, and HMIS-derived values.",
-      fr: "Estimations de couverture sous-nationales au niveau de la zone administrative 2 combinant valeurs d'enquête, projetées et dérivées du HMIS.",
-      pt: "Estimativas de cobertura subnacionais ao nível da área administrativa 2 que combinam valores de inquéritos, projetados e derivados do SIS.",
+      en:
+        "Subnational coverage estimates at admin area 2 level combining survey, projected, and HMIS-derived values.",
+      fr:
+        "Estimations de couverture sous-nationales au niveau de la zone administrative 2 combinant valeurs d'enquête, projetées et dérivées du HMIS.",
+      pt:
+        "Estimativas de cobertura subnacionais ao nível da área administrativa 2 que combinam valores de inquéritos, projetados e derivados do SIS.",
     },
     methodology: {
-      en: "AVG of survey, projected survey, and HMIS coverage at regional level. Uses user-specified denominators and survey projection methodology.",
-      fr: "Moyenne de la couverture d'enquête, d'enquête projetée et HMIS au niveau régional. Utilise des dénominateurs spécifiés par l'utilisateur.",
-      pt: "Média da cobertura de inquéritos, de inquéritos projetados e do SIS ao nível regional. Utiliza denominadores especificados pelo utilizador e a metodologia de projeção de inquéritos.",
+      en:
+        "AVG of survey, projected survey, and HMIS coverage at regional level. Uses user-specified denominators and survey projection methodology.",
+      fr:
+        "Moyenne de la couverture d'enquête, d'enquête projetée et HMIS au niveau régional. Utilise des dénominateurs spécifiés par l'utilisateur.",
+      pt:
+        "Média da cobertura de inquéritos, de inquéritos projetados e do SIS ao nível regional. Utiliza denominadores especificados pelo utilizador e a metodologia de projeção de inquéritos.",
     },
     interpretation: {
-      en: "Enables regional equity analysis and geographic targeting. Compare across admin areas to identify coverage disparities. Three estimation types validate subnational data quality.",
-      fr: "Permet l'analyse de l'équité régionale et le ciblage géographique. Comparer entre zones administratives pour identifier les disparités de couverture.",
-      pt: "Permite a análise da equidade regional e a focalização geográfica. Comparar entre áreas administrativas para identificar disparidades de cobertura. Os três tipos de estimativa validam a qualidade dos dados subnacionais.",
+      en:
+        "Enables regional equity analysis and geographic targeting. Compare across admin areas to identify coverage disparities. Three estimation types validate subnational data quality.",
+      fr:
+        "Permet l'analyse de l'équité régionale et le ciblage géographique. Comparer entre zones administratives pour identifier les disparités de couverture.",
+      pt:
+        "Permite a análise da equidade regional e a focalização geográfica. Comparar entre áreas administrativas para identificar disparidades de cobertura. Os três tipos de estimativa validam a qualidade dos dados subnacionais.",
     },
     typicalRange: {
-      en: "0-100%. Regional variation expected; remote areas typically have lower coverage.",
-      fr: "0-100%. Variation régionale attendue; zones éloignées ont généralement une couverture plus faible.",
-      pt: "0-100%. Espera-se variação regional; as zonas remotas têm geralmente uma cobertura mais baixa.",
+      en:
+        "0-100%. Regional variation expected; remote areas typically have lower coverage.",
+      fr:
+        "0-100%. Variation régionale attendue; zones éloignées ont généralement une couverture plus faible.",
+      pt:
+        "0-100%. Espera-se variação regional; as zonas remotas têm geralmente uma cobertura mais baixa.",
     },
     disaggregationGuidance: {
-      en: "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Compare three coverage types for regional data quality validation.",
-      fr: "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Comparer trois types de couverture pour la validation de la qualité des données régionales.",
-      pt: "Desagregar sempre por indicator_common_id, admin_area_2 e year (todos obrigatórios). Comparar os três tipos de cobertura para a validação da qualidade dos dados regionais.",
+      en:
+        "Always disaggregate by indicator_common_id, admin_area_2, and year (all required). Compare three coverage types for regional data quality validation.",
+      fr:
+        "Toujours désagréger par indicator_common_id, admin_area_2 et year (tous requis). Comparer trois types de couverture pour la validation de la qualité des données régionales.",
+      pt:
+        "Desagregar sempre por indicator_common_id, admin_area_2 e year (todos obrigatórios). Comparar os três tipos de cobertura para a validação da qualidade dos dados regionais.",
     },
     caveats: null,
   },

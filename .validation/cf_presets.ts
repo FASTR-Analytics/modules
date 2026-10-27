@@ -56,37 +56,49 @@ function thresholds(
 // Higher is better: red < yellow < green
 export const CF_90_80 = thresholds(
   [0.8, 0.9],
-  [{ color: CF_LIGHTER_RED }, { color: CF_LIGHTER_YELLOW }, { color: CF_LIGHTER_GREEN }],
+  [{ color: CF_LIGHTER_RED }, { color: CF_LIGHTER_YELLOW }, {
+    color: CF_LIGHTER_GREEN,
+  }],
 );
 
 export const CF_80_70 = thresholds(
   [0.7, 0.8],
-  [{ color: CF_LIGHTER_RED }, { color: CF_LIGHTER_YELLOW }, { color: CF_LIGHTER_GREEN }],
+  [{ color: CF_LIGHTER_RED }, { color: CF_LIGHTER_YELLOW }, {
+    color: CF_LIGHTER_GREEN,
+  }],
 );
 
 // Lower is better: green < yellow < red
 export const CF_01_03 = thresholds(
   [0.01, 0.03],
-  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, { color: CF_LIGHTER_RED }],
+  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, {
+    color: CF_LIGHTER_RED,
+  }],
   "lower-is-better",
 );
 
 export const CF_05_10 = thresholds(
   [0.05, 0.1],
-  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, { color: CF_LIGHTER_RED }],
+  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, {
+    color: CF_LIGHTER_RED,
+  }],
   "lower-is-better",
 );
 
 export const CF_10_20 = thresholds(
   [0.1, 0.2],
-  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, { color: CF_LIGHTER_RED }],
+  [{ color: CF_LIGHTER_GREEN }, { color: CF_LIGHTER_YELLOW }, {
+    color: CF_LIGHTER_RED,
+  }],
   "lower-is-better",
 );
 
 // Diverging: red | neutral | green
 export const CF_NEG10_POS10 = thresholds(
   [-0.1, 0.1],
-  [{ color: CF_LIGHTER_RED }, { color: "#e0e0e0" }, { color: CF_LIGHTER_GREEN }],
+  [{ color: CF_LIGHTER_RED }, { color: "#e0e0e0" }, {
+    color: CF_LIGHTER_GREEN,
+  }],
 );
 
 // Diverging 7-bucket: matches app preset "fmt-thresholds-5-10-20"

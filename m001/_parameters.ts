@@ -133,9 +133,12 @@ export const parameters: ModuleParameter[] = [
   },
   {
     description: {
-      en: "Admin level used to join facilities to corresponding geo-consistency",
-      fr: "Niveau administratif utilisé pour joindre les établissements à la cohérence géographique correspondante",
-      pt: "Nível administrativo utilizado para associar as unidades sanitárias à coerência geográfica correspondente",
+      en:
+        "Admin level used to join facilities to corresponding geo-consistency",
+      fr:
+        "Niveau administratif utilisé pour joindre les établissements à la cohérence géographique correspondante",
+      pt:
+        "Nível administrativo utilizado para associar as unidades sanitárias à coerência geográfica correspondente",
     },
     replacementString: "GEOLEVEL",
     input: {

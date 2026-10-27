@@ -24,13 +24,16 @@ async function fixFile(path: string): Promise<boolean> {
   const content = await Deno.readTextFile(path);
 
   // Pattern to match the inlined cf fields
-  const pattern = /cfMode: "thresholds",\s*cfThresholdCutoffs: \[([\d., -]+)\],\s*cfThresholdBuckets: \[\s*\{\s*color: "[^"]+",?\s*\},\s*\{\s*color: "[^"]+",?\s*\},\s*\{\s*color: "[^"]+",?\s*\},?\s*\],\s*cfThresholdDirection: "([^"]+)",\s*cfThresholdNoDataColor: "[^"]+",\s*cfScalePaletteKind: "[^"]*",\s*cfScalePalettePreset: "[^"]*",\s*cfScaleCustomFrom: "[^"]*",\s*cfScaleCustomMid: "[^"]*",\s*cfScaleCustomTo: "[^"]*",\s*cfScaleReverse: \w+,\s*cfScaleSteps: \d+,\s*cfScaleDomainKind: "[^"]*",\s*cfScaleDomainMin: [\d.]+,\s*cfScaleDomainMax: [\d.]+,\s*cfScaleNoDataColor: "[^"]*",?/g;
+  const pattern =
+    /cfMode: "thresholds",\s*cfThresholdCutoffs: \[([\d., -]+)\],\s*cfThresholdBuckets: \[\s*\{\s*color: "[^"]+",?\s*\},\s*\{\s*color: "[^"]+",?\s*\},\s*\{\s*color: "[^"]+",?\s*\},?\s*\],\s*cfThresholdDirection: "([^"]+)",\s*cfThresholdNoDataColor: "[^"]+",\s*cfScalePaletteKind: "[^"]*",\s*cfScalePalettePreset: "[^"]*",\s*cfScaleCustomFrom: "[^"]*",\s*cfScaleCustomMid: "[^"]*",\s*cfScaleCustomTo: "[^"]*",\s*cfScaleReverse: \w+,\s*cfScaleSteps: \d+,\s*cfScaleDomainKind: "[^"]*",\s*cfScaleDomainMin: [\d.]+,\s*cfScaleDomainMax: [\d.]+,\s*cfScaleNoDataColor: "[^"]*",?/g;
 
   let modified = content;
   let changed = false;
 
   modified = content.replace(pattern, (match, cutoffsStr, direction) => {
-    const cutoffs = cutoffsStr.split(",").map((s: string) => parseFloat(s.trim()));
+    const cutoffs = cutoffsStr.split(",").map((s: string) =>
+      parseFloat(s.trim())
+    );
     const preset = detectCfPreset(cutoffs, direction);
 
     if (preset) {
@@ -45,7 +48,7 @@ async function fixFile(path: string): Promise<boolean> {
     if (!modified.includes("cf_presets.ts")) {
       modified = modified.replace(
         'import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";',
-        'import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";\nimport { CF_01_03, CF_05_10, CF_10_20, CF_80_70, CF_90_80, CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";'
+        'import type { MetricDefinitionGithub, VizPreset } from "../../.validation/_module_definition_github.ts";\nimport { CF_01_03, CF_05_10, CF_10_20, CF_80_70, CF_90_80, CF_NEG10_POS10 } from "../../.validation/cf_presets.ts";',
       );
     }
     await Deno.writeTextFile(path, modified);

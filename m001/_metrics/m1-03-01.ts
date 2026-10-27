@@ -26,8 +26,10 @@ export const vizPresets: VizPreset[] = [
     },
     description: {
       en: "Table showing consistency by ratio type and Admin Area 2",
-      fr: "Tableau montrant la cohérence par type de ratio et Zone administrative 2",
-      pt: "Tabela que mostra a coerência por tipo de rácio e Área Administrativa 2",
+      fr:
+        "Tableau montrant la cohérence par type de ratio et Zone administrative 2",
+      pt:
+        "Tabela que mostra a coerência por tipo de rácio e Área Administrativa 2",
     },
     allowedFilters: ["ratio_type", "admin_area_2"],
     config: {
@@ -62,14 +64,20 @@ export const vizPresets: VizPreset[] = [
           pt: "Coerência interna",
         },
         subCaption: {
-          en: "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
-          pt: "Percentagem de áreas subnacionais que cumprem os critérios de referência de coerência, INTERVALO_DE_DATAS",
+          en:
+            "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
+          fr:
+            "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
+          pt:
+            "Percentagem de áreas subnacionais que cumprem os critérios de referência de coerência, INTERVALO_DE_DATAS",
         },
         footnote: {
-          en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
-          fr: "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
-          pt: "A coerência interna avalia a plausibilidade dos dados notificados com base em indicadores relacionados. As medidas de coerência são aproximadas - dependendo do calendário e da sazonalidade, das definições dos indicadores e da natureza da prestação de serviços e da notificação, é possível que os valores se situem fora dos intervalos plausíveis. Espera-se que indicadores semelhantes tenham aproximadamente o mesmo volume ao longo do ano (dentro de uma margem de 30%). Os dados desta análise estão ajustados para os valores atípicos.",
+          en:
+            "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
+          fr:
+            "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
+          pt:
+            "A coerência interna avalia a plausibilidade dos dados notificados com base em indicadores relacionados. As medidas de coerência são aproximadas - dependendo do calendário e da sazonalidade, das definições dos indicadores e da natureza da prestação de serviços e da notificação, é possível que os valores se situem fora dos intervalos plausíveis. Espera-se que indicadores semelhantes tenham aproximadamente o mesmo volume ao longo do ano (dentro de uma margem de 30%). Os dados desta análise estão ajustados para os valores atípicos.",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,
@@ -102,8 +110,10 @@ export const vizPresets: VizPreset[] = [
     },
     description: {
       en: "Map showing consistency by ratio type and Admin Area 2",
-      fr: "Carte montrant la cohérence par type de ratio et Zone administrative 2",
-      pt: "Mapa que mostra a coerência por tipo de rácio e Área Administrativa 2",
+      fr:
+        "Carte montrant la cohérence par type de ratio et Zone administrative 2",
+      pt:
+        "Mapa que mostra a coerência por tipo de rácio e Área Administrativa 2",
     },
     allowedFilters: [],
     config: {
@@ -138,14 +148,20 @@ export const vizPresets: VizPreset[] = [
           pt: "Coerência interna",
         },
         subCaption: {
-          en: "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
-          fr: "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
-          pt: "Percentagem de áreas subnacionais que cumprem os critérios de referência de coerência, INTERVALO_DE_DATAS",
+          en:
+            "Percentage of sub-national areas meeting consistency benchmarks, DATE_RANGE",
+          fr:
+            "Pourcentage de zones sous-nationales atteignant les critères de cohérence, PLAGE_DE_DATES",
+          pt:
+            "Percentagem de áreas subnacionais que cumprem os critérios de referência de coerência, INTERVALO_DE_DATAS",
         },
         footnote: {
-          en: "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
-          fr: "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
-          pt: "A coerência interna avalia a plausibilidade dos dados notificados com base em indicadores relacionados. As medidas de coerência são aproximadas - dependendo do calendário e da sazonalidade, das definições dos indicadores e da natureza da prestação de serviços e da notificação, é possível que os valores se situem fora dos intervalos plausíveis. Espera-se que indicadores semelhantes tenham aproximadamente o mesmo volume ao longo do ano (dentro de uma margem de 30%). Os dados desta análise estão ajustados para os valores atípicos.",
+          en:
+            "Internal consistency assesses the plausibility of reported data based on related indicators. Consistency metrics are approximate - depending on timing and seasonality, indicator definitions, and the nature of service delivery and reporting, values may be expected to sit outside plausible ranges. Indicators which are similar are expected to have roughy the same volume over the year (within a 30% margin). The data in this analysis is adjusted for outliers.",
+          fr:
+            "La cohérence interne évalue la plausibilité des données déclarées sur la base d'indicateurs liés. Les mesures de cohérence sont approximatives - selon le calendrier et la saisonnalité, les définitions des indicateurs, et la nature de la prestation de services et de la déclaration, les valeurs peuvent se situer en dehors des plages plausibles. Les indicateurs similaires sont censés avoir approximativement le même volume sur l'année (avec une marge de 30%). Les données de cette analyse sont ajustées pour les valeurs aberrantes.",
+          pt:
+            "A coerência interna avalia a plausibilidade dos dados notificados com base em indicadores relacionados. As medidas de coerência são aproximadas - dependendo do calendário e da sazonalidade, das definições dos indicadores e da natureza da prestação de serviços e da notificação, é possível que os valores se situem fora dos intervalos plausíveis. Espera-se que indicadores semelhantes tenham aproximadamente o mesmo volume ao longo do ano (dentro de uma margem de 30%). Os dados desta análise estão ajustados para os valores atípicos.",
         },
         captionRelFontSize: null,
         subCaptionRelFontSize: null,
@@ -183,26 +199,36 @@ export const metric: MetricDefinitionGithub = {
   },
   label: {
     en: "Proportion of sub-national areas meeting consistency criteria",
-    fr: "Proportion de zones sous-nationales répondant aux critères de cohérence",
+    fr:
+      "Proportion de zones sous-nationales répondant aux critères de cohérence",
     pt: "Proporção de áreas subnacionais que cumprem os critérios de coerência",
   },
   requiredDisaggregationOptions: ["ratio_type"],
   formatAs: "percent",
   aiDescription: {
     summary: {
-      en: "Proportion of sub-national areas where related indicators show logical consistency.",
-      fr: "Proportion de zones sous-nationales où les indicateurs liés montrent une cohérence logique.",
-      pt: "Proporção de áreas subnacionais onde os indicadores relacionados apresentam coerência lógica.",
+      en:
+        "Proportion of sub-national areas where related indicators show logical consistency.",
+      fr:
+        "Proportion de zones sous-nationales où les indicateurs liés montrent une cohérence logique.",
+      pt:
+        "Proporção de áreas subnacionais onde os indicadores relacionados apresentam coerência lógica.",
     },
     methodology: {
-      en: "AVG of sconsistency flag. Checks logical relationships between indicator pairs (e.g., ANC1 > ANC4, Penta1 > Penta3).",
-      fr: "Moyenne du drapeau de cohérence. Vérifie les relations logiques entre paires d'indicateurs.",
-      pt: "MÉDIA do indicador sconsistency. Verifica as relações lógicas entre pares de indicadores (por exemplo, ANC1 > ANC4, Penta1 > Penta3).",
+      en:
+        "AVG of sconsistency flag. Checks logical relationships between indicator pairs (e.g., ANC1 > ANC4, Penta1 > Penta3).",
+      fr:
+        "Moyenne du drapeau de cohérence. Vérifie les relations logiques entre paires d'indicateurs.",
+      pt:
+        "MÉDIA do indicador sconsistency. Verifica as relações lógicas entre pares de indicadores (por exemplo, ANC1 > ANC4, Penta1 > Penta3).",
     },
     interpretation: {
-      en: "Higher values indicate better data quality. Low consistency suggests data entry errors or aggregation issues. Required disaggregation by ratio_type to see which consistency checks fail most often.",
-      fr: "Des valeurs plus élevées indiquent une meilleure qualité des données. Une faible cohérence suggère des erreurs de saisie.",
-      pt: "Valores mais elevados indicam uma melhor qualidade dos dados. Uma coerência baixa sugere erros de introdução de dados ou problemas de agregação. É necessária a desagregação por ratio_type para ver quais as verificações de coerência que falham com mais frequência.",
+      en:
+        "Higher values indicate better data quality. Low consistency suggests data entry errors or aggregation issues. Required disaggregation by ratio_type to see which consistency checks fail most often.",
+      fr:
+        "Des valeurs plus élevées indiquent une meilleure qualité des données. Une faible cohérence suggère des erreurs de saisie.",
+      pt:
+        "Valores mais elevados indicam uma melhor qualidade dos dados. Uma coerência baixa sugere erros de introdução de dados ou problemas de agregação. É necessária a desagregação por ratio_type para ver quais as verificações de coerência que falham com mais frequência.",
     },
     typicalRange: {
       en: "90-100% is good; 70-90% acceptable; <70% needs investigation.",
@@ -210,14 +236,20 @@ export const metric: MetricDefinitionGithub = {
       pt: "90-100% é bom; 70-90% aceitável; <70% requer investigação.",
     },
     caveats: {
-      en: "Different ratio types have different expected pass rates. Some inconsistency may be clinically valid (e.g., vaccine stock-outs).",
-      fr: "Différents types de ratios ont différents taux de réussite attendus.",
-      pt: "Diferentes tipos de rácio têm diferentes taxas de aprovação esperadas. Alguma incoerência pode ser clinicamente válida (por exemplo, ruturas de stock de vacinas).",
+      en:
+        "Different ratio types have different expected pass rates. Some inconsistency may be clinically valid (e.g., vaccine stock-outs).",
+      fr:
+        "Différents types de ratios ont différents taux de réussite attendus.",
+      pt:
+        "Diferentes tipos de rácio têm diferentes taxas de aprovação esperadas. Alguma incoerência pode ser clinicamente válida (por exemplo, ruturas de stock de vacinas).",
     },
     disaggregationGuidance: {
-      en: "Always disaggregate by ratio_type as each consistency check has different implications. Use admin_area to find regions with systematic issues.",
-      fr: "Toujours désagréger par ratio_type car chaque contrôle de cohérence a des implications différentes.",
-      pt: "Desagregar sempre por ratio_type, pois cada verificação de coerência tem implicações diferentes. Utilizar admin_area para encontrar regiões com problemas sistemáticos.",
+      en:
+        "Always disaggregate by ratio_type as each consistency check has different implications. Use admin_area to find regions with systematic issues.",
+      fr:
+        "Toujours désagréger par ratio_type car chaque contrôle de cohérence a des implications différentes.",
+      pt:
+        "Desagregar sempre por ratio_type, pois cada verificação de coerência tem implicações diferentes. Utilizar admin_area para encontrar regiões com problemas sistemáticos.",
     },
   },
   variantLabel: null,

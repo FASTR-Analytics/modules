@@ -6,10 +6,12 @@ How metrics work in wb-fastr, and how to author them correctly.
 
 ## Mental Model
 
-A **metric** defines how to aggregate columns from a results object into meaningful
-values, plus how to visualize those values. When a user views a metric:
+A **metric** defines how to aggregate columns from a results object into
+meaningful values, plus how to visualize those values. When a user views a
+metric:
 
-1. **SQL query** aggregates `valueProps` using `valueFunc`, grouped by disaggregation dimensions
+1. **SQL query** aggregates `valueProps` using `valueFunc`, grouped by
+   disaggregation dimensions
 2. **Post-aggregation** (optional) applies a formula to the aggregated values
 3. **Visualization** renders the data according to a vizPreset's config
 
@@ -33,7 +35,7 @@ Results CSV        Metric Definition           SQL Query                    Visu
 Array of column names from the results object to aggregate.
 
 ```typescript
-valueProps: ["cases", "tests"]
+valueProps: ["cases", "tests"];
 ```
 
 These become the "values" in the visualization. If you have multiple valueProps,
@@ -43,24 +45,25 @@ each becomes a separate series/column in charts and tables.
 
 How to aggregate the valueProps. One of:
 
-| Function   | SQL              | Use when                                    |
-|------------|------------------|---------------------------------------------|
-| `"SUM"`    | `SUM(col)`       | Counting totals (cases, visits, doses)      |
-| `"AVG"`    | `AVG(col)`       | Proportions, rates, averages                |
-| `"COUNT"`  | `COUNT(col)`     | Counting rows                               |
-| `"MIN"`    | `MIN(col)`       | Finding minimums                            |
-| `"MAX"`    | `MAX(col)`       | Finding maximums                            |
-| `"identity"` | `col` (no agg) | Pre-aggregated values, single-row results  |
+| Function     | SQL            | Use when                                  |
+| ------------ | -------------- | ----------------------------------------- |
+| `"SUM"`      | `SUM(col)`     | Counting totals (cases, visits, doses)    |
+| `"AVG"`      | `AVG(col)`     | Proportions, rates, averages              |
+| `"COUNT"`    | `COUNT(col)`   | Counting rows                             |
+| `"MIN"`      | `MIN(col)`     | Finding minimums                          |
+| `"MAX"`      | `MAX(col)`     | Finding maximums                          |
+| `"identity"` | `col` (no agg) | Pre-aggregated values, single-row results |
 
-**Important:** `valueFunc` applies to ALL valueProps equally. If you need different
-aggregation functions for different columns, use `postAggregationExpression`.
+**Important:** `valueFunc` applies to ALL valueProps equally. If you need
+different aggregation functions for different columns, use
+`postAggregationExpression`.
 
 ### resultsObjectId
 
 Which results object (CSV file) this metric reads from.
 
 ```typescript
-resultsObjectId: "M1_output_outliers.csv"
+resultsObjectId: "M1_output_outliers.csv";
 ```
 
 Must match an `id` in `_results_objects.ts`.
@@ -82,7 +85,7 @@ Dimensions that MUST be included in any query for this metric. The metric
 doesn't make sense without them.
 
 ```typescript
-requiredDisaggregationOptions: ["facility_type"]
+requiredDisaggregationOptions: ["facility_type"];
 ```
 
 **Example:** A metric showing "cases by facility type" must always group by
@@ -90,30 +93,31 @@ requiredDisaggregationOptions: ["facility_type"]
 
 ### disaggregateBy (in vizPresets)
 
-Which dimensions to show in THIS specific visualization, and how to display them.
+Which dimensions to show in THIS specific visualization, and how to display
+them.
 
 ```typescript
 disaggregateBy: [
   { disOpt: "indicator_common_id", disDisplayOpt: "col" },
   { disOpt: "admin_area_2", disDisplayOpt: "row" },
-]
+];
 ```
 
 ### disDisplayOpt values
 
 Where the dimension appears visually:
 
-| Value        | Table                      | Timeseries Chart         | Bar Chart            |
-|--------------|----------------------------|--------------------------|----------------------|
-| `"row"`      | Row headers                | Y-axis grouping          | Y-axis grouping      |
-| `"rowGroup"` | Grouped row headers        | —                        | —                    |
-| `"col"`      | Column headers             | X-axis panes             | X-axis panes         |
-| `"colGroup"` | Grouped column headers     | —                        | —                    |
-| `"series"`   | —                          | Multiple lines           | Grouped bars         |
-| `"cell"`     | Cell grouping              | Grid of small charts     | Grid of small charts |
-| `"indicator"`| —                          | —                        | Bar categories       |
-| `"replicant"`| Separate tables            | Small multiples          | Small multiples      |
-| `"mapArea"`  | —                          | —                        | Map regions (maps)   |
+| Value         | Table                  | Timeseries Chart     | Bar Chart            |
+| ------------- | ---------------------- | -------------------- | -------------------- |
+| `"row"`       | Row headers            | Y-axis grouping      | Y-axis grouping      |
+| `"rowGroup"`  | Grouped row headers    | —                    | —                    |
+| `"col"`       | Column headers         | X-axis panes         | X-axis panes         |
+| `"colGroup"`  | Grouped column headers | —                    | —                    |
+| `"series"`    | —                      | Multiple lines       | Grouped bars         |
+| `"cell"`      | Cell grouping          | Grid of small charts | Grid of small charts |
+| `"indicator"` | —                      | —                    | Bar categories       |
+| `"replicant"` | Separate tables        | Small multiples      | Small multiples      |
+| `"mapArea"`   | —                      | —                    | Map regions (maps)   |
 
 **Common patterns:**
 
@@ -122,18 +126,18 @@ Where the dimension appears visually:
 disaggregateBy: [
   { disOpt: "indicator_common_id", disDisplayOpt: "col" },
   { disOpt: "admin_area_2", disDisplayOpt: "row" },
-]
+];
 
 // Timeseries: multiple lines per indicator
 disaggregateBy: [
   { disOpt: "indicator_common_id", disDisplayOpt: "series" },
-]
+];
 
 // Small multiples: separate chart per region
 disaggregateBy: [
   { disOpt: "admin_area_2", disDisplayOpt: "replicant" },
   { disOpt: "indicator_common_id", disDisplayOpt: "series" },
-]
+];
 ```
 
 ---
@@ -156,11 +160,13 @@ postAggregationExpression: {
 ```
 
 **How it works:**
+
 1. SQL aggregates each ingredientValue with its own func
 2. Results wrapped in subquery
 3. Outer query applies the expression
 
 **Result SQL:**
+
 ```sql
 SELECT admin_area_2, (cases / NULLIF(tests, 0)) AS result
 FROM (
@@ -170,7 +176,10 @@ FROM (
 ```
 
 **When to use:**
-- Ratios: `numerator / denominator`. The app wraps every divisor in `NULLIF(…, 0)` itself; writing `NULLIF` in the expression double-wraps it into bad SQL
+
+- Ratios: `numerator / denominator`. The app wraps every divisor in
+  `NULLIF(…, 0)` itself; writing `NULLIF` in the expression double-wraps it into
+  bad SQL
 - Differences: `col_a - col_b`
 - Weighted averages
 - Any calculation that needs columns aggregated differently
@@ -189,19 +198,19 @@ Each vizPreset defines a default visualization for the metric.
 ```typescript
 vizPresets: [
   {
-    id: "outlier-table",                    // Unique within metric
-    label: { en: "...", fr: "..." },        // Shown in preset picker
-    description: { en: "...", fr: "..." },  // Tooltip
-    importantNotes: null,                   // Or { en: "...", fr: "..." }
-    needsReplicant: false,                  // True if requires replicant selection
+    id: "outlier-table", // Unique within metric
+    label: { en: "...", fr: "..." }, // Shown in preset picker
+    description: { en: "...", fr: "..." }, // Tooltip
+    importantNotes: null, // Or { en: "...", fr: "..." }
+    needsReplicant: false, // True if requires replicant selection
     allowedFilters: ["indicator_common_id", "admin_area_2"],
     config: {
-      d: { /* data config */ },
-      s: { /* style config */ },
-      t: { /* text config */ },
+      d: {/* data config */},
+      s: {/* style config */},
+      t: {/* text config */},
     },
   },
-]
+];
 ```
 
 ### config.d (Data Config)
@@ -264,7 +273,8 @@ t: {
 }
 ```
 
-**Note:** `DATE_RANGE` is a magic string replaced with the actual date range at render time.
+**Note:** `DATE_RANGE` is a magic string replaced with the actual date range at
+render time.
 
 ---
 
@@ -285,8 +295,8 @@ Used in chart legends and table headers.
 
 ### variantLabel
 
-When multiple metrics share the same `label`, each must have a `variantLabel`
-to distinguish them in lists:
+When multiple metrics share the same `label`, each must have a `variantLabel` to
+distinguish them in lists:
 
 ```typescript
 // Two metrics with same label
@@ -300,21 +310,22 @@ If `true`, metric is computed but not shown in the UI. Useful for intermediate
 calculations or data that powers other metrics.
 
 ```typescript
-hide: true
+hide: true;
 ```
 
 ### aiDescription
 
-Structured metadata for humans and AI systems. All fields are translatable strings:
+Structured metadata for humans and AI systems. All fields are translatable
+strings:
 
-| Field                    | Purpose                                      |
-|--------------------------|----------------------------------------------|
-| `summary`                | One-sentence description                     |
-| `methodology`            | How it's calculated                          |
-| `interpretation`         | What values mean, what's good/bad            |
-| `typicalRange`           | Expected value range                         |
-| `caveats`                | Important limitations (nullable)             |
-| `disaggregationGuidance` | How to best disaggregate this metric         |
+| Field                    | Purpose                              |
+| ------------------------ | ------------------------------------ |
+| `summary`                | One-sentence description             |
+| `methodology`            | How it's calculated                  |
+| `interpretation`         | What values mean, what's good/bad    |
+| `typicalRange`           | Expected value range                 |
+| `caveats`                | Important limitations (nullable)     |
+| `disaggregationGuidance` | How to best disaggregate this metric |
 
 ---
 
@@ -322,19 +333,19 @@ Structured metadata for humans and AI systems. All fields are translatable strin
 
 From `disaggregation_options.ts`:
 
-| Option               | Description                    |
-|----------------------|--------------------------------|
-| `period_id`          | Month (YYYYMM format)          |
-| `quarter_id`         | Quarter (YYYYQ format)         |
-| `year`               | Year                           |
-| `indicator_common_id`| Standardized indicator code    |
-| `admin_area_1`       | First admin level (province)   |
-| `admin_area_2`       | Second admin level (district)  |
-| `admin_area_3`       | Third admin level (subdistrict)|
-| `facility_id`        | Individual facility            |
-| `facility_type`      | Type of facility               |
-| `facility_ownership` | Public/private/NGO etc         |
-| `urbanicity`         | Urban/rural classification     |
+| Option                | Description                     |
+| --------------------- | ------------------------------- |
+| `period_id`           | Month (YYYYMM format)           |
+| `quarter_id`          | Quarter (YYYYQ format)          |
+| `year`                | Year                            |
+| `indicator_common_id` | Standardized indicator code     |
+| `admin_area_1`        | First admin level (province)    |
+| `admin_area_2`        | Second admin level (district)   |
+| `admin_area_3`        | Third admin level (subdistrict) |
+| `facility_id`         | Individual facility             |
+| `facility_type`       | Type of facility                |
+| `facility_ownership`  | Public/private/NGO etc          |
+| `urbanicity`          | Urban/rural classification      |
 
 ---
 
@@ -396,9 +407,11 @@ From `disaggregation_options.ts`:
 Before finalizing a metric:
 
 - [ ] `resultsObjectId` matches an ID in `_results_objects.ts`
-- [ ] `valueProps` columns exist in the results object's `createTableStatementPossibleColumns`
+- [ ] `valueProps` columns exist in the results object's
+      `createTableStatementPossibleColumns`
 - [ ] `valuesFilter` (if used) only includes values from `valueProps`
-- [ ] `postAggregationExpression.ingredientValues[].prop` columns exist in results object
+- [ ] `postAggregationExpression.ingredientValues[].prop` columns exist in
+      results object
 - [ ] Metrics with duplicate `label` all have `variantLabel`
 - [ ] `allowedFilters` uses valid disaggregation options
 - [ ] `disaggregateBy[].disOpt` uses valid disaggregation options

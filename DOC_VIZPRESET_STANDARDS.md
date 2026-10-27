@@ -6,16 +6,19 @@ Guidelines for writing consistent, clean viz presets across modules.
 
 ### Viz Preset ID (`id`)
 
-**Scope:** Only needs to be unique within a single metric's `vizPresets` array. Lookups are metric-scoped (`metric.vizPresets.find(p => p.id === presetId)`).
+**Scope:** Only needs to be unique within a single metric's `vizPresets` array.
+Lookups are metric-scoped (`metric.vizPresets.find(p => p.id === presetId)`).
 
 **Pattern:** `{metric-concept}-{viz-type}[-{parent-context}]`
 
 - Use kebab-case
 - Include viz type: `table`, `map`, `chart`, `timeseries`
-- Include parent context when there's a replicant filter (e.g., `single-admin-area-2-multiple-admin-area-3`)
+- Include parent context when there's a replicant filter (e.g.,
+  `single-admin-area-2-multiple-admin-area-3`)
 - Base case (no parent filter) can omit the parent context
 
 **Examples:**
+
 ```
 disruption-table-admin-area-2                      # base table, no replicant
 disruption-table-admin-area-3                      # table with the parent Admin Area 2 as replicant
@@ -23,7 +26,8 @@ disruption-map-admin-area-2                        # map showing Admin Area 2
 observed-expected-ci-single-indicator              # chart for a single indicator, the replicant
 ```
 
-Every preset is offered in the insert-figure wizard and shown as a card on the package page; the app identifies it as `metricId/presetId`.
+Every preset is offered in the insert-figure wizard and shown as a card on the
+package page; the app identifies it as `metricId/presetId`.
 
 ## Labels
 
@@ -37,6 +41,7 @@ Every preset is offered in the insert-figure wizard and shown as a card on the p
 - No parentheticals or verbose qualifiers
 
 **Examples:**
+
 ```
 "Service disruption by Admin Area 2"
 "Service disruption map by Admin Area 2"
@@ -47,7 +52,8 @@ Every preset is offered in the insert-figure wizard and shown as a card on the p
 
 **Purpose:** Verbose context shown below the label in card UI.
 
-**Pattern:** `{Viz type} showing {what} [for {parent context}], with {dimensions}`
+**Pattern:**
+`{Viz type} showing {what} [for {parent context}], with {dimensions}`
 
 - Be specific about what's displayed
 - Include parent/child context (single/multiple admin areas)
@@ -55,6 +61,7 @@ Every preset is offered in the insert-figure wizard and shown as a card on the p
 - Do NOT mention implementation details like "conditional formatting"
 
 **Examples:**
+
 ```
 "Table showing percentage difference between actual vs expected service volume, with multiple Admin Areas 2 and multiple indicators"
 "Table showing percentage difference between actual vs expected service volume for a single Admin Area 2, with multiple Admin Areas 3 and multiple indicators"
@@ -81,7 +88,9 @@ d: {
 ```
 
 **Key rules:**
-- Always include `selectedReplicantValue` when any disaggregation uses `disDisplayOpt: "replicant"`
+
+- Always include `selectedReplicantValue` when any disaggregation uses
+  `disDisplayOpt: "replicant"`
 - Use `""` for tables (user selects), `"anc1"` or specific value for maps
 - Snapshot visualizations use `nQuarters: 1`
 
@@ -94,7 +103,9 @@ s: {
 ```
 
 **Available presets:**
-- `CF_DIVERGING_5_10_20` - 7-bucket diverging (±5%, ±10%, ±20%) - matches app preset "fmt-thresholds-5-10-20"
+
+- `CF_DIVERGING_5_10_20` - 7-bucket diverging (±5%, ±10%, ±20%) - matches app
+  preset "fmt-thresholds-5-10-20"
 - `CF_NEG10_POS10` - 3-bucket diverging (±10%)
 - `CF_90_80`, `CF_80_70` - Coverage thresholds (higher is better)
 - `CF_01_03`, `CF_05_10`, `CF_10_20` - Rate thresholds (lower is better)
@@ -116,6 +127,7 @@ subCaption: {
 ```
 
 For coverage metrics with disclaimer:
+
 ```typescript
 import { SUBCAPTION_DISCLAIMER } from "../../_shared/text_presets.ts";
 // ...
@@ -134,26 +146,31 @@ subCaption: {
 ## Text Conventions
 
 ### Terminology
+
 - Use "Admin Area 2/3/4" consistently, not "region", "district", "sub-district"
 - Use "actual vs expected" for difference/comparison metrics
 - Use "service volume" not "service delivery volume"
 
 ### Footnotes
+
 - Describe data interpretation, not UI implementation
 - Do NOT mention colors (e.g., "darker colors indicate...")
 - Focus on what values mean
 
 **Good:**
+
 ```
 "Negative values indicate service delivery below expected levels. Expected values are based on pre-disruption trends."
 ```
 
 **Bad:**
+
 ```
 "Darker colors indicate larger disruptions."
 ```
 
 ### French translations
+
 - "Admin Area N" → "Zone administrative N"
 - "Service disruption" → "Perturbation des services"
 - "percentage difference" → "différence en pourcentage"
@@ -161,7 +178,8 @@ subCaption: {
 
 ## Symmetry Checklist
 
-When reviewing a set of related metrics (e.g., m11-01-01 to m11-01-04, built by `m011/_band_chart.ts`):
+When reviewing a set of related metrics (e.g., m11-01-01 to m11-01-04, built by
+`m011/_band_chart.ts`):
 
 - [ ] IDs follow consistent pattern across admin levels
 - [ ] Labels follow same structure, differing only by admin level
@@ -175,13 +193,14 @@ When reviewing a set of related metrics (e.g., m11-01-01 to m11-01-04, built by 
 
 ## Shared Text Presets
 
-Common text blocks are defined in `_shared/text_presets.ts` to avoid duplication:
+Common text blocks are defined in `_shared/text_presets.ts` to avoid
+duplication:
 
-| Constant                               | Usage                                                    |
-| -------------------------------------- | -------------------------------------------------------- |
-| `SUBCAPTION_DISCLAIMER`                | Coverage metrics subCaption with DATE_RANGE + disclaimer |
-| `FOOTNOTE_COVERAGE_BASE`               | Coverage footnote with MICS/DHS attribution              |
-| `FOOTNOTE_COVERAGE_WITH_CURRENT_YEAR`  | Extended footnote with current year scaling note         |
+| Constant                              | Usage                                                    |
+| ------------------------------------- | -------------------------------------------------------- |
+| `SUBCAPTION_DISCLAIMER`               | Coverage metrics subCaption with DATE_RANGE + disclaimer |
+| `FOOTNOTE_COVERAGE_BASE`              | Coverage footnote with MICS/DHS attribution              |
+| `FOOTNOTE_COVERAGE_WITH_CURRENT_YEAR` | Extended footnote with current year scaling note         |
 
 Import and use:
 
@@ -205,7 +224,8 @@ t: {
 When adding a new conditional formatting preset to `.validation/cf_presets.ts`:
 
 1. Check if an equivalent exists in `wb-fastr/lib/legacy_cf_presets.ts`
-2. If yes, use exact same colors to ensure UI shows it as a preset (not "Custom")
+2. If yes, use exact same colors to ensure UI shows it as a preset (not
+   "Custom")
 3. Use `{ key: "base200" }` for neutral colors when matching app presets
 4. Document which app preset it matches in a comment
 

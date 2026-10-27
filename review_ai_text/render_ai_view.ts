@@ -71,7 +71,8 @@ function availableDisaggregations(
   if (!ro || ro.createTableStatementPossibleColumns === false) {
     return {
       options: [],
-      note: "results object declares no columns; availability cannot be derived here",
+      note:
+        "results object declares no columns; availability cannot be derived here",
     };
   }
   const cols = new Set(Object.keys(ro.createTableStatementPossibleColumns));
@@ -80,10 +81,12 @@ function availableDisaggregations(
   let note = "";
   if (cols.has("facility_id")) {
     out.push(...FACILITY_OPTIONS.map((f) => `${f}?`));
-    note = "options marked ? need the instance's structure config to enable them";
+    note =
+      "options marked ? need the instance's structure config to enable them";
   }
-  if (cols.has("period_id")) out.push("year", "month", "quarter_id", "period_id");
-  else if (cols.has("quarter_id")) out.push("quarter_id", "year");
+  if (cols.has("period_id")) {
+    out.push("year", "month", "quarter_id", "period_id");
+  } else if (cols.has("quarter_id")) out.push("quarter_id", "year");
   else if (cols.has("year")) out.push("year");
   return { options: out, note };
 }
@@ -91,20 +94,27 @@ function availableDisaggregations(
 function replicateByProp(preset: VizPreset): string | undefined {
   for (const dis of preset.config.d.disaggregateBy) {
     if (dis.disDisplayOpt !== "replicant") continue;
-    const filter = preset.config.d.filterBy.find((f) => f.disOpt === dis.disOpt);
+    const filter = preset.config.d.filterBy.find((f) =>
+      f.disOpt === dis.disOpt
+    );
     if (filter && filter.values.length === 1) continue;
     return dis.disOpt;
   }
   return undefined;
 }
 
-function catalogEntry(def: ModuleDefinitionGithub, metric: MetricDefinitionGithub): string[] {
+function catalogEntry(
+  def: ModuleDefinitionGithub,
+  metric: MetricDefinitionGithub,
+): string[] {
   const lines: string[] = [];
   const label = metric.variantLabel
     ? `${metric.label.en} [${metric.variantLabel.en}]`
     : metric.label.en;
   lines.push(`${metric.id}: ${label} [${metric.formatAs}]`);
-  if (metric.aiDescription?.summary) lines.push(`  ${metric.aiDescription.summary.en}`);
+  if (metric.aiDescription?.summary) {
+    lines.push(`  ${metric.aiDescription.summary.en}`);
+  }
   if (metric.importantNotes) lines.push(`  NOTE: ${metric.importantNotes.en}`);
   if (metric.valueProps.length > 0) {
     const props = metric.valueProps.map((p) => {
@@ -115,44 +125,67 @@ function catalogEntry(def: ModuleDefinitionGithub, metric: MetricDefinitionGithu
   }
   const avail = availableDisaggregations(def, metric);
   const requiredSet = new Set<string>(metric.requiredDisaggregationOptions);
-  const required = avail.options.filter((o) => requiredSet.has(o) && o !== "quarter_id");
-  const optional = avail.options.filter((o) => !requiredSet.has(o) && o !== "quarter_id");
-  if (required.length > 0) lines.push(`  Auto-disaggregated by: ${required.join(", ")}`);
-  if (optional.length > 0) lines.push(`  Optional disaggregations: ${optional.join(", ")}`);
+  const required = avail.options.filter((o) =>
+    requiredSet.has(o) && o !== "quarter_id"
+  );
+  const optional = avail.options.filter((o) =>
+    !requiredSet.has(o) && o !== "quarter_id"
+  );
+  if (required.length > 0) {
+    lines.push(`  Auto-disaggregated by: ${required.join(", ")}`);
+  }
+  if (optional.length > 0) {
+    lines.push(`  Optional disaggregations: ${optional.join(", ")}`);
+  }
   if (avail.note) lines.push(`  [render note: ${avail.note}]`);
   const missingRequired = metric.requiredDisaggregationOptions.filter((r) =>
     !avail.options.includes(r)
   );
   if (missingRequired.length > 0) {
     lines.push(
-      `  [render note: required option(s) not derivable from declared columns: ${missingRequired.join(", ")}]`,
+      `  [render note: required option(s) not derivable from declared columns: ${
+        missingRequired.join(", ")
+      }]`,
     );
   }
   if (metric.vizPresets.length > 0) {
     lines.push(`  Visualization presets:`);
     for (const preset of metric.vizPresets) {
-      const dateFormat = preset.config.d.timeseriesGrouping === "year" ? "YYYY" : "YYYYMM";
+      const dateFormat = preset.config.d.timeseriesGrouping === "year"
+        ? "YYYY"
+        : "YYYYMM";
       const filterNote = preset.allowedFilters.length > 0
         ? ` — filters: ${preset.allowedFilters.join(", ")}`
         : "";
       const rep = replicateByProp(preset);
-      const repNote = rep !== undefined ? ` ** REQUIRES selectedReplicant: one ${rep} value **` : "";
-      lines.push(`    - ${preset.id}: ${preset.label.en} (${dateFormat})${filterNote}${repNote}`);
-      if (preset.importantNotes) lines.push(`      NOTE: ${preset.importantNotes.en}`);
+      const repNote = rep !== undefined
+        ? ` ** REQUIRES selectedReplicant: one ${rep} value **`
+        : "";
+      lines.push(
+        `    - ${preset.id}: ${preset.label.en} (${dateFormat})${filterNote}${repNote}`,
+      );
+      if (preset.importantNotes) {
+        lines.push(`      NOTE: ${preset.importantNotes.en}`);
+      }
     }
   }
   lines.push("");
   return lines;
 }
 
-function dataHeader(def: ModuleDefinitionGithub, metric: MetricDefinitionGithub): string[] {
+function dataHeader(
+  def: ModuleDefinitionGithub,
+  metric: MetricDefinitionGithub,
+): string[] {
   const lines: string[] = [];
   lines.push("# METRIC DATA");
   lines.push("=".repeat(80));
   lines.push("");
   lines.push(`**Metric ID (metricId):** ${metric.id}`);
   lines.push(
-    `**Metric Label:** ${metric.label.en}${metric.variantLabel ? ` [${metric.variantLabel.en}]` : ""}`,
+    `**Metric Label:** ${metric.label.en}${
+      metric.variantLabel ? ` [${metric.variantLabel.en}]` : ""
+    }`,
   );
   if (metric.formatAs === "indicator") {
     lines.push(
@@ -182,10 +215,16 @@ function dataHeader(def: ModuleDefinitionGithub, metric: MetricDefinitionGithub)
     lines.push(`**Disaggregation guidance:** ${ai.disaggregationGuidance.en}`);
   }
   lines.push("");
-  lines.push("(The live tool continues with the Dimension Summary, period coverage and CSV, which depend on package data and are not rendered here.)");
+  lines.push(
+    "(The live tool continues with the Dimension Summary, period coverage and CSV, which depend on package data and are not rendered here.)",
+  );
   lines.push("");
   const avail = availableDisaggregations(def, metric);
-  lines.push(`[render note: disaggregations derivable from declared columns: ${avail.options.join(", ") || "(none)"}${avail.note ? `; ${avail.note}` : ""}]`);
+  lines.push(
+    `[render note: disaggregations derivable from declared columns: ${
+      avail.options.join(", ") || "(none)"
+    }${avail.note ? `; ${avail.note}` : ""}]`,
+  );
   lines.push("");
   return lines;
 }
@@ -194,23 +233,39 @@ function computationSummary(metric: MetricDefinitionGithub): string[] {
   const lines: string[] = [];
   lines.push("[ground truth the AI does NOT see]");
   lines.push(`  resultsObjectId: ${metric.resultsObjectId}`);
-  lines.push(`  valueFunc: ${metric.valueFunc}; valueProps: ${metric.valueProps.join(", ")}`);
+  lines.push(
+    `  valueFunc: ${metric.valueFunc}; valueProps: ${
+      metric.valueProps.join(", ")
+    }`,
+  );
   if (metric.postAggregationExpression) {
     const ing = metric.postAggregationExpression.ingredientValues
       .map((i) => `${i.func}(${i.prop})`).join(", ");
-    lines.push(`  postAggregationExpression: ${metric.postAggregationExpression.expression}   over ${ing}`);
+    lines.push(
+      `  postAggregationExpression: ${metric.postAggregationExpression.expression}   over ${ing}`,
+    );
   }
   if (metric.catalogExpressionEvaluation) {
-    lines.push(`  catalogExpressionEvaluation over: ${metric.catalogExpressionEvaluation.ingredientProps.join(", ")}`);
+    lines.push(
+      `  catalogExpressionEvaluation over: ${
+        metric.catalogExpressionEvaluation.ingredientProps.join(", ")
+      }`,
+    );
   }
-  lines.push(`  requiredDisaggregationOptions: ${metric.requiredDisaggregationOptions.join(", ") || "(none)"}`);
+  lines.push(
+    `  requiredDisaggregationOptions: ${
+      metric.requiredDisaggregationOptions.join(", ") || "(none)"
+    }`,
+  );
   lines.push(`  hide: ${metric.hide}`);
   return lines;
 }
 
 function translatedFieldsAppendix(metric: MetricDefinitionGithub): string[] {
   const lines: string[] = [];
-  lines.push("[instance-language fields: on a fr or pt instance the AI sees these instead of the English]");
+  lines.push(
+    "[instance-language fields: on a fr or pt instance the AI sees these instead of the English]",
+  );
   const show = (name: string, v: Lang | null) => {
     if (!v) return;
     lines.push(`  ${name}.fr: ${v.fr}`);
@@ -244,7 +299,9 @@ const modLines: string[] = ["AVAILABLE MODULES", "=".repeat(80), ""];
 for (const { dir, def } of modules) {
   modLines.push(`ID: ${dir}`);
   modLines.push(`Name: ${def.label.en}`);
-  modLines.push(`Has Parameters: ${def.configRequirements.parameters.length > 0}`);
+  modLines.push(
+    `Has Parameters: ${def.configRequirements.parameters.length > 0}`,
+  );
   modLines.push(`Last Run: (runtime)`);
   modLines.push(`Metrics: ${def.metrics.length}`);
   modLines.push("-".repeat(80));
@@ -266,7 +323,9 @@ for (const { dir, def } of modules) {
     modLines.push("Parameters:");
     for (const p of def.configRequirements.parameters) {
       modLines.push(`  ${p.description.en}: ${p.input.defaultValue}`);
-      modLines.push(`      [replacementString ${p.replacementString}, not shown to the AI]`);
+      modLines.push(
+        `      [replacementString ${p.replacementString}, not shown to the AI]`,
+      );
     }
   }
   modLines.push("");
@@ -281,7 +340,9 @@ for (const { dir, def } of modules) {
   lines.push(`# ${dir}: ${def.label.en}`);
   lines.push("");
   lines.push(`Module label fr: ${def.label.fr}`);
-  lines.push(`Module label pt: ${def.label.pt ?? "(missing, falls back to en)"}`);
+  lines.push(
+    `Module label pt: ${def.label.pt ?? "(missing, falls back to en)"}`,
+  );
   lines.push(`Prerequisites: ${def.prerequisites.join(", ") || "(none)"}`);
   lines.push("");
   const visible = def.metrics.filter((m) => !m.hide);
@@ -306,7 +367,9 @@ for (const { dir, def } of modules) {
   }
   if (hidden.length > 0) {
     lines.push("-".repeat(80));
-    lines.push("## Hidden metrics (never listed to the AI; still queryable by id)");
+    lines.push(
+      "## Hidden metrics (never listed to the AI; still queryable by id)",
+    );
     lines.push("");
     for (const m of hidden) {
       lines.push("```");
@@ -318,4 +381,6 @@ for (const { dir, def } of modules) {
   await Deno.writeTextFile(`${outDir}/${dir}.md`, lines.join("\n"));
 }
 
-console.log(`Rendered ${modules.length} modules, ${allMetrics.length} visible metrics, to ${outDir}`);
+console.log(
+  `Rendered ${modules.length} modules, ${allMetrics.length} visible metrics, to ${outDir}`,
+);

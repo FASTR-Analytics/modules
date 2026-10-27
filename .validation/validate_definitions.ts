@@ -5,10 +5,12 @@ const ROOT = new URL("..", import.meta.url).pathname;
 
 let hasErrors = false;
 
-for await (const entry of walk(ROOT, {
-  match: [/\/definition\.json$/],
-  skip: [/\/\./, /\/node_modules\//],
-})) {
+for await (
+  const entry of walk(ROOT, {
+    match: [/\/definition\.json$/],
+    skip: [/\/\./, /\/node_modules\//],
+  })
+) {
   const relativePath = entry.path.replace(ROOT, "");
   let raw: unknown;
 

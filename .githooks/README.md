@@ -14,7 +14,8 @@ Run this once after cloning or pulling this directory.
 
 ### `pre-push`
 
-Before any push, runs the `definition.json` validator. If errors are found, they are displayed and you are asked whether to push anyway:
+Before any push, runs the `definition.json` validator. If errors are found, they
+are displayed and you are asked whether to push anyway:
 
 ```
 OK    m001/definition.json
@@ -35,4 +36,5 @@ Push anyway? (y/N)
 - Press `y` to push despite the errors (CI will also flag them)
 - Press `N` or Enter to cancel the push and fix the errors first
 
-Requires [Deno](https://deno.com) to be installed. If Deno is not found, the hook skips validation with a warning.
+Requires [Deno](https://deno.com) to be installed. If Deno is not found, the
+hook skips validation with a warning.

@@ -92,8 +92,10 @@ export const vizPresets: VizPreset[] = [
     },
     description: {
       en: "Bar chart comparing coverage across Admin Areas 3",
-      fr: "Diagramme à barres comparant la couverture entre Zones administratives 3",
-      pt: "Gráfico de barras que compara a cobertura entre Áreas administrativas 3",
+      fr:
+        "Diagramme à barres comparant la couverture entre Zones administratives 3",
+      pt:
+        "Gráfico de barras que compara a cobertura entre Áreas administrativas 3",
     },
     allowedFilters: ["admin_area_3"],
     config: {
@@ -190,29 +192,44 @@ export const metric: MetricDefinitionGithub = {
   formatAs: "percent",
   aiDescription: {
     summary: {
-      en: "District-level coverage estimates combining survey, projected, and HMIS-derived values.",
-      fr: "Estimations de couverture au niveau du district combinant valeurs d'enquête, projetées et dérivées du HMIS.",
-      pt: "Estimativas de cobertura ao nível distrital que combinam valores de inquéritos, projetados e derivados do SIS.",
+      en:
+        "District-level coverage estimates combining survey, projected, and HMIS-derived values.",
+      fr:
+        "Estimations de couverture au niveau du district combinant valeurs d'enquête, projetées et dérivées du HMIS.",
+      pt:
+        "Estimativas de cobertura ao nível distrital que combinam valores de inquéritos, projetados e derivados do SIS.",
     },
     methodology: {
-      en: "AVG of survey, projected survey, and HMIS coverage at district level. Finest geographic resolution for coverage estimation.",
-      fr: "Moyenne de la couverture d'enquête, d'enquête projetée et HMIS au niveau du district. Résolution géographique la plus fine.",
-      pt: "Média da cobertura de inquéritos, de inquéritos projetados e do SIS ao nível distrital. Resolução geográfica mais fina para a estimativa de cobertura.",
+      en:
+        "AVG of survey, projected survey, and HMIS coverage at district level. Finest geographic resolution for coverage estimation.",
+      fr:
+        "Moyenne de la couverture d'enquête, d'enquête projetée et HMIS au niveau du district. Résolution géographique la plus fine.",
+      pt:
+        "Média da cobertura de inquéritos, de inquéritos projetados e do SIS ao nível distrital. Resolução geográfica mais fina para a estimativa de cobertura.",
     },
     interpretation: {
-      en: "Enables district-level targeting and micro-planning. Interpret with caution due to smaller sample sizes and denominator uncertainty.",
-      fr: "Permet le ciblage au niveau du district et la micro-planification. Interpréter avec prudence en raison de petites tailles d'échantillon.",
-      pt: "Permite a focalização ao nível distrital e o micro-planeamento. Interpretar com prudência devido às menores dimensões das amostras e à incerteza dos denominadores.",
+      en:
+        "Enables district-level targeting and micro-planning. Interpret with caution due to smaller sample sizes and denominator uncertainty.",
+      fr:
+        "Permet le ciblage au niveau du district et la micro-planification. Interpréter avec prudence en raison de petites tailles d'échantillon.",
+      pt:
+        "Permite a focalização ao nível distrital e o micro-planeamento. Interpretar com prudência devido às menores dimensões das amostras e à incerteza dos denominadores.",
     },
     typicalRange: {
-      en: "0-100%. Greater variation expected at district level; interpret with caution.",
-      fr: "0-100%. Plus grande variation attendue au niveau du district; interpréter avec prudence.",
-      pt: "0-100%. Espera-se maior variação ao nível distrital; interpretar com prudência.",
+      en:
+        "0-100%. Greater variation expected at district level; interpret with caution.",
+      fr:
+        "0-100%. Plus grande variation attendue au niveau du district; interpréter avec prudence.",
+      pt:
+        "0-100%. Espera-se maior variação ao nível distrital; interpretar com prudência.",
     },
     disaggregationGuidance: {
-      en: "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Compare with admin area 2 for context.",
-      fr: "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Comparer avec la zone administrative 2 pour le contexte.",
-      pt: "Desagregar sempre por indicator_common_id, admin_area_3 e year (todos obrigatórios). Comparar com a área administrativa 2 para contextualização.",
+      en:
+        "Always disaggregate by indicator_common_id, admin_area_3, and year (all required). Compare with admin area 2 for context.",
+      fr:
+        "Toujours désagréger par indicator_common_id, admin_area_3 et year (tous requis). Comparer avec la zone administrative 2 pour le contexte.",
+      pt:
+        "Desagregar sempre por indicator_common_id, admin_area_3 e year (todos obrigatórios). Comparar com a área administrativa 2 para contextualização.",
     },
     caveats: null,
   },

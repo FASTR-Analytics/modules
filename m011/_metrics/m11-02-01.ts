@@ -24,8 +24,10 @@ const LAST_QUARTER: VizPreset["config"]["d"]["periodFilter"] = {
 };
 
 const FOOTNOTE = {
-  en: "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
-  fr: "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois.",
+  en:
+    "Negative values indicate fewer services than expected. The expected value is the Bayesian model's estimate from trend and seasonality for the facilities that reported in the month.",
+  fr:
+    "Les valeurs négatives indiquent moins de services qu'attendu. La valeur attendue est l'estimation du modèle bayésien à partir de la tendance et de la saisonnalité pour les établissements ayant rapporté dans le mois.",
 };
 
 const TEXT_SIZES = {
@@ -51,16 +53,21 @@ function tablePreset(
       }
       : {
         en: `Service disruption by ${area.en} for one ${parentArea.en}`,
-        fr: `Perturbation des services par ${area.fr} pour une ${parentArea.fr}`,
+        fr:
+          `Perturbation des services par ${area.fr} pour une ${parentArea.fr}`,
       },
     description: parentArea === undefined
       ? {
-        en: `Table showing the percentage difference between observed and expected services, ${area.en} down and indicators across`,
-        fr: `Tableau montrant la différence en pourcentage entre les services observés et attendus, ${area.fr} en lignes et indicateurs en colonnes`,
+        en:
+          `Table showing the percentage difference between observed and expected services, ${area.en} down and indicators across`,
+        fr:
+          `Tableau montrant la différence en pourcentage entre les services observés et attendus, ${area.fr} en lignes et indicateurs en colonnes`,
       }
       : {
-        en: `Table showing the percentage difference between observed and expected services, ${area.en} down and indicators across, for a single ${parentArea.en}`,
-        fr: `Tableau montrant la différence en pourcentage entre les services observés et attendus, ${area.fr} en lignes et indicateurs en colonnes, pour une seule ${parentArea.fr}`,
+        en:
+          `Table showing the percentage difference between observed and expected services, ${area.en} down and indicators across, for a single ${parentArea.en}`,
+        fr:
+          `Tableau montrant la différence en pourcentage entre les services observés et attendus, ${area.fr} en lignes et indicateurs en colonnes, pour une seule ${parentArea.fr}`,
       },
     importantNotes: null,
     allowedFilters: ["indicator_common_id", adminArea(level)],
@@ -70,9 +77,10 @@ function tablePreset(
         valuesDisDisplayOpt: "col",
         disaggregateBy: [
           { disOpt: "indicator_common_id", disDisplayOpt: "col" },
-          ...(parent === undefined
-            ? []
-            : [{ disOpt: adminArea(parent), disDisplayOpt: "replicant" as const }]),
+          ...(parent === undefined ? [] : [{
+            disOpt: adminArea(parent),
+            disDisplayOpt: "replicant" as const,
+          }]),
           { disOpt: adminArea(level), disDisplayOpt: "row" },
         ],
         filterBy: [],
@@ -86,8 +94,10 @@ function tablePreset(
           fr: `Perturbation des services par ${area.fr}`,
         },
         subCaption: {
-          en: "Percentage difference between observed and expected services, DATE_RANGE",
-          fr: "Différence en pourcentage entre les services observés et attendus, PLAGE_DE_DATES",
+          en:
+            "Percentage difference between observed and expected services, DATE_RANGE",
+          fr:
+            "Différence en pourcentage entre les services observés et attendus, PLAGE_DE_DATES",
         },
         footnote: FOOTNOTE,
         ...TEXT_SIZES,
@@ -105,8 +115,10 @@ function mapPreset(level: AdminLevel): VizPreset {
       fr: `Carte des perturbations par ${area.fr}`,
     },
     description: {
-      en: `Map showing the percentage difference between observed and expected services by ${area.en}, for one indicator`,
-      fr: `Carte montrant la différence en pourcentage entre les services observés et attendus par ${area.fr}, pour un indicateur`,
+      en:
+        `Map showing the percentage difference between observed and expected services by ${area.en}, for one indicator`,
+      fr:
+        `Carte montrant la différence en pourcentage entre les services observés et attendus par ${area.fr}, pour un indicateur`,
     },
     importantNotes: null,
     allowedFilters: [],
@@ -129,8 +141,10 @@ function mapPreset(level: AdminLevel): VizPreset {
           fr: "Perturbation des services",
         },
         subCaption: {
-          en: `Percentage difference between observed and expected services by ${area.en}, DATE_RANGE`,
-          fr: `Différence en pourcentage entre les services observés et attendus par ${area.fr}, PLAGE_DE_DATES`,
+          en:
+            `Percentage difference between observed and expected services by ${area.en}, DATE_RANGE`,
+          fr:
+            `Différence en pourcentage entre les services observés et attendus par ${area.fr}, PLAGE_DE_DATES`,
         },
         footnote: FOOTNOTE,
         ...TEXT_SIZES,
@@ -170,28 +184,40 @@ export const metric: MetricDefinitionGithub = {
   catalogExpressionEvaluation: null,
   aiDescription: {
     summary: {
-      en: "Percentage difference between observed services and the Bayesian expected baseline, at any admin level and for any period.",
-      fr: "Différence en pourcentage entre les services observés et la base de référence bayésienne attendue, à tout niveau administratif et pour toute période.",
+      en:
+        "Percentage difference between observed services and the Bayesian expected baseline, at any admin level and for any period.",
+      fr:
+        "Différence en pourcentage entre les services observés et la base de référence bayésienne attendue, à tout niveau administratif et pour toute période.",
     },
     methodology: {
-      en: "Observed and expected services are summed over the grouping shown, then the difference is taken as a share of expected: (observed - expected) / expected. The expected baseline is the Bayesian disruption model's latent intensity summed over the same facilities that reported each month (see the band-chart metrics).",
-      fr: "Les services observés et attendus sont sommés sur le regroupement affiché, puis la différence est rapportée à l'attendu : (observé - attendu) / attendu. La base de référence attendue est l'intensité latente du modèle bayésien de perturbation, sommée sur les mêmes établissements ayant rapporté chaque mois (voir les métriques du graphique à bande).",
+      en:
+        "Observed and expected services are summed over the grouping shown, then the difference is taken as a share of expected: (observed - expected) / expected. The expected baseline is the Bayesian disruption model's latent intensity summed over the same facilities that reported each month (see the band-chart metrics).",
+      fr:
+        "Les services observés et attendus sont sommés sur le regroupement affiché, puis la différence est rapportée à l'attendu : (observé - attendu) / attendu. La base de référence attendue est l'intensité latente du modèle bayésien de perturbation, sommée sur les mêmes établissements ayant rapporté chaque mois (voir les métriques du graphique à bande).",
     },
     interpretation: {
-      en: "Negative values mean fewer services than expected, positive values more. The preset thresholds at 5%, 10% and 20% either side mark increasing departures; whether a departure lies outside the model's credible interval is shown by the band-chart metrics.",
-      fr: "Les valeurs négatives signifient moins de services qu'attendu, les positives davantage. Les seuils des préréglages à 5%, 10% et 20% de part et d'autre marquent des écarts croissants ; le graphique à bande montre si un écart sort de l'intervalle de crédibilité du modèle.",
+      en:
+        "Negative values mean fewer services than expected, positive values more. The preset thresholds at 5%, 10% and 20% either side mark increasing departures; whether a departure lies outside the model's credible interval is shown by the band-chart metrics.",
+      fr:
+        "Les valeurs négatives signifient moins de services qu'attendu, les positives davantage. Les seuils des préréglages à 5%, 10% et 20% de part et d'autre marquent des écarts croissants ; le graphique à bande montre si un écart sort de l'intervalle de crédibilité du modèle.",
     },
     typicalRange: {
-      en: "Mostly within 10% either side; sustained values beyond 20% indicate a disruption or surge to triangulate with other data.",
-      fr: "Le plus souvent à moins de 10% de part et d'autre ; des valeurs durablement au-delà de 20% indiquent une perturbation ou une hausse à trianguler avec d'autres données.",
+      en:
+        "Mostly within 10% either side; sustained values beyond 20% indicate a disruption or surge to triangulate with other data.",
+      fr:
+        "Le plus souvent à moins de 10% de part et d'autre ; des valeurs durablement au-delà de 20% indiquent une perturbation ou une hausse à trianguler avec d'autres données.",
     },
     caveats: {
-      en: "A share of expected, so small expected volumes give large percentages; read alongside the observed volume. Only facilities that reported enter both terms, so the value reflects service-rate change, not reporting gaps.",
-      fr: "Rapportée à l'attendu, donc de petits volumes attendus donnent de grands pourcentages ; à lire avec le volume observé. Seuls les établissements ayant rapporté entrent dans les deux termes, la valeur reflète donc un changement du taux de service, pas des lacunes de rapportage.",
+      en:
+        "A share of expected, so small expected volumes give large percentages; read alongside the observed volume. Only facilities that reported enter both terms, so the value reflects service-rate change, not reporting gaps.",
+      fr:
+        "Rapportée à l'attendu, donc de petits volumes attendus donnent de grands pourcentages ; à lire avec le volume observé. Seuls les établissements ayant rapporté entrent dans les deux termes, la valeur reflète donc un changement du taux de service, pas des lacunes de rapportage.",
     },
     disaggregationGuidance: {
-      en: "Always by indicator_common_id (required). By admin area at any level for tables and maps; by month, quarter or year over time.",
-      fr: "Toujours par indicator_common_id (requis). Par zone administrative à tout niveau pour les tableaux et les cartes ; par mois, trimestre ou année dans le temps.",
+      en:
+        "Always by indicator_common_id (required). By admin area at any level for tables and maps; by month, quarter or year over time.",
+      fr:
+        "Toujours par indicator_common_id (requis). Par zone administrative à tout niveau pour les tableaux et les cartes ; par mois, trimestre ou année dans le temps.",
     },
   },
   importantNotes: null,
