@@ -5,6 +5,12 @@
 if ! command -v deno >/dev/null 2>&1; then
   echo "WARNING: deno not found -- skipping build and validation"
 else
+  echo "Formatting..."
+  if ! deno fmt; then
+    echo "Format failed."
+    exit 1
+  fi
+
   echo "Building definitions..."
   if ! deno run --allow-read --allow-write build_definitions.ts; then
     echo "Build failed."
