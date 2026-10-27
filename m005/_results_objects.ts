@@ -44,6 +44,8 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       indicator_common_id: "TEXT NOT NULL",
       denominator_best_or_survey: "TEXT NOT NULL",
       value: "NUMERIC NOT NULL",
+      source: "TEXT",
+      source_detail: "TEXT",
     },
   },
   {
@@ -55,6 +57,8 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       indicator_common_id: "TEXT NOT NULL",
       denominator_best_or_survey: "TEXT NOT NULL",
       value: "NUMERIC NOT NULL",
+      source: "TEXT",
+      source_detail: "TEXT",
     },
   },
   {
@@ -66,6 +70,8 @@ export const resultsObjects: ResultsObjectDefinitionGithub[] = [
       indicator_common_id: "TEXT NOT NULL",
       denominator_best_or_survey: "TEXT NOT NULL",
       value: "NUMERIC NOT NULL",
+      source: "TEXT",
+      source_detail: "TEXT",
     },
   },
   {

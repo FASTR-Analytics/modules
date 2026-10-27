@@ -226,7 +226,9 @@
         "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "denominator_best_or_survey": "TEXT NOT NULL",
-        "value": "NUMERIC NOT NULL"
+        "value": "NUMERIC NOT NULL",
+        "source": "TEXT",
+        "source_detail": "TEXT"
       }
     },
     {
@@ -237,7 +239,9 @@
         "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "denominator_best_or_survey": "TEXT NOT NULL",
-        "value": "NUMERIC NOT NULL"
+        "value": "NUMERIC NOT NULL",
+        "source": "TEXT",
+        "source_detail": "TEXT"
       }
     },
     {
@@ -248,7 +252,9 @@
         "year": "INTEGER NOT NULL",
         "indicator_common_id": "TEXT NOT NULL",
         "denominator_best_or_survey": "TEXT NOT NULL",
-        "value": "NUMERIC NOT NULL"
+        "value": "NUMERIC NOT NULL",
+        "source": "TEXT",
+        "source_detail": "TEXT"
       }
     },
     {

@@ -2173,7 +2173,7 @@ if (exists("national_combined_results") && is.data.frame(national_combined_resul
   if ("denominator_label" %in% names(national_combined_results)) {
     national_combined_results <- national_combined_results %>% select(-denominator_label)
   }
-  national_combined_results <- national_combined_results %>% select(-any_of(c("iso3_code", "source", "source_detail")))
+  national_combined_results <- national_combined_results %>% select(-any_of(c("iso3_code")))
   write.csv(national_combined_results, "M5_combined_results_national.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_national: ", nrow(national_combined_results), " rows")
 } else {
@@ -2194,7 +2194,7 @@ if (exists("admin2_combined_results") && is.data.frame(admin2_combined_results) 
   if ("denominator_label" %in% names(admin2_combined_results)) {
     admin2_combined_results <- admin2_combined_results %>% select(-denominator_label)
   }
-  admin2_combined_results <- admin2_combined_results %>% select(-any_of(c("iso3_code", "source", "source_detail")))
+  admin2_combined_results <- admin2_combined_results %>% select(-any_of(c("iso3_code")))
   write.csv(admin2_combined_results, "M5_combined_results_admin2.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_admin2: ", nrow(admin2_combined_results), " rows")
 } else {
@@ -2218,7 +2218,7 @@ if (exists("admin3_combined_results") && is.data.frame(admin3_combined_results) 
       filter(admin_area_3 != "NATIONAL")
   }
   admin3_combined_results <- admin3_combined_results %>%
-    select(-any_of(c("denominator_label", "admin_area_2", "iso3_code", "source", "source_detail")))
+    select(-any_of(c("denominator_label", "admin_area_2", "iso3_code")))
   write.csv(admin3_combined_results, "M5_combined_results_admin3.csv", row.names = FALSE, fileEncoding = "UTF-8")
   message("✓ Saved combined_results_admin3: ", nrow(admin3_combined_results), " rows")
 } else {
