@@ -82,10 +82,26 @@ export const metric: MetricDefinitionGithub = {
   variantLabel: null,
   requiredDisaggregationOptions: ["indicator_common_id"],
   valueLabelReplacements: {
-    count_final_none: "Reported volume",
-    count_final_outliers: "Adjusted for outliers",
-    count_final_completeness: "Adjusted for completeness",
-    count_final_both: "Adjusted for outliers and completeness",
+    count_final_none: {
+      en: "Reported volume",
+      fr: "Volume rapporté",
+      pt: "Volume reportado",
+    },
+    count_final_outliers: {
+      en: "Adjusted for outliers",
+      fr: "Ajusté pour les valeurs aberrantes",
+      pt: "Ajustado para valores atípicos",
+    },
+    count_final_completeness: {
+      en: "Adjusted for completeness",
+      fr: "Ajusté pour la complétude",
+      pt: "Ajustado para a completude",
+    },
+    count_final_both: {
+      en: "Adjusted for outliers and completeness",
+      fr: "Ajusté pour les valeurs aberrantes et la complétude",
+      pt: "Ajustado para valores atípicos e completude",
+    },
   },
   postAggregationExpression: null,
   catalogExpressionEvaluation: null,

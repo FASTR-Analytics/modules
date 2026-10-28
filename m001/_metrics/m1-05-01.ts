@@ -25,7 +25,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["count"],
   valueFunc: "SUM",
   valueLabelReplacements: {
-    dqa_score: "Indicator outliers",
+    dqa_score: {
+      en: "Indicator outliers",
+      fr: "Valeurs aberrantes des indicateurs",
+      pt: "Valores atípicos dos indicadores",
+    },
   },
   label: {
     en: "Indicator outliers",

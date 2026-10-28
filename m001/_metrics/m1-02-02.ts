@@ -257,8 +257,12 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["completeness_flag"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    completeness_flag:
-      "Binary variable indicating whether the facility meets criteria",
+    completeness_flag: {
+      en: "Binary variable indicating whether the facility meets criteria",
+      fr: "Variable binaire indiquant si l'établissement répond aux critères",
+      pt:
+        "Variável binária que indica se o estabelecimento cumpre os critérios",
+    },
   },
   label: {
     en: "Proportion of completed records",

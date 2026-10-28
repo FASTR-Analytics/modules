@@ -17,8 +17,16 @@ export const metric: MetricDefinitionGithub = {
   variantLabel: null,
   requiredDisaggregationOptions: ["indicator_common_id"],
   valueLabelReplacements: {
-    observed: "Observed services",
-    expected: "Expected services (Bayesian)",
+    observed: {
+      en: "Observed services",
+      fr: "Services observés",
+      pt: "Serviços observados",
+    },
+    expected: {
+      en: "Expected services (Bayesian)",
+      fr: "Services attendus (bayésien)",
+      pt: "Serviços esperados (bayesiano)",
+    },
   },
   catalogExpressionEvaluation: null,
   aiDescription: {

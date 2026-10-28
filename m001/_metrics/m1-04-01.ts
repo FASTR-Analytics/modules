@@ -179,7 +179,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["dqa_score"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    dqa_score: "Binary variable indicating adequate data quality",
+    dqa_score: {
+      en: "Binary variable indicating adequate data quality",
+      fr: "Variable binaire indiquant une qualité des données adéquate",
+      pt: "Variável binária que indica qualidade adequada dos dados",
+    },
   },
   label: {
     en: "Proportion of facilities with adequate data quality",

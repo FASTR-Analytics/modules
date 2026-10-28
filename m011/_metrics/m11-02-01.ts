@@ -199,7 +199,13 @@ export const metric: MetricDefinitionGithub = {
   },
   variantLabel: null,
   requiredDisaggregationOptions: ["indicator_common_id"],
-  valueLabelReplacements: { pct_diff: "Percent difference" },
+  valueLabelReplacements: {
+    pct_diff: {
+      en: "Percent difference",
+      fr: "Différence en pourcentage",
+      pt: "Diferença em percentagem",
+    },
+  },
   catalogExpressionEvaluation: null,
   aiDescription: {
     summary: {

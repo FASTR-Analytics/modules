@@ -179,7 +179,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["dqa_mean"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    dqa_mean: "Data quality score across facilities",
+    dqa_mean: {
+      en: "Data quality score across facilities",
+      fr: "Score de qualité des données à travers les établissements",
+      pt: "Pontuação da qualidade dos dados nos estabelecimentos",
+    },
   },
   label: {
     en: "Average data quality score across facilities",

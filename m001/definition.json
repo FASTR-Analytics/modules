@@ -314,7 +314,11 @@
       "formatAs": "percent",
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
-        "outlier_flag": "Binary variable indicating whether this an outlier"
+        "outlier_flag": {
+          "en": "Binary variable indicating whether this an outlier",
+          "fr": "Variable binaire indiquant s'il s'agit d'une valeur aberrante",
+          "pt": "Variável binária que indica se é um valor atípico"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,
@@ -552,7 +556,11 @@
       "formatAs": "percent",
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
-        "completeness_flag": "Binary variable indicating whether the facility meets criteria"
+        "completeness_flag": {
+          "en": "Binary variable indicating whether the facility meets criteria",
+          "fr": "Variable binaire indiquant si l'établissement répond aux critères",
+          "pt": "Variável binária que indica se o estabelecimento cumpre os critérios"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,
@@ -847,11 +855,31 @@
         "ratio_type"
       ],
       "valueLabelReplacements": {
-        "ratio_type": "Type of ratio being assessed",
-        "pair_anc": "ANC1 is larger than ANC4",
-        "pair_delivery": "Delivery is approximately equal to BCG",
-        "pair_pnc": "Delivery is larger than PNC1",
-        "pair_penta": "Penta 1 is larger than Penta 3"
+        "ratio_type": {
+          "en": "Type of ratio being assessed",
+          "fr": "Type de ratio évalué",
+          "pt": "Tipo de razão avaliada"
+        },
+        "pair_anc": {
+          "en": "ANC1 is larger than ANC4",
+          "fr": "ANC1 est supérieur à ANC4",
+          "pt": "ANC1 é superior a ANC4"
+        },
+        "pair_delivery": {
+          "en": "Delivery is approximately equal to BCG",
+          "fr": "Les accouchements sont approximativement égaux au BCG",
+          "pt": "Os partos são aproximadamente iguais ao BCG"
+        },
+        "pair_pnc": {
+          "en": "Delivery is larger than PNC1",
+          "fr": "Les accouchements sont supérieurs à PNC1",
+          "pt": "Os partos são superiores a PNC1"
+        },
+        "pair_penta": {
+          "en": "Penta 1 is larger than Penta 3",
+          "fr": "Penta 1 est supérieur à Penta 3",
+          "pt": "Penta 1 é superior a Penta 3"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,
@@ -1089,7 +1117,11 @@
       "formatAs": "percent",
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
-        "dqa_score": "Binary variable indicating adequate data quality"
+        "dqa_score": {
+          "en": "Binary variable indicating adequate data quality",
+          "fr": "Variable binaire indiquant une qualité des données adéquate",
+          "pt": "Variável binária que indica qualidade adequada dos dados"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,
@@ -1317,7 +1349,11 @@
       "formatAs": "percent",
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
-        "dqa_mean": "Data quality score across facilities"
+        "dqa_mean": {
+          "en": "Data quality score across facilities",
+          "fr": "Score de qualité des données à travers les établissements",
+          "pt": "Pontuação da qualidade dos dados nos estabelecimentos"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,
@@ -1541,7 +1577,11 @@
       "formatAs": "number",
       "requiredDisaggregationOptions": [],
       "valueLabelReplacements": {
-        "dqa_score": "Indicator outliers"
+        "dqa_score": {
+          "en": "Indicator outliers",
+          "fr": "Valeurs aberrantes des indicateurs",
+          "pt": "Valores atípicos dos indicadores"
+        }
       },
       "postAggregationExpression": null,
       "catalogExpressionEvaluation": null,

@@ -191,11 +191,32 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["sconsistency"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    ratio_type: "Type of ratio being assessed",
-    pair_anc: "ANC1 is larger than ANC4",
-    pair_delivery: "Delivery is approximately equal to BCG",
-    pair_pnc: "Delivery is larger than PNC1",
-    pair_penta: "Penta 1 is larger than Penta 3",
+    // Plain spaces: the English label arrived here with non-breaking ones.
+    ratio_type: {
+      en: "Type of ratio being assessed",
+      fr: "Type de ratio évalué",
+      pt: "Tipo de razão avaliada",
+    },
+    pair_anc: {
+      en: "ANC1 is larger than ANC4",
+      fr: "ANC1 est supérieur à ANC4",
+      pt: "ANC1 é superior a ANC4",
+    },
+    pair_delivery: {
+      en: "Delivery is approximately equal to BCG",
+      fr: "Les accouchements sont approximativement égaux au BCG",
+      pt: "Os partos são aproximadamente iguais ao BCG",
+    },
+    pair_pnc: {
+      en: "Delivery is larger than PNC1",
+      fr: "Les accouchements sont supérieurs à PNC1",
+      pt: "Os partos são superiores a PNC1",
+    },
+    pair_penta: {
+      en: "Penta 1 is larger than Penta 3",
+      fr: "Penta 1 est supérieur à Penta 3",
+      pt: "Penta 1 é superior a Penta 3",
+    },
   },
   label: {
     en: "Proportion of sub-national areas meeting consistency criteria",

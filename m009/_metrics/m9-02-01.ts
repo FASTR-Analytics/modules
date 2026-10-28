@@ -182,10 +182,19 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["ratio", "difference", "cix", "sii"],
   valueFunc: "identity",
   valueLabelReplacements: {
-    ratio: "Ratio (Q5/Q1)",
-    difference: "Difference (Q5−Q1)",
-    cix: "CIX",
-    sii: "SII",
+    ratio: {
+      en: "Ratio (Q5/Q1)",
+      fr: "Rapport (Q5/Q1)",
+      pt: "Razão (Q5/Q1)",
+    },
+    difference: {
+      en: "Difference (Q5−Q1)",
+      fr: "Différence (Q5−Q1)",
+      pt: "Diferença (Q5−Q1)",
+    },
+    // The acronyms are the same in all three languages.
+    cix: { en: "CIX", fr: "CIX", pt: "CIX" },
+    sii: { en: "SII", fr: "SII", pt: "SII" },
   },
   label: {
     en: "ICEH inequality measure",

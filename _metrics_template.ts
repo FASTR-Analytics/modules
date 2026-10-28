@@ -51,7 +51,7 @@ export const metrics: MetricDefinitionGithub[] = [
     valueProps: ["column_name"],
     valueFunc: "AVG",
     valueLabelReplacements: {
-      // column_name: "Display Name",
+      // column_name: { en: "Display Name", fr: "...", pt: "..." },
     },
 
     requiredDisaggregationOptions: [],

@@ -189,7 +189,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["outlier_flag"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    outlier_flag: "Binary variable indicating whether this an outlier",
+    outlier_flag: {
+      en: "Binary variable indicating whether this an outlier",
+      fr: "Variable binaire indiquant s'il s'agit d'une valeur aberrante",
+      pt: "Variável binária que indica se é um valor atípico",
+    },
   },
   label: {
     en: "Proportion of outliers",

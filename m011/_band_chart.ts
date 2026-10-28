@@ -244,10 +244,26 @@ export function bandChartMetric(p: {
     valueProps: ["observed", "expected", "ppi_lwr", "ppi_upr"],
     valueFunc: "SUM",
     valueLabelReplacements: {
-      observed: "Observed services",
-      expected: "Expected services (Bayesian)",
-      ppi_lwr: "Lower 95% credible bound",
-      ppi_upr: "Upper 95% credible bound",
+      observed: {
+        en: "Observed services",
+        fr: "Services observés",
+        pt: "Serviços observados",
+      },
+      expected: {
+        en: "Expected services (Bayesian)",
+        fr: "Services attendus (bayésien)",
+        pt: "Serviços esperados (bayesiano)",
+      },
+      ppi_lwr: {
+        en: "Lower 95% credible bound",
+        fr: "Borne inférieure de crédibilité à 95%",
+        pt: "Limite inferior de credibilidade de 95%",
+      },
+      ppi_upr: {
+        en: "Upper 95% credible bound",
+        fr: "Borne supérieure de crédibilité à 95%",
+        pt: "Limite superior de credibilidade de 95%",
+      },
     },
     label: {
       en: "Bayesian disruption detection — observed vs expected with 95% CI",

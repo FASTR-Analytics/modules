@@ -11,7 +11,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["coverage_cov"],
   valueFunc: "AVG",
   valueLabelReplacements: {
-    coverage_cov: "Coverage calculated from HMIS data",
+    coverage_cov: {
+      en: "Coverage calculated from HMIS data",
+      fr: "Couverture calculée à partir des données HMIS",
+      pt: "Cobertura calculada a partir dos dados HMIS",
+    },
   },
   label: {
     en: "Coverage (HMIS only)",

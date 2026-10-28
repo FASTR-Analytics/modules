@@ -98,7 +98,11 @@ export const metric: MetricDefinitionGithub = {
   valueProps: ["pct_change"],
   valueFunc: "identity",
   valueLabelReplacements: {
-    pct_change: "Percent change",
+    pct_change: {
+      en: "Percent change",
+      fr: "Variation en pourcentage",
+      pt: "Variação em percentagem",
+    },
   },
   postAggregationExpression: {
     ingredientValues: [
