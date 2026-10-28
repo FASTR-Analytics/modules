@@ -38,6 +38,12 @@ else
   fi
 fi
 
+if [ -z "$(git status --porcelain)" ]; then
+  echo ""
+  echo "Nothing to commit. Pushing..."
+  exec git push "$@"
+fi
+
 echo ""
 printf "Commit message: "
 read MSG
