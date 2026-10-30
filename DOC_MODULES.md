@@ -37,6 +37,9 @@ wb-fastr-modules (this repo)          wb-fastr (main app)
 5. User installs module in a project → definition stored in PostgreSQL
 6. User runs module → R script executed, CSV output imported to database
 
+`v1` is frozen at the last definitions the version 1 app can read. Version 1
+instances fetch from it; `main` is version 2's.
+
 ---
 
 ## Module Structure
