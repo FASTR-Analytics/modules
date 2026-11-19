@@ -104,7 +104,7 @@ export const parameters: ModuleParameter[] = [
     replacementString: "P1_NMR",
     input: {
       inputType: "number",
-      defaultValue: "0.039",
+      defaultValue: "0.03",
     },
   },
   {
@@ -116,7 +116,7 @@ export const parameters: ModuleParameter[] = [
     replacementString: "P2_PNMR",
     input: {
       inputType: "number",
-      defaultValue: "0.028",
+      defaultValue: "0.02",
     },
   },
   {
@@ -128,7 +128,7 @@ export const parameters: ModuleParameter[] = [
     replacementString: "INFANT_MORTALITY_RATE",
     input: {
       inputType: "number",
-      defaultValue: "0.067",
+      defaultValue: "0.05",
     },
   },
   {
@@ -140,7 +140,7 @@ export const parameters: ModuleParameter[] = [
     replacementString: "UNDER5_MORTALITY_RATE",
     input: {
       inputType: "number",
-      defaultValue: "0.103",
+      defaultValue: "0.07",
     },
   },
 ];
