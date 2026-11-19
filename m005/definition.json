@@ -130,7 +130,7 @@
         },
         "input": {
           "inputType": "number",
-          "defaultValue": "0.039"
+          "defaultValue": "0.03"
         }
       },
       {
@@ -142,7 +142,7 @@
         },
         "input": {
           "inputType": "number",
-          "defaultValue": "0.028"
+          "defaultValue": "0.02"
         }
       },
       {
@@ -154,7 +154,7 @@
         },
         "input": {
           "inputType": "number",
-          "defaultValue": "0.067"
+          "defaultValue": "0.05"
         }
       },
       {
@@ -166,7 +166,7 @@
         },
         "input": {
           "inputType": "number",
-          "defaultValue": "0.103"
+          "defaultValue": "0.07"
         }
       }
     ]
@@ -175,12 +175,12 @@
     {
       "name": "survey_data_unified.csv",
       "repoPath": "survey_data_unified.csv",
-      "sha256": "5c6bc30b467b8f7b4db3b715329d3ba44f20d8e596f336f6c9e8f36e0e25dc87"
+      "sha256": "dcaa569b2c90822c1e0fe970fc01891bf3df31a3f4b9f6cc7d8b0594f66fddb1"
     },
     {
       "name": "population_estimates_only.csv",
       "repoPath": "population_estimates_only.csv",
-      "sha256": "640d2bf27258943f6422e228a396e15fdd1bd1c7e690221875bb700d42a756c4"
+      "sha256": "91ffe22c4399fc0545d4124630f257f9cdc12f42916b308f741ef905abaedc08"
     }
   ],
   "resultsObjects": [

@@ -5,11 +5,11 @@ SELECTED_COUNT_VARIABLE <- "count_final_both"  # Options: "count_final_none", "c
 PREGNANCY_LOSS_RATE <- 0.03
 TWIN_RATE <- 0.015
 STILLBIRTH_RATE <- 0.02
-P1_NMR <- 0.039     #Default = 0.03
-P2_PNMR <- 0.028
-INFANT_MORTALITY_RATE <- 0.063  
+P1_NMR <- 0.03
+P2_PNMR <- 0.02
+INFANT_MORTALITY_RATE <- 0.05
 
-UNDER5_MORTALITY_RATE <- 0.103  
+UNDER5_MORTALITY_RATE <- 0.07
 
 
 ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS_AA2", "NATIONAL_PLUS_AA2_AA3"
@@ -18,7 +18,7 @@ ANALYSIS_LEVEL <- "NATIONAL_PLUS_AA2" # Options: "NATIONAL_ONLY", "NATIONAL_PLUS
 
 #-------------------------------------------------------------------------------------------------------------
 # CB - R code FASTR PROJECT
-# Last edit: 2026 Jul 30
+# Last edit: 2026 Nov 19
 # Module: COVERAGE ESTIMATES (PART1 - DENOMINATORS)
 #-------------------------------------------------------------------------------------------------------------
 
